@@ -14,9 +14,14 @@ import java.util.zip.ZipFile;
 public class ModLoader {
 
     public static Class[] loadPlugins(File searchDir){
+        List<Class> mods = new ArrayList<Class>();
+        loadPlugins(searchDir, mods);
+        return (Class[])mods.toArray();
+    }
+
+    public static void loadPlugins(File searchDir, List<Class> modList){
         if(!searchDir.exists() || !searchDir.isDirectory()){
             System.out.println("[BlazeLoader] Invalid mod search directory: " + searchDir.getAbsolutePath());
-            return new Class[0];
         }else{
             File[] zips = searchDir.listFiles(new FilenameFilter() {
                 @Override
@@ -24,7 +29,7 @@ public class ModLoader {
                     return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip");
                 }
             });
-            List<Class> mods = new ArrayList<Class>();
+            //List<Class> mods = new ArrayList<Class>();
             for(File modZip : zips){
                 try{
                     ClassLoader loader = new URLClassLoader(new URL[]{modZip.toURI().toURL()}, ModLoader.class.getClassLoader());
@@ -35,7 +40,7 @@ public class ModLoader {
                         if(entry.getName().endsWith(".class")){
                             Class modClass = loader.loadClass(entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6));
                             if(modClass.isAssignableFrom(Mod.class)){
-                                mods.add(modClass);
+                                modList.add(modClass);
                                 System.out.println("[BlazeLoader] Loaded mod: " + modClass.getName() + " from zip: " + modZip.getName());
                             }
                         }
@@ -46,7 +51,6 @@ public class ModLoader {
                     System.out.println("[BlazeLoader] Skipping corrupt mod in: " + modZip.getName());
                 }
             }
-            return (Class[])mods.toArray();
         }
     }
 
