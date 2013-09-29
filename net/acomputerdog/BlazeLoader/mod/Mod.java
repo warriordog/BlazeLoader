@@ -23,6 +23,11 @@ public abstract class Mod {
     }
 
     /**
+     * Called when all mods are loaded.  Default implementation does nothing.
+     */
+    public void load(){}
+
+    /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
      * @param obj Object to compare to.
      * @return If obj is a mod of the same type as this mod.

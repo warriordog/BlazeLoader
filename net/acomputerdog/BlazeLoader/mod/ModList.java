@@ -24,10 +24,13 @@ public class ModList {
         unloadedMods.add(mod);
     }
 
-    public static void startAllMods(){
+    public static void loadAllMods(){
         for(Class cls : unloadedMods){
             try {
-                loadedMods.add((Mod)cls.getDeclaredConstructor(void.class).newInstance(null));
+                Mod mod = (Mod)cls.getDeclaredConstructor(void.class).newInstance(null);
+                mod.load();
+                loadedMods.add(mod);
+                unloadedMods.remove(cls);
             } catch (ReflectiveOperationException e){
                 System.out.println("[BlazeLoader] Could not start plugin: " + cls.getName());
                 e.printStackTrace();
