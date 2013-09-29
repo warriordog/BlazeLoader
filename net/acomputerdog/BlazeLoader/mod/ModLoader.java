@@ -13,13 +13,13 @@ import java.util.zip.ZipFile;
 
 public class ModLoader {
 
-    public static Class[] loadPlugins(File searchDir){
+    public static Class[] loadMods(File searchDir){
         List<Class> mods = new ArrayList<Class>();
-        loadPlugins(searchDir, mods);
+        loadMods(searchDir, mods);
         return (Class[])mods.toArray();
     }
 
-    public static void loadPlugins(File searchDir, List<Class> modList){
+    public static void loadMods(File searchDir, List<Class> modList){
         if(!searchDir.exists() || !searchDir.isDirectory()){
             System.out.println("[BlazeLoader] Invalid mod search directory: " + searchDir.getAbsolutePath());
         }else{
@@ -52,6 +52,10 @@ public class ModLoader {
                 }
             }
         }
+    }
+
+    public static void loadModsToList(File searchDir){
+        loadMods(searchDir, ModList.getUnloadedMods());
     }
 
 }
