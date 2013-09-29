@@ -1,1 +1,8 @@
--Connect to MC source:  Must be done before anything else.
+- needs to be done
+* Skipped
++ completed
+==================================================
+
+-Enable essential mod event methods
++Add essential mod event methods (load(), start(), stop())
++Connect to minecraft source

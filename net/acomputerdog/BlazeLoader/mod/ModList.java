@@ -1,7 +1,10 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ModList {
@@ -24,17 +27,69 @@ public class ModList {
         unloadedMods.add(mod);
     }
 
+    public static int sizeLoaded(){
+        return loadedMods.size();
+    }
+
+    public static int sizeUnloaded(){
+        return unloadedMods.size();
+    }
+
     public static void loadAllMods(){
-        for(Class cls : unloadedMods){
+        BlazeLoader.log("Initializing all mods...");
+        Iterator<Class> iterator = unloadedMods.iterator();
+        while(iterator.hasNext()){
+            Class cls = iterator.next();
+            Mod mod = null;
             try {
-                Mod mod = (Mod)cls.getDeclaredConstructor(void.class).newInstance(null);
+                mod = (Mod)cls.newInstance();
                 mod.load();
                 loadedMods.add(mod);
-                unloadedMods.remove(cls);
-            } catch (ReflectiveOperationException e){
-                System.out.println("[BlazeLoader] Could not start plugin: " + cls.getName());
+                BlazeLoader.log("Initialized mod: " + mod.getModName());
+            } catch (Exception e){
+                if(mod != null){
+                    loadedMods.remove(mod);
+                }
+                BlazeLoader.log("Could not initialize mod: " + cls.getName());
+                e.printStackTrace();
+            } finally{
+                iterator.remove();
+            }
+        }
+        BlazeLoader.log("Done initializing mods.");
+    }
+
+    public static void startAllMods(){
+        BlazeLoader.log("Starting all mods...");
+        Iterator<Mod> iterator = loadedMods.iterator();
+        while(iterator.hasNext()){
+            Mod mod = iterator.next();
+            try{
+                mod.start();
+                BlazeLoader.log("Started mod: " + mod.getModName());
+            }catch(Exception e){
+                iterator.remove();
+                BlazeLoader.log("Could not start mod: " + mod.getModName());
                 e.printStackTrace();
             }
         }
+        BlazeLoader.log("Done starting mods.");
+    }
+
+    public static void stopAllMods(){
+        BlazeLoader.log("Stopping all mods...");
+        Iterator<Mod> iterator = loadedMods.iterator();
+        while(iterator.hasNext()){
+            Mod mod = iterator.next();
+            try{
+                mod.stop();
+                BlazeLoader.log("Stopped mod: " + mod.getModName());
+            }catch(Exception e){
+                iterator.remove();
+                BlazeLoader.log("Could not stop mod: " + mod.getModName());
+                e.printStackTrace();
+            }
+        }
+        BlazeLoader.log("Done stopping mods.");
     }
 }

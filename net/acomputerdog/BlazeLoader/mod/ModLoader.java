@@ -1,5 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -21,7 +23,7 @@ public class ModLoader {
 
     public static void loadMods(File searchDir, List<Class> modList){
         if(!searchDir.exists() || !searchDir.isDirectory()){
-            System.out.println("[BlazeLoader] Invalid mod search directory: " + searchDir.getAbsolutePath());
+            BlazeLoader.log("Invalid mod search directory: " + searchDir.getAbsolutePath());
         }else{
             File[] zips = searchDir.listFiles(new FilenameFilter() {
                 @Override
@@ -39,19 +41,21 @@ public class ModLoader {
                         ZipEntry entry = entries.nextElement();
                         if(entry.getName().endsWith(".class")){
                             Class modClass = loader.loadClass(entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6));
-                            if(modClass.isAssignableFrom(Mod.class)){
+                            //System.out.println(modClass.getName() + ", " + Mod.class.isAssignableFrom(modClass));
+                            if(Mod.class.isAssignableFrom(modClass)){
                                 modList.add(modClass);
-                                System.out.println("[BlazeLoader] Loaded mod: " + modClass.getName() + " from zip: " + modZip.getName());
+                                BlazeLoader.log("Loaded mod: " + modClass.getName() + " from zip: " + modZip.getName());
                             }
                         }
                     }
                 }catch(IOException e){
-                    System.out.println("[BlazeLoader] Skipping corrupt zip: " + modZip.getName());
+                    BlazeLoader.log("Skipping corrupt zip: " + modZip.getName());
                 }catch(ReflectiveOperationException e){
-                    System.out.println("[BlazeLoader] Skipping corrupt mod in: " + modZip.getName());
+                    BlazeLoader.log("Skipping corrupt mod in: " + modZip.getName());
                 }
             }
         }
+        //BlazeLoader.log("Loaded " + ModList.sizeUnloaded() + " mods.");
     }
 
     public static void loadModsToList(File searchDir){

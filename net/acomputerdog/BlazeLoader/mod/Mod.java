@@ -23,9 +23,19 @@ public abstract class Mod {
     }
 
     /**
-     * Called when all mods are loaded.  Default implementation does nothing.
+     * Called when all mod is loaded.  Called before game is loaded.
      */
     public void load(){}
+
+    /**
+     * Called when mod is started.  Game is fully loaded and can be interacted with.
+     */
+    public void start(){}
+
+    /**
+     * Called when mod is stopped.  Game is about to begin shutting down, so mod should release system resources, close streams, etc.
+     */
+    public void stop(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
@@ -36,10 +46,6 @@ public abstract class Mod {
     public boolean equals(Object obj) {
         if(obj == this)return true;
         if(obj == null)return false;
-        if(obj instanceof Mod){
-            return ((Mod)obj).getModId().equals(this.getModId());
-        }else{
-            return false;
-        }
+        return obj instanceof Mod && ((Mod) obj).getModId().equals(this.getModId());
     }
 }
