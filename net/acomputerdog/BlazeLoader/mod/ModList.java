@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,5 +22,16 @@ public class ModList {
 
     public static void addMod(Class mod){
         unloadedMods.add(mod);
+    }
+
+    public static void startAllMods(){
+        for(Class cls : unloadedMods){
+            try {
+                loadedMods.add((Mod)cls.getDeclaredConstructor(void.class).newInstance(null));
+            } catch (ReflectiveOperationException e){
+                System.out.println("[BlazeLoader] Could not start plugin: " + cls.getName());
+                e.printStackTrace();
+            }
+        }
     }
 }
