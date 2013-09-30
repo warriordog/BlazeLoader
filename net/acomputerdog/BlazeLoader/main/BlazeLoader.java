@@ -4,17 +4,16 @@ import net.acomputerdog.BlazeLoader.api.ApiBase;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.minecraft.src.Block;
+import net.minecraft.src.Item;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 /**
  * Main class of BlazeLoader
  */
 public final class BlazeLoader {
-    //private static File mcDir = new File("./");
-    //private static File modDir = new File("./mods/");
-    public static int freeBlockIndex = 0;
+    public static int freeBlockId = 1;
+    public static int freeItemId = 1;
 
     public static void init(File mainDir){
         log("Starting up...");
@@ -45,42 +44,46 @@ public final class BlazeLoader {
         System.out.println("[BlazeLoader] " + message);
     }
 
-    public static int updateFreeBlockSlot(){
-        while(freeBlockIndex < Block.blocksList.length && Block.blocksList[freeBlockIndex] != null){
-            freeBlockIndex++;
+    public static int updateFreeBlockId(){
+        while(freeBlockId < Block.blocksList.length && Block.blocksList[freeBlockId] != null){
+            freeBlockId++;
         }
-        if(Block.blocksList[freeBlockIndex] != null){
-            freeBlockIndex = 0;
-            while(freeBlockIndex < Block.blocksList.length && Block.blocksList[freeBlockIndex] != null){
-                freeBlockIndex++;
+        if(Block.blocksList[freeBlockId] != null){
+            freeBlockId = 1;
+            while(freeBlockId < Block.blocksList.length && Block.blocksList[freeBlockId] != null){
+                freeBlockId++;
             }
-            if(Block.blocksList[freeBlockIndex] != null){
+            if(Block.blocksList[freeBlockId] != null){
                 throw new RuntimeException("No free block IDs available!");
             }
-            //Block[] newBlockList = new Block[Block.blocksList.length + 8];
-            //System.arraycopy(Block.blocksList, 0, newBlockList, 0, Block.blocksList.length);
-            //setBlockList(newBlockList);
-            //freeBlockIndex++;
         }
-        return freeBlockIndex;
+        return freeBlockId;
     }
 
-    private static void setBlockList(Block[] newList){
-        try{
-            Field[] fields = Block.class.getDeclaredFields();
-            for(Field f : fields){
-                if(Block[].class.isAssignableFrom(f.getType())){
-                    f.setAccessible(true);
-                    f.set(null, newList);
-                }
+    public static int resetFreeBlockId(){
+        freeBlockId = 1;
+        return updateFreeBlockId();
+    }
+
+    public static int updateFreeItemId(){
+        while(freeItemId < Item.itemsList.length && Item.itemsList[freeItemId] != null){
+            freeItemId++;
+        }
+        if(Item.itemsList[freeItemId] != null){
+            freeItemId = 1;
+            while(freeItemId < Item.itemsList.length && Item.itemsList[freeItemId] != null){
+                freeItemId++;
             }
-        }catch(ReflectiveOperationException e){
-            throw new RuntimeException("Could not set BlockList!", e);
+            if(Item.itemsList[freeItemId] != null){
+                throw new RuntimeException("No free Item IDs available!");
+            }
         }
+        return freeItemId;
     }
 
-    public static int resetFreeBlockSlot(){
-        freeBlockIndex = 0;
-        return updateFreeBlockSlot();
+    public static int resetFreeItemId(){
+        freeItemId = 1;
+        return updateFreeItemId();
     }
+
 }
