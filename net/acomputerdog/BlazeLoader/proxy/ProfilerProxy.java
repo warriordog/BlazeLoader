@@ -8,19 +8,20 @@ public class ProfilerProxy extends Profiler {
 
     @Override
     public void startSection(String par1Str) {
-        //Custom event here?
+        ModList.startSection(par1Str);
         super.startSection(par1Str);
     }
 
     @Override
     public void endSection() {
-        //Custom event here?
-        if(getNameOfLastSection().equals("root")){
+        super.endSection();
+        String sectionName = getNameOfLastSection();
+        ModList.endSection(sectionName);
+        if("root".equals(sectionName)){
             if(!hasLoadedMods){
                 hasLoadedMods = true;
-                ModList.startAllMods();
+                ModList.start();
             }
         }
-        super.endSection();
     }
 }

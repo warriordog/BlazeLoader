@@ -22,23 +22,7 @@ public class ModList {
         return unloadedMods;
     }
 
-    public static void addMod(Mod mod){
-        loadedMods.add(mod);
-    }
-
-    public static void addMod(Class mod){
-        unloadedMods.add(mod);
-    }
-
-    public static int sizeLoaded(){
-        return loadedMods.size();
-    }
-
-    public static int sizeUnloaded(){
-        return unloadedMods.size();
-    }
-
-    public static void loadAllMods(){
+    public static void load(){
         BlazeLoader.log("Initializing all mods...");
         Iterator<Class> iterator = unloadedMods.iterator();
         while(iterator.hasNext()){
@@ -62,7 +46,7 @@ public class ModList {
         BlazeLoader.log("Done initializing mods.");
     }
 
-    public static void startAllMods(){
+    public static void start(){
         BlazeLoader.updateFreeBlockId();
         BlazeLoader.updateFreeItemId();
         BlazeLoader.log("Starting all mods...");
@@ -81,7 +65,7 @@ public class ModList {
         BlazeLoader.log("Done starting mods.");
     }
 
-    public static void stopAllMods(){
+    public static void stop(){
         BlazeLoader.log("Stopping all mods...");
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
@@ -98,7 +82,7 @@ public class ModList {
         BlazeLoader.log("Done stopping mods.");
     }
 
-    public static void tickAllMods(boolean isPreTick){
+    public static void tick(boolean isPreTick){
         for(Mod mod : loadedMods){
             if(isPreTick){
                 mod.eventPreTick();
@@ -108,7 +92,7 @@ public class ModList {
         }
     }
 
-    public static GuiScreen onGuiAllMods(GuiScreen gui){
+    public static GuiScreen onGui(GuiScreen gui){
         GuiScreen newGui = gui;
         for(Mod mod : loadedMods){
             if(newGui == gui){
@@ -118,5 +102,17 @@ public class ModList {
             }
         }
         return newGui;
+    }
+
+    public static void startSection(String name){
+        for(Mod mod : loadedMods){
+            mod.eventProfilerStart(name);
+        }
+    }
+
+    public static void endSection(String name){
+        for(Mod mod : loadedMods){
+            mod.eventProfilerEnd(name);
+        }
     }
 }

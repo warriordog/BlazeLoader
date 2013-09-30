@@ -62,20 +62,20 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public void shutdown() {
-        ModList.stopAllMods();
+        ModList.stop();
         super.shutdown();
     }
 
     @Override
     public void runTick() {
         super.runTick();
-        ModList.tickAllMods(false);
+        ModList.tick(false);
     }
 
     @Override
     public void displayGuiScreen(GuiScreen par1GuiScreen) {
         if(par1GuiScreen != null){
-            GuiScreen gui = ModList.onGuiAllMods(par1GuiScreen);
+            GuiScreen gui = ModList.onGui(par1GuiScreen);
             if(gui != null)super.displayGuiScreen(par1GuiScreen);
         }else{
             super.displayGuiScreen(null);

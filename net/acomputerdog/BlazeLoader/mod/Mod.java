@@ -62,6 +62,18 @@ public abstract class Mod {
     public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet){return gui;}
 
     /**
+     * Called when a profiler section is started.  Mods are notified BEFORE profiler.
+     * @param sectionName Name of the profiler section started.
+     */
+    public void eventProfilerStart(String sectionName){}
+
+    /**
+     * Called when a profiler section is ended.  Mods are notified AFTER profiler.
+     * @param sectionName Name of the profiler section ended.
+     */
+    public void eventProfilerEnd(String sectionName){}
+
+    /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
      * @param obj Object to compare to.
      * @return If obj is a mod of the same type as this mod.

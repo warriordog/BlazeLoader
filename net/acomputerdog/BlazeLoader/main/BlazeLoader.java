@@ -25,7 +25,7 @@ public final class BlazeLoader {
                 log(ApiBase.modDir.mkdir() ? "Succeeded!" : "Failed! Check file permissions!");
             }else{
                 loadMods();
-                ModList.loadAllMods();
+                ModList.load();
             }
             log("Done loading with no issues.");
         }catch(Exception e){
