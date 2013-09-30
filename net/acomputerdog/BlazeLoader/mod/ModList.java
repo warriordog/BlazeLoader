@@ -63,6 +63,7 @@ public class ModList {
     }
 
     public static void startAllMods(){
+        BlazeLoader.updateFreeBlockSlot();
         BlazeLoader.log("Starting all mods...");
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){

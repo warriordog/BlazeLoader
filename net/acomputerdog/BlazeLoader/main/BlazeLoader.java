@@ -3,8 +3,10 @@ package net.acomputerdog.BlazeLoader.main;
 import net.acomputerdog.BlazeLoader.api.ApiBase;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
+import net.minecraft.src.Block;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * Main class of BlazeLoader
@@ -12,6 +14,7 @@ import java.io.File;
 public final class BlazeLoader {
     //private static File mcDir = new File("./");
     //private static File modDir = new File("./mods/");
+    public static int freeBlockIndex = 0;
 
     public static void init(File mainDir){
         log("Starting up...");
@@ -40,5 +43,44 @@ public final class BlazeLoader {
 
     public static void log(String message){
         System.out.println("[BlazeLoader] " + message);
+    }
+
+    public static int updateFreeBlockSlot(){
+        while(freeBlockIndex < Block.blocksList.length && Block.blocksList[freeBlockIndex] != null){
+            freeBlockIndex++;
+        }
+        if(Block.blocksList[freeBlockIndex] != null){
+            freeBlockIndex = 0;
+            while(freeBlockIndex < Block.blocksList.length && Block.blocksList[freeBlockIndex] != null){
+                freeBlockIndex++;
+            }
+            if(Block.blocksList[freeBlockIndex] != null){
+                throw new RuntimeException("No free block IDs available!");
+            }
+            //Block[] newBlockList = new Block[Block.blocksList.length + 8];
+            //System.arraycopy(Block.blocksList, 0, newBlockList, 0, Block.blocksList.length);
+            //setBlockList(newBlockList);
+            //freeBlockIndex++;
+        }
+        return freeBlockIndex;
+    }
+
+    private static void setBlockList(Block[] newList){
+        try{
+            Field[] fields = Block.class.getDeclaredFields();
+            for(Field f : fields){
+                if(Block[].class.isAssignableFrom(f.getType())){
+                    f.setAccessible(true);
+                    f.set(null, newList);
+                }
+            }
+        }catch(ReflectiveOperationException e){
+            throw new RuntimeException("Could not set BlockList!", e);
+        }
+    }
+
+    public static int resetFreeBlockSlot(){
+        freeBlockIndex = 0;
+        return updateFreeBlockSlot();
     }
 }
