@@ -38,6 +38,17 @@ public abstract class Mod {
     public void stop(){}
 
     /**
+     * Called at the start of a game tick.
+     * -Currently DISABLED-
+     */
+    public void onPreTick(){}
+
+    /**
+     * Called at the end of a game tick.
+     */
+    public void onPostTick(){}
+
+    /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
      * @param obj Object to compare to.
      * @return If obj is a mod of the same type as this mod.

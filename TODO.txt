@@ -3,6 +3,8 @@
 + completed
 ==================================================
 
--Enable essential mod event methods
+-Add API classes for other functions
+-Add advanced mod events
++Enable essential mod event methods
 +Add essential mod event methods (load(), start(), stop())
 +Connect to minecraft source

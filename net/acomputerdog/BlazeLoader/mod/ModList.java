@@ -2,7 +2,6 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,5 +90,15 @@ public class ModList {
             }
         }
         BlazeLoader.log("Done stopping mods.");
+    }
+
+    public static void tickAllMods(boolean isPreTick){
+        for(Mod mod : loadedMods){
+            if(isPreTick){
+                mod.onPreTick();
+            }else{
+                mod.onPostTick();
+            }
+        }
     }
 }
