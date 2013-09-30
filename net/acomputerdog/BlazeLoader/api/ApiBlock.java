@@ -20,7 +20,7 @@ public class ApiBlock {
     /**
      * Gets an available block ID, checking for used IDs that have been freed.
      * Throws a RuntimeException if none are available.
-     * @return Returns an free Block ID.
+     * @return Returns a free Block ID.
      */
     public static int recheckBlockIds(){
         return BlazeLoader.resetFreeBlockId();

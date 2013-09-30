@@ -23,7 +23,6 @@ public class ModList {
     }
 
     public static void load(){
-        BlazeLoader.log("Initializing all mods...");
         Iterator<Class> iterator = unloadedMods.iterator();
         while(iterator.hasNext()){
             Class cls = iterator.next();
@@ -43,13 +42,11 @@ public class ModList {
                 iterator.remove();
             }
         }
-        BlazeLoader.log("Done initializing mods.");
     }
 
     public static void start(){
         BlazeLoader.updateFreeBlockId();
         BlazeLoader.updateFreeItemId();
-        BlazeLoader.log("Starting all mods...");
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();
@@ -62,11 +59,9 @@ public class ModList {
                 e.printStackTrace();
             }
         }
-        BlazeLoader.log("Done starting mods.");
     }
 
     public static void stop(){
-        BlazeLoader.log("Stopping all mods...");
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();
@@ -79,7 +74,6 @@ public class ModList {
                 e.printStackTrace();
             }
         }
-        BlazeLoader.log("Done stopping mods.");
     }
 
     public static void tick(boolean isPreTick){

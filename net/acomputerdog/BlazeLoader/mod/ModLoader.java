@@ -39,7 +39,7 @@ public class ModLoader {
                             Class modClass = loader.loadClass(entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6));
                             if(Mod.class.isAssignableFrom(modClass)){
                                 modList.add(modClass);
-                                BlazeLoader.log("Loaded mod: " + modClass.getName() + " from zip: " + modZip.getName());
+                                BlazeLoader.log("Loaded mod: [" + modClass.getName() + "] from zip: [" + modZip.getName() + "].");
                             }
                         }
                     }

@@ -22,12 +22,12 @@ public final class BlazeLoader {
             ApiBase.modDir = new File(ApiBase.mainDir, "/mods/");
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
-                log(ApiBase.modDir.mkdir() ? "Succeeded!" : "Failed! Check file permissions!");
+                log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating foler failed! Check file permissions!");
             }else{
                 loadMods();
                 ModList.load();
             }
-            log("Done loading with no issues.");
+            log("Mods loaded with no issues.");
         }catch(Exception e){
             log("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();

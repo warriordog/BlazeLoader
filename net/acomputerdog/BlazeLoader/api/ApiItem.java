@@ -17,7 +17,7 @@ public class ApiItem {
     /**
      * Gets an available item ID, checking for used IDs that have been freed.
      * Throws a RuntimeException if none are available.
-     * @return Returns an free Item ID.
+     * @return Returns a free Item ID.
      */
     public static int recheckItemIds(){
         return BlazeLoader.resetFreeItemId();
