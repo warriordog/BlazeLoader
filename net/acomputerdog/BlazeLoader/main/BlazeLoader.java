@@ -1,22 +1,26 @@
 package net.acomputerdog.BlazeLoader.main;
 
+import net.acomputerdog.BlazeLoader.api.ApiBase;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 
 import java.io.File;
 
+/**
+ * Main class of BlazeLoader
+ */
 public final class BlazeLoader {
-    private static File mcDir = new File("./");
-    private static File modDir = new File("./mods/");
+    //private static File mcDir = new File("./");
+    //private static File modDir = new File("./mods/");
 
     public static void init(File mainDir){
         log("Starting up...");
         try{
-            mcDir = mainDir;
-            modDir = new File(mcDir, "/mods/");
-            if(!modDir.exists() || !modDir.isDirectory()){
+            ApiBase.mainDir = mainDir;
+            ApiBase.modDir = new File(ApiBase.mainDir, "/mods/");
+            if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
-                log(modDir.mkdir() ? "Succeeded!" : "Failed! Check file permissions!");
+                log(ApiBase.modDir.mkdir() ? "Succeeded!" : "Failed! Check file permissions!");
             }else{
                 loadMods();
                 ModList.loadAllMods();
@@ -29,8 +33,8 @@ public final class BlazeLoader {
     }
 
     private static void loadMods(){
-        log("Loading mods from: " + modDir.getAbsolutePath());
-        ModLoader.loadModsToList(modDir);
+        log("Loading mods from: " + ApiBase.modDir.getAbsolutePath());
+        ModLoader.loadModsToList(ApiBase.modDir);
         log("Mod loading complete.");
     }
 

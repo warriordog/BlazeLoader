@@ -3,7 +3,9 @@ package net.acomputerdog.BlazeLoader.mod;
 import net.minecraft.src.GuiScreen;
 
 /**
- * Superclass to be extended by mods that wish to use BlazeLoader functionality.  Methods have default implementations, but some should be overridden.
+ * Base class of mods.  Mods should extend this class.
+ * Methods have default implementations, but can be overridden.
+ * event... methods can be overridden to respond to game events.
  */
 public abstract class Mod {
     /**
@@ -43,12 +45,12 @@ public abstract class Mod {
      * Called at the start of a game tick.
      * -Currently DISABLED-
      */
-    public void onPreTick(){}
+    public void eventPreTick(){}
 
     /**
      * Called at the end of a game tick.
      */
-    public void onPostTick(){}
+    public void eventPostTick(){}
 
     /**
      *  Called when a GUI is about to be displayed.  Mods should return param gui unless they wish to override the GUI displayed.
@@ -57,7 +59,7 @@ public abstract class Mod {
      * @param isSet Has the display GUI been set by another mod.
      * @return Return the GUI to actually display
      */
-    public GuiScreen onDisplayGui(GuiScreen gui, boolean isSet){return gui;}
+    public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet){return gui;}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
@@ -68,6 +70,7 @@ public abstract class Mod {
     public boolean equals(Object obj) {
         if(obj == this)return true;
         if(obj == null)return false;
-        return obj instanceof Mod && ((Mod) obj).getModId().equals(this.getModId());
+        if(!(obj instanceof Mod))return false;
+        return ((Mod)obj).getModId().equals(this.getModId());
     }
 }

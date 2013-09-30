@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Stores and loads mods, distributes events, and allows access to loaded mods.
+ */
 public class ModList {
     private static final List<Mod> loadedMods = new ArrayList<Mod>();
     private static final List<Class> unloadedMods = new ArrayList<Class>();
@@ -96,9 +99,9 @@ public class ModList {
     public static void tickAllMods(boolean isPreTick){
         for(Mod mod : loadedMods){
             if(isPreTick){
-                mod.onPreTick();
+                mod.eventPreTick();
             }else{
-                mod.onPostTick();
+                mod.eventPostTick();
             }
         }
     }
@@ -107,9 +110,9 @@ public class ModList {
         GuiScreen newGui = gui;
         for(Mod mod : loadedMods){
             if(newGui == gui){
-                newGui = mod.onDisplayGui(gui, false);
+                newGui = mod.eventDisplayGui(gui, false);
             }else{
-                newGui = mod.onDisplayGui(gui, true);
+                newGui = mod.eventDisplayGui(gui, true);
             }
         }
         return newGui;

@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * Handles detecting and loading mods.
+ */
 public class ModLoader {
 
     public static Class[] loadMods(File searchDir){
