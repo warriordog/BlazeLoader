@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.src.GuiScreen;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -100,5 +101,17 @@ public class ModList {
                 mod.onPostTick();
             }
         }
+    }
+
+    public static GuiScreen onGuiAllMods(GuiScreen gui){
+        GuiScreen newGui = gui;
+        for(Mod mod : loadedMods){
+            if(newGui == gui){
+                newGui = mod.onDisplayGui(gui, false);
+            }else{
+                newGui = mod.onDisplayGui(gui, true);
+            }
+        }
+        return newGui;
     }
 }

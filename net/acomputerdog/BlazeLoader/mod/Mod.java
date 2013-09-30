@@ -1,5 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.minecraft.src.GuiScreen;
+
 /**
  * Superclass to be extended by mods that wish to use BlazeLoader functionality.  Methods have default implementations, but some should be overridden.
  */
@@ -47,6 +49,15 @@ public abstract class Mod {
      * Called at the end of a game tick.
      */
     public void onPostTick(){}
+
+    /**
+     *  Called when a GUI is about to be displayed.  Mods should return param gui unless they wish to override the GUI displayed.
+     *  Mods can return null to block a GUI from loading.
+     * @param gui The gui that is being displayed
+     * @param isSet Has the display GUI been set by another mod.
+     * @return Return the GUI to actually display
+     */
+    public GuiScreen onDisplayGui(GuiScreen gui, boolean isSet){return gui;}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
