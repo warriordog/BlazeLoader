@@ -3,6 +3,7 @@ net.acomputerdog.BlazeLoader.api.block
 net.acomputerdog.BlazeLoader.api.compat
 net.acomputerdog.BlazeLoader.api.item
 net.acomputerdog.BlazeLoader.api.tick
+net.acomputerdog.BlazeLoader.api.util
 net.acomputerdog.BlazeLoader.main
 net.acomputerdog.BlazeLoader.mod
 net.acomputerdog.BlazeLoader.proxy

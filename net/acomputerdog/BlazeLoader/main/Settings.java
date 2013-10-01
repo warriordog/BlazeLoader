@@ -6,7 +6,14 @@ package net.acomputerdog.BlazeLoader.main;
 @SuppressWarnings("CanBeFinal")
 public class Settings {
 
+    /**
+     * The folder where mods are loaded from.  Relative to minecraft's working directory.
+     */
     public static String modDir = "/BL/mods/";
+
+    /**
+     * Option to disable loading mods.  Set to false and modloading will be skipped.
+     */
     public static boolean enableMods = true;
 
 }

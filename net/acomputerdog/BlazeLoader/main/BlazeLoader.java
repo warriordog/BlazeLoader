@@ -17,13 +17,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /**
- * Main class of BlazeLoader
+ * Main class of BlazeLoader.  Contains various internal fields and methods.
  */
 public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
-    private static File apiDir;
 
+    private static File apiDir;
     private static Settings theSettings = new Settings();
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
     private static File settingsFile;
