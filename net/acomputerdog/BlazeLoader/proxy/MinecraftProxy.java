@@ -63,6 +63,7 @@ public class MinecraftProxy extends Minecraft {
     @Override
     public void shutdown() {
         ModList.stop();
+        BlazeLoader.saveSettings();
         super.shutdown();
     }
 

@@ -1,12 +1,16 @@
 package net.acomputerdog.BlazeLoader.main;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.ApiBase;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.Modifier;
 
 /**
  * Main class of BlazeLoader
@@ -14,18 +18,38 @@ import java.io.File;
 public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
+    public static File apiDir;
+
+    private static Settings theSettings = new Settings();
+    private static Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    private static File settingsFile;
+    private static boolean hasLoaded = false;
 
     public static void init(File mainDir){
         log("Starting up...");
         try{
             ApiBase.mainDir = mainDir;
-            ApiBase.modDir = new File(ApiBase.mainDir, "/mods/");
+            apiDir = new File(mainDir, "/BL/");
+            if(!apiDir.exists() && !apiDir.mkdir()){
+                log("[ERROR] Could not create main API directory!");
+            }
+            settingsFile = new File(apiDir, "BLConfig.json");
+            if(!settingsFile.exists()){
+                BlazeLoader.log("Config file does not exist!  It will be created.");
+                saveSettings();
+            }
+            loadSettings();
+            saveSettings();
+            ApiBase.modDir = new File(mainDir, Settings.modDir);
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
-                log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating foler failed! Check file permissions!");
-            }else{
+                log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+            }
+            if(Settings.enableMods){
                 loadMods();
                 ModList.load();
+            }else{
+                log("Mods are disabled in config, skipping mod loading.");
             }
             log("Mods loaded with no issues.");
         }catch(Exception e){
@@ -84,6 +108,43 @@ public final class BlazeLoader {
     public static int resetFreeItemId(){
         freeItemId = 1;
         return updateFreeItemId();
+    }
+
+    public static void loadSettings(){
+        hasLoaded = true;
+        try {
+            theSettings = gson.fromJson(new FileReader(settingsFile), Settings.class);
+            if(theSettings == null){
+                saveSettings();
+            }
+        }catch (FileNotFoundException e) {
+            saveSettings();
+        } catch (JsonParseException e){
+            saveSettings();
+        } catch (Exception e){
+            BlazeLoader.log("Error occurred reading settings!");
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveSettings(){
+        if(!hasLoaded){
+            hasLoaded = true;
+            loadSettings();
+        }
+        PrintWriter writer = null;
+        try{
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(settingsFile)));
+            gson.toJson(theSettings, writer);
+            writer.close();
+        } catch(IOException e){
+            BlazeLoader.log("[ERROR] Could not save settings!");
+            e.printStackTrace();
+        } finally{
+            if(writer != null){
+                writer.close();
+            }
+        }
     }
 
 }

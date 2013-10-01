@@ -2,7 +2,7 @@
 Copyright Mojang AB.
  */
 
-package net.minecraft.src;
+package net.minecraft;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
@@ -11,6 +11,10 @@ import joptsimple.OptionSet;
 import net.acomputerdog.BlazeLoader.api.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.proxy.MinecraftProxy;
+import net.minecraft.src.MainProxyAuthenticator;
+import net.minecraft.src.MainShutdownHook;
+import net.minecraft.src.Minecraft;
+import net.minecraft.src.Session;
 
 import java.io.File;
 import java.net.Authenticator;
@@ -79,7 +83,6 @@ public class Main
         Session var31 = new Session((String)var11.value(var17), (String)var12.value(var17));
         //----------------------------------------------------------
         Minecraft var32 = new MinecraftProxy(var31, var23, var24, var25, var26, var28, var29, var30, var20, var27);
-        //Minecraft var32 = new Minecraft(var31, var23, var24, var25, var26, var28, var29, var30, var20, var27);
         String var33 = (String)var17.valueOf(var2);
 
         if (var33 != null)
@@ -95,7 +98,6 @@ public class Main
         }
         //----------------------
         ApiBase.theMinecraft = var32;
-        //System.out.println("Test");
         BlazeLoader.init(new File(System.getProperty("user.dir")));
 
         Thread.currentThread().setName("Minecraft main thread");
