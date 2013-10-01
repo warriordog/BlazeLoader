@@ -8,8 +8,11 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
+import net.minecraft.src.Minecraft;
+import net.minecraft.src.Timer;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 /**
@@ -24,6 +27,8 @@ public final class BlazeLoader {
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
     private static File settingsFile;
     private static boolean hasLoaded = false;
+
+    public static Timer gameTimer;
 
     public static void init(File mainDir){
         log("Starting up...");
@@ -41,6 +46,7 @@ public final class BlazeLoader {
             loadSettings();
             saveSettings();
             ApiBase.modDir = new File(mainDir, Settings.modDir);
+            gameTimer = getTimer();
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
                 log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
@@ -148,4 +154,14 @@ public final class BlazeLoader {
         }
     }
 
+    private static Timer getTimer(){
+        for(Field f : Minecraft.class.getDeclaredFields()){
+            if(Timer.class.isAssignableFrom(f.getType())) try {
+                return (Timer)f.get(ApiBase.theMinecraft);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Could not get Timer field!", e);
+            }
+        }
+        throw new RuntimeException("Could not get Timer field!");
+    }
 }
