@@ -1,0 +1,9 @@
+net.acomputerdog.BlazeLoader.api.base
+net.acomputerdog.BlazeLoader.api.block
+net.acomputerdog.BlazeLoader.api.compat
+net.acomputerdog.BlazeLoader.api.item
+net.acomputerdog.BlazeLoader.api.tick
+net.acomputerdog.BlazeLoader.main
+net.acomputerdog.BlazeLoader.mod
+net.acomputerdog.BlazeLoader.proxy
+net.minecraft
