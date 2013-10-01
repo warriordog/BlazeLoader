@@ -23,6 +23,10 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.util.List;
 
+/**
+ * Version of Minecraft's main class modified to load BlazeLoader.
+ * Class is copyright Mojang AB.
+ */
 public class Main
 {
     public static void main(String[] par0ArrayOfStr)
@@ -83,6 +87,8 @@ public class Main
         Session var31 = new Session((String)var11.value(var17), (String)var12.value(var17));
         //----------------------------------------------------------
         Minecraft var32 = new MinecraftProxy(var31, var23, var24, var25, var26, var28, var29, var30, var20, var27);
+        ApiBase.theMinecraft = var32;
+        //----------------------------------------------------------
         String var33 = (String)var17.valueOf(var2);
 
         if (var33 != null)
@@ -97,8 +103,8 @@ public class Main
             System.out.println("Completely ignored arguments: " + var18);
         }
         //----------------------
-        ApiBase.theMinecraft = var32;
         BlazeLoader.init(new File(System.getProperty("user.dir")));
+        //----------------------
 
         Thread.currentThread().setName("Minecraft main thread");
         var32.run();

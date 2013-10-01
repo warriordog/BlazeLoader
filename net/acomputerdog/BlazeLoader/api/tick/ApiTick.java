@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.minecraft.src.Minecraft;
 import net.minecraft.src.Timer;
 
 import java.lang.reflect.Field;
@@ -15,6 +16,11 @@ public class ApiTick {
     private static float tps = 0.0F;
 
     /**
+     * The game's tick timer.
+     */
+    public static Timer gameTimer;
+
+    /**
      * Gets the game's tick rate.  Uses reflection only on first run.
      * @return Returns the game's current tick rate.
      */
@@ -27,7 +33,7 @@ public class ApiTick {
                     tpsField.setAccessible(true);
                     tpsField = f;
                     try {
-                        tps = (Float) tpsField.get(BlazeLoader.gameTimer);
+                        tps = (Float) tpsField.get(gameTimer);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException("Could not get TPS!", e);
                     }
@@ -49,10 +55,21 @@ public class ApiTick {
      */
     public static void setTPS(float newTps){
         try {
-            tpsField.set(BlazeLoader.gameTimer, tps);
+            tpsField.set(gameTimer, tps);
             tps = newTps;
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Could not set TPS!", e);
         }
+    }
+
+    private static void getTimer(){
+        for(Field f : Minecraft.class.getDeclaredFields()){
+            if(Timer.class.isAssignableFrom(f.getType())) try {
+                gameTimer = (Timer)f.get(ApiBase.theMinecraft);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Could not get Timer field!", e);
+            }
+        }
+        throw new RuntimeException("Could not get Timer field!");
     }
 }
