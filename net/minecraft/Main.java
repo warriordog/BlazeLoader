@@ -8,7 +8,7 @@ import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import net.acomputerdog.BlazeLoader.api.ApiBase;
+import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.proxy.MinecraftProxy;
 import net.minecraft.src.MainProxyAuthenticator;

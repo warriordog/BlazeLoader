@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api;
+package net.acomputerdog.BlazeLoader.api.base;
 
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;

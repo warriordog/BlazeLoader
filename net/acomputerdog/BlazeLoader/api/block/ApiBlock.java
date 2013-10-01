@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api;
+package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Block;
