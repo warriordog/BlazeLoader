@@ -7,6 +7,7 @@ import net.minecraft.src.GuiScreen;
  * Methods have default implementations, but can be overridden.
  * event... methods can be overridden to respond to game events.
  */
+@SuppressWarnings({"UnusedParameters", "EmptyMethod"})
 public abstract class Mod {
     /**
      *  Returns ID used to identify this mod internally, even among different versions of the same mod.  Mods should override.

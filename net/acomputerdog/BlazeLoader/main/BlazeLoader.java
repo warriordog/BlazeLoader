@@ -18,10 +18,10 @@ import java.lang.reflect.Modifier;
 public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
-    public static File apiDir;
+    private static File apiDir;
 
     private static Settings theSettings = new Settings();
-    private static Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
     private static File settingsFile;
     private static boolean hasLoaded = false;
 
@@ -110,6 +110,7 @@ public final class BlazeLoader {
         return updateFreeItemId();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void loadSettings(){
         hasLoaded = true;
         try {
