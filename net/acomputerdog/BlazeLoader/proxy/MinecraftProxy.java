@@ -13,7 +13,7 @@ import java.net.Proxy;
  * Acts as a proxy to intercept method calls to Minecraft.class.  Loaded in place of normal Minecraft.class
  */
 public class MinecraftProxy extends Minecraft {
-
+    protected IntegratedServerProxy theServer = null;
 
     public MinecraftProxy(Session par1Session, int par2, int par3, boolean par4, boolean par5, File par6File, File par7File, File par8File, Proxy par9Proxy, String par10Str) {
         super(par1Session, par2, par3, par4, par5, par6File, par7File, par8File, par9Proxy, par10Str);
@@ -45,7 +45,33 @@ public class MinecraftProxy extends Minecraft {
     @Override
     public void loadWorld(WorldClient par1WorldClient, String par2Str) {
         super.loadWorld(par1WorldClient, par2Str);
+        theServer = null;
         ApiBase.localPlayer = this.thePlayer;
+    }
+
+    @Override
+    public void launchIntegratedServer(String par1Str, String par2Str, WorldSettings par3WorldSettings) {
+        super.launchIntegratedServer(par1Str, par2Str, par3WorldSettings);
+        IntegratedServerProxy server = new IntegratedServerProxy(this, getIntegratedServer());
+        theServer = server;
+        setIntegratedServer(server);
+    }
+
+    protected void setIntegratedServer(IntegratedServer server){
+        for(Field f : Minecraft.class.getDeclaredFields()){
+            if(IntegratedServer.class.isAssignableFrom(f.getType())){
+                f.setAccessible(true);
+                try {
+                    f.set(this, server);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Could not inject IntegratedServerProxy!", e);
+                }
+            }
+        }
+    }
+
+    public IntegratedServerProxy getServerProxy(){
+        return theServer;
     }
 
     @Override
