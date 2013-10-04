@@ -52,7 +52,7 @@ public class BLLogger {
      * @param message The message to print.
      */
     protected void log(String message){
-        System.out.println("[" + name + "]");
+        System.out.println("[" + name + "]" + message);
     }
 
     /**
