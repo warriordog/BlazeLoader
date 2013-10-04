@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Timer;
 
 import java.lang.reflect.Field;
@@ -42,6 +43,15 @@ public class ApiTick {
             throw new RuntimeException("Could not set TPS!", e);
         }
     }
+
+    /**
+     * Returns true if the game is currently in the middle of a tick.
+     * @return Returns true if the game is in a tick, false if not.
+     */
+    public static boolean isGameInTick(){
+        return BlazeLoader.isInTick;
+    }
+
 
     private static float getFPS(){
         for(Field f : Timer.class.getDeclaredFields()){

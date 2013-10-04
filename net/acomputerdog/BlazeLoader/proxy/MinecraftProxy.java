@@ -69,8 +69,10 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public void runTick() {
+        BlazeLoader.isInTick = true;
         super.runTick();
         ModList.tick(false);
+        BlazeLoader.isInTick = false;
     }
 
     @Override

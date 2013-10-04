@@ -22,6 +22,7 @@ import java.lang.reflect.Modifier;
 public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
+    public static boolean isInTick = false;
 
     private static File apiDir;
     private static Settings theSettings = new Settings();
