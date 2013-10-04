@@ -28,10 +28,29 @@ public abstract class Mod {
     }
 
     /**
+     * Gets the version of the mod as an integer for choosing the newer version.
+     * @return Return the version of the mod as an integer.
+     */
+    public int getIntModVersion(){
+        return 0;
+    }
+
+    /**
+     * Gets the version of the mod as a String for display.
+     * @return Returns the version of the mod as an integer.
+     */
+    public String getStringModVersion(){
+        return "0.0";
+    }
+
+    /**
      * Returns true if this mod is compatible with the installed version of BlazeLoader.  This should be checked using Version.class.
+     * -Called before mod is loaded!  Do not depend on Mod.load()!-
      * @return Returns true if the mod is compatible with the installed version of BlazeLoader.
      */
-    public boolean isCompatibleWithBLVersion(){return true;}
+    public boolean isCompatibleWithBLVersion(){
+        return true;
+    }
 
     /**
      * Called when mod is loaded.  Called before game is loaded.
@@ -66,7 +85,9 @@ public abstract class Mod {
      * @param isSet Has the display GUI been set by another mod.
      * @return Return the GUI to actually display
      */
-    public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet){return gui;}
+    public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet){
+        return gui;
+    }
 
     /**
      * Called when a profiler section is started.  Mods are notified BEFORE profiler.
