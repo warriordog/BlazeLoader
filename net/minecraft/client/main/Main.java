@@ -2,7 +2,7 @@
 Copyright Mojang AB.
  */
 
-package net.minecraft;
+package net.minecraft.client.main;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
