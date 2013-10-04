@@ -29,9 +29,14 @@ public class ModList {
             Mod mod = null;
             try {
                 mod = (Mod)cls.newInstance();
-                mod.load();
-                loadedMods.add(mod);
-                BlazeLoader.log("Initialized mod: " + mod.getModName());
+                if(mod.isCompatibleWithBLVersion()){
+                    mod.load();
+                    loadedMods.add(mod);
+                    BlazeLoader.log("Initialized mod: " + mod.getModName());
+                }else{
+                    iterator.remove();
+                    BlazeLoader.log("Mod " + mod.getModName() + " is not compatible!  Unloading!");
+                }
             } catch (Exception e){
                 if(mod != null){
                     loadedMods.remove(mod);
