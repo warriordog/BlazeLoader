@@ -28,7 +28,13 @@ public abstract class Mod {
     }
 
     /**
-     * Called when all mod is loaded.  Called before game is loaded.
+     * Returns true if this mod is compatible with the installed version of BlazeLoader.  This should be checked using Version.class.
+     * @return Returns true if the mod is compatible with the installed version of BlazeLoader.
+     */
+    public boolean isCompatibleWithBLVersion(){return true;}
+
+    /**
+     * Called when mod is loaded.  Called before game is loaded.
      */
     public void load(){}
 
