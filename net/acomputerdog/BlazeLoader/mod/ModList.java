@@ -22,6 +22,15 @@ public class ModList {
         return unloadedMods;
     }
 
+    private static Mod getCompatibleModFromList(Mod mod){
+        if(mod != null){
+            for(Mod m : loadedMods){
+                if (mod.getModId().equals(m.getModId()))return m;
+            }
+        }
+        return null;
+    }
+
     public static void load(){
         Iterator<Class> iterator = unloadedMods.iterator();
         while(iterator.hasNext()){
@@ -30,9 +39,22 @@ public class ModList {
             try {
                 mod = (Mod)cls.newInstance();
                 if(mod.isCompatibleWithBLVersion()){
-                    mod.load();
-                    loadedMods.add(mod);
-                    BlazeLoader.log("Initialized mod: " + mod.getModName());
+                    Mod sameMod = getCompatibleModFromList(mod);
+                    boolean useNewMod = true;
+                    if(sameMod != null){
+                        BlazeLoader.log("Duplicate mod: " + mod.getModName() + "!  Newest version will be used!");
+                        if(sameMod.getIntModVersion() < mod.getIntModVersion()){
+                            sameMod.stop();
+                            loadedMods.remove(sameMod);
+                        }else{
+                            useNewMod = false;
+                        }
+                    }
+                    if(useNewMod){
+                        mod.load();
+                        loadedMods.add(mod);
+                        BlazeLoader.log("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
+                    }
                 }else{
                     iterator.remove();
                     BlazeLoader.log("Mod " + mod.getModName() + " is not compatible!  Unloading!");
