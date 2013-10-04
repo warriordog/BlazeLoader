@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.util;
+package net.acomputerdog.BlazeLoader.util;
 
 import net.acomputerdog.BlazeLoader.mod.Mod;
 
