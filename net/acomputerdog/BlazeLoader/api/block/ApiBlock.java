@@ -13,8 +13,17 @@ public class ApiBlock {
      * @return Returns a free Block ID
      */
     public static int getFreeBlockId(){
-        if(Block.blocksList[BlazeLoader.freeBlockId] == null)return BlazeLoader.freeBlockId;
-        else return BlazeLoader.updateFreeBlockId();
+
+        if(Block.blocksList[BlazeLoader.freeBlockId] == null){
+            int id =  BlazeLoader.freeBlockId;
+            BlazeLoader.freeBlockId++;
+            return id;
+        }
+        else{
+            int id =  BlazeLoader.updateFreeBlockId();
+            BlazeLoader.freeBlockId++;
+            return id;
+        }
     }
 
     /**
@@ -23,6 +32,8 @@ public class ApiBlock {
      * @return Returns a free Block ID.
      */
     public static int recheckBlockIds(){
-        return BlazeLoader.resetFreeBlockId();
+        int id =  BlazeLoader.resetFreeBlockId();
+        BlazeLoader.freeBlockId++;
+        return id;
     }
 }
