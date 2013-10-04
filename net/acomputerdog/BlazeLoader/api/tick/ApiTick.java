@@ -1,7 +1,5 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.minecraft.src.Minecraft;
 import net.minecraft.src.Timer;
 
 import java.lang.reflect.Field;
@@ -26,24 +24,7 @@ public class ApiTick {
      */
     public static float getTPS(){
         if(!hasTps){
-            for(Field f : Timer.class.getDeclaredFields()){
-                int mods = f.getModifiers();
-                if(float.class.isAssignableFrom(f.getType()) && (!Modifier.isPrivate(mods) && !Modifier.isProtected(mods) && !Modifier.isPublic(mods))){
-                    hasTps = true;
-                    tpsField.setAccessible(true);
-                    tpsField = f;
-                    try {
-                        tps = (Float) tpsField.get(gameTimer);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException("Could not get TPS!", e);
-                    }
-                }
-            }
-            if(tpsField == null){
-                throw new RuntimeException("Could not get TPS!");
-            }else{
-                return tps;
-            }
+            return getFPS();
         }else{
             return tps;
         }
@@ -55,21 +36,31 @@ public class ApiTick {
      */
     public static void setTPS(float newTps){
         try {
-            tpsField.set(gameTimer, tps);
             tps = newTps;
+            tpsField.set(gameTimer, tps);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Could not set TPS!", e);
         }
     }
 
-    private static void getTimer(){
-        for(Field f : Minecraft.class.getDeclaredFields()){
-            if(Timer.class.isAssignableFrom(f.getType())) try {
-                gameTimer = (Timer)f.get(ApiBase.theMinecraft);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Could not get Timer field!", e);
+    private static float getFPS(){
+        for(Field f : Timer.class.getDeclaredFields()){
+            int mods = f.getModifiers();
+            if(float.class.isAssignableFrom(f.getType()) && (!Modifier.isPrivate(mods) && !Modifier.isProtected(mods) && !Modifier.isPublic(mods))){
+                hasTps = true;
+                tpsField.setAccessible(true);
+                tpsField = f;
+                try {
+                    tps = (Float) tpsField.get(gameTimer);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Could not get TPS!", e);
+                }
             }
         }
-        throw new RuntimeException("Could not get Timer field!");
+        if(tpsField == null){
+            throw new RuntimeException("Could not get TPS!");
+        }else{
+            return tps;
+        }
     }
 }
