@@ -32,8 +32,8 @@ public final class BlazeLoader {
     private static boolean hasLoaded = false;
 
     public static void init(File mainDir){
-        log("Starting up...");
         try{
+            log("Starting up...");
             ApiBase.mainDir = mainDir;
             apiDir = new File(mainDir, "/BL/");
             if(!apiDir.exists() && !apiDir.mkdir()){
@@ -48,24 +48,37 @@ public final class BlazeLoader {
             saveSettings();
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             ApiTick.gameTimer = getTimer();
-            if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
-                log("Mods folder not found!  Creating new folder...");
-                log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+            try{
+                log("Loading mods...");
+                if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
+                    log("Mods folder not found!  Creating new folder...");
+                    log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                }
+                if(Settings.enableMods){
+                    loadMods();
+                    ModList.load();
+                }else{
+                    log("Mods are disabled in config, skipping mod loading.");
+                }
+                log("Mods loaded with no issues.");
+            }catch(Exception e){
+                log("Caught exception loading mods!");
+                e.printStackTrace();
             }
-            if(Settings.enableMods){
-                loadMods();
-                ModList.load();
-            }else{
-                log("Mods are disabled in config, skipping mod loading.");
+            try{
+                log("Applying fixes...");
+                FixManager.onInit();
+                log("Applied fixes with no issues.");
+            }catch(Exception e){
+                log("Exception occurred while applying fixes!");
+                e.printStackTrace();
             }
-            log("Mods loaded with no issues.");
-            log("Applying fixes...");
-            FixManager.onInit();
-            log("Applied fixes with no issues.");
         }catch(Exception e){
             log("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
+            shutdown(1);
         }
+
     }
 
     private static void loadMods(){
@@ -168,5 +181,13 @@ public final class BlazeLoader {
             }
         }
         throw new RuntimeException("Could not get Timer field!");
+    }
+
+    public static void shutdown(int code){
+        try{
+            Minecraft.getMinecraft().shutdown();
+            Thread.currentThread().join(100);
+        }catch(Exception ignored){}
+        System.exit(code);
     }
 }
