@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.fix;
 
 import net.acomputerdog.BlazeLoader.fix.core.fixBlockAir.FixBlockAir;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class FixManager {
      */
     public static void addFix(Fix fix){
         if(fix != null){
+            BlazeLoader.log("Adding fix: " + fix.getClass().getSimpleName());
             fixes.get(fix.getFixType()).add(fix);
         }
     }

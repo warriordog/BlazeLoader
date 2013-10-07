@@ -59,7 +59,9 @@ public final class BlazeLoader {
                 log("Mods are disabled in config, skipping mod loading.");
             }
             log("Mods loaded with no issues.");
+            log("Applying fixes...");
             FixManager.onInit();
+            log("Applied fixes with no issues.");
         }catch(Exception e){
             log("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
