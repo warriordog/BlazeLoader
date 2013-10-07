@@ -14,7 +14,7 @@ public class FixManager {
     private static Map<EFixType, List<Fix>> fixes;
 
     /**
-     * Adds a new Fix to be executed.
+     * Registers a fix.
      * @param fix A fix to be added to the list of fixes.
      */
     public static void addFix(Fix fix){

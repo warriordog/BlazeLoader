@@ -13,5 +13,6 @@ public class FixBlockAir extends Fix {
     @Override
     public void apply() {
         new BlockAir(0, Material.air);
+        System.out.println("Applying fix.");
     }
 }
