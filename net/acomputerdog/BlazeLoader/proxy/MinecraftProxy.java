@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.fix.FixManager;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.*;
@@ -88,6 +89,7 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public void shutdown() {
+        FixManager.onStop();
         ModList.stop();
         BlazeLoader.saveSettings();
         super.shutdown();

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
+import net.acomputerdog.BlazeLoader.fix.FixManager;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.minecraft.src.Block;
@@ -47,6 +48,7 @@ public final class BlazeLoader {
             saveSettings();
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             ApiTick.gameTimer = getTimer();
+            FixManager.onInit();
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
                 log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");

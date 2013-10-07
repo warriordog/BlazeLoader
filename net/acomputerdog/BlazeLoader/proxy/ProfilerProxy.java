@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
+import net.acomputerdog.BlazeLoader.fix.FixManager;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.Profiler;
 
@@ -20,6 +21,7 @@ public class ProfilerProxy extends Profiler {
         if("root".equals(sectionName)){
             if(!hasLoadedMods){
                 hasLoadedMods = true;
+                FixManager.onStart();
                 ModList.start();
             }
         }
