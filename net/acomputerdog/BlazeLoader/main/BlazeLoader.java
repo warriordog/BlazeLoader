@@ -48,7 +48,6 @@ public final class BlazeLoader {
             saveSettings();
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             ApiTick.gameTimer = getTimer();
-            FixManager.onInit();
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 log("Mods folder not found!  Creating new folder...");
                 log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
@@ -60,6 +59,7 @@ public final class BlazeLoader {
                 log("Mods are disabled in config, skipping mod loading.");
             }
             log("Mods loaded with no issues.");
+            FixManager.onInit();
         }catch(Exception e){
             log("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
