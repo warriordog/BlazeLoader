@@ -25,12 +25,6 @@ public class FixManager {
         }
     }
 
-    public static void onInit(){
-        for(Fix fix : fixes.get(EFixType.INIT)){
-            fix.apply();
-        }
-    }
-
     public static void onStart(){
         for(Fix fix : fixes.get(EFixType.STARTUP)){
             fix.apply();

@@ -8,6 +8,7 @@ import net.minecraft.src.*;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.Proxy;
 
 /**
@@ -21,14 +22,16 @@ public class MinecraftProxy extends Minecraft {
         ApiBase.theMinecraft = this;
         injectProfilerProxy();
         ApiBase.globalLogger = getLogAgent();
-        BlazeLoader.init(new File(System.getProperty("user.dir")));
     }
 
     private void injectProfilerProxy(){
         try{
-            Field[] fields = getClass().getDeclaredFields();
+            Field[] fields = Minecraft.class.getDeclaredFields();
             for(Field f : fields){
                 if(Profiler.class.isAssignableFrom(f.getType())){
+                    Field modifiersField = Field.class.getDeclaredField("modifiers");
+                    modifiersField.setAccessible(true);
+                    modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
                     f.setAccessible(true);
                     f.set(this, new ProfilerProxy());
                 }
@@ -79,6 +82,7 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public void run() {
+        BlazeLoader.init(new File(System.getProperty("user.dir")));
         //Event here?
         super.run();
     }

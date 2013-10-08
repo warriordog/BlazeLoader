@@ -5,13 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
-import net.acomputerdog.BlazeLoader.fix.FixManager;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraft.src.Minecraft;
-import net.minecraft.src.Timer;
+import net.minecraft.src.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -63,14 +59,6 @@ public final class BlazeLoader {
                 log("Mods loaded with no issues.");
             }catch(Exception e){
                 log("Caught exception loading mods!");
-                e.printStackTrace();
-            }
-            try{
-                log("Applying fixes...");
-                FixManager.onInit();
-                log("Applied fixes with no issues.");
-            }catch(Exception e){
-                log("Exception occurred while applying fixes!");
                 e.printStackTrace();
             }
         }catch(Exception e){

@@ -13,7 +13,7 @@ public abstract class Fix {
      * @return Return an EFixType representing the type of fix to apply.
      */
     public EFixType getFixType(){
-        return EFixType.INIT;
+        return EFixType.STARTUP;
     }
 
     /**
