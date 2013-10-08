@@ -8,8 +8,6 @@ import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.proxy.MinecraftProxy;
 import net.minecraft.src.MainProxyAuthenticator;
 import net.minecraft.src.MainShutdownHook;
@@ -87,7 +85,6 @@ public class Main
         Session var31 = new Session((String)var11.value(var17), (String)var12.value(var17));
         //----------------------------------------------------------
         Minecraft var32 = new MinecraftProxy(var31, var23, var24, var25, var26, var28, var29, var30, var20, var27);
-        ApiBase.theMinecraft = var32;
         //----------------------------------------------------------
         String var33 = (String)var17.valueOf(var2);
 
@@ -102,9 +99,6 @@ public class Main
         {
             System.out.println("Completely ignored arguments: " + var18);
         }
-        //----------------------
-        BlazeLoader.init(new File(System.getProperty("user.dir")));
-        //----------------------
 
         Thread.currentThread().setName("Minecraft main thread");
         var32.run();

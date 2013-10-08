@@ -18,8 +18,10 @@ public class MinecraftProxy extends Minecraft {
 
     public MinecraftProxy(Session par1Session, int par2, int par3, boolean par4, boolean par5, File par6File, File par7File, File par8File, Proxy par9Proxy, String par10Str) {
         super(par1Session, par2, par3, par4, par5, par6File, par7File, par8File, par9Proxy, par10Str);
+        ApiBase.theMinecraft = this;
         injectProfilerProxy();
         ApiBase.globalLogger = getLogAgent();
+        BlazeLoader.init(new File(System.getProperty("user.dir")));
     }
 
     private void injectProfilerProxy(){
