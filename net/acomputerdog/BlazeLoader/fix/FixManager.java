@@ -20,7 +20,7 @@ public class FixManager {
      */
     public static void addFix(Fix fix){
         if(fix != null){
-            BlazeLoader.log("Adding fix: " + fix.getClass().getSimpleName());
+            BlazeLoader.log("Adding fix: " + fix.getFixName());
             fixes.get(fix.getFixType()).add(fix);
         }
     }

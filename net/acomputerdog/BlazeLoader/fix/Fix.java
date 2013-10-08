@@ -1,5 +1,8 @@
 package net.acomputerdog.BlazeLoader.fix;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
+
+@Beta(stable = true)
 /**
  * A one-time-run class that is loaded at various times of startup to fix issues with Mojang code.
  */
@@ -17,4 +20,12 @@ public abstract class Fix {
      * Applies the fix.
      */
     public abstract void apply();
+
+    /**
+     * Gets the name of the fix to be displayed in debug messages.
+     * @return Returns the name of the fix.
+     */
+    public String getFixName(){
+        return this.getClass().getSimpleName();
+    }
 }
