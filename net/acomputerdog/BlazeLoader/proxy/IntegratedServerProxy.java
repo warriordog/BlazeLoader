@@ -18,7 +18,7 @@ public class IntegratedServerProxy extends IntegratedServer {
                 try {
                     return (WorldSettings)f.get(server);
                 } catch (IllegalAccessException e) {
-                   throw new RuntimeException("Could not get world settings!", e);
+                    throw new RuntimeException("Could not get world settings!", e);
                 }
             }
         }
