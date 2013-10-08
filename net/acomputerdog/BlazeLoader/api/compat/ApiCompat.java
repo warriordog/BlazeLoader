@@ -1,7 +1,10 @@
 package net.acomputerdog.BlazeLoader.api.compat;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
+
 import java.util.List;
 
+@Beta(stable = true)
 /**
  * Provides compatibility between mods that perform similar functions.
  */
