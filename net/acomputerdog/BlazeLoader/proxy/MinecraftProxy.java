@@ -48,7 +48,7 @@ public class MinecraftProxy extends Minecraft {
     @Override
     public void loadWorld(WorldClient par1WorldClient, String par2Str) {
         super.loadWorld(par1WorldClient, par2Str);
-        theServer = null;
+        theServer = (IntegratedServerProxy)getIntegratedServer();
         ApiBase.localPlayer = this.thePlayer;
     }
 
