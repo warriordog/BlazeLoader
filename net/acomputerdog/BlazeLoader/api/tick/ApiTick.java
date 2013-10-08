@@ -27,7 +27,7 @@ public class ApiTick {
      */
     public static float getTPS(){
         if(!hasTps){
-            return getFPS();
+            return getTPSLocal();
         }else{
             return tps;
         }
@@ -55,7 +55,7 @@ public class ApiTick {
     }
 
 
-    private static float getFPS(){
+    private static float getTPSLocal(){
         for(Field f : Timer.class.getDeclaredFields()){
             int mods = f.getModifiers();
             if(float.class.isAssignableFrom(f.getType()) && (!Modifier.isPrivate(mods) && !Modifier.isProtected(mods) && !Modifier.isPublic(mods))){
