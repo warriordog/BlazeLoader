@@ -13,6 +13,9 @@ public class EntityRendererProxy extends EntityRenderer {
      */
     @Override
     public void updateRenderer() {
+        //Event here?
         super.updateRenderer();
     }
+
+
 }
