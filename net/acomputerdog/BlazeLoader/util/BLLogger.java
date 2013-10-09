@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.util;
 
 import net.acomputerdog.BlazeLoader.mod.Mod;
+import net.acomputerdog.BlazeLoader.time.StandardClock;
 
 /**
  * Customized logger for use with BlazeLoader and Mods.  Tagged with a name specified by the creator of the logger.
@@ -11,6 +12,7 @@ import net.acomputerdog.BlazeLoader.mod.Mod;
  * [Awesome Logger of Awesomeness!] I'm Awesome!
  */
 public class BLLogger {
+    protected static StandardClock theClock = new StandardClock();
 
     /**
      * Object that is the owner of this BLLogger.  Can be null.
@@ -23,6 +25,16 @@ public class BLLogger {
     protected String name;
 
     /**
+     * Include dates in debug messages?
+     */
+    protected boolean includeDate;
+
+    /**
+     * Include time in debug messages?
+     */
+    protected boolean includeTime;
+
+    /**
      * Creates a new BLLogger.
      * @param owner The Object that created this BLLogger.  Used to tag output.  Object.getClass().getSimpleName() will be used unless owner is one of:
      *              null -> "UNKNOWN"
@@ -30,8 +42,20 @@ public class BLLogger {
      *              String -> will use string
      */
     public BLLogger(Object owner){
-        this.owner = owner;
+        this(owner, false, false);
+    }
 
+    /**
+     * Crates a new BLLogger.
+     * @param owner The Object that created this BLLogger.  Used to tag output.  Object.getClass().getSimpleName() will be used unless owner is one of:
+     *              null -> "UNKNOWN"
+     *              Mod -> Mod.getModName()
+     *              String -> will use string
+     * @param includeDate Set to true to include the date in log messages.
+     * @param includeTime Set to true to include the time in log messages.
+     */
+    public BLLogger(Object owner, boolean includeDate, boolean includeTime){
+        this.owner = owner;
         if(owner == null){
             name = "UNKNOWN";
         }else if(owner instanceof Mod){
@@ -41,10 +65,11 @@ public class BLLogger {
         }else{
             name = owner.getClass().getSimpleName();
         }
-
         if(name == null){
             name = "UNKNOWN";
         }
+        this.includeDate = includeDate;
+        this.includeTime = includeTime;
     }
 
     /**
@@ -52,7 +77,31 @@ public class BLLogger {
      * @param message The message to print.
      */
     protected void log(String message){
-        System.out.println("[" + name + "]" + message);
+        System.out.println(getDate() + getTime() + "[" + name + "]" + message);
+    }
+
+    /**
+     * Gets the date formatted for display, if enabled.
+     * @return Returns the date formatted for display, or "" if disabled.
+     */
+    protected String getDate(){
+        if(includeDate){
+            return "[" + theClock.getDateAsString() + "]";
+        }else{
+            return "";
+        }
+    }
+
+    /**
+     * Gets the time formatted for display, if enabled.
+     * @return Returns the time formatted for display, or "" if disabled.
+     */
+    protected String getTime(){
+        if(includeTime){
+            return "[" + theClock.getSimpleTimeAsString() + "]";
+        }else{
+            return "";
+        }
     }
 
     /**

@@ -8,10 +8,53 @@ import java.util.GregorianCalendar;
  */
 public class StandardClock implements IDate, ITimePrecise{
 
+    /**
+     * The calendar used to process epoch time.
+     */
     protected Calendar theCalendar= new GregorianCalendar();
 
+    /**
+     * Updates the calendar's time.
+     */
     protected void updateCalendar(){
         theCalendar.setTimeInMillis(System.currentTimeMillis());
+    }
+
+    /**
+     * Gets the date as a String.  Formatted [month]-[day]-[year].  Ex: 10-9-13
+     * @return Return the date as a String.
+     */
+    public String getDateAsString(){
+        updateCalendar();
+        int month = theCalendar.get(Calendar.MONTH) + 1;
+        int day = theCalendar.get(Calendar.DAY_OF_MONTH);
+        int year = theCalendar.get(Calendar.YEAR);
+        return month + "-" + day + "-" + year;
+    }
+
+    /**
+     * Gets the time in 24 hour format excluding milliseconds.  Format [hours]:[minute]:[seconds]
+     * @return Return the time excluding milliseconds.
+     */
+    public String getSimpleTimeAsString(){
+        updateCalendar();
+        int hour = theCalendar.get(Calendar.HOUR);
+        int minute = theCalendar.get(Calendar.MINUTE);
+        int second = theCalendar.get(Calendar.SECOND);
+        return hour + ":" + minute + ":" + second;
+    }
+
+    /**
+     * Gets the time in 24 hour format including milliseconds.  Format [hours]:[minutes]:[seconds]:[milliseconds]
+     * @return Return the time including milliseconds
+     */
+    public String getComplexTimeAsString(){
+        updateCalendar();
+        int hour = theCalendar.get(Calendar.HOUR);
+        int minute = theCalendar.get(Calendar.MINUTE);
+        int second = theCalendar.get(Calendar.SECOND);
+        int millis = theCalendar.get(Calendar.MILLISECOND);
+        return hour + ":" + minute + ":" + second + ":" + millis;
     }
 
     /**
