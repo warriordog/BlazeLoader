@@ -3,10 +3,10 @@
 + completed
 ==================================================
 
+-Add support for tweak loading.
 -Add API from MCF post
 -Extend existing APIs
 -Add API to override "World Tick" functions
--Add API classes for other functions
 -Add advanced mod events
 +Enable essential mod event methods
 +Add essential mod event methods (load(), start(), stop())
