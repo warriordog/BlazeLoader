@@ -161,9 +161,16 @@ public class ModList {
         }
     }
 
+    @Deprecated
     public static void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){
         for(Mod mod : loadedMods){
             mod.eventPlayerSpawn(oldPlayer, newPlayer, dimension, causedByDeath);
+        }
+    }
+
+    public static void eventClientPlayerDeath(){
+        for(Mod mod : loadedMods){
+            mod.eventClientPlayerDeath();
         }
     }
 }

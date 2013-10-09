@@ -30,7 +30,7 @@ public class IntegratedPlayerListProxy extends IntegratedPlayerList {
      */
     @Override
     public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3) {
-        EntityPlayerMP player =  super.respawnPlayer(par1EntityPlayerMP, par2, par3);
+        EntityPlayerMP player = super.respawnPlayer(par1EntityPlayerMP, par2, par3);
         ModList.eventPlayerSpawn(par1EntityPlayerMP, player, par2, par3);
         return player;
     }

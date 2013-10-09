@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
@@ -10,6 +11,7 @@ import net.minecraft.src.WorldClient;
  * event... methods can be overridden to respond to game events.
  */
 @SuppressWarnings({"UnusedParameters", "EmptyMethod"})
+@Beta(stable = true)
 public abstract class Mod {
     /**
      *  Returns ID used to identify this mod internally, even among different versions of the same mod.  Mods should override.
@@ -127,14 +129,29 @@ public abstract class Mod {
      */
     public void eventPlayerLogout(EntityPlayerMP player){}
 
+    @Deprecated
     /**
-     * Called when a player spawns or respawns.
+     * Called when a player spawns or respawns.  Only works for OTHER players, and only in LAN games!
      * @param oldPlayer The player being respawned.
      * @param newPlayer The newly spawned player.
      * @param dimension The dimension (world) to spawn the player in.
      * @param causedByDeath Is the respawn triggered by death?
      */
     public void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
+
+    /**
+     * Called when a non-local player respawns.  Only works for other players.
+     * @param oldPlayer The player that died.
+     * @param newPlayer The player being spawned.
+     * @param dimension The dimension to spawn in.
+     * @param causedByDeath If the respawn was triggered by death, vs beating the game.
+     */
+    public void eventOtherPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
+
+    /**
+     * Called when the client player dies.
+     */
+    public void eventClientPlayerDeath(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().

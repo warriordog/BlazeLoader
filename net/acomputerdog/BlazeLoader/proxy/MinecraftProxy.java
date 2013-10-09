@@ -17,6 +17,7 @@ import java.net.Proxy;
 public class MinecraftProxy extends Minecraft {
     protected IntegratedServerProxy theServer = null;
     protected boolean hasReplacedEntityRender = false;
+    protected boolean hasFiredLocalDeath = false;
 
     public MinecraftProxy(Session par1Session, int par2, int par3, boolean par4, boolean par5, File par6File, File par7File, File par8File, Proxy par9Proxy, String par10Str) {
         super(par1Session, par2, par3, par4, par5, par6File, par7File, par8File, par9Proxy, par10Str);
@@ -117,6 +118,14 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public void displayGuiScreen(GuiScreen par1GuiScreen) {
+        if (par1GuiScreen == null && this.thePlayer != null && this.thePlayer.getHealth() <= 0.0F){
+            if(!hasFiredLocalDeath){
+                hasFiredLocalDeath = true;
+                ModList.eventClientPlayerDeath();
+            }else{
+                hasFiredLocalDeath = false;
+            }
+        }
         if(par1GuiScreen != null){
             GuiScreen gui = ModList.onGui(par1GuiScreen);
             if(gui != null)super.displayGuiScreen(par1GuiScreen);
