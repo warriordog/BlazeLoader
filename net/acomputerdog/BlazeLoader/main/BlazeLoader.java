@@ -21,6 +21,7 @@ public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
     public static boolean isInTick = false;
+    public static long ticks = 0;
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);

@@ -107,6 +107,7 @@ public class MinecraftProxy extends Minecraft {
     @Override
     public void runTick() {
         BlazeLoader.isInTick = true;
+        BlazeLoader.ticks++;
         if(!hasReplacedEntityRender){
             hasReplacedEntityRender = true;
             entityRenderer = new EntityRendererProxy(this);

@@ -21,6 +21,27 @@ public class ApiTick {
      */
     public static Timer gameTimer;
 
+    private static float getTPSLocal(){
+        for(Field f : Timer.class.getDeclaredFields()){
+            int mods = f.getModifiers();
+            if(float.class.isAssignableFrom(f.getType()) && (!Modifier.isPrivate(mods) && !Modifier.isProtected(mods) && !Modifier.isPublic(mods))){
+                hasTps = true;
+                tpsField.setAccessible(true);
+                tpsField = f;
+                try {
+                    tps = (Float) tpsField.get(gameTimer);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Could not get TPS!", e);
+                }
+            }
+        }
+        if(tpsField == null){
+            throw new RuntimeException("Could not get TPS!");
+        }else{
+            return tps;
+        }
+    }
+
     /**
      * Gets the game's tick rate.  Uses reflection only on first run.
      * @return Returns the game's current tick rate.
@@ -54,25 +75,7 @@ public class ApiTick {
         return BlazeLoader.isInTick;
     }
 
-
-    private static float getTPSLocal(){
-        for(Field f : Timer.class.getDeclaredFields()){
-            int mods = f.getModifiers();
-            if(float.class.isAssignableFrom(f.getType()) && (!Modifier.isPrivate(mods) && !Modifier.isProtected(mods) && !Modifier.isPublic(mods))){
-                hasTps = true;
-                tpsField.setAccessible(true);
-                tpsField = f;
-                try {
-                    tps = (Float) tpsField.get(gameTimer);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Could not get TPS!", e);
-                }
-            }
-        }
-        if(tpsField == null){
-            throw new RuntimeException("Could not get TPS!");
-        }else{
-            return tps;
-        }
+    public static long getTotalTicksInGame(){
+        return BlazeLoader.ticks;
     }
 }
