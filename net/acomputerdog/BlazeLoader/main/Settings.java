@@ -16,4 +16,8 @@ public class Settings {
      */
     public static boolean enableMods = true;
 
+    /**
+     * The folder where config files are stored.  Mods do not have to obey this, but should if possible.
+     */
+    public static String configDir = "/BL/mods/";
 }

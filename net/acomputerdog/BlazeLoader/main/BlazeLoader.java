@@ -43,6 +43,7 @@ public final class BlazeLoader {
             loadSettings();
             saveSettings();
             ApiBase.modDir = new File(mainDir, Settings.modDir);
+            ApiBase.configDir = new File(mainDir, Settings.configDir);
             ApiTick.gameTimer = getTimer();
             try{
                 log("Loading mods...");
