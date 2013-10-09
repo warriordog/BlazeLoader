@@ -22,7 +22,6 @@ public final class BlazeLoader {
     public static int freeItemId = 1;
     public static boolean isInTick = false;
 
-    private static File apiDir;
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
@@ -33,7 +32,7 @@ public final class BlazeLoader {
         try{
             logger.logInfo("Starting up...");
             ApiBase.mainDir = mainDir;
-            apiDir = new File(mainDir, "/BL/");
+            File apiDir = new File(mainDir, "/BL/");
             if(!apiDir.exists() && !apiDir.mkdir()){
                 logger.logError("Could not create main API directory!");
             }
