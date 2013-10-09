@@ -7,8 +7,8 @@ package net.acomputerdog.BlazeLoader.main;
 public class Version {
 
     /**
-     * Gets the version of BlazeLoader as an integer.  Incremented by one with every update.
-     * Intended to be used to compare versions.
+     * Gets the version of BlazeLoader as an integer.  Incremented by one with every commit.
+     * Should to be used to compare versions.
      * @return Returns the version of BlazeLoader as an integer.
      */
     public static int getIntVersion(){
@@ -23,6 +23,10 @@ public class Version {
         return "dev_0.0.002";
     }
 
+    /**
+     * Gets the version of Minecraft that this version of BlazeLoader is intended for.
+     * @return Returns a String representing the version of Minecraft, ex. "1.6.4".
+     */
     public static String getMinecraftVersion(){
         return "1.6.4";
     }
