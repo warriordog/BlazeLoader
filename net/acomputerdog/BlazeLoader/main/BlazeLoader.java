@@ -30,7 +30,7 @@ public final class BlazeLoader {
 
     public static void init(File mainDir){
         try{
-            logger.logInfo("Starting up...");
+            logger.logInfo("BlazeLoader version " + Version.getMinecraftVersion() + "/" + Version.getStringVersion() + " is starting...");
             ApiBase.mainDir = mainDir;
             File apiDir = new File(mainDir, "/BL/");
             if(!apiDir.exists() && !apiDir.mkdir()){
