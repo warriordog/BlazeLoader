@@ -2,6 +2,7 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.WorldClient;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,10 +80,8 @@ public class ModList {
             Mod mod = iterator.next();
             try{
                 mod.start();
-                BlazeLoader.log("Started mod: " + mod.getModName());
             }catch(Exception e){
                 iterator.remove();
-                BlazeLoader.log("Could not start mod: " + mod.getModName());
                 e.printStackTrace();
             }
         }
@@ -134,6 +133,18 @@ public class ModList {
     public static void endSection(String name){
         for(Mod mod : loadedMods){
             mod.eventProfilerEnd(name);
+        }
+    }
+
+    public static void loadWorld(WorldClient par1WorldClient, String par2Str){
+        for(Mod mod : loadedMods){
+            mod.eventLoadWorld(par1WorldClient, par2Str);
+        }
+    }
+
+    public static void unloadWorld(){
+        for(Mod mod : loadedMods){
+            mod.eventUnloadWorld();
         }
     }
 }

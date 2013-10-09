@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.minecraft.src.GuiScreen;
+import net.minecraft.src.WorldClient;
 
 /**
  * Base class of mods.  Mods should extend this class.
@@ -100,6 +101,18 @@ public abstract class Mod {
      * @param sectionName Name of the profiler section ended.
      */
     public void eventProfilerEnd(String sectionName){}
+
+    /**
+     * Called when a world is loaded.
+     * @param par1WorldClient The world being loaded.
+     * @param par2Str The message displayed to the user on the loading screen.
+     */
+    public void eventLoadWorld(WorldClient par1WorldClient, String par2Str){}
+
+    /**
+     * Called when the current world is unloaded.
+     */
+    public void eventUnloadWorld(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
