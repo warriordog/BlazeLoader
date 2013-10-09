@@ -7,6 +7,7 @@ import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
+import net.acomputerdog.BlazeLoader.util.BLLogger;
 import net.minecraft.src.*;
 
 import java.io.*;
@@ -23,21 +24,22 @@ public final class BlazeLoader {
 
     private static File apiDir;
     private static Settings theSettings = new Settings();
+    private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
     private static File settingsFile;
     private static boolean hasLoaded = false;
 
     public static void init(File mainDir){
         try{
-            log("Starting up...");
+            logger.logInfo("Starting up...");
             ApiBase.mainDir = mainDir;
             apiDir = new File(mainDir, "/BL/");
             if(!apiDir.exists() && !apiDir.mkdir()){
-                log("[ERROR] Could not create main API directory!");
+                logger.logError("Could not create main API directory!");
             }
             settingsFile = new File(apiDir, "BLConfig.json");
             if(!settingsFile.exists()){
-                BlazeLoader.log("Config file does not exist!  It will be created.");
+                logger.logWarning("Config file does not exist!  It will be created.");
                 saveSettings();
             }
             loadSettings();
@@ -46,24 +48,24 @@ public final class BlazeLoader {
             ApiBase.configDir = new File(mainDir, Settings.configDir);
             ApiTick.gameTimer = getTimer();
             try{
-                log("Loading mods...");
+                logger.logInfo("Loading mods...");
                 if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
-                    log("Mods folder not found!  Creating new folder...");
-                    log(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                    logger.logWarning("Mods folder not found!  Creating new folder...");
+                    logger.logDetail(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
                 }
                 if(Settings.enableMods){
                     loadMods();
                     ModList.load();
                 }else{
-                    log("Mods are disabled in config, skipping mod loading.");
+                    logger.logDetail("Mods are disabled in config, skipping mod loading.");
                 }
-                log("Mods loaded with no issues.");
+                logger.logInfo("Mods loaded with no issues.");
             }catch(Exception e){
-                log("Caught exception loading mods!");
+                logger.logError("Caught exception loading mods!");
                 e.printStackTrace();
             }
         }catch(Exception e){
-            log("Exception occurred while starting BlazeLoader!");
+            logger.logFatal("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
             shutdown(1);
         }
@@ -71,13 +73,13 @@ public final class BlazeLoader {
     }
 
     private static void loadMods(){
-        log("Loading mods from: " + ApiBase.modDir.getAbsolutePath());
+        logger.logDetail("Loading mods from: " + ApiBase.modDir.getAbsolutePath());
         ModLoader.loadModsToList(ApiBase.modDir);
-        log("Mod loading complete.");
+        logger.logInfo("Mod loading complete.");
     }
 
-    public static void log(String message){
-        System.out.println("[BlazeLoader] " + message);
+    public static BLLogger getLogger(){
+        return logger;
     }
 
     public static int updateFreeBlockId(){
@@ -135,7 +137,7 @@ public final class BlazeLoader {
         } catch (JsonParseException e){
             saveSettings();
         } catch (Exception e){
-            BlazeLoader.log("Error occurred reading settings!");
+            logger.logError("Error occurred reading settings!");
             e.printStackTrace();
         }
     }
@@ -151,7 +153,7 @@ public final class BlazeLoader {
             gson.toJson(theSettings, writer);
             writer.close();
         } catch(IOException e){
-            BlazeLoader.log("[ERROR] Could not save settings!");
+            logger.logError("Could not save settings!");
             e.printStackTrace();
         } finally{
             if(writer != null){

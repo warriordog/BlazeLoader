@@ -13,11 +13,11 @@ public class ProfilerProxy extends Profiler {
         if("root".equals(par1Str)){
             if(!hasLoadedMods){
                 try{
-                    BlazeLoader.log("Applying fixes...");
+                    BlazeLoader.getLogger().logInfo("Applying fixes...");
                     FixManager.onStart();
-                    BlazeLoader.log("Applied fixes with no issues.");
+                    BlazeLoader.getLogger().logInfo("Applied fixes with no issues.");
                 }catch(Exception e){
-                    BlazeLoader.log("Exception occurred while applying fixes!");
+                    BlazeLoader.getLogger().logError("Exception occurred while applying fixes!");
                     e.printStackTrace();
                 }
                 hasLoadedMods = true;

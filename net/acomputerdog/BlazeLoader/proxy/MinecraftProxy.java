@@ -38,7 +38,7 @@ public class MinecraftProxy extends Minecraft {
                 }
             }
         }catch(ReflectiveOperationException e){
-            BlazeLoader.log("[ERROR] Unable to inject ProfilerProxy!  Some components may not function!");
+            BlazeLoader.getLogger().logError("Unable to inject ProfilerProxy!  Some components may not function!");
             e.printStackTrace();
         }
     }

@@ -44,7 +44,7 @@ public class ModList {
                     Mod sameMod = getCompatibleModFromList(mod);
                     boolean useNewMod = true;
                     if(sameMod != null){
-                        BlazeLoader.log("Duplicate mod: " + mod.getModName() + "!  Newest version will be used!");
+                        BlazeLoader.getLogger().logWarning("Duplicate mod: " + mod.getModName() + "!  Newest version will be used!");
                         if(sameMod.getIntModVersion() < mod.getIntModVersion()){
                             sameMod.stop();
                             loadedMods.remove(sameMod);
@@ -55,17 +55,17 @@ public class ModList {
                     if(useNewMod){
                         mod.load();
                         loadedMods.add(mod);
-                        BlazeLoader.log("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
+                        BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 }else{
                     iterator.remove();
-                    BlazeLoader.log("Mod " + mod.getModName() + " is not compatible!  Unloading!");
+                    BlazeLoader.getLogger().logError("Mod " + mod.getModName() + " is not compatible!  Unloading!");
                 }
             } catch (Exception e){
                 if(mod != null){
                     loadedMods.remove(mod);
                 }
-                BlazeLoader.log("Could not initialize mod: " + cls.getName());
+                BlazeLoader.getLogger().logError("Could not initialize mod: " + cls.getName());
                 e.printStackTrace();
             } finally{
                 iterator.remove();
@@ -94,10 +94,10 @@ public class ModList {
             Mod mod = iterator.next();
             try{
                 mod.stop();
-                BlazeLoader.log("Stopped mod: " + mod.getModName());
+                BlazeLoader.getLogger().logDetail("Stopped mod: " + mod.getModName());
             }catch(Exception e){
                 iterator.remove();
-                BlazeLoader.log("Could not stop mod: " + mod.getModName());
+                BlazeLoader.getLogger().logDetail("Could not stop mod: " + mod.getModName());
                 e.printStackTrace();
             }
         }

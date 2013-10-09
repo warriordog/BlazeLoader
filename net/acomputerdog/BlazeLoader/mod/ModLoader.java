@@ -19,7 +19,7 @@ public class ModLoader {
 
     public static void loadMods(File searchDir, List<Class> modList){
         if(!searchDir.exists() || !searchDir.isDirectory()){
-            BlazeLoader.log("Invalid mod search directory: " + searchDir.getAbsolutePath());
+            BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
         }else{
             File[] zips = searchDir.listFiles(new FilenameFilter() {
                 @Override
@@ -38,14 +38,14 @@ public class ModLoader {
                             Class modClass = loader.loadClass(entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6));
                             if(Mod.class.isAssignableFrom(modClass)){
                                 modList.add(modClass);
-                                BlazeLoader.log("Loaded mod: [" + modClass.getName() + "] from zip: [" + modZip.getName() + "].");
+                                BlazeLoader.getLogger().logDetail("Loaded mod: [" + modClass.getName() + "] from zip: [" + modZip.getName() + "].");
                             }
                         }
                     }
                 }catch(IOException e){
-                    BlazeLoader.log("Skipping corrupt zip: " + modZip.getName());
+                    BlazeLoader.getLogger().logWarning("Skipping corrupt zip: " + modZip.getName());
                 }catch(ReflectiveOperationException e){
-                    BlazeLoader.log("Skipping corrupt mod in: " + modZip.getName());
+                    BlazeLoader.getLogger().logWarning("Skipping corrupt mod in: " + modZip.getName());
                 }
             }
         }
