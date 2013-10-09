@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
 
@@ -104,15 +105,36 @@ public abstract class Mod {
 
     /**
      * Called when a world is loaded.
-     * @param par1WorldClient The world being loaded.
-     * @param par2Str The message displayed to the user on the loading screen.
+     * @param world The world being loaded.
+     * @param message The message displayed to the user on the loading screen.
      */
-    public void eventLoadWorld(WorldClient par1WorldClient, String par2Str){}
+    public void eventLoadWorld(WorldClient world, String message){}
 
     /**
      * Called when the current world is unloaded.
      */
     public void eventUnloadWorld(){}
+
+    /**
+     * Called when a player logs into the game.
+     * @param player The player logging in.
+     */
+    public void eventPlayerLogin(EntityPlayerMP player){}
+
+    /**
+     * Called when a player logs out of the game.
+     * @param player The player logging out.
+     */
+    public void eventPlayerLogout(EntityPlayerMP player){}
+
+    /**
+     * Called when a player spawns or respawns.
+     * @param oldPlayer The player being respawned.
+     * @param newPlayer The newly spawned player.
+     * @param dimension The dimension (world) to spawn the player in.
+     * @param causedByDeath Is the respawn triggered by death?
+     */
+    public void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().

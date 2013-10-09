@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 public class IntegratedServerProxy extends IntegratedServer {
     public IntegratedServerProxy(Minecraft minecraft, IntegratedServer server){
         super(minecraft, server.getFolderName(), server.getWorldName(), getWorldSettings(server));
+        setConfigurationManager(new IntegratedPlayerListProxy(this));
     }
 
     /**

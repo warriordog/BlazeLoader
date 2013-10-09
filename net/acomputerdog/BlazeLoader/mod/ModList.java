@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
 
@@ -145,6 +146,24 @@ public class ModList {
     public static void unloadWorld(){
         for(Mod mod : loadedMods){
             mod.eventUnloadWorld();
+        }
+    }
+
+    public static void eventPlayerLogin(EntityPlayerMP player){
+        for(Mod mod : loadedMods){
+            mod.eventPlayerLogin(player);
+        }
+    }
+
+    public static void eventPlayerLogout(EntityPlayerMP player){
+        for(Mod mod : loadedMods){
+            mod.eventPlayerLogout(player);
+        }
+    }
+
+    public static void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){
+        for(Mod mod : loadedMods){
+            mod.eventPlayerSpawn(oldPlayer, newPlayer, dimension, causedByDeath);
         }
     }
 }
