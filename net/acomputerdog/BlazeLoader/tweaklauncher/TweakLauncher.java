@@ -12,6 +12,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,10 @@ public class TweakLauncher implements ITweaker {
             logger.logInfo("No secondary tweaks detected.");
         }
         Map<String, String> launchArgs = (Map<String, String>)Launch.blackboard.get("launchArgs");
+        if (launchArgs == null){
+            launchArgs = new HashMap<String, String>();
+            Launch.blackboard.put("launchArgs", launchArgs);
+        }
         if (!launchArgs.containsKey("--version")){
             launchArgs.put("--version", Version.getMinecraftVersion());
         }
