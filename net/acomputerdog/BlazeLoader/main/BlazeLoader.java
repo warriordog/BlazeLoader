@@ -25,7 +25,7 @@ public final class BlazeLoader {
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
-    private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).create();
+    private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).setPrettyPrinting().create();
     private static File settingsFile;
     private static boolean hasLoaded = false;
 
@@ -135,6 +135,7 @@ public final class BlazeLoader {
         }catch (FileNotFoundException e) {
             saveSettings();
         } catch (JsonParseException e){
+            logger.logWarning("Format error in settings file; reloading.");
             saveSettings();
         } catch (Exception e){
             logger.logError("Error occurred reading settings!");
