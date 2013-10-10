@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.tweaklauncher;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import net.acomputerdog.BlazeLoader.main.Version;
 import net.acomputerdog.BlazeLoader.util.BLLogger;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
@@ -12,11 +13,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TweakLauncher implements ITweaker {
     protected BLLogger logger = new BLLogger("BL_Launcher");
     protected List<String> tweaks = new ArrayList<String>();
     protected boolean hasInit = false;
+    protected File gameDir, assetDir = null;
 
     public TweakLauncher(){
         logger.logInfo("BL tweak loader starting.");
@@ -25,6 +28,8 @@ public class TweakLauncher implements ITweaker {
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         hasInit = true;
+        this.gameDir = gameDir;
+        this.assetDir = assetsDir;
         OptionParser parser = new OptionParser();
         parser.allowsUnrecognizedOptions();
         ArgumentAcceptingOptionSpec<String> optionSecondaryTweak = parser.accepts("secondaryTweaks", "Secondary tweak classes to be loaded after BL").withRequiredArg().ofType(String.class).withValuesSeparatedBy(',');
@@ -34,6 +39,16 @@ public class TweakLauncher implements ITweaker {
             tweaks = optionSecondaryTweak.values(options);
         }else{
             logger.logInfo("No secondary tweaks detected.");
+        }
+        Map<String, String> launchArgs = (Map<String, String>)Launch.blackboard.get("launchArgs");
+        if (!launchArgs.containsKey("--version")){
+            launchArgs.put("--version", Version.getMinecraftVersion());
+        }
+        if (!launchArgs.containsKey("--gameDir") && gameDir != null){
+            launchArgs.put("--gameDir", gameDir.getAbsolutePath());
+        }
+        if (!launchArgs.containsKey("--assetsDir") && assetDir != null){
+            launchArgs.put("--assetsDir", assetDir.getAbsolutePath());
         }
     }
 
