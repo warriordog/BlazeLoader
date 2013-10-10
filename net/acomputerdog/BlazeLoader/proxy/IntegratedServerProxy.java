@@ -1,6 +1,8 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.src.CommandHandler;
 import net.minecraft.src.IntegratedServer;
 import net.minecraft.src.Minecraft;
 import net.minecraft.src.WorldSettings;
@@ -11,6 +13,7 @@ public class IntegratedServerProxy extends IntegratedServer {
     public IntegratedServerProxy(Minecraft minecraft, IntegratedServer server){
         super(minecraft, server.getFolderName(), server.getWorldName(), getWorldSettings(server));
         setConfigurationManager(new IntegratedPlayerListProxy(this));
+        BlazeLoader.registerCommandHandler((CommandHandler)getCommandManager());
     }
 
     /**

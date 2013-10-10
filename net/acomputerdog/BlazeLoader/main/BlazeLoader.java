@@ -22,6 +22,8 @@ public final class BlazeLoader {
     public static int freeItemId = 1;
     public static boolean isInTick = false;
     public static long ticks = 0;
+    public static CommandHandler commandManager = null;
+    public static CommandHandler temporaryCommandManager = new CommandHandler();
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
@@ -192,5 +194,18 @@ public final class BlazeLoader {
             Thread.currentThread().join(100);
         }catch(Exception ignored){}
         System.exit(code);
+    }
+
+    public static void registerCommandHandler(CommandHandler handler){
+        if(commandManager != null){
+            for(Object command : commandManager.getCommands().values()){
+                handler.registerCommand((ICommand) command);
+            }
+        }
+        commandManager = handler;
+        for(Object command : temporaryCommandManager.getCommands().values()){
+            commandManager.registerCommand((ICommand) command);
+        }
+        temporaryCommandManager = new CommandHandler();
     }
 }
