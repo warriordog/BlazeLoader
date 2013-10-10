@@ -2,6 +2,7 @@ package net.acomputerdog.BlazeLoader.api.base;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.proxy.MinecraftProxy;
+import net.acomputerdog.BlazeLoader.proxy.ProfilerProxy;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;
 
@@ -41,6 +42,11 @@ public class ApiBase {
      * Location of the storage directory for mod Configs.  Mods do not have to obey this, but should if possible.
      */
     public static File configDir = new File("./BL/config/");
+
+    /**
+     * The game profiler.  Mods that wish to include profiler support can use this.
+     */
+    public static ProfilerProxy theProfiler = null;
 
     /**
      * Shuts down the game with a specified error code.  Use 0 for normal shutdown.

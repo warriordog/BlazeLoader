@@ -35,7 +35,8 @@ public class MinecraftProxy extends Minecraft {
                     modifiersField.setAccessible(true);
                     modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
                     f.setAccessible(true);
-                    f.set(this, new ProfilerProxy());
+                    ApiBase.theProfiler = new ProfilerProxy();
+                    f.set(this, ApiBase.theProfiler);
                 }
             }
         }catch(ReflectiveOperationException e){
