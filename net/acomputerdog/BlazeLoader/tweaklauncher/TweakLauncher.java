@@ -11,7 +11,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +74,6 @@ public class TweakLauncher implements ITweaker {
             if(tweakList != null){
                 for(String tweak : tweaks){
                     try {
-                        classLoader.addURL(new URL(tweak));
                         tweakList.add(tweak);
                     } catch (Exception e) {
                         logger.logError("Caught exception while injecting tweak: "+ tweak);
