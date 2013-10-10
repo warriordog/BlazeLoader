@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.tweaklauncher;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
+import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.acomputerdog.BlazeLoader.main.Version;
@@ -21,6 +22,9 @@ public class TweakLauncher implements ITweaker {
     protected List<String> tweaks = new ArrayList<String>();
     protected boolean hasInit = false;
     protected File gameDir, assetDir = null;
+    protected Map<String, String> requiredArgs;
+    protected List<String> handledArgs = new ArrayList<String>();
+    protected List<String> ignoredArgs;
 
     public TweakLauncher(){
         logger.logInfo("BL tweak loader starting.");
@@ -35,25 +39,32 @@ public class TweakLauncher implements ITweaker {
         parser.allowsUnrecognizedOptions();
         ArgumentAcceptingOptionSpec<String> optionSecondaryTweak = parser.accepts("secondaryTweaks", "Secondary tweak classes to be loaded after BL").withRequiredArg().ofType(String.class).withValuesSeparatedBy(',');
         OptionSet options = parser.parse(args.toArray(new String[args.size()]));
+
+        NonOptionArgumentSpec<String> invalidOptions = parser.nonOptions();
+        this.ignoredArgs = options.valuesOf(invalidOptions);
+
         if(options.has(optionSecondaryTweak)){
             logger.logInfo("Secondary tweaks detected.");
             tweaks = optionSecondaryTweak.values(options);
         }else{
             logger.logInfo("No secondary tweaks detected.");
         }
-        Map<String, String> launchArgs = (Map<String, String>)Launch.blackboard.get("launchArgs");
-        if (launchArgs == null){
-            launchArgs = new HashMap<String, String>();
-            Launch.blackboard.put("launchArgs", launchArgs);
+
+        this.parseArgs(this.ignoredArgs);
+
+        requiredArgs = (Map<String, String>)Launch.blackboard.get("launchArgs");
+        if (requiredArgs == null){
+            requiredArgs = new HashMap<String, String>();
+            Launch.blackboard.put("launchArgs", requiredArgs);
         }
-        if (!launchArgs.containsKey("--version")){
-            launchArgs.put("--version", Version.getMinecraftVersion());
+        if (!requiredArgs.containsKey("--version")){
+            requiredArgs.put("--version", Version.getMinecraftVersion());
         }
-        if (!launchArgs.containsKey("--gameDir") && gameDir != null){
-            launchArgs.put("--gameDir", gameDir.getAbsolutePath());
+        if (!requiredArgs.containsKey("--gameDir") && gameDir != null){
+            requiredArgs.put("--gameDir", gameDir.getAbsolutePath());
         }
-        if (!launchArgs.containsKey("--assetsDir") && assetDir != null){
-            launchArgs.put("--assetsDir", assetDir.getAbsolutePath());
+        if (!requiredArgs.containsKey("--assetsDir") && assetDir != null){
+            requiredArgs.put("--assetsDir", assetDir.getAbsolutePath());
         }
     }
 
@@ -89,6 +100,40 @@ public class TweakLauncher implements ITweaker {
 
     @Override
     public String[] getLaunchArguments() {
-        return new String[0];
+        List<String> args = new ArrayList<String>();
+        for (String arg : this.handledArgs){
+            args.add(arg);
+        }
+        for (Map.Entry<String, String> arg : this.requiredArgs.entrySet()){
+            args.add(arg.getKey().trim());
+            args.add(arg.getValue().trim());
+        }
+        this.handledArgs.clear();
+        this.requiredArgs.clear();
+
+        return args.toArray(new String[args.size()]);
+    }
+
+    private void parseArgs(List<String> args)
+    {
+        String argCategoryName = null;
+
+        for (String arg : args){
+            if (arg.startsWith("-")){
+                if (argCategoryName != null){
+                    this.requiredArgs.put(argCategoryName, "");
+                }else if (arg.contains("=")){
+                    this.requiredArgs.put(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
+                }else{
+                    argCategoryName = arg;
+                }
+            }else{
+                if (argCategoryName != null){
+                    this.requiredArgs.put(argCategoryName, arg);
+                }else{
+                    this.handledArgs.add(arg);
+                }
+            }
+        }
     }
 }
