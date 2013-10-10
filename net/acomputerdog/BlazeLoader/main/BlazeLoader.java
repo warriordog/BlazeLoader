@@ -30,7 +30,9 @@ public final class BlazeLoader {
     private static boolean hasLoaded = false;
 
     public static void init(File mainDir){
+        ApiBase.theProfiler.startSection("BL_Init");
         try{
+            ApiBase.theProfiler.startSection("SettingsAndFiles");
             logger.logInfo("BlazeLoader version " + Version.getMinecraftVersion() + "/" + Version.getStringVersion() + " is starting...");
             ApiBase.mainDir = mainDir;
             File apiDir = new File(mainDir, "/BL/");
@@ -57,6 +59,7 @@ public final class BlazeLoader {
                 logger.logDetail(ApiBase.configDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
 
+            ApiBase.theProfiler.endStartSection("Mod Loading");
             ApiTick.gameTimer = getTimer();
             try{
                 logger.logInfo("Loading mods...");
@@ -71,12 +74,13 @@ public final class BlazeLoader {
                 logger.logError("Caught exception loading mods!");
                 e.printStackTrace();
             }
+            ApiBase.theProfiler.endSection();
         }catch(Exception e){
             logger.logFatal("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
             shutdown(1);
         }
-
+        ApiBase.theProfiler.endSection();
     }
 
     private static void loadMods(){

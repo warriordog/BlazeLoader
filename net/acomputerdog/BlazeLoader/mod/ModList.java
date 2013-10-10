@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
@@ -34,6 +35,7 @@ public class ModList {
     }
 
     public static void load(){
+        ApiBase.theProfiler.startSection("init_mods");
         Iterator<Class> iterator = unloadedMods.iterator();
         while(iterator.hasNext()){
             Class cls = iterator.next();
@@ -71,21 +73,26 @@ public class ModList {
                 iterator.remove();
             }
         }
+        ApiBase.theProfiler.endSection();
     }
 
     public static void start(){
+        ApiBase.theProfiler.startSection("start_mods");
         BlazeLoader.updateFreeBlockId();
         BlazeLoader.updateFreeItemId();
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();
+            ApiBase.theProfiler.startSection("mod_" + mod.getModId());
             try{
                 mod.start();
             }catch(Exception e){
                 iterator.remove();
                 e.printStackTrace();
             }
+            ApiBase.theProfiler.endSection();
         }
+        ApiBase.theProfiler.endSection();
     }
 
     public static void stop(){
@@ -104,13 +111,17 @@ public class ModList {
     }
 
     public static void tick(boolean isPreTick){
+        ApiBase.theProfiler.startSection("tick_mods");
         for(Mod mod : loadedMods){
+            ApiBase.theProfiler.startSection("mod_" + mod.getModId());
             if(isPreTick){
                 mod.eventPreTick();
             }else{
                 mod.eventPostTick();
             }
+            ApiBase.theProfiler.endSection();
         }
+        ApiBase.theProfiler.endSection();
     }
 
     public static GuiScreen onGui(GuiScreen gui){
@@ -149,6 +160,7 @@ public class ModList {
         }
     }
 
+    @Deprecated
     public static void eventPlayerLogin(EntityPlayerMP player){
         for(Mod mod : loadedMods){
             mod.eventPlayerLogin(player);

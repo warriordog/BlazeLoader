@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 
 import java.io.File;
@@ -18,16 +19,22 @@ import java.util.zip.ZipFile;
 public class ModLoader {
 
     public static void loadMods(File searchDir, List<Class> modList){
+        ApiBase.theProfiler.startSection("load_mods");
         if(!searchDir.exists() || !searchDir.isDirectory()){
+            ApiBase.theProfiler.startSection("create_dir");
             BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
+            ApiBase.theProfiler.endSection();
         }else{
+            ApiBase.theProfiler.startSection("find_jars");
             File[] zips = searchDir.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip");
                 }
             });
+            ApiBase.theProfiler.endStartSection("scan_jars");
             for(File modZip : zips){
+                ApiBase.theProfiler.startSection("jar_" + modZip.getName());
                 try{
                     ClassLoader loader = new URLClassLoader(new URL[]{modZip.toURI().toURL()}, ModLoader.class.getClassLoader());
                     ZipFile zipFile = new ZipFile(modZip);
@@ -47,8 +54,11 @@ public class ModLoader {
                 }catch(ReflectiveOperationException e){
                     BlazeLoader.getLogger().logWarning("Skipping corrupt mod in: " + modZip.getName());
                 }
+                ApiBase.theProfiler.endSection();
             }
+            ApiBase.theProfiler.endSection();
         }
+        ApiBase.theProfiler.endSection();
     }
 
     public static void loadModsToList(File searchDir){
