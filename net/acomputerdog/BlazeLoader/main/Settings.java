@@ -19,5 +19,5 @@ public class Settings {
     /**
      * The folder where config files are stored.  Mods do not have to obey this, but should if possible.
      */
-    public static String configDir = "/BL/mods/";
+    public static String configDir = "/BL/config/";
 }
