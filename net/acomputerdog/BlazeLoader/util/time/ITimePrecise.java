@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 /**
  * Same as ITime, but includes millisecond precision.

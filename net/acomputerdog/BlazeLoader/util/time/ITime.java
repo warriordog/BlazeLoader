@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 /**
  * Represents a time with 24 total hours each composed of 60 minutes, each composed of 60 seconds.

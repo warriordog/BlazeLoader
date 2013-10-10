@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 /**
  * Represents a date with the structure 7 days in a week, 28/29/30/31 days in a month, 12 months in a year.

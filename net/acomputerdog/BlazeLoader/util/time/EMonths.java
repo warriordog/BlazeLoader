@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 /**
  * Enum for getting the names of months of the year.  Ex: EMonths.values()[0].getName() == "January"

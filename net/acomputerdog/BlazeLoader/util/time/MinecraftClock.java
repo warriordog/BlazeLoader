@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 

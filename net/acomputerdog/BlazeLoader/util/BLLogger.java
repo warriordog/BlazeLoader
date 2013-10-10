@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.util;
 
 import net.acomputerdog.BlazeLoader.mod.Mod;
-import net.acomputerdog.BlazeLoader.time.StandardClock;
+import net.acomputerdog.BlazeLoader.util.time.StandardClock;
 
 /**
  * Customized logger for use with BlazeLoader and Mods.  Tagged with a name specified by the creator of the logger.

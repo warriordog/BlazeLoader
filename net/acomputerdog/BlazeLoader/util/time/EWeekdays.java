@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.time;
+package net.acomputerdog.BlazeLoader.util.time;
 
 /**
  * Enum for getting the names of days of the week.  Ex: EWeekdays.values()[0].getName() == "Sunday"
