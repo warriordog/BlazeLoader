@@ -165,4 +165,13 @@ public abstract class Mod {
         if(!(obj instanceof Mod))return false;
         return ((Mod)obj).getModId().equals(this.getModId());
     }
+
+    /**
+     * Returns the ID of the mod.
+     * @return Return the value of this.getModId();
+     */
+    @Override
+    public String toString() {
+        return this.getModId();
+    }
 }
