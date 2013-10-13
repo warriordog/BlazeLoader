@@ -23,6 +23,7 @@ public class CommandBL extends BLCommandBase {
 
     @Override
     public String getCommandName() {
+        if(true)throw new RuntimeException("Debug crash");
         return "bl";
     }
 

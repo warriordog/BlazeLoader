@@ -160,7 +160,6 @@ public class ModList {
         }
     }
 
-    @Deprecated
     public static void eventPlayerLogin(EntityPlayerMP player){
         for(Mod mod : loadedMods){
             mod.eventPlayerLogin(player);

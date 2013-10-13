@@ -117,7 +117,6 @@ public abstract class Mod {
      */
     public void eventUnloadWorld(){}
 
-    @Deprecated
     /**
      * Called when a player logs into the game.
      * @param player The player logging in.

@@ -10,14 +10,14 @@ import java.lang.reflect.Field;
 
 public class IntegratedServerProxy extends IntegratedServer {
     public IntegratedServerProxy(Minecraft minecraft, IntegratedServer server){
-        super(minecraft, server.getFolderName(), server.getWorldName(), getWorldSettings(server));
-        setConfigurationManager(new IntegratedPlayerListProxy(this));
-        mergeCommandHandlers(BlazeLoader.commandManager);
-        ApiCommand.registerCommand(new CommandBL());
+        this(minecraft, server.getFolderName(), server.getWorldName(), getWorldSettings(server));
     }
 
     public IntegratedServerProxy(Minecraft minecraft, String folderName, String worldName, WorldSettings settings){
         super(minecraft, folderName, worldName, settings);
+        setConfigurationManager(new IntegratedPlayerListProxy(this));
+        mergeCommandHandlers(BlazeLoader.commandManager);
+        ApiCommand.registerCommand(new CommandBL());
     }
     /**
      * Sets the serverRunning variable to false, in order to get the server to shut down.
