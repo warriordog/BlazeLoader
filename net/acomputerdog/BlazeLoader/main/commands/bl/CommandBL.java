@@ -23,7 +23,6 @@ public class CommandBL extends BLCommandBase {
 
     @Override
     public String getCommandName() {
-        if(true)throw new RuntimeException("Debug crash");
         return "bl";
     }
 
@@ -63,17 +62,22 @@ public class CommandBL extends BLCommandBase {
     }
 
     protected void processSubCommand(ICommandSender user, String[] command){
+        if(command.length == 0){
+            throw new IllegalArgumentException("command must have at least one index!");
+        }
         for(CommandBLModule module : modules){
-            if(module.getNumRequiredArgs() < command.length + 1){ // account for first index being module name
-                if(module.canUserUseCommand(user)){
-                    module.execute(user, command);
+            if(module.getModuleName().equals(command[0])){
+                if(module.getNumRequiredArgs() < command.length + 1){ // account for first index being module name
+                    if(module.canUserUseCommand(user)){
+                        module.execute(user, command);
+                    }else{
+                        sendChat(user, "You cannot use this command, sorry!");
+                    }
                 }else{
-                    sendChat(user, "You cannot use this command, sorry!");
+                    sendChat(user, "Invalid arguments!  Use \"/bl " + module.getUsage() + "\".");
                 }
-            }else{
-                sendChat(user, "Invalid arguments!  Use \"/bl " + module.getUsage() + "\".");
+                return;
             }
-            break;
         }
         sendChat(user, "Unknown sub-command!  Use \"/bl\" to get a list!");
     }

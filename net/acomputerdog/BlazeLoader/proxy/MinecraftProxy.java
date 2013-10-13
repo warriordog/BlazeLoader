@@ -16,7 +16,7 @@ import java.net.Proxy;
  * Acts as a proxy to intercept method calls to Minecraft.class.  Loaded in place of normal Minecraft.class
  */
 public class MinecraftProxy extends Minecraft {
-    protected IntegratedServerProxy theServer = null;
+    public IntegratedServerProxy theServer = null;
     protected boolean hasReplacedEntityRender = false;
     protected boolean hasFiredLocalDeath = false;
     protected boolean serverRunning = false;
@@ -80,7 +80,6 @@ public class MinecraftProxy extends Minecraft {
 
         this.statFileWriter.readStat(StatList.startGameStat, 1);
         IntegratedServerProxy server = new IntegratedServerProxy(this, par1Str, par2Str, par3WorldSettings);
-        theServer = server;
         setIntegratedServer(server);
         server.startServerThread();
         serverRunning = true;
@@ -133,6 +132,7 @@ public class MinecraftProxy extends Minecraft {
         }
     }
 
+    @Deprecated
     public IntegratedServerProxy getServerProxy(){
         return theServer;
     }
@@ -201,4 +201,5 @@ public class MinecraftProxy extends Minecraft {
     public boolean isSingleplayer() {
         return serverRunning && getIntegratedServer().getPublic();
     }
+
 }

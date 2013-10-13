@@ -1,11 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.command;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.CommandHandler;
 import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
-import net.minecraft.src.IntegratedServer;
 
 /**
  * Api functions related to commands
@@ -26,9 +24,7 @@ public class ApiCommand {
      * @param command The command to register.
      */
     public static void registerCommand(ICommand command){
-        IntegratedServer server = ApiBase.theMinecraft.getIntegratedServer();
-        if(server != null)((CommandHandler)server.getCommandManager()).registerCommand(command);
-        //BlazeLoader.commandManager.registerCommand(command);
+        BlazeLoader.commandManager.registerCommand(command);
     }
 
     /**
