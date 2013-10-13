@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.command;
 
-import net.minecraft.src.ChatMessageComponent;
+import net.acomputerdog.BlazeLoader.api.chat.ApiChat;
+import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.minecraft.src.CommandBase;
 import net.minecraft.src.ICommandSender;
 
@@ -34,7 +35,16 @@ public abstract class BLCommandBase extends CommandBase {
      * @param message The message to send.
      */
     protected void sendChat(ICommandSender target, String message){
-        target.sendChatToPlayer(ChatMessageComponent.createFromText(message));
+        ApiChat.sendChat(target, message);
+    }
+
+    /**
+     * Sends chat to a command sender, followed by a format_reset marker.
+     * @param target The user to send the chat to.
+     * @param message The message to send.
+     */
+    protected void sendChatLine(ICommandSender target, String message){
+        sendChat(target, message + EChatColor.FORMAT_RESET);
     }
 
     /**

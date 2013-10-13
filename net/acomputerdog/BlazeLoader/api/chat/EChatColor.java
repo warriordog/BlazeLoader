@@ -3,11 +3,11 @@ package net.acomputerdog.BlazeLoader.api.chat;
 /**
  * Chat formatting markers.
  */
-public enum EChatFormatting {
+public enum EChatColor {
     COLOR_AQUA("§b"),
     COLOR_BLACK("§0"),
     COLOR_BLUE("§9"),
-    COLOR_GOLD("§6"),
+    COLOR_ORANGE("§6"),
     COLOR_GRAY("§7"),
     COLOR_GREEN("§a"),
     COLOR_PURPLE("§d"),
@@ -21,19 +21,32 @@ public enum EChatFormatting {
     COLOR_DARK_RED("§4"),
     COLOR_DARK_PURPLE("§5"),
     FORMAT_BOLD("§l"),
-    FORMAT_CLEAR("§p"),
     FORMAT_ITALIC("§o"),
     FORMAT_RANDOM("§k"),
+    FORMAT_RESET("§p"),
     FORMAT_STRIKE("§m"),
     FORMAT_UNDERLINE("§n");
 
     protected String code;
 
-    EChatFormatting(String code){
+    EChatColor(String code){
         this.code = code;
     }
 
+    /**
+     * Gets the color code of this EChatColor.
+     * @return Return the color code associated with this EChatColor.
+     */
     public String get(){
         return code;
+    }
+
+    /**
+     * Gets the color code of this EChatColor.
+     * @return Returns the color code associated with this EChatColor.
+     */
+    @Override
+    public String toString() {
+        return get();
     }
 }
