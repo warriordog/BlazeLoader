@@ -1,9 +1,11 @@
 package net.acomputerdog.BlazeLoader.api.command;
 
+import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.CommandHandler;
 import net.minecraft.src.ICommand;
 import net.minecraft.src.ICommandSender;
+import net.minecraft.src.IntegratedServer;
 
 /**
  * Api functions related to commands
@@ -16,15 +18,17 @@ public class ApiCommand {
      * @return Return the command manager, or a temporary replacement.
      */
     public static CommandHandler getCommandManager(){
-        return BlazeLoader.commandManager == null ? BlazeLoader.temporaryCommandManager : BlazeLoader.commandManager;
+        return BlazeLoader.commandManager;
     }
 
     /**
-     * Registers a command, if it has not already been registered.
+     * Registers a command, overriding it if it already exists.
      * @param command The command to register.
      */
     public static void registerCommand(ICommand command){
-        BlazeLoader.commandManager.registerCommand(command);
+        IntegratedServer server = ApiBase.theMinecraft.getIntegratedServer();
+        if(server != null)((CommandHandler)server.getCommandManager()).registerCommand(command);
+        //BlazeLoader.commandManager.registerCommand(command);
     }
 
     /**

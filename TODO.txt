@@ -3,6 +3,7 @@
 + completed
 ==================================================
 
++Add query plugin support (return list of mods)
 -Add support for tweak loading.
 -Add API from MCF post
 -Extend existing APIs

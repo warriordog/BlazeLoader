@@ -1,9 +1,13 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.IntegratedPlayerList;
 import net.minecraft.src.IntegratedServer;
+import net.minecraft.src.ServerConfigurationManager;
+
+import java.lang.reflect.Field;
 
 /**
  * Proxy class for IntegratedPlayerList.
@@ -12,6 +16,16 @@ public class IntegratedPlayerListProxy extends IntegratedPlayerList {
 
     public IntegratedPlayerListProxy(IntegratedServer par1IntegratedServer) {
         super(par1IntegratedServer);
+        for(Field f : ServerConfigurationManager.class.getDeclaredFields()){
+            if(MinecraftServer.class.isAssignableFrom(f.getType())){
+                try{
+                    f.setAccessible(true);
+                    f.set(this, par1IntegratedServer);
+                }catch(ReflectiveOperationException e){
+                    throw new RuntimeException("Could not replace mcServer!", e);
+                }
+            }
+        }
     }
 
     /**

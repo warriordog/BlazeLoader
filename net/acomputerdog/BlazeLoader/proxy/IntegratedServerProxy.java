@@ -1,11 +1,10 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
+import net.acomputerdog.BlazeLoader.api.command.ApiCommand;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.main.commands.bl.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.ModList;
-import net.minecraft.src.CommandHandler;
-import net.minecraft.src.IntegratedServer;
-import net.minecraft.src.Minecraft;
-import net.minecraft.src.WorldSettings;
+import net.minecraft.src.*;
 
 import java.lang.reflect.Field;
 
@@ -13,9 +12,13 @@ public class IntegratedServerProxy extends IntegratedServer {
     public IntegratedServerProxy(Minecraft minecraft, IntegratedServer server){
         super(minecraft, server.getFolderName(), server.getWorldName(), getWorldSettings(server));
         setConfigurationManager(new IntegratedPlayerListProxy(this));
-        BlazeLoader.registerCommandHandler((CommandHandler)getCommandManager());
+        mergeCommandHandlers(BlazeLoader.commandManager);
+        ApiCommand.registerCommand(new CommandBL());
     }
 
+    public IntegratedServerProxy(Minecraft minecraft, String folderName, String worldName, WorldSettings settings){
+        super(minecraft, folderName, worldName, settings);
+    }
     /**
      * Sets the serverRunning variable to false, in order to get the server to shut down.
      */
@@ -37,5 +40,12 @@ public class IntegratedServerProxy extends IntegratedServer {
             }
         }
         return null;
+    }
+
+    protected void mergeCommandHandlers(CommandHandler oldManager){
+        CommandHandler newManager = (CommandHandler)this.getCommandManager();
+        for(Object command : oldManager.getCommands().values()){
+            newManager.registerCommand((ICommand)command);
+        }
     }
 }

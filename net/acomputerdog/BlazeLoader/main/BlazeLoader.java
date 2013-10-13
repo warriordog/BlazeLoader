@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
+import net.acomputerdog.BlazeLoader.main.commands.bl.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.BLLogger;
@@ -22,8 +23,7 @@ public final class BlazeLoader {
     public static int freeItemId = 1;
     public static boolean isInTick = false;
     public static long ticks = 0;
-    public static CommandHandler commandManager = null;
-    public static CommandHandler temporaryCommandManager = new CommandHandler();
+    public static CommandHandler commandManager = new CommandHandler();
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
@@ -36,11 +36,13 @@ public final class BlazeLoader {
         try{
             ApiBase.theProfiler.startSection("SettingsAndFiles");
             logger.logInfo("BlazeLoader version " + Version.getMinecraftVersion() + "/" + Version.getStringVersion() + " is starting...");
+
             ApiBase.mainDir = mainDir;
             File apiDir = new File(mainDir, "/BL/");
             if(!apiDir.exists() && !apiDir.mkdir()){
                 logger.logError("Could not create main API directory!");
             }
+
             settingsFile = new File(apiDir, "BLConfig.json");
             if(!settingsFile.exists()){
                 logger.logWarning("Config file does not exist!  It will be created.");
@@ -54,12 +56,13 @@ public final class BlazeLoader {
                 logger.logWarning("Mods folder not found!  Creating new folder...");
                 logger.logDetail(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
-
             ApiBase.configDir = new File(mainDir, Settings.configDir);
             if(!ApiBase.configDir.exists() || !ApiBase.configDir.isDirectory()){
                 logger.logWarning("Config folder not found!  Creating new folder...");
                 logger.logDetail(ApiBase.configDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
+
+            new CommandBL();
 
             ApiBase.theProfiler.endStartSection("Mod Loading");
             ApiTick.gameTimer = getTimer();
@@ -196,16 +199,4 @@ public final class BlazeLoader {
         System.exit(code);
     }
 
-    public static void registerCommandHandler(CommandHandler handler){
-        if(commandManager != null){
-            for(Object command : commandManager.getCommands().values()){
-                handler.registerCommand((ICommand) command);
-            }
-        }
-        commandManager = handler;
-        for(Object command : temporaryCommandManager.getCommands().values()){
-            commandManager.registerCommand((ICommand) command);
-        }
-        temporaryCommandManager = new CommandHandler();
-    }
 }
