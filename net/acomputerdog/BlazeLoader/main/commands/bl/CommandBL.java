@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.main.commands.bl;
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.api.command.BLCommandBase;
 import net.acomputerdog.BlazeLoader.main.commands.bl.module.CommandBLModule;
+import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleMods;
 import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleVersion;
 import net.minecraft.src.ICommandSender;
 
@@ -20,6 +21,7 @@ public class CommandBL extends BLCommandBase {
         super(true);
         modules = new ArrayList<CommandBLModule>();
         modules.add(new ModuleVersion());
+        modules.add(new ModuleMods());
     }
 
     @Override
@@ -35,14 +37,15 @@ public class CommandBL extends BLCommandBase {
     @Override
     public void processCommand(ICommandSender user, String[] args) {
         if(args.length == 0){
-            sendChatLine(user, EChatColor.COLOR_AQUA + "" + EChatColor.FORMAT_UNDERLINE + "Loaded BL sub-commands:");
+            sendChatLine(user, EChatColor.COLOR_AQUA + "" + EChatColor.FORMAT_UNDERLINE + "Available functions:");
+            sendChat(user, "");
             if(modules.size() > 0){
                 for(int index = 0; index < modules.size(); index++){
                     CommandBLModule module = modules.get(index);
                     sendChatLine(user, EChatColor.COLOR_BLUE + "" + index + ". "  + EChatColor.COLOR_YELLOW + module.getModuleName()  + " - " + EChatColor.COLOR_ORANGE + module.getModuleDescription());
                 }
             }else{
-                sendChatLine(user, EChatColor.COLOR_RED + "No sub-commands loaded!");
+                sendChatLine(user, EChatColor.COLOR_RED + "No functions available!!");
             }
         }else{
             processSubCommand(user, args);
@@ -72,7 +75,7 @@ public class CommandBL extends BLCommandBase {
                     if(module.canUserUseCommand(user)){
                         module.execute(user, command);
                     }else{
-                        sendChatLine(user, EChatColor.COLOR_RED + "You cannot use this command, sorry!");
+                        sendChatLine(user, EChatColor.COLOR_RED + "You cannot use this function, sorry!");
                     }
                 }else{
                     sendChatLine(user, EChatColor.COLOR_RED + "Invalid arguments!  Use \"/bl " + module.getUsage() + "\".");
@@ -80,6 +83,6 @@ public class CommandBL extends BLCommandBase {
                 return;
             }
         }
-        sendChatLine(user, EChatColor.COLOR_RED + "Unknown sub-command!  Use \"/bl\" to get a list!");
+        sendChatLine(user, EChatColor.COLOR_RED + "Unknown function!  Use \"/bl\" to get a list!");
     }
 }

@@ -12,7 +12,7 @@ public class Version {
      * @return Returns the version of BlazeLoader as an integer.
      */
     public static int getIntVersion(){
-        return 5;
+        return 6;
     }
 
     /**
@@ -20,7 +20,7 @@ public class Version {
      * @return Returns the version of BlazeLoader as a String formatted for display.
      */
     public static String getStringVersion(){
-        return "dev_0.0.005";
+        return "dev_0.0.006";
     }
 
     /**
