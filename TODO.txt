@@ -3,6 +3,7 @@
 + completed
 ==================================================
 
+-Fix forge compatibility with tweak loading.
 -Add query support (return list of mods)
 +Add support for tweak loading.
 -Add more APIs
