@@ -146,6 +146,7 @@ public abstract class Mod {
      */
     public void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
 
+    @Deprecated
     /**
      * Called when a non-local player respawns.  Only works for other players.
      * @param oldPlayer The player that died.
