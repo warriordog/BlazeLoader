@@ -10,7 +10,6 @@ import net.minecraft.src.WorldClient;
  * Methods have default implementations, but can be overridden.
  * event... methods can be overridden to respond to game events.
  */
-@SuppressWarnings({"UnusedParameters", "EmptyMethod"})
 @Beta(stable = true)
 public abstract class Mod {
     /**
@@ -54,6 +53,14 @@ public abstract class Mod {
      */
     public boolean isCompatibleWithBLVersion(){
         return true;
+    }
+
+    /**
+     * Gets a user-friendly description of the mod.
+     * @return Return a String representing a user-friendly version of the mod.
+     */
+    public String getModDescription(){
+        return "No description!";
     }
 
     /**
