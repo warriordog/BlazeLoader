@@ -39,7 +39,7 @@ public class ModuleMods extends CommandBLModule {
             sendChatLine(user, EChatColor.COLOR_AQUA + "" + EChatColor.FORMAT_UNDERLINE + mods.size() + " loaded mod(s):");
             for(Mod mod : mods){
                 sendChat(user, "");
-                sendChatLine(user, EChatColor.COLOR_YELLOW + mod.getModName() + EChatColor.COLOR_WHITE + " version " + EChatColor.COLOR_ORANGE + mod.getStringModVersion());
+                sendChatLine(user, EChatColor.COLOR_YELLOW + mod.getModName() + EChatColor.COLOR_WHITE + " v. " + EChatColor.COLOR_YELLOW + mod.getStringModVersion() + EChatColor.COLOR_ORANGE + " - " + mod.getModDescription());
             }
         }else{
             sendChatLine(user, EChatColor.COLOR_RED + "No mods are loaded!");
