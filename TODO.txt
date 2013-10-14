@@ -3,12 +3,9 @@
 + completed
 ==================================================
 
-+Add query plugin support (return list of mods)
--Add support for tweak loading.
--Add API from MCF post
--Extend existing APIs
--Add API to override "World Tick" functions
--Add advanced mod events
+-Add query support (return list of mods)
++Add support for tweak loading.
+-Add more APIs
 +Enable essential mod event methods
 +Add essential mod event methods (load(), start(), stop())
 +Connect to minecraft source
