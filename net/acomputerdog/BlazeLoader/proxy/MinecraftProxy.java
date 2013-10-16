@@ -56,8 +56,12 @@ public class MinecraftProxy extends Minecraft {
     @Override
     public void loadWorld(WorldClient par1WorldClient, String par2Str) {
         super.loadWorld(par1WorldClient, par2Str);
-        theServer = (IntegratedServerProxy)getIntegratedServer();
-        serverRunning = false;
+        theServer = (IntegratedServerProxy)super.getIntegratedServer();
+        if (par1WorldClient == null && this.theWorld != null){
+            serverRunning = theServer != null;
+        }else{
+            serverRunning = false;
+        }
         ApiBase.localPlayer = this.thePlayer;
         ModList.loadWorld(par1WorldClient, par2Str);
     }
@@ -191,7 +195,10 @@ public class MinecraftProxy extends Minecraft {
 
     @Override
     public boolean isIntegratedServerRunning() {
-        return serverRunning;
+        if(serverRunning == (theServer == null)){
+            serverRunning = !(theServer == null);
+        }
+        return serverRunning && !theServer.getPublic();
     }
 
     /**
@@ -199,7 +206,7 @@ public class MinecraftProxy extends Minecraft {
      */
     @Override
     public boolean isSingleplayer() {
-        return serverRunning && getIntegratedServer().getPublic();
+        return serverRunning && theServer != null;
     }
 
 }

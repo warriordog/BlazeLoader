@@ -136,17 +136,7 @@ public abstract class Mod {
      */
     public void eventPlayerLogout(EntityPlayerMP player){}
 
-    @Deprecated
-    /**
-     * Called when a player spawns or respawns.  Only works for OTHER players, and only in LAN games!
-     * @param oldPlayer The player being respawned.
-     * @param newPlayer The newly spawned player.
-     * @param dimension The dimension (world) to spawn the player in.
-     * @param causedByDeath Is the respawn triggered by death?
-     */
-    public void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
-
-    @Deprecated
+    @Beta(stable = false)
     /**
      * Called when a non-local player respawns.  Only works for other players.
      * @param oldPlayer The player that died.
