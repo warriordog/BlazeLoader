@@ -60,7 +60,7 @@ public abstract class Mod {
 
     /**
      * Gets a user-friendly description of the mod.
-     * @return Return a String representing a user-friendly version of the mod.
+     * @return Return a String representing a user-friendly description of the mod.
      */
     public String getModDescription(){
         return "No description!";
