@@ -9,6 +9,8 @@ import net.minecraft.src.WorldClient;
  * Base class of mods.  Mods should extend this class.
  * Methods have default implementations, but can be overridden.
  * event... methods can be overridden to respond to game events.
+ * Event methods that reference Minecraft classes have "No-args" versions that can be used for mods that wish to avoid being specific to particular Minecraft versions.
+ * If a normal event method is overridden, it's no-args version will NOT be triggered.
  */
 @Beta(stable = true)
 public abstract class Mod {
@@ -97,6 +99,7 @@ public abstract class Mod {
      * @return Return the GUI to actually display
      */
     public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet){
+        this.eventDisplayGui();
         return gui;
     }
 
@@ -117,7 +120,9 @@ public abstract class Mod {
      * @param world The world being loaded.
      * @param message The message displayed to the user on the loading screen.
      */
-    public void eventLoadWorld(WorldClient world, String message){}
+    public void eventLoadWorld(WorldClient world, String message){
+        this.eventLoadWorld();
+    }
 
     /**
      * Called when the current world is unloaded.
@@ -128,13 +133,17 @@ public abstract class Mod {
      * Called when a player logs into the game.
      * @param player The player logging in.
      */
-    public void eventPlayerLogin(EntityPlayerMP player){}
+    public void eventPlayerLogin(EntityPlayerMP player){
+        this.eventPlayerLogin();
+    }
 
     /**
      * Called when a player logs out of the game.
      * @param player The player logging out.
      */
-    public void eventPlayerLogout(EntityPlayerMP player){}
+    public void eventPlayerLogout(EntityPlayerMP player){
+        this.eventPlayerLogout();
+    }
 
     @Beta(stable = false)
     /**
@@ -144,12 +153,40 @@ public abstract class Mod {
      * @param dimension The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
-    public void eventOtherPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){}
+    public void eventOtherPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){
+        this.eventOtherPlayerRespawn();
+    }
 
     /**
      * Called when the client player dies.
      */
     public void eventClientPlayerDeath(){}
+
+    /**
+     * Called when a GUI is about to be displayed.  No-args version of eventDisplayGui(GuiScreen, boolean)
+     */
+    public void eventDisplayGui(){}
+
+    /**
+     * Called when a world is loaded.  No-args version of eventLoadWorld(WorldClient, String)
+     */
+    public void eventLoadWorld(){}
+
+    /**
+     * Called when a player logs into the game.  No-args version of eventPlayerLogin(EntityPlayerMP)
+     */
+    public void eventPlayerLogin(){}
+
+    /**
+     * Called when a player logs out of the game. No-args version of eventPlayerLogout(EntityPlayerMP)
+     */
+    public void eventPlayerLogout(){}
+
+    /**
+     * Called when a non-local player respawns.  Only works for other players.
+     * No-args version of eventOtherPlayerRespawn(EntityPlayerMP, EntityPlayerMP, int, boolean)
+     */
+    public void eventOtherPlayerRespawn(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
