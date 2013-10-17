@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
+import net.minecraft.src.WorldServer;
 
 /**
  * Base class of mods.  Mods should extend this class.
@@ -187,6 +188,17 @@ public abstract class Mod {
      * No-args version of eventOtherPlayerRespawn(EntityPlayerMP, EntityPlayerMP, int, boolean)
      */
     public void eventOtherPlayerRespawn(){}
+
+    /**
+     * Called when a server-side world is ticked.
+     * @param world The world being ticked.
+     */
+    public void eventTickServerWorld(WorldServer world){}
+
+    /**
+     * Called when a server-side world is ticked.  No-args version of eventTickServerWorld(WorldServer)
+     */
+    public void eventTickServerWorld(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().

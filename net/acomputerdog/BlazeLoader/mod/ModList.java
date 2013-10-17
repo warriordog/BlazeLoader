@@ -5,6 +5,7 @@ import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
+import net.minecraft.src.WorldServer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -182,6 +183,12 @@ public class ModList {
     public static void eventClientPlayerDeath(){
         for(Mod mod : loadedMods){
             mod.eventClientPlayerDeath();
+        }
+    }
+
+    public static void eventTickServerWorld(WorldServer world){
+        for(Mod mod : loadedMods){
+            mod.eventTickServerWorld(world);
         }
     }
 }
