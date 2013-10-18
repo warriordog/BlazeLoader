@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Block;
+import net.minecraft.src.World;
 import net.minecraft.src.WorldServer;
 
 /**
@@ -54,6 +55,20 @@ public class ApiBlock {
      */
     public static void setBlock(int world, int x, int y, int z, int id, int metadata, int notifyFlag){
         getServerForDimension(world).setBlock(x, y, z, id, metadata, notifyFlag);
+    }
+
+    /**
+     * Sets the block at a specified location.
+     * @param world The world to change the block in.
+     * @param x The X-coordinate to change.
+     * @param y The Y-coordinate to change.
+     * @param z The Z-coordinate to change.
+     * @param id The block ID to set.
+     * @param metadata The block Metadata to set.
+     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
+     */
+    public static void setBlock(World world, int x, int y, int z, int id, int metadata, int notifyFlag){
+        world.setBlock(x, y, z, id, metadata, notifyFlag);
     }
 
     /**
