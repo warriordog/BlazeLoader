@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.entity;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.EntityEggInfo;
 import net.minecraft.src.EntityList;
 
@@ -48,5 +49,18 @@ public class ApiEntity {
                 }
             }
         }
+    }
+
+    /**
+     * Gets a free entity ID.
+     * @return return a free entity ID.
+     */
+    public static int getFreeEntityId(){
+        while(EntityList.getClassFromID(BlazeLoader.freeEntityId) == null){
+            BlazeLoader.freeEntityId++;
+        }
+        int currId = BlazeLoader.freeEntityId;
+        BlazeLoader.freeEntityId++;
+        return currId;
     }
 }

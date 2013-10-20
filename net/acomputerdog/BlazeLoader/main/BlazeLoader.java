@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 public final class BlazeLoader {
     public static int freeBlockId = 1;
     public static int freeItemId = 1;
+    public static int freeEntityId = 1;
     public static boolean isInTick = false;
     public static long ticks = 0;
     public static CommandHandler commandManager = new CommandHandler();
