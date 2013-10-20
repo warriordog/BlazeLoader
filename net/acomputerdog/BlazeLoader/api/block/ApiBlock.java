@@ -28,8 +28,7 @@ public class ApiBlock {
             int id =  BlazeLoader.freeBlockId;
             BlazeLoader.freeBlockId++;
             return id;
-        }
-        else{
+        }else{
             int id =  BlazeLoader.updateFreeBlockId();
             BlazeLoader.freeBlockId++;
             return id;
