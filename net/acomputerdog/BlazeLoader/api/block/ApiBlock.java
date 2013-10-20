@@ -6,6 +6,12 @@ import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Block;
 import net.minecraft.src.WorldServer;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Api for block-specific functions
  */
@@ -40,6 +46,57 @@ public class ApiBlock {
         int id =  BlazeLoader.resetFreeBlockId();
         BlazeLoader.freeBlockId++;
         return id;
+    }
+
+    @Beta(stable = true)
+    /**
+     * Overrides and existing block as well as any other fields referencing it.
+     * Eg:  If overriding the block with ID 1, Block.blockStone will also be replaces.
+     * @param block The block class to create the block from.
+     * @param blockID The ID of the new block.
+     * @param blockArgs Arguments to pass to the constructor of the new block.
+     */
+    public static void overrideBlock(Class<? extends Block> block, int blockID, Object[] blockArgs){
+        Block oldBlock = Block.blocksList[blockID];
+        List<Field> newBlocks = new ArrayList<Field>();
+        if(oldBlock != null){
+            for(Field f : Block.class.getDeclaredFields()){
+                try{
+                    f.setAccessible(true);
+                    if(f.get(null) == oldBlock){
+                        newBlocks.add(f);
+                    }
+                }catch(ReflectiveOperationException e){
+                    throw new RuntimeException("Could not get block field!", e);
+                }
+            }
+            Block.blocksList[blockID] = null;
+        }
+        Block blockInstance = null;
+        for(Constructor c : block.getDeclaredConstructors()){
+            if(c.getParameterTypes().length == blockArgs.length){
+                try{
+                    c.setAccessible(true);
+                    blockInstance = (Block)c.newInstance(blockArgs);
+                }catch(ReflectiveOperationException e){
+                    throw new RuntimeException("Could not create new block!", e);
+                }
+            }
+        }
+        for(Field f : newBlocks){
+            try{
+                f.setAccessible(true);
+                int modifiers = f.getModifiers();
+                if(Modifier.isFinal(modifiers)){
+                    Field theModifiers = Field.class.getDeclaredField("modifiers");
+                    theModifiers.setAccessible(true);
+                    theModifiers.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                }
+                f.set(null, blockInstance);
+            }catch(ReflectiveOperationException e){
+                throw new RuntimeException("Could not replace block field!", e);
+            }
+        }
     }
 
     /**
