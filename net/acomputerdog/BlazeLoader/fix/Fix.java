@@ -1,8 +1,6 @@
 package net.acomputerdog.BlazeLoader.fix;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
-
-@Beta(stable = true)
+@Deprecated
 /**
  * A one-time-run class that is loaded at various times of startup to fix issues with Mojang code.
  */
