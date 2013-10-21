@@ -52,6 +52,9 @@ public final class BlazeLoader {
             loadSettings();
             saveSettings();
 
+            if(Settings.useVersionMods){
+                Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";
+            }
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 logger.logWarning("Mods folder not found!  Creating new folder...");
