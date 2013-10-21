@@ -54,6 +54,7 @@ public final class BlazeLoader {
 
             if(Settings.useVersionMods){
                 Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";
+                Settings.configDir = "/versions/" + Version.getMinecraftVersion() + "/config/";
             }
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
