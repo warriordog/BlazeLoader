@@ -8,7 +8,7 @@ public class Version {
 
     /**
      * Gets the global version of BlazeLoader.  A change here will RESET the status of the other two update counters.
-     * Mods will be unable to check the status of the other two counters so changes here must be taken into account.
+     * Mods must check this value first before determining if the version of BL is correct.
      * Generally a change here is either a Minecraft update or a large restructuring.
      * @return Return the global version of BlazeLoader.
      */
@@ -17,7 +17,7 @@ public class Version {
     }
 
     /**
-     * Gets the version of the API features of BlazeLoader.  Incremented with changes to package "api", package "util", and Class Mod.
+     * Gets the version of the API features of BlazeLoader.  Incremented with changes to API features.
      * Changes here may affect mods.
      * @return Get the version of the API features of BlazeLoader
      */
@@ -27,7 +27,7 @@ public class Version {
 
     /**
      * Gets the version of the internal features of BlazeLoader.
-     * Mods that only use package "api", package "util", and Class Mod should be unaffected by version changes here.
+     * Mods that only use API features should be unaffected by changes here.
      * @return Return an int representing the version of BL's internal components.
      */
     public static int getInternalVersion(){
@@ -37,7 +37,6 @@ public class Version {
     @Deprecated
     /**
      * Gets the version of BlazeLoader as an integer.  Incremented by one with every commit.
-     * Should to be used to compare versions.
      * -Will be removed soon!-
      * @return Returns the version of BlazeLoader as an integer.
      */
@@ -54,7 +53,7 @@ public class Version {
     }
 
     /**
-     * Gets the version of Minecraft that this version of BlazeLoader is intended for.
+     * Gets the version of Minecraft that is running.
      * @return Returns a String representing the version of Minecraft, ex. "1.6.4".
      */
     public static String getMinecraftVersion(){
