@@ -34,6 +34,7 @@ public class Version {
         return 4;
     }
 
+    @Deprecated
     /**
      * Gets the version of BlazeLoader as an integer.  Incremented by one with every commit.
      * Should to be used to compare versions.
