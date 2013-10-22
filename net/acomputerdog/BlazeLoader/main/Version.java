@@ -31,7 +31,7 @@ public final class Version {
      * @return Return an int representing the version of BL's internal components.
      */
     public static int getInternalVersion(){
-        return 5;
+        return 6;
     }
 
     @Deprecated
@@ -41,7 +41,7 @@ public final class Version {
      * @return Returns the version of BlazeLoader as an integer.
      */
     public static int getIntVersion(){
-        return 16;
+        return 17;
     }
 
     /**

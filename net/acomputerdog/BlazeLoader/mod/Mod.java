@@ -1,7 +1,10 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.annotation.Beta;
-import net.minecraft.src.*;
+import net.minecraft.src.EntityPlayerMP;
+import net.minecraft.src.GuiScreen;
+import net.minecraft.src.WorldClient;
+import net.minecraft.src.WorldServer;
 
 /**
  * Base class of mods.  Mods should extend this class.
@@ -78,18 +81,9 @@ public abstract class Mod {
     public void stop(){}
 
     /**
-     * Called at the end of a game tick.
+     * Called when the game is ticked.
      */
-    public void eventTick(){
-        this.eventPostTick();
-    }
-
-    @Deprecated
-    /**
-     * Called at the end of a game tick.
-     * -Will be soon replaced with eventTick()!-
-     */
-    public void eventPostTick(){}
+    public void eventTick(){}
 
     /**
      *  Called when a GUI is about to be displayed.  Mods should return param gui unless they wish to override the GUI displayed.
@@ -200,19 +194,6 @@ public abstract class Mod {
      * Called when a server-side world is ticked.  No-args version of eventTickServerWorld(WorldServer)
      */
     public void eventTickServerWorld(){}
-
-    /**
-     * Called when the EntityRenderer is ticked.
-     * @param renderer The renderer that is being ticked.
-     */
-    public void eventRenderTick(EntityRenderer renderer){
-        this.eventRenderTick();
-    }
-
-    /**
-     * No-args version of eventRenderTick(EntityRenderer)
-     */
-    public void eventRenderTick(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().

@@ -10,13 +10,11 @@ public class EntityRendererProxy extends EntityRenderer {
     }
 
     /**
-     * Updates the entity renderer
+     * Will update any inputs that effect the camera angle (mouse) and then render the world and GUI
      */
     @Override
-    public void updateRenderer() {
-        ModList.eventRenderTick(this);
-        super.updateRenderer();
+    public void updateCameraAndRender(float par1) {
+        super.updateCameraAndRender(par1);
+        ModList.tick();
     }
-
-
 }
