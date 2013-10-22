@@ -59,12 +59,12 @@ public final class BlazeLoader {
             ApiBase.modDir = new File(mainDir, Settings.modDir);
             if(!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()){
                 logger.logWarning("Mods folder not found!  Creating new folder...");
-                logger.logDetail(ApiBase.modDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                logger.logDetail(ApiBase.modDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
             ApiBase.configDir = new File(mainDir, Settings.configDir);
             if(!ApiBase.configDir.exists() || !ApiBase.configDir.isDirectory()){
                 logger.logWarning("Config folder not found!  Creating new folder...");
-                logger.logDetail(ApiBase.configDir.mkdir() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                logger.logDetail(ApiBase.configDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
 
             new CommandBL();
@@ -145,7 +145,6 @@ public final class BlazeLoader {
         return updateFreeItemId();
     }
 
-    @SuppressWarnings("WeakerAccess")
     public static void loadSettings(){
         hasLoaded = true;
         try {

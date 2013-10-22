@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * An auto-saving and auto-loading config file for mods.  Saves to the registered config directory.
@@ -27,19 +28,6 @@ public abstract class ModConfig {
     protected transient File configFile;
 
     /**
-     * Creates a new config file using owner.getModId() as the filename.
-     * @param owner The mod that created this config.
-     */
-    public ModConfig(Mod owner){
-        if(owner == null){
-            throw new IllegalArgumentException("owner cannot be null!");
-        }
-        this.owner = owner;
-        this.configFile = new File(ApiBase.configDir, owner.getModId() + ".cfg");
-        ConfigList.addConfig(this);
-    }
-
-    /**
      * Creates a new config file using fileName as the filename.
      * @param owner The mod that created this config.
      * @param fileName The filename to use.
@@ -53,6 +41,15 @@ public abstract class ModConfig {
         }
         this.owner = owner;
         this.configFile = new File(ApiBase.configDir, fileName);
+        if(!configFile.exists()){
+            try {
+                if(!(new File(configFile.getParent()).mkdirs() || new File(configFile.getName()).createNewFile())){
+                    throw new RuntimeException("Could not create new file!");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Could not create new file!", e);
+            }
+        }
         ConfigList.addConfig(this);
     }
 
