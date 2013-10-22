@@ -1,7 +1,3 @@
-/*
-Copyright Mojang AB.
- */
-
 package net.minecraft.client.main;
 
 import net.acomputerdog.BlazeLoader.tweaklauncher.BLMain;
