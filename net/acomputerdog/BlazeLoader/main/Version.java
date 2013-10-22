@@ -4,7 +4,7 @@ package net.acomputerdog.BlazeLoader.main;
  * Contains methods for obtaining information about the installed version of BlazeLoader.
  * -MUST remain backward compatible!-
  */
-public class Version {
+public final class Version {
 
     /**
      * Gets the global version of BlazeLoader.  A change here will RESET the status of the other two update counters.
