@@ -2,6 +2,7 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.proxy.EntityRendererProxy;
 import net.minecraft.src.EntityPlayerMP;
 import net.minecraft.src.GuiScreen;
 import net.minecraft.src.WorldClient;
@@ -189,6 +190,12 @@ public class ModList {
     public static void eventTickServerWorld(WorldServer world){
         for(Mod mod : loadedMods){
             mod.eventTickServerWorld(world);
+        }
+    }
+
+    public static void eventRenderTick(EntityRendererProxy renderer){
+        for(Mod mod : loadedMods){
+            mod.eventRenderTick(renderer);
         }
     }
 }

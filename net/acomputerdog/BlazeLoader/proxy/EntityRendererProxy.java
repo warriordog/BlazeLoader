@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.EntityRenderer;
 import net.minecraft.src.Minecraft;
 
@@ -13,7 +14,7 @@ public class EntityRendererProxy extends EntityRenderer {
      */
     @Override
     public void updateRenderer() {
-        //Event here?
+        ModList.eventRenderTick(this);
         super.updateRenderer();
     }
 

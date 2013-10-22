@@ -1,10 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.annotation.Beta;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.WorldClient;
-import net.minecraft.src.WorldServer;
+import net.minecraft.src.*;
 
 /**
  * Base class of mods.  Mods should extend this class.
@@ -201,6 +198,19 @@ public abstract class Mod {
      * Called when a server-side world is ticked.  No-args version of eventTickServerWorld(WorldServer)
      */
     public void eventTickServerWorld(){}
+
+    /**
+     * Called when the EntityRenderer is ticked.
+     * @param renderer The renderer that is being ticked.
+     */
+    public void eventRenderTick(EntityRenderer renderer){
+        this.eventRenderTick();
+    }
+
+    /**
+     * No-args version of eventRenderTick(EntityRenderer)
+     */
+    public void eventRenderTick(){}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
