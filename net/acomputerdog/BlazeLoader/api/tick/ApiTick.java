@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Timer;
 
@@ -15,7 +14,6 @@ public class ApiTick {
     private static boolean hasTps = false;
     private static float tps = 0.0F;
 
-    @Beta(stable = true)
     /**
      * The game's tick timer.
      */

@@ -10,7 +10,6 @@ import net.minecraft.src.*;
  * Event methods that reference Minecraft classes have "No-args" versions that can be used for mods that wish to avoid being specific to particular Minecraft versions.
  * If a normal event method is overridden, it's no-args version will NOT be triggered.
  */
-@Beta(stable = true)
 public abstract class Mod {
     /**
      *  Returns ID used to identify this mod internally, even among different versions of the same mod.  Mods should override.

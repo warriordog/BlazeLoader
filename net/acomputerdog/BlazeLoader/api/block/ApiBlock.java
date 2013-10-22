@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class ApiBlock {
 
-    @Beta(stable = true)
     /**
      * Gets an available block ID.  Throws a RuntimeException if none are available.
      * @return Returns a free Block ID
@@ -35,7 +34,6 @@ public class ApiBlock {
         }
     }
 
-    @Beta(stable = true)
     /**
      * Gets an available block ID, checking for used IDs that have been freed.
      * Throws a RuntimeException if none are available.
