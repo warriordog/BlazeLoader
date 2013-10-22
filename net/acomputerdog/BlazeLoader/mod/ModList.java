@@ -112,15 +112,11 @@ public class ModList {
         }
     }
 
-    public static void tick(boolean isPreTick){
+    public static void tick(){
         ApiBase.theProfiler.startSection("tick_mods");
         for(Mod mod : loadedMods){
             ApiBase.theProfiler.startSection("mod_" + mod.getModId());
-            if(isPreTick){
-                mod.eventPreTick();
-            }else{
-                mod.eventPostTick();
-            }
+            mod.eventTick();
             ApiBase.theProfiler.endSection();
         }
         ApiBase.theProfiler.endSection();

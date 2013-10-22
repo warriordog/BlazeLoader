@@ -171,7 +171,7 @@ public class MinecraftProxy extends Minecraft {
             entityRenderer = new EntityRendererProxy(this);
         }
         super.runTick();
-        ModList.tick(false);
+        ModList.tick();
         BlazeLoader.isInTick = false;
     }
 

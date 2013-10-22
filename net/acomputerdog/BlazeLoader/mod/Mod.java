@@ -78,13 +78,16 @@ public abstract class Mod {
     public void stop(){}
 
     /**
-     * Called at the start of a game tick.
-     * -Currently DISABLED-
+     * Called at the end of a game tick.
      */
-    public void eventPreTick(){}
+    public void eventTick(){
+        this.eventPostTick();
+    }
 
+    @Deprecated
     /**
      * Called at the end of a game tick.
+     * -Will be soon replaced with eventTick()!-
      */
     public void eventPostTick(){}
 
