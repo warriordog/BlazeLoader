@@ -193,7 +193,9 @@ public abstract class Mod {
      * Called when a server-side world is ticked.
      * @param world The world being ticked.
      */
-    public void eventTickServerWorld(WorldServer world){}
+    public void eventTickServerWorld(WorldServer world){
+        this.eventTickServerWorld();
+    }
 
     /**
      * Called when a server-side world is ticked.  No-args version of eventTickServerWorld(WorldServer)
