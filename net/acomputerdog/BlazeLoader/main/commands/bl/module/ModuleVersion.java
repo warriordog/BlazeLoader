@@ -4,7 +4,7 @@ import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.main.Version;
 import net.minecraft.src.ICommandSender;
 
-public class ModuleVersion extends CommandBLModule {
+public class ModuleVersion extends Module {
     /**
      * Gets the number of arguments required.  For a varied amount return 0 and process manually.
      *

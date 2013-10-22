@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.main.commands.bl;
 
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.api.command.BLCommandBase;
-import net.acomputerdog.BlazeLoader.main.commands.bl.module.CommandBLModule;
+import net.acomputerdog.BlazeLoader.main.commands.bl.module.Module;
 import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleMods;
 import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleVersion;
 import net.minecraft.src.ICommandSender;
@@ -15,11 +15,11 @@ import java.util.List;
  * A base command for BlazeLoader.
  */
 public class CommandBL extends BLCommandBase {
-    protected List<CommandBLModule> modules;
+    protected List<Module> modules;
 
     public CommandBL(){
         super(true);
-        modules = new ArrayList<CommandBLModule>();
+        modules = new ArrayList<Module>();
         modules.add(new ModuleVersion());
         modules.add(new ModuleMods());
     }
@@ -41,7 +41,7 @@ public class CommandBL extends BLCommandBase {
             sendChat(user, "");
             if(modules.size() > 0){
                 for(int index = 0; index < modules.size(); index++){
-                    CommandBLModule module = modules.get(index);
+                    Module module = modules.get(index);
                     sendChatLine(user, EChatColor.COLOR_BLUE + "" + index + ". "  + EChatColor.COLOR_YELLOW + module.getModuleName()  + " - " + EChatColor.COLOR_ORANGE + module.getModuleDescription());
                 }
             }else{
@@ -69,7 +69,7 @@ public class CommandBL extends BLCommandBase {
         if(command.length == 0){
             throw new IllegalArgumentException("command must have at least one index!");
         }
-        for(CommandBLModule module : modules){
+        for(Module module : modules){
             if(module.getModuleName().equals(command[0])){
                 if(module.getNumRequiredArgs() < command.length + 1){ // account for first index being module name
                     if(module.canUserUseCommand(user)){

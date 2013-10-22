@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Gets the list of installed mods.
  */
-public class ModuleMods extends CommandBLModule {
+public class ModuleMods extends Module {
 
     @Override
     public int getNumRequiredArgs() {

@@ -7,7 +7,7 @@ import net.minecraft.src.ICommandSender;
 /**
  * Base class for modules of CommandBL
  */
-public abstract class CommandBLModule {
+public abstract class Module {
 
     /**
      * Gets the number of arguments required.  For a varied amount return 0 and process manually.
