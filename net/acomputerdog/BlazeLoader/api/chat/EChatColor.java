@@ -43,6 +43,24 @@ public enum EChatColor {
     }
 
     /**
+     * Return the color code of this EChatColor combined with the color of otherColor.
+     * @param otherColor A String representing another color to combine with.
+     * @return Return the color code of this EChatColor combined with the color of otherColor.
+     */
+    public String get(String otherColor){
+        return (get() + otherColor);
+    }
+
+    /**
+     * Return the color code of this EChatColor combined with the color of otherColor.
+     * @param otherColor An EChatColor representing another color to combine with.
+     * @return Return the color code of this EChatColor combined with the color of otherColor.
+     */
+    public String get(EChatColor otherColor){
+        return get(otherColor.get());
+    }
+
+    /**
      * Gets the color code of this EChatColor.
      * @return Returns the color code associated with this EChatColor.
      */
