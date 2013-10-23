@@ -41,7 +41,7 @@ public final class Version {
      * @return Returns the version of BlazeLoader as an integer.
      */
     public static int getIntVersion(){
-        return 19;
+        return 20;
     }
 
     /**
