@@ -17,7 +17,7 @@ import java.net.Proxy;
  */
 public class MinecraftProxy extends Minecraft {
     public IntegratedServerProxy theServer = null;
-    protected boolean hasReplacedEntityRender = false;
+    protected boolean hasInjectedProxies = false;
     protected boolean hasFiredLocalDeath = false;
     protected boolean serverRunning = false;
 
@@ -166,9 +166,22 @@ public class MinecraftProxy extends Minecraft {
     public void runTick() {
         BlazeLoader.isInTick = true;
         BlazeLoader.ticks++;
-        if(!hasReplacedEntityRender){
-            hasReplacedEntityRender = true;
+        if(!hasInjectedProxies){
+            hasInjectedProxies = true;
             entityRenderer = new EntityRendererProxy(this);
+            for(Field f : RenderMinecart.class.getDeclaredFields()){
+                if(RenderBlocks.class.isAssignableFrom(f.getType())){
+                    try{
+                        f.setAccessible(true);
+                        Field mod = Field.class.getDeclaredField("modifiers");
+                        mod.setAccessible(true);
+                        mod.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                        f.set(RenderManager.instance.getEntityClassRenderObject(EntityMinecart.class), new RenderBlocksProxy());
+                    }catch (ReflectiveOperationException e){
+                        throw new RuntimeException("Could not inject RenderMinecraft RenderBlock proxy!", e);
+                    }
+                }
+            }
         }
         super.runTick();
         BlazeLoader.isInTick = false;
