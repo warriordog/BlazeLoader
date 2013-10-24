@@ -12,15 +12,15 @@ import java.io.IOException;
  * All fields not marked as transient will be saved and loaded.  All primitives and Strings will be
  * saved to a Properties-format file.  Make SURE that values are set in the constructor, NOT hardcoded into the class!
  * Otherwise the compiler will REMOVE the fields and convert them to constants!
- * Also be sure to call "loadSettings()" at the end of your constructor or the settings will not be loaded.
+ * Also be sure to call "loadConfig()" at the end of your constructor or the settings will not be loaded.
  * A sample constructor looks like this:
  *
- * public SomeModConfig(Mod owner){
- *     super(owner);
+ * public SomeModConfig(Mod owner, String fileName){
+ *     super(owner, fileName);
  *     valueOfSomething = 42;
  *     nameOfSomething = "some name";
  *     valueOfSomethingElse = .12345;
- *     loadSettings();
+ *     loadConfig();
  * }
  */
 public abstract class ModConfig {
