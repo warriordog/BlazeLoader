@@ -24,6 +24,8 @@ public class TweakLauncher implements ITweaker {
     protected Map<String, String> requiredArgs;
     protected List<String> handledArgs = new ArrayList<String>();
     protected List<String> ignoredArgs;
+    private String username = "";
+    private String session = "";
 
     public TweakLauncher(){
         logger.logInfo("BL tweak loader starting.");
@@ -31,6 +33,14 @@ public class TweakLauncher implements ITweaker {
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
+        int usernameIndex = args.indexOf("--username");
+        if(usernameIndex != -1 && usernameIndex < args.size()){
+            username = args.get(usernameIndex + 1);
+        }
+        int sessionIndex = args.indexOf("--session");
+        if(sessionIndex != -1 && sessionIndex < args.size()){
+            session = args.get(sessionIndex + 1);
+        }
         hasInit = true;
         this.gameDir = gameDir;
         this.assetDir = assetsDir;
@@ -64,6 +74,12 @@ public class TweakLauncher implements ITweaker {
         }
         if (!requiredArgs.containsKey("--assetsDir") && assetDir != null){
             requiredArgs.put("--assetsDir", assetDir.getAbsolutePath());
+        }
+        if(!requiredArgs.containsKey("--username")){
+            requiredArgs.put("--username", username);
+        }
+        if(!requiredArgs.containsKey("--session")){
+            requiredArgs.put("--session", session);
         }
     }
 
@@ -134,4 +150,33 @@ public class TweakLauncher implements ITweaker {
             }
         }
     }
+    /*
+    private void parseArgs(List<String> args)
+    {
+        String classifier = null;
+        for(String arg : args){
+            if(arg.startsWith("-")){
+                if(classifier != null){
+                    classifier = this.addClassifiedArg(classifier, "");
+                }else if(arg.contains("=")){
+                    classifier = this.addClassifiedArg(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
+                }else{
+                    classifier = arg;
+                }
+            }else{
+                if(classifier != null){
+                    classifier = this.addClassifiedArg(classifier, arg);
+                }else{
+                    this.handledArgs.add(arg);
+                }
+            }
+        }
+    }
+
+    private String addClassifiedArg(String classifiedArg, String arg)
+    {
+        this.requiredArgs.put(classifiedArg, arg);
+        return null;
+    }
+    */
 }
