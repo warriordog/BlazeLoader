@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.fix.core.fixBlockAir;
+package net.acomputerdog.BlazeLoader.main.fixes;
 
 import net.minecraft.src.*;
 
@@ -6,7 +6,9 @@ import net.minecraft.src.*;
  * Represents an air block.
  */
 public class BlockAir extends Block {
-    protected BlockAir() {
+    private static boolean hasInjected = false;
+
+    private BlockAir() {
         super(0, Material.air);
     }
 
@@ -55,5 +57,12 @@ public class BlockAir extends Block {
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;
+    }
+
+    public static void injectBlockAir(){
+        if(!hasInjected){
+            hasInjected = true;
+            new BlockAir();
+        }
     }
 }

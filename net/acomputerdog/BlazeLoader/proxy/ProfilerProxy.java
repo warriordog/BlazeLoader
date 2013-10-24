@@ -1,7 +1,6 @@
 package net.acomputerdog.BlazeLoader.proxy;
 
-import net.acomputerdog.BlazeLoader.fix.FixManager;
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.main.fixes.BlockAir;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.Profiler;
 
@@ -12,14 +11,7 @@ public class ProfilerProxy extends Profiler {
     public void startSection(String par1Str) {
         if("root".equals(par1Str)){
             if(!hasLoadedMods){
-                try{
-                    BlazeLoader.getLogger().logInfo("Applying fixes...");
-                    FixManager.onStart();
-                    BlazeLoader.getLogger().logInfo("Applied fixes with no issues.");
-                }catch(Exception e){
-                    BlazeLoader.getLogger().logError("Exception occurred while applying fixes!");
-                    e.printStackTrace();
-                }
+                BlockAir.injectBlockAir();
                 hasLoadedMods = true;
                 ModList.start();
             }
