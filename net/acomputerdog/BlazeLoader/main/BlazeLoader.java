@@ -14,6 +14,8 @@ import net.minecraft.src.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Main class of BlazeLoader.  Contains various internal fields and methods.
@@ -31,6 +33,7 @@ public final class BlazeLoader {
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).setPrettyPrinting().create();
     private static File settingsFile;
     private static boolean hasLoaded = false;
+    private static HashMap<Class, Render> entityMap = null;
 
     public static void init(File mainDir){
         ApiBase.theProfiler.startSection("BL_Init");
@@ -201,6 +204,26 @@ public final class BlazeLoader {
             Thread.currentThread().join(100);
         }catch(Exception ignored){}
         System.exit(code);
+    }
+
+
+    public static HashMap<Class, Render> getEntityRenderMap(){
+        if(entityMap == null){
+            for(Field f : RenderManager.class.getDeclaredFields()){
+                if(Map.class.isAssignableFrom(f.getType())){
+                    try{
+                        f.setAccessible(true);
+                        entityMap = (HashMap)f.get(RenderManager.instance);
+                    }catch(ReflectiveOperationException e){
+                        throw new RuntimeException("Could not get entity map!", e);
+                    }
+                }
+            }
+            if(entityMap == null){
+                throw new RuntimeException("Could not find entity map!");
+            }
+        }
+        return entityMap;
     }
 
 }

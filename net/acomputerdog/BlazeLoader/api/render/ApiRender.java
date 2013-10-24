@@ -1,7 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.render;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.FontRenderer;
+import net.minecraft.src.Render;
 
 /**
  * Contains functions related to game rendering.
@@ -63,5 +65,14 @@ public class ApiRender {
      */
     public static void drawString(String string, int x, int y, int color){
         drawString(string, x, y, color, false, false);
+    }
+
+    /**
+     * Registers an entity renderer, overriding it if it exists.
+     * @param entity The class of the entity to register the renderer for.
+     * @param renderer The render to register.
+     */
+    public static void registerEntityRenderer(Class entity, Render renderer){
+        BlazeLoader.getEntityRenderMap().put(entity, renderer);
     }
 }
