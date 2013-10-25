@@ -167,6 +167,8 @@ public class MinecraftProxy extends Minecraft {
         if(!hasInjectedProxies){
             hasInjectedProxies = true;
             entityRenderer = new EntityRendererProxy(this);
+            /*
+            //Temporarily removed
             for(Field f : RenderMinecart.class.getDeclaredFields()){
                 if(RenderBlocks.class.isAssignableFrom(f.getType())){
                     try{
@@ -180,6 +182,7 @@ public class MinecraftProxy extends Minecraft {
                     }
                 }
             }
+            */
         }
         super.runTick();
         BlazeLoader.isInTick = false;
