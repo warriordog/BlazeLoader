@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
-import net.acomputerdog.BlazeLoader.main.commands.bl.CommandBL;
+import net.acomputerdog.BlazeLoader.main.commands.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.BLLogger;

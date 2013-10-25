@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.main.commands.bl;
+package net.acomputerdog.BlazeLoader.main.commands;
 
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.api.command.BLCommandBase;
