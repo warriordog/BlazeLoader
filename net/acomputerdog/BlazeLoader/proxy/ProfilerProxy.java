@@ -4,6 +4,9 @@ import net.acomputerdog.BlazeLoader.main.fixes.BlockAir;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.Profiler;
 
+/**
+ * A proxy for Profiler.  Allows mods to respond to profile events.
+ */
 public class ProfilerProxy extends Profiler {
     private boolean hasLoadedMods = false;
 

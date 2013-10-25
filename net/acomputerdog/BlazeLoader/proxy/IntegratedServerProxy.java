@@ -6,6 +6,9 @@ import net.minecraft.src.*;
 
 import java.lang.reflect.Field;
 
+/**
+ * Proxy class for IntegratedServer.  Gives access to a bunch of events.
+ */
 public class IntegratedServerProxy extends IntegratedServer {
     public IntegratedServerProxy(Minecraft minecraft, String folderName, String worldName, WorldSettings settings){
         super(minecraft, folderName, worldName, settings);

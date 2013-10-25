@@ -4,6 +4,9 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.src.EntityRenderer;
 import net.minecraft.src.Minecraft;
 
+/**
+ * Proxy class for EntityRenderer.  Provides Mod.tick() and ensures that rendering done there does not flicker.
+ */
 public class EntityRendererProxy extends EntityRenderer {
     public EntityRendererProxy(Minecraft par1Minecraft) {
         super(par1Minecraft);

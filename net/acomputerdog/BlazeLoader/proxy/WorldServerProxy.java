@@ -4,6 +4,9 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
+/**
+ * A proxy class for WorldServer.  Gives access to Mod.eventTickServerWorld().
+ */
 public class WorldServerProxy extends WorldServer {
 
     public WorldServerProxy(MinecraftServer par1MinecraftServer, ISaveHandler par2ISaveHandler, String par3Str, int par4, WorldSettings par5WorldSettings, Profiler par6Profiler, ILogAgent par7ILogAgent) {

@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A launch class that allows BlazeLoader to be loaded without modifications to the jar.  Requires LaunchWrapper.
+ */
 public class TweakLauncher implements ITweaker {
     protected BLLogger logger = new BLLogger("BL_Launcher");
     protected List<String> tweaks = new ArrayList<String>();
