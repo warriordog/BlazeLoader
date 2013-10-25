@@ -2,9 +2,6 @@ package net.acomputerdog.BlazeLoader.main.commands.bl;
 
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.api.command.BLCommandBase;
-import net.acomputerdog.BlazeLoader.main.commands.bl.module.Module;
-import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleMods;
-import net.acomputerdog.BlazeLoader.main.commands.bl.module.ModuleVersion;
 import net.minecraft.src.ICommandSender;
 
 import java.util.ArrayList;
