@@ -8,7 +8,7 @@ import net.minecraft.src.ICommandSender;
 import java.util.List;
 
 /**
- * Gets the list of installed mods.
+ * Module that adds /bl mods.  Gives list of loaded mods to the player.
  */
 public class ModuleMods extends Module {
 

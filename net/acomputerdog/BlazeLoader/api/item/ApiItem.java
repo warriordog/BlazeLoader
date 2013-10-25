@@ -3,6 +3,9 @@ package net.acomputerdog.BlazeLoader.api.item;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Item;
 
+/**
+ * Api functions for items.
+ */
 public class ApiItem {
 
     /**

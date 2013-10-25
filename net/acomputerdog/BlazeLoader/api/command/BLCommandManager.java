@@ -3,6 +3,9 @@ package net.acomputerdog.BlazeLoader.api.command;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
+/**
+ * A modified version of ServerCommandManager.  Exactly the same but does not auto-load vanilla commands.
+ */
 public class BLCommandManager extends CommandHandler{
 
     /**
