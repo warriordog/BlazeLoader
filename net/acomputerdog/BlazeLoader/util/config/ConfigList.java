@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Contains a list of ModConfigs.  Handles reflection necessary to load/save fields.
+ */
 public class ConfigList {
     private static List<ModConfig> configs = new ArrayList<ModConfig>();
 
