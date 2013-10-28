@@ -5,7 +5,7 @@ import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.acomputerdog.BlazeLoader.main.Version;
-import net.acomputerdog.BlazeLoader.util.BLLogger;
+import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;

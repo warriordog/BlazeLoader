@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.util;
+package net.acomputerdog.BlazeLoader.util.logger;
 
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.util.time.StandardClock;

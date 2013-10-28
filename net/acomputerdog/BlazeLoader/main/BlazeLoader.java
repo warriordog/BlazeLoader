@@ -8,7 +8,7 @@ import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
 import net.acomputerdog.BlazeLoader.main.command.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
-import net.acomputerdog.BlazeLoader.util.BLLogger;
+import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
 import net.minecraft.src.*;
 
 import java.io.*;
