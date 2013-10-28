@@ -9,6 +9,7 @@ import net.acomputerdog.BlazeLoader.main.command.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
+import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
 import net.minecraft.src.*;
 
 import java.io.*;
@@ -54,6 +55,10 @@ public final class BlazeLoader {
             }
             loadSettings();
             saveSettings();
+            ELogLevel level = ELogLevel.getByName(Settings.minimumLogLevelName);
+            if(level != null){
+                Settings.minimumLogLevel = level;
+            }
 
             if(Settings.useVersionMods){
                 Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";

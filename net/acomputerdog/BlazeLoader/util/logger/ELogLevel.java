@@ -61,7 +61,16 @@ public enum ELogLevel {
      * @return Returns true if this ELogLevel is allowed with the specified priority.
      */
     public boolean isAllowed(int priority){
-        return (this.priority >= priority);
+        return this.priority >= priority;
+    }
+
+    /**
+     * Returns true if this ELogLevel is allowed with the specified priority.
+     * @param priority The priority to compare to.
+     * @return Returns true if this ELogLevel is allowed with the specified priority.
+     */
+    public boolean isAllowed(ELogLevel priority){
+        return this.priority >= priority.getPriority();
     }
 
     /**

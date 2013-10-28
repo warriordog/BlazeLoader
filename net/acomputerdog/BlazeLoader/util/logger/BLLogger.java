@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.util.logger;
 
+import net.acomputerdog.BlazeLoader.main.Settings;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.util.time.StandardClock;
 
@@ -117,7 +118,9 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logDebug(String message){
-        log("[DEBUG] " + message);
+        if(canLog(ELogLevel.DEBUG)){
+            log("[DEBUG] " + message);
+        }
     }
 
     /**
@@ -125,7 +128,9 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logDetail(String message){
-        log("[DETAIL] " + message);
+        if(canLog(ELogLevel.DETAIL)){
+            log("[DETAIL] " + message);
+        }
     }
 
     /**
@@ -133,7 +138,9 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logInfo(String message){
-        log("[INFO] " + message);
+        if(canLog(ELogLevel.INFO)){
+            log("[INFO] " + message);
+        }
     }
 
     /**
@@ -141,7 +148,9 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logWarning(String message){
-        log("[WARNING] " + message);
+        if(canLog(ELogLevel.WARNING)){
+            log("[WARNING] " + message);
+        }
     }
 
     /**
@@ -149,7 +158,9 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logError(String message){
-        log("[ERROR] " + message);
+        if(canLog(ELogLevel.ERROR)){
+            log("[ERROR] " + message);
+        }
     }
 
     /**
@@ -157,7 +168,13 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logFatal(String message){
-        log("[FATAL] " + message);
+        if(canLog(ELogLevel.FATAL)){
+            log("[FATAL] " + message);
+        }
+    }
+
+    private static boolean canLog(ELogLevel level){
+        return level.isAllowed(Settings.minimumLogLevel);
     }
 
 }

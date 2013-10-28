@@ -1,5 +1,7 @@
 package net.acomputerdog.BlazeLoader.main;
 
+import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
+
 /**
  * Global settings.  Saved to .minecraft/BL/BLConfig.json.  BlazeLoader.class uses Gson library to handle serialization.
  */
@@ -24,4 +26,10 @@ public class Settings {
      * Option to use the version folder for mods instead of the base BL folder.
      */
     public static boolean useVersionMods = true;
+
+    /**
+     * The minimum log level required for a message to be displayed.
+     */
+    public static transient ELogLevel minimumLogLevel = ELogLevel.DEBUG;
+    protected static String minimumLogLevelName = "debug";
 }
