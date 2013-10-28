@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.proxy;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.util.config.ConfigList;
 import net.minecraft.src.*;
 
 import java.io.File;
@@ -157,6 +158,7 @@ public class MinecraftProxy extends Minecraft {
     public void shutdown() {
         ModList.stop();
         BlazeLoader.saveSettings();
+        ConfigList.saveAllConfigs();
         super.shutdown();
     }
 
