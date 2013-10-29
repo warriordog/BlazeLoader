@@ -1,9 +1,11 @@
 package net.acomputerdog.BlazeLoader.main.fixes;
 
+import java.util.Random;
+
 import net.minecraft.src.*;
 
 /**
- * Represents an air block.
+ * Represents an air block. Can be extended as a base for custom air blocks
  */
 public class BlockAir extends Block {
     private static boolean hasInjected = false;
@@ -58,7 +60,48 @@ public class BlockAir extends Block {
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return null;
     }
-
+    
+    /**
+     * Return whether this block can drop from an explosion.
+     */
+    @Override
+    public boolean canDropFromExplosion(Explosion par1Explosion) {
+    	return false;
+    }
+    
+    /**
+     * Returns whether this block is collideable based on the arguments passed in \n@param par1 block metaData \n@param
+     * par2 whether the player right-clicked while holding a boat
+     */
+    @Override
+    public boolean canCollideCheck(int par1, boolean par2) {
+    	return false;
+    }
+    
+    /**
+     * Returns the block hardness at a location. Args: world, x, y, z
+     */
+    @Override
+    public float getBlockHardness(World par1World, int par2, int par3, int par4) {
+    	return 0.0f;
+    }
+    
+    /**
+     * The type of render function that is called for this block
+     */
+    @Override
+    public int getRenderType() {
+    	return -1;
+    }
+    
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    @Override
+    public int quantityDropped(Random par1Random) {
+    	return 0;
+    }
+    
     public static void injectBlockAir(){
         if(!hasInjected){
             hasInjected = true;
