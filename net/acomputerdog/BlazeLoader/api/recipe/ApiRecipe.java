@@ -11,25 +11,45 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.ShapedRecipes;
 import net.minecraft.src.ShapelessRecipes;
 
+/**
+ * API function related to vanilla crafting
+ */
 public class ApiRecipe {
 	private static CraftingManager craftingManager = CraftingManager.getInstance();
 	private static FurnaceRecipes smeltingManager = FurnaceRecipes.smelting();
 	
+	/**
+	 * registers a shaped recipe.
+	 * @param output An itemStack with the recipe output
+	 * @param args An object array on how to form the recipe e.g. "##", "##", "##", Character.valueOf('#'), new ItemStack(Block.door)
+	 */
 	public static void addShapedRecipe(ItemStack output, Object... args)
 	{
 		craftingManager.getRecipeList().add(createShapedRecipe(output, args));
 	}
 	
+	/**
+	 * registers a shapeless recipe.
+	 * @param output An itemStack with the recipe output
+	 * @param args An object array of itemStacks to use
+	 */
 	public static void addShapelessRecipe(ItemStack output, Object... args)
 	{
 		craftingManager.getRecipeList().add(createShapelessRecipe(output, args));
 	}
 	
+	/**
+	 * 
+	 * @param input ID for the block/item to be smelted
+	 * @param output An itemStack with the recipe output
+	 * @param xp Float value with the amount of xp recieved when coocking an item/block
+	 */
 	public static void addSmeltingRecipe(int input, ItemStack output, float xp)
 	{
 		smeltingManager.addSmelting(input, output, xp);
 	}
 	
+	//workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapedRecipes createShapedRecipe(ItemStack output, Object... args)
 	{
 		 String var3 = "";
@@ -103,6 +123,7 @@ public class ApiRecipe {
 	        return var17;
 	    }
 	
+	//workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapelessRecipes createShapelessRecipe(ItemStack output, Object... args)
 	{
 		ArrayList var3 = new ArrayList();
