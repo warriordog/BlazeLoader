@@ -203,15 +203,7 @@ public final class BlazeLoader {
     }
 
     private static Timer getTimer(){
-        for(Field f : Minecraft.class.getDeclaredFields()){
-            if(Timer.class.isAssignableFrom(f.getType())) try {
-                f.setAccessible(true);
-                return (Timer)f.get(ApiBase.theMinecraft);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Could not get Timer field!", e);
-            }
-        }
-        throw new RuntimeException("Could not get Timer field!");
+        return ApiBase.theMinecraft.timer;
     }
 
     public static void shutdown(int code){
