@@ -4,10 +4,6 @@ import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.EntityEggInfo;
 import net.minecraft.src.EntityList;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-
 /**
  * Api for entity-related functions
  */
@@ -20,17 +16,7 @@ public class ApiEntity {
      * @param entityId The entityId that is used to represent the entity over the network and in saves.
      */
     public static void registerEntityType(Class entityClass, String entityName, int entityId){
-        for(Method m : EntityList.class.getDeclaredMethods()){
-            Class[] args = m.getParameterTypes();
-            if(args.length == 3 && Class.class.isAssignableFrom(args[0]) && String.class.isAssignableFrom(args[1]) && int.class.isAssignableFrom(args[2])){
-                try{
-                    m.setAccessible(true);
-                    m.invoke(null, entityClass, entityName, entityId);
-                }catch(Exception e){
-                    throw new RuntimeException("Could not get entity registration method!", e);
-                }
-            }
-        }
+        EntityList.addMapping(entityClass, entityName, entityId);
     }
 
     /**
@@ -39,16 +25,7 @@ public class ApiEntity {
      * @param eggInfo The EntityEggInfo to register.
      */
     public static void registerEntityEggInfo(int entityId, EntityEggInfo eggInfo){
-        for(Field f : EntityList.class.getDeclaredFields()){
-            if(LinkedHashMap.class.isAssignableFrom(f.getType())){
-                try{
-                    f.setAccessible(true);
-                    ((LinkedHashMap)f.get(null)).put(entityId, eggInfo);
-                }catch(Exception e){
-                    throw new RuntimeException("Could not get entity egg list field!", e);
-                }
-            }
-        }
+        EntityList.entityEggs.put(entityId, eggInfo);
     }
 
     /**
