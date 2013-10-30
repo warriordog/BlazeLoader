@@ -51,7 +51,7 @@ public class ModLoader {
                     }
                 }catch(IOException e){
                     BlazeLoader.getLogger().logWarning("Skipping corrupt zip: " + modZip.getName());
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     BlazeLoader.getLogger().logWarning("Skipping corrupt mod in: " + modZip.getName());
                 }
                 ApiBase.theProfiler.endSection();

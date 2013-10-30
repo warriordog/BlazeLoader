@@ -79,7 +79,7 @@ public class IntegratedServerProxy extends IntegratedServer {
                 try{
                     f.setAccessible(true);
                     return (WorldSettings)f.get(this);
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not get WorldSettings field!", e);
                 }
             }

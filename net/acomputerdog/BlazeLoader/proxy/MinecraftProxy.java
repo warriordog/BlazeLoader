@@ -41,7 +41,7 @@ public class MinecraftProxy extends Minecraft {
                     f.set(this, ApiBase.theProfiler);
                 }
             }
-        }catch(ReflectiveOperationException e){
+        }catch(Exception e){
             BlazeLoader.getLogger().logError("Unable to inject ProfilerProxy!  Some components may not function!");
             e.printStackTrace();
         }
@@ -113,7 +113,7 @@ public class MinecraftProxy extends Minecraft {
                     try{
                         f.setAccessible(true);
                         f.set(this, var10.getNetManager());
-                    }catch(ReflectiveOperationException e){
+                    }catch(Exception e){
                         throw new RuntimeException("Could not set netManager!", e);
                     }
                 }
@@ -179,7 +179,7 @@ public class MinecraftProxy extends Minecraft {
                         mod.setAccessible(true);
                         mod.setInt(f, f.getModifiers() & ~Modifier.FINAL);
                         f.set(RenderManager.instance.getEntityClassRenderObject(EntityMinecart.class), new RenderBlocksProxy());
-                    }catch (ReflectiveOperationException e){
+                    }catch (Exception e){
                         throw new RuntimeException("Could not inject RenderMinecraft RenderBlock proxy!", e);
                     }
                 }

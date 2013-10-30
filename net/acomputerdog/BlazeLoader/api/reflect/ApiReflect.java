@@ -21,7 +21,7 @@ public class ApiReflect {
             Method m = method.boundMethod;
             m.setAccessible(true);
             return m.invoke(method.boundObject, args);
-        }catch(ReflectiveOperationException e){
+        }catch(Exception e){
             throw new RuntimeException("Could not invoke method: " + method.boundMethod.getName(), e);
         }
     }
@@ -46,7 +46,7 @@ public class ApiReflect {
                 Method theMethod = object.getClass().getDeclaredMethod(methodName);
                 theMethod.setAccessible(true);
                 return theMethod.invoke(object, args);
-            }catch(ReflectiveOperationException e){
+            }catch(Exception e){
                 throw new RuntimeException("Could not invoke method: " + methodName, e);
             }
         }else{
@@ -61,7 +61,7 @@ public class ApiReflect {
                 Method theMethod = theClass.getDeclaredMethod(methodName);
                 theMethod.setAccessible(true);
                 return theMethod.invoke(null, args);
-            }catch(ReflectiveOperationException e){
+            }catch(Exception e){
                 throw new RuntimeException("Could not invoke method: " + methodName, e);
             }
         }

@@ -219,7 +219,7 @@ public final class BlazeLoader {
                     try{
                         f.setAccessible(true);
                         entityMap = (HashMap)f.get(RenderManager.instance);
-                    }catch(ReflectiveOperationException e){
+                    }catch(Exception e){
                         throw new RuntimeException("Could not get entity map!", e);
                     }
                 }

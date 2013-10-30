@@ -21,7 +21,7 @@ public class IntegratedPlayerListProxy extends IntegratedPlayerList {
                 try{
                     f.setAccessible(true);
                     f.set(this, par1IntegratedServer);
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not replace mcServer!", e);
                 }
             }

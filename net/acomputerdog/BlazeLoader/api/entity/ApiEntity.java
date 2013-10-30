@@ -26,7 +26,7 @@ public class ApiEntity {
                 try{
                     m.setAccessible(true);
                     m.invoke(null, entityClass, entityName, entityId);
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not get entity registration method!", e);
                 }
             }
@@ -44,7 +44,7 @@ public class ApiEntity {
                 try{
                     f.setAccessible(true);
                     ((LinkedHashMap)f.get(null)).put(entityId, eggInfo);
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not get entity egg list field!", e);
                 }
             }

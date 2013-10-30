@@ -63,7 +63,7 @@ public class ApiBlock {
                     if(f.get(null) == oldBlock){
                         newBlocks.add(f);
                     }
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not get block field!", e);
                 }
             }
@@ -75,7 +75,7 @@ public class ApiBlock {
                 try{
                     c.setAccessible(true);
                     blockInstance = (Block)c.newInstance(blockArgs);
-                }catch(ReflectiveOperationException e){
+                }catch(Exception e){
                     throw new RuntimeException("Could not create new block!", e);
                 }
             }
@@ -90,7 +90,7 @@ public class ApiBlock {
                     theModifiers.setInt(f, f.getModifiers() & ~Modifier.FINAL);
                 }
                 f.set(null, blockInstance);
-            }catch(ReflectiveOperationException e){
+            }catch(Exception e){
                 throw new RuntimeException("Could not replace block field!", e);
             }
         }
