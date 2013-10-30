@@ -148,12 +148,12 @@ public class EntityRenderer
      */
     public int debugViewDirection;
 
-    public EntityRenderer(Minecraft par1Minecraft)
+    public EntityRenderer(Minecraft minecraft)
     {
-        this.mc = par1Minecraft;
-        this.itemRenderer = new ItemRenderer(par1Minecraft);
+        this.mc = minecraft;
+        this.itemRenderer = new ItemRenderer(minecraft);
         this.lightmapTexture = new DynamicTexture(16, 16);
-        this.locationLightMap = par1Minecraft.getTextureManager().getDynamicTextureLocation("lightMap", this.lightmapTexture);
+        this.locationLightMap = minecraft.getTextureManager().getDynamicTextureLocation("lightMap", this.lightmapTexture);
         this.lightmapColors = this.lightmapTexture.getTextureData();
     }
 
@@ -218,7 +218,7 @@ public class EntityRenderer
     /**
      * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
      */
-    public void getMouseOver(float par1)
+    public void getMouseOver(float partialTickTime)
     {
         if (this.mc.renderViewEntity != null)
         {
@@ -226,9 +226,9 @@ public class EntityRenderer
             {
                 this.mc.pointedEntityLiving = null;
                 double var2 = (double)this.mc.playerController.getBlockReachDistance();
-                this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(var2, par1);
+                this.mc.objectMouseOver = this.mc.renderViewEntity.rayTrace(var2, partialTickTime);
                 double var4 = var2;
-                Vec3 var6 = this.mc.renderViewEntity.getPosition(par1);
+                Vec3 var6 = this.mc.renderViewEntity.getPosition(partialTickTime);
 
                 if (this.mc.playerController.extendedReach())
                 {
@@ -250,7 +250,7 @@ public class EntityRenderer
                     var4 = this.mc.objectMouseOver.hitVec.distanceTo(var6);
                 }
 
-                Vec3 var7 = this.mc.renderViewEntity.getLook(par1);
+                Vec3 var7 = this.mc.renderViewEntity.getLook(partialTickTime);
                 Vec3 var8 = var6.addVector(var7.xCoord * var2, var7.yCoord * var2, var7.zCoord * var2);
                 this.pointedEntity = null;
                 float var9 = 1.0F;
@@ -324,7 +324,7 @@ public class EntityRenderer
     /**
      * Changes the field of view of the player depending on if they are underwater or not
      */
-    private float getFOVModifier(float par1, boolean par2)
+    private float getFOVModifier(float partialTickTime, boolean par2)
     {
         if (this.debugViewDirection > 0)
         {
@@ -338,35 +338,35 @@ public class EntityRenderer
             if (par2)
             {
                 var4 += this.mc.gameSettings.fovSetting * 40.0F;
-                var4 *= this.fovModifierHandPrev + (this.fovModifierHand - this.fovModifierHandPrev) * par1;
+                var4 *= this.fovModifierHandPrev + (this.fovModifierHand - this.fovModifierHandPrev) * partialTickTime;
             }
 
             if (var3.getHealth() <= 0.0F)
             {
-                float var5 = (float)var3.deathTime + par1;
+                float var5 = (float)var3.deathTime + partialTickTime;
                 var4 /= (1.0F - 500.0F / (var5 + 500.0F)) * 2.0F + 1.0F;
             }
 
-            int var6 = ActiveRenderInfo.getBlockIdAtEntityViewpoint(this.mc.theWorld, var3, par1);
+            int var6 = ActiveRenderInfo.getBlockIdAtEntityViewpoint(this.mc.theWorld, var3, partialTickTime);
 
             if (var6 != 0 && Block.blocksList[var6].blockMaterial == Material.water)
             {
                 var4 = var4 * 60.0F / 70.0F;
             }
 
-            return var4 + this.prevDebugCamFOV + (this.debugCamFOV - this.prevDebugCamFOV) * par1;
+            return var4 + this.prevDebugCamFOV + (this.debugCamFOV - this.prevDebugCamFOV) * partialTickTime;
         }
     }
 
-    private void hurtCameraEffect(float par1)
+    private void hurtCameraEffect(float partialTickTime)
     {
         EntityLivingBase var2 = this.mc.renderViewEntity;
-        float var3 = (float)var2.hurtTime - par1;
+        float var3 = (float)var2.hurtTime - partialTickTime;
         float var4;
 
         if (var2.getHealth() <= 0.0F)
         {
-            var4 = (float)var2.deathTime + par1;
+            var4 = (float)var2.deathTime + partialTickTime;
             GL11.glRotatef(40.0F - 8000.0F / (var4 + 200.0F), 0.0F, 0.0F, 1.0F);
         }
 
@@ -384,15 +384,15 @@ public class EntityRenderer
     /**
      * Setups all the GL settings for view bobbing. Args: partialTickTime
      */
-    private void setupViewBobbing(float par1)
+    private void setupViewBobbing(float partialTickTime)
     {
         if (this.mc.renderViewEntity instanceof EntityPlayer)
         {
             EntityPlayer var2 = (EntityPlayer)this.mc.renderViewEntity;
             float var3 = var2.distanceWalkedModified - var2.prevDistanceWalkedModified;
-            float var4 = -(var2.distanceWalkedModified + var3 * par1);
-            float var5 = var2.prevCameraYaw + (var2.cameraYaw - var2.prevCameraYaw) * par1;
-            float var6 = var2.prevCameraPitch + (var2.cameraPitch - var2.prevCameraPitch) * par1;
+            float var4 = -(var2.distanceWalkedModified + var3 * partialTickTime);
+            float var5 = var2.prevCameraYaw + (var2.cameraYaw - var2.prevCameraYaw) * partialTickTime;
+            float var6 = var2.prevCameraPitch + (var2.cameraPitch - var2.prevCameraPitch) * partialTickTime;
             GL11.glTranslatef(MathHelper.sin(var4 * (float)Math.PI) * var5 * 0.5F, -Math.abs(MathHelper.cos(var4 * (float)Math.PI) * var5), 0.0F);
             GL11.glRotatef(MathHelper.sin(var4 * (float)Math.PI) * var5 * 3.0F, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(Math.abs(MathHelper.cos(var4 * (float)Math.PI - 0.2F) * var5) * 5.0F, 1.0F, 0.0F, 0.0F);
@@ -403,14 +403,14 @@ public class EntityRenderer
     /**
      * sets up player's eye (or camera in third person mode)
      */
-    private void orientCamera(float par1)
+    private void orientCamera(float direction)
     {
         EntityLivingBase var2 = this.mc.renderViewEntity;
         float var3 = var2.yOffset - 1.62F;
-        double var4 = var2.prevPosX + (var2.posX - var2.prevPosX) * (double)par1;
-        double var6 = var2.prevPosY + (var2.posY - var2.prevPosY) * (double)par1 - (double)var3;
-        double var8 = var2.prevPosZ + (var2.posZ - var2.prevPosZ) * (double)par1;
-        GL11.glRotatef(this.prevCamRoll + (this.camRoll - this.prevCamRoll) * par1, 0.0F, 0.0F, 1.0F);
+        double var4 = var2.prevPosX + (var2.posX - var2.prevPosX) * (double)direction;
+        double var6 = var2.prevPosY + (var2.posY - var2.prevPosY) * (double)direction - (double)var3;
+        double var8 = var2.prevPosZ + (var2.posZ - var2.prevPosZ) * (double)direction;
+        GL11.glRotatef(this.prevCamRoll + (this.camRoll - this.prevCamRoll) * direction, 0.0F, 0.0F, 1.0F);
 
         if (var2.isPlayerSleeping())
         {
@@ -428,20 +428,20 @@ public class EntityRenderer
                     GL11.glRotatef((float)(var12 * 90), 0.0F, 1.0F, 0.0F);
                 }
 
-                GL11.glRotatef(var2.prevRotationYaw + (var2.rotationYaw - var2.prevRotationYaw) * par1 + 180.0F, 0.0F, -1.0F, 0.0F);
-                GL11.glRotatef(var2.prevRotationPitch + (var2.rotationPitch - var2.prevRotationPitch) * par1, -1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(var2.prevRotationYaw + (var2.rotationYaw - var2.prevRotationYaw) * direction + 180.0F, 0.0F, -1.0F, 0.0F);
+                GL11.glRotatef(var2.prevRotationPitch + (var2.rotationPitch - var2.prevRotationPitch) * direction, -1.0F, 0.0F, 0.0F);
             }
         }
         else if (this.mc.gameSettings.thirdPersonView > 0)
         {
-            double var27 = (double)(this.thirdPersonDistanceTemp + (this.thirdPersonDistance - this.thirdPersonDistanceTemp) * par1);
+            double var27 = (double)(this.thirdPersonDistanceTemp + (this.thirdPersonDistance - this.thirdPersonDistanceTemp) * direction);
             float var13;
             float var28;
 
             if (this.mc.gameSettings.debugCamEnable)
             {
-                var28 = this.prevDebugCamYaw + (this.debugCamYaw - this.prevDebugCamYaw) * par1;
-                var13 = this.prevDebugCamPitch + (this.debugCamPitch - this.prevDebugCamPitch) * par1;
+                var28 = this.prevDebugCamYaw + (this.debugCamYaw - this.prevDebugCamYaw) * direction;
+                var13 = this.prevDebugCamPitch + (this.debugCamPitch - this.prevDebugCamPitch) * direction;
                 GL11.glTranslatef(0.0F, 0.0F, (float)(-var27));
                 GL11.glRotatef(var13, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(var28, 0.0F, 1.0F, 0.0F);
@@ -500,15 +500,15 @@ public class EntityRenderer
 
         if (!this.mc.gameSettings.debugCamEnable)
         {
-            GL11.glRotatef(var2.prevRotationPitch + (var2.rotationPitch - var2.prevRotationPitch) * par1, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(var2.prevRotationYaw + (var2.rotationYaw - var2.prevRotationYaw) * par1 + 180.0F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(var2.prevRotationPitch + (var2.rotationPitch - var2.prevRotationPitch) * direction, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(var2.prevRotationYaw + (var2.rotationYaw - var2.prevRotationYaw) * direction + 180.0F, 0.0F, 1.0F, 0.0F);
         }
 
         GL11.glTranslatef(0.0F, var3, 0.0F);
-        var4 = var2.prevPosX + (var2.posX - var2.prevPosX) * (double)par1;
-        var6 = var2.prevPosY + (var2.posY - var2.prevPosY) * (double)par1 - (double)var3;
-        var8 = var2.prevPosZ + (var2.posZ - var2.prevPosZ) * (double)par1;
-        this.cloudFog = this.mc.renderGlobal.hasCloudFog(var4, var6, var8, par1);
+        var4 = var2.prevPosX + (var2.posX - var2.prevPosX) * (double)direction;
+        var6 = var2.prevPosY + (var2.posY - var2.prevPosY) * (double)direction - (double)var3;
+        var8 = var2.prevPosZ + (var2.posZ - var2.prevPosZ) * (double)direction;
+        this.cloudFog = this.mc.renderGlobal.hasCloudFog(var4, var6, var8, direction);
     }
 
     /**
@@ -1223,7 +1223,7 @@ public class EntityRenderer
     /**
      * Render clouds if enabled
      */
-    private void renderCloudsCheck(RenderGlobal par1RenderGlobal, float par2)
+    private void renderCloudsCheck(RenderGlobal renderGlobal, float par2)
     {
         if (this.mc.gameSettings.shouldRenderClouds())
         {
@@ -1231,7 +1231,7 @@ public class EntityRenderer
             GL11.glPushMatrix();
             this.setupFog(0, par2);
             GL11.glEnable(GL11.GL_FOG);
-            par1RenderGlobal.renderClouds(par2);
+            renderGlobal.renderClouds(par2);
             GL11.glDisable(GL11.GL_FOG);
             this.setupFog(1, par2);
             GL11.glPopMatrix();
@@ -1866,8 +1866,8 @@ public class EntityRenderer
     /**
      * Get minecraft reference from the EntityRenderer
      */
-    static Minecraft getRendererMinecraft(EntityRenderer par0EntityRenderer)
+    static Minecraft getRendererMinecraft(EntityRenderer renderer)
     {
-        return par0EntityRenderer.mc;
+        return renderer.mc;
     }
 }
