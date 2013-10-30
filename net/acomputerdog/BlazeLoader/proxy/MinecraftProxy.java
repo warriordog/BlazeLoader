@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.Proxy;
 
+@Deprecated
 /**
  * Acts as a proxy to intercept method calls to Minecraft.class.  Loaded in place of normal Minecraft.class
  */

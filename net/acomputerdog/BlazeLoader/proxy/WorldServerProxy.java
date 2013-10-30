@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
+@Deprecated
 /**
  * A proxy class for WorldServer.  Gives access to Mod.eventTickServerWorld().
  */

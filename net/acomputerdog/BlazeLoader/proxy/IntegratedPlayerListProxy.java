@@ -9,6 +9,7 @@ import net.minecraft.src.ServerConfigurationManager;
 
 import java.lang.reflect.Field;
 
+@Deprecated
 /**
  * Proxy class for IntegratedPlayerList.
  */

@@ -6,6 +6,7 @@ import net.minecraft.src.*;
 
 import java.lang.reflect.Field;
 
+@Deprecated
 /**
  * Proxy class for IntegratedServer.  Gives access to a bunch of events.
  */

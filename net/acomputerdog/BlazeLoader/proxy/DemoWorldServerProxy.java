@@ -6,6 +6,7 @@ import net.minecraft.src.ILogAgent;
 import net.minecraft.src.ISaveHandler;
 import net.minecraft.src.Profiler;
 
+@Deprecated
 /**
  * Proxy class for DemoWorldServer.  Does not do anything but needs to exist so demo worlds use BL.
  */
