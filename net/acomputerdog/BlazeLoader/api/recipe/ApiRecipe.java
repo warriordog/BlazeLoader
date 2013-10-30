@@ -52,108 +52,108 @@ public class ApiRecipe {
 	@Deprecated //workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapedRecipes createShapedRecipe(ItemStack output, Object... args)
 	{
-		 String var3 = "";
-	        int var4 = 0;
-	        int var5 = 0;
-	        int var6 = 0;
+		 String s = "";
+	        int count = 0;
+	        int num1 = 0;
+	        int num2 = 0;
 
-	        if (args[var4] instanceof String[])
+	        if (args[count] instanceof String[])
 	        {
-	            String[] var7 = (String[])((String[])args[var4++]);
+	            String[] as = (String[])((String[])args[count++]);
 
-	            for (int var8 = 0; var8 < var7.length; ++var8)
+	            for (int i = 0; i < as.length; ++i)
 	            {
-	                String var9 = var7[var8];
-	                ++var6;
-	                var5 = var9.length();
-	                var3 = var3 + var9;
+	                String row = as[i];
+	                ++num2;
+	                num1 = row.length();
+	                s = s + row;
 	            }
 	        }
 	        else
 	        {
-	            while (args[var4] instanceof String)
+	            while (args[count] instanceof String)
 	            {
-	                String var11 = (String)args[var4++];
-	                ++var6;
-	                var5 = var11.length();
-	                var3 = var3 + var11;
+	                String row = (String)args[count++];
+	                ++num2;
+	                num1 = row.length();
+	                s = s + row;
 	            }
 	        }
 
-	        HashMap var12;
+	        HashMap map;
 
-	        for (var12 = new HashMap(); var4 < args.length; var4 += 2)
+	        for (map = new HashMap(); count < args.length; count += 2)
 	        {
-	            Character var13 = (Character)args[var4];
-	            ItemStack var14 = null;
+	            Character c = (Character)args[count];
+	            ItemStack stack = null;
 
-	            if (args[var4 + 1] instanceof Item)
+	            if (args[count + 1] instanceof Item)
 	            {
-	                var14 = new ItemStack((Item)args[var4 + 1]);
+	                stack = new ItemStack((Item)args[count + 1]);
 	            }
-	            else if (args[var4 + 1] instanceof Block)
+	            else if (args[count + 1] instanceof Block)
 	            {
-	                var14 = new ItemStack((Block)args[var4 + 1], 1, 32767);
+	                stack = new ItemStack((Block)args[count + 1], 1, 32767);
 	            }
-	            else if (args[var4 + 1] instanceof ItemStack)
+	            else if (args[count + 1] instanceof ItemStack)
 	            {
-	                var14 = (ItemStack)args[var4 + 1];
+	                stack = (ItemStack)args[count + 1];
 	            }
 
-	            var12.put(var13, var14);
+	            map.put(c, stack);
 	        }
 
-	        ItemStack[] var15 = new ItemStack[var5 * var6];
+	        ItemStack[] items = new ItemStack[num1 * num2];
 
-	        for (int var16 = 0; var16 < var5 * var6; ++var16)
+	        for (int j = 0; j < num1 * num2; ++j)
 	        {
-	            char var10 = var3.charAt(var16);
+	            char c = s.charAt(j);
 
-	            if (var12.containsKey(Character.valueOf(var10)))
+	            if (map.containsKey(Character.valueOf(c)))
 	            {
-	                var15[var16] = ((ItemStack)var12.get(Character.valueOf(var10))).copy();
+	                items[j] = ((ItemStack)map.get(Character.valueOf(c))).copy();
 	            }
 	            else
 	            {
-	                var15[var16] = null;
+	                items[j] = null;
 	            }
 	        }
 
-	        ShapedRecipes var17 = new ShapedRecipes(var5, var6, var15, output);
-	        return var17;
+	        ShapedRecipes recipe = new ShapedRecipes(num1, num2, items, output);
+	        return recipe;
 	    }
 	
 	@Deprecated //workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapelessRecipes createShapelessRecipe(ItemStack output, Object... args)
 	{
-		ArrayList var3 = new ArrayList();
-        Object[] var4 = args;
-        int var5 = args.length;
+		ArrayList items = new ArrayList();
+        Object[] objects = args;
+        int size = args.length;
 
-        for (int var6 = 0; var6 < var5; ++var6)
+        for (int i = 0; i < size; ++i)
         {
-            Object var7 = var4[var6];
+            Object obj = objects[i];
 
-            if (var7 instanceof ItemStack)
+            if (obj instanceof ItemStack)
             {
-                var3.add(((ItemStack)var7).copy());
+                items.add(((ItemStack)obj).copy());
             }
-            else if (var7 instanceof Item)
+            else if (obj instanceof Item)
             {
-                var3.add(new ItemStack((Item)var7));
+                items.add(new ItemStack((Item)obj));
             }
             else
             {
-                if (!(var7 instanceof Block))
+                if (!(obj instanceof Block))
                 {
                     throw new RuntimeException("Invalid shapeless recipy!");
                 }
 
-                var3.add(new ItemStack((Block)var7));
+                items.add(new ItemStack((Block)obj));
             }
         }
 
-       ShapelessRecipes recipe = new ShapelessRecipes(output, var3);
+       ShapelessRecipes recipe = new ShapelessRecipes(output, items);
        return recipe;
 	}
 }
