@@ -1,10 +1,10 @@
 package net.acomputerdog.BlazeLoader.api.base;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.acomputerdog.BlazeLoader.proxy.MinecraftProxy;
 import net.acomputerdog.BlazeLoader.proxy.ProfilerProxy;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;
+import net.minecraft.src.Minecraft;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class ApiBase {
     /**
      * The instance of Minecraft
      */
-    public static MinecraftProxy theMinecraft = null;
+    public static Minecraft theMinecraft = null;
 
     /**
      * The game logger
