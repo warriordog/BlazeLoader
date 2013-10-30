@@ -107,7 +107,7 @@ public class ApiRecipe {
                 items.add(new ItemStack((Item) obj));
             } else {
                 if (!(obj instanceof Block)) {
-                    throw new RuntimeException("Invalid shapeless recipe!");
+                    throw new IllegalArgumentException("Invalid shapeless recipe!");
                 }
 
                 items.add(new ItemStack((Block) obj));
