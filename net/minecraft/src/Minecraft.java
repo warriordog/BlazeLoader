@@ -5,7 +5,6 @@ import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.main.fixes.BlockAir;
 import net.acomputerdog.BlazeLoader.mod.ModList;
-import net.acomputerdog.BlazeLoader.proxy.ProfilerProxy;
 import net.acomputerdog.BlazeLoader.util.config.ConfigList;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.server.MinecraftServer;
@@ -160,7 +159,7 @@ public class Minecraft implements IPlayerUsage
     private boolean integratedServerIsRunning;
 
     /** The profiler instance */
-    public final Profiler mcProfiler = new ProfilerProxy();
+    public final Profiler mcProfiler = new Profiler();
     private long field_83002_am = -1L;
     private ReloadableResourceManager mcResourceManager;
     private final MetadataSerializer metadataSerializer_ = new MetadataSerializer();
@@ -677,7 +676,8 @@ public class Minecraft implements IPlayerUsage
 
     public void run()
     {
-        BlazeLoader.init(new File(System.getProperty("user.dir")));
+        //disabled until ready.
+        //BlazeLoader.init(new File(System.getProperty("user.dir")));
 
         this.running = true;
         CrashReport var2;
@@ -1702,8 +1702,9 @@ public class Minecraft implements IPlayerUsage
                 {
                     if (!this.gameSettings.keyBindAttack.isPressed())
                     {
-                        while (this.gameSettings.keyBindUseItem.isPressed())
-                        {}
+                        while (this.gameSettings.keyBindUseItem.isPressed()){
+
+                        }
 
                         while (true)
                         {

@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.recipe;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.*;
 
 import java.util.ArrayList;
@@ -9,8 +10,6 @@ import java.util.HashMap;
  * API function related to vanilla crafting
  */
 public class ApiRecipe {
-	private static CraftingManager craftingManager = CraftingManager.getInstance();
-	private static FurnaceRecipes smeltingManager = FurnaceRecipes.smelting();
 	
 	/**
 	 * Registers a shaped recipe.
@@ -18,7 +17,7 @@ public class ApiRecipe {
 	 * @param args An object array on how to form the recipe e.g. "##", "##", "##", Character.valueOf('#'), new ItemStack(Block.door)
 	 */
 	public static void addShapedRecipe(ItemStack output, Object... args){
-		craftingManager.getRecipeList().add(createShapedRecipe(output, args));
+		BlazeLoader.craftingManager.getRecipeList().add(createShapedRecipe(output, args));
 	}
 	
 	/**
@@ -27,7 +26,7 @@ public class ApiRecipe {
 	 * @param args An object array of itemStacks to use
 	 */
 	public static void addShapelessRecipe(ItemStack output, Object... args){
-		craftingManager.getRecipeList().add(createShapelessRecipe(output, args));
+		BlazeLoader.craftingManager.getRecipeList().add(createShapelessRecipe(output, args));
 	}
 	
 	/**
@@ -37,7 +36,7 @@ public class ApiRecipe {
 	 * @param xp Float value with the amount of xp recieved when coocking an item/block
 	 */
 	public static void addSmeltingRecipe(int input, ItemStack output, float xp){
-		smeltingManager.addSmelting(input, output, xp);
+		BlazeLoader.smeltingManager.addSmelting(input, output, xp);
 	}
 	
 	@Deprecated //workaround for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)

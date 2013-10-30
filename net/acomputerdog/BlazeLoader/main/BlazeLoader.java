@@ -28,16 +28,24 @@ public final class BlazeLoader {
     public static boolean isInTick = false;
     public static long ticks = 0;
     public static CommandHandler commandManager = new CommandHandler();
+    public static CraftingManager craftingManager = null;
+    public static FurnaceRecipes smeltingManager = null;
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).setPrettyPrinting().create();
     private static File settingsFile;
-    private static boolean hasLoaded = false;
+    private static boolean hasLoadedSettings = false;
+    private static boolean hasInit = false;
     private static HashMap<Class, Render> entityMap = null;
 
     public static void init(File mainDir){
         ApiBase.theProfiler.startSection("BL_Init");
+        if(hasInit){
+            throw new IllegalStateException("Attempted to load twice!");
+        }else{
+            hasInit = true;
+        }
         try{
             ApiBase.theProfiler.startSection("SettingsAndFiles");
             logger.logInfo("BlazeLoader version " + Version.getMinecraftVersion() + "/" + Version.getStringVersion() + " is starting...");
@@ -59,6 +67,9 @@ public final class BlazeLoader {
             if(level != null){
                 Settings.minimumLogLevel = level;
             }
+
+            craftingManager = CraftingManager.getInstance();
+            smeltingManager = FurnaceRecipes.smelting();
 
             if(Settings.useVersionMods){
                 Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";
@@ -154,7 +165,7 @@ public final class BlazeLoader {
     }
 
     public static void loadSettings(){
-        hasLoaded = true;
+        hasLoadedSettings = true;
         try {
             theSettings = gson.fromJson(new FileReader(settingsFile), Settings.class);
             if(theSettings == null){
@@ -172,8 +183,8 @@ public final class BlazeLoader {
     }
 
     public static void saveSettings(){
-        if(!hasLoaded){
-            hasLoaded = true;
+        if(!hasLoadedSettings){
+            hasLoadedSettings = true;
             loadSettings();
         }
         PrintWriter writer = null;
