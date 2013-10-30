@@ -13,7 +13,7 @@ public class ApiRecipe {
 	private static FurnaceRecipes smeltingManager = FurnaceRecipes.smelting();
 	
 	/**
-	 * registers a shaped recipe.
+	 * Registers a shaped recipe.
 	 * @param output An itemStack with the recipe output
 	 * @param args An object array on how to form the recipe e.g. "##", "##", "##", Character.valueOf('#'), new ItemStack(Block.door)
 	 */
@@ -22,7 +22,7 @@ public class ApiRecipe {
 	}
 	
 	/**
-	 * registers a shapeless recipe.
+	 * Registers a shapeless recipe.
 	 * @param output An itemStack with the recipe output
 	 * @param args An object array of itemStacks to use
 	 */
@@ -31,7 +31,7 @@ public class ApiRecipe {
 	}
 	
 	/**
-	 * 
+	 * Registers a furnace recipe.
 	 * @param input ID for the block/item to be smelted
 	 * @param output An itemStack with the recipe output
 	 * @param xp Float value with the amount of xp recieved when coocking an item/block
