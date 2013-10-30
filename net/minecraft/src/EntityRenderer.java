@@ -36,17 +36,6 @@ public class EntityRenderer
     private MouseFilter mouseFilterXAxis = new MouseFilter();
     private MouseFilter mouseFilterYAxis = new MouseFilter();
 
-    /** Mouse filter dummy 1 */
-    private MouseFilter mouseFilterDummy1 = new MouseFilter();
-
-    /** Mouse filter dummy 2 */
-    private MouseFilter mouseFilterDummy2 = new MouseFilter();
-
-    /** Mouse filter dummy 3 */
-    private MouseFilter mouseFilterDummy3 = new MouseFilter();
-
-    /** Mouse filter dummy 4 */
-    private MouseFilter mouseFilterDummy4 = new MouseFilter();
     private float thirdPersonDistance = 4.0F;
 
     /** Third person distance temp */
@@ -268,39 +257,28 @@ public class EntityRenderer
                 List var10 = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.renderViewEntity, this.mc.renderViewEntity.boundingBox.addCoord(var7.xCoord * var2, var7.yCoord * var2, var7.zCoord * var2).expand((double)var9, (double)var9, (double)var9));
                 double var11 = var4;
 
-                for (int var13 = 0; var13 < var10.size(); ++var13)
-                {
-                    Entity var14 = (Entity)var10.get(var13);
+                for (Object aVar10 : var10) {
+                    Entity var14 = (Entity) aVar10;
 
-                    if (var14.canBeCollidedWith())
-                    {
+                    if (var14.canBeCollidedWith()) {
                         float var15 = var14.getCollisionBorderSize();
-                        AxisAlignedBB var16 = var14.boundingBox.expand((double)var15, (double)var15, (double)var15);
+                        AxisAlignedBB var16 = var14.boundingBox.expand((double) var15, (double) var15, (double) var15);
                         MovingObjectPosition var17 = var16.calculateIntercept(var6, var8);
 
-                        if (var16.isVecInside(var6))
-                        {
-                            if (0.0D < var11 || var11 == 0.0D)
-                            {
+                        if (var16.isVecInside(var6)) {
+                            if (0.0D < var11 || var11 == 0.0D) {
                                 this.pointedEntity = var14;
                                 var11 = 0.0D;
                             }
-                        }
-                        else if (var17 != null)
-                        {
+                        } else if (var17 != null) {
                             double var18 = var6.distanceTo(var17.hitVec);
 
-                            if (var18 < var11 || var11 == 0.0D)
-                            {
-                                if (var14 == this.mc.renderViewEntity.ridingEntity)
-                                {
-                                    if (var11 == 0.0D)
-                                    {
+                            if (var18 < var11 || var11 == 0.0D) {
+                                if (var14 == this.mc.renderViewEntity.ridingEntity) {
+                                    if (var11 == 0.0D) {
                                         this.pointedEntity = var14;
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     this.pointedEntity = var14;
                                     var11 = var18;
                                 }
@@ -1397,7 +1375,6 @@ public class EntityRenderer
                 var16 = 10;
             }
 
-            boolean var17 = false;
             byte var18 = -1;
             float var19 = (float)this.rendererUpdateCount + par1;
 
@@ -1407,7 +1384,6 @@ public class EntityRenderer
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            var17 = false;
 
             for (int var20 = var45 - var16; var20 <= var45 + var16; ++var20)
             {

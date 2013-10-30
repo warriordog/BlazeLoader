@@ -35,7 +35,7 @@ public class WorldServer extends World
     /**
      * Double buffer of ServerBlockEventList[] for holding pending BlockEventData's
      */
-    private ServerBlockEventList[] blockEventCache = new ServerBlockEventList[] {new ServerBlockEventList((ServerBlockEvent)null), new ServerBlockEventList((ServerBlockEvent)null)};
+    private ServerBlockEventList[] blockEventCache = new ServerBlockEventList[] {new ServerBlockEventList(null), new ServerBlockEventList(null)};
 
     /**
      * The index into the blockEventCache; either 0, or 1, toggled in sendBlockEventPackets  where all BlockEvent are
@@ -164,14 +164,11 @@ public class WorldServer extends World
     public void updateAllPlayersSleepingFlag()
     {
         this.allPlayersSleeping = !this.playerEntities.isEmpty();
-        Iterator var1 = this.playerEntities.iterator();
 
-        while (var1.hasNext())
-        {
-            EntityPlayer var2 = (EntityPlayer)var1.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var2 = (EntityPlayer) playerEntity;
 
-            if (!var2.isPlayerSleeping())
-            {
+            if (!var2.isPlayerSleeping()) {
                 this.allPlayersSleeping = false;
                 break;
             }
@@ -181,14 +178,11 @@ public class WorldServer extends World
     protected void wakeAllPlayers()
     {
         this.allPlayersSleeping = false;
-        Iterator var1 = this.playerEntities.iterator();
 
-        while (var1.hasNext())
-        {
-            EntityPlayer var2 = (EntityPlayer)var1.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var2 = (EntityPlayer) playerEntity;
 
-            if (var2.isPlayerSleeping())
-            {
+            if (var2.isPlayerSleeping()) {
                 var2.wakeUpPlayer(false, false, true);
             }
         }
@@ -267,13 +261,9 @@ public class WorldServer extends World
     protected void tickBlocksAndAmbiance()
     {
         super.tickBlocksAndAmbiance();
-        int var1 = 0;
-        int var2 = 0;
-        Iterator var3 = this.activeChunkSet.iterator();
 
-        while (var3.hasNext())
-        {
-            ChunkCoordIntPair var4 = (ChunkCoordIntPair)var3.next();
+        for (Object anActiveChunkSet : this.activeChunkSet) {
+            ChunkCoordIntPair var4 = (ChunkCoordIntPair) anActiveChunkSet;
             int var5 = var4.chunkXPos * 16;
             int var6 = var4.chunkZPos * 16;
             this.theProfiler.startSection("getChunk");
@@ -287,51 +277,43 @@ public class WorldServer extends World
             int var10;
             int var11;
 
-            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering())
-            {
+            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering()) {
                 this.updateLCG = this.updateLCG * 3 + 1013904223;
                 var8 = this.updateLCG >> 2;
                 var9 = var5 + (var8 & 15);
                 var10 = var6 + (var8 >> 8 & 15);
                 var11 = this.getPrecipitationHeight(var9, var10);
 
-                if (this.canLightningStrikeAt(var9, var11, var10))
-                {
-                    this.addWeatherEffect(new EntityLightningBolt(this, (double)var9, (double)var11, (double)var10));
+                if (this.canLightningStrikeAt(var9, var11, var10)) {
+                    this.addWeatherEffect(new EntityLightningBolt(this, (double) var9, (double) var11, (double) var10));
                 }
             }
 
             this.theProfiler.endStartSection("iceandsnow");
             int var13;
 
-            if (this.rand.nextInt(16) == 0)
-            {
+            if (this.rand.nextInt(16) == 0) {
                 this.updateLCG = this.updateLCG * 3 + 1013904223;
                 var8 = this.updateLCG >> 2;
                 var9 = var8 & 15;
                 var10 = var8 >> 8 & 15;
                 var11 = this.getPrecipitationHeight(var9 + var5, var10 + var6);
 
-                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6))
-                {
+                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6)) {
                     this.setBlock(var9 + var5, var11 - 1, var10 + var6, Block.ice.blockID);
                 }
 
-                if (this.isRaining() && this.canSnowAt(var9 + var5, var11, var10 + var6))
-                {
+                if (this.isRaining() && this.canSnowAt(var9 + var5, var11, var10 + var6)) {
                     this.setBlock(var9 + var5, var11, var10 + var6, Block.snow.blockID);
                 }
 
-                if (this.isRaining())
-                {
+                if (this.isRaining()) {
                     BiomeGenBase var12 = this.getBiomeGenForCoords(var9 + var5, var10 + var6);
 
-                    if (var12.canSpawnLightningBolt())
-                    {
+                    if (var12.canSpawnLightningBolt()) {
                         var13 = this.getBlockId(var9 + var5, var11 - 1, var10 + var6);
 
-                        if (var13 != 0)
-                        {
+                        if (var13 != 0) {
                             Block.blocksList[var13].fillWithRain(this, var9 + var5, var11 - 1, var10 + var6);
                         }
                     }
@@ -342,26 +324,20 @@ public class WorldServer extends World
             ExtendedBlockStorage[] var19 = var7.getBlockStorageArray();
             var9 = var19.length;
 
-            for (var10 = 0; var10 < var9; ++var10)
-            {
+            for (var10 = 0; var10 < var9; ++var10) {
                 ExtendedBlockStorage var21 = var19[var10];
 
-                if (var21 != null && var21.getNeedsRandomTick())
-                {
-                    for (int var20 = 0; var20 < 3; ++var20)
-                    {
+                if (var21 != null && var21.getNeedsRandomTick()) {
+                    for (int var20 = 0; var20 < 3; ++var20) {
                         this.updateLCG = this.updateLCG * 3 + 1013904223;
                         var13 = this.updateLCG >> 2;
                         int var14 = var13 & 15;
                         int var15 = var13 >> 8 & 15;
                         int var16 = var13 >> 16 & 15;
                         int var17 = var21.getExtBlockID(var14, var16, var15);
-                        ++var2;
                         Block var18 = Block.blocksList[var17];
 
-                        if (var18 != null && var18.getTickRandomly())
-                        {
-                            ++var1;
+                        if (var18 != null && var18.getTickRandomly()) {
                             var18.updateTick(this, var14 + var5, var16 + var21.getYLocation(), var15 + var6, this.rand);
                         }
                     }
@@ -655,12 +631,10 @@ public class WorldServer extends World
     {
         ArrayList var7 = new ArrayList();
 
-        for (int var8 = 0; var8 < this.loadedTileEntityList.size(); ++var8)
-        {
-            TileEntity var9 = (TileEntity)this.loadedTileEntityList.get(var8);
+        for (Object aLoadedTileEntityList : this.loadedTileEntityList) {
+            TileEntity var9 = (TileEntity) aLoadedTileEntityList;
 
-            if (var9.xCoord >= par1 && var9.yCoord >= par2 && var9.zCoord >= par3 && var9.xCoord < par4 && var9.yCoord < par5 && var9.zCoord < par6)
-            {
+            if (var9.xCoord >= par1 && var9.yCoord >= par2 && var9.zCoord >= par3 && var9.xCoord < par4 && var9.yCoord < par5 && var9.zCoord < par6) {
                 var7.add(var9);
             }
         }
@@ -831,9 +805,8 @@ public class WorldServer extends World
 
         if (var2 != null)
         {
-            for (int var3 = 0; var3 < var2.length; ++var3)
-            {
-                this.entityIdMap.addKey(var2[var3].entityId, var2[var3]);
+            for (Entity aVar2 : var2) {
+                this.entityIdMap.addKey(aVar2.entityId, aVar2);
             }
         }
     }
@@ -846,9 +819,8 @@ public class WorldServer extends World
 
         if (var2 != null)
         {
-            for (int var3 = 0; var3 < var2.length; ++var3)
-            {
-                this.entityIdMap.removeObject(var2[var3].entityId);
+            for (Entity aVar2 : var2) {
+                this.entityIdMap.removeObject(aVar2.entityId);
             }
         }
     }
@@ -902,15 +874,11 @@ public class WorldServer extends World
             var11.affectedBlockPositions.clear();
         }
 
-        Iterator var12 = this.playerEntities.iterator();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var13 = (EntityPlayer) playerEntity;
 
-        while (var12.hasNext())
-        {
-            EntityPlayer var13 = (EntityPlayer)var12.next();
-
-            if (var13.getDistanceSq(par2, par4, par6) < 4096.0D)
-            {
-                ((EntityPlayerMP)var13).playerNetServerHandler.sendPacketToPlayer(new Packet60Explosion(par2, par4, par6, par8, var11.affectedBlockPositions, (Vec3)var11.func_77277_b().get(var13)));
+            if (var13.getDistanceSq(par2, par4, par6) < 4096.0D) {
+                ((EntityPlayerMP) var13).playerNetServerHandler.sendPacketToPlayer(new Packet60Explosion(par2, par4, par6, par8, var11.affectedBlockPositions, (Vec3) var11.func_77277_b().get(var13)));
             }
         }
 
@@ -949,15 +917,12 @@ public class WorldServer extends World
         {
             int var1 = this.blockEventCacheIndex;
             this.blockEventCacheIndex ^= 1;
-            Iterator var2 = this.blockEventCache[var1].iterator();
 
-            while (var2.hasNext())
-            {
-                BlockEventData var3 = (BlockEventData)var2.next();
+            for (Object o : this.blockEventCache[var1]) {
+                BlockEventData var3 = (BlockEventData) o;
 
-                if (this.onBlockEventReceived(var3))
-                {
-                    this.mcServer.getConfigurationManager().sendToAllNear((double)var3.getX(), (double)var3.getY(), (double)var3.getZ(), 64.0D, this.provider.dimensionId, new Packet54PlayNoteBlock(var3.getX(), var3.getY(), var3.getZ(), var3.getBlockID(), var3.getEventID(), var3.getEventParameter()));
+                if (this.onBlockEventReceived(var3)) {
+                    this.mcServer.getConfigurationManager().sendToAllNear((double) var3.getX(), (double) var3.getY(), (double) var3.getZ(), 64.0D, this.provider.dimensionId, new Packet54PlayNoteBlock(var3.getX(), var3.getY(), var3.getZ(), var3.getBlockID(), var3.getEventID(), var3.getEventParameter()));
                 }
             }
 
