@@ -49,7 +49,7 @@ public class ApiRecipe {
 		smeltingManager.addSmelting(input, output, xp);
 	}
 	
-	//workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
+	@Deprecated //workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapedRecipes createShapedRecipe(ItemStack output, Object... args)
 	{
 		 String var3 = "";
@@ -123,7 +123,7 @@ public class ApiRecipe {
 	        return var17;
 	    }
 	
-	//workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
+	@Deprecated //workaroud for the private methods in Minecraft code, will change when we have ASM (copied from Minecraft code)
 	private static ShapelessRecipes createShapelessRecipe(ItemStack output, Object... args)
 	{
 		ArrayList var3 = new ArrayList();
