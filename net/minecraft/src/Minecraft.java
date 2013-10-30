@@ -211,6 +211,7 @@ public class Minecraft implements IPlayerUsage
         StatList.nopInit();
         ApiBase.theMinecraft = this;
         ApiBase.globalLogger = getLogAgent();
+        ApiBase.theProfiler = mcProfiler;
     }
 
     private void startTimerHackThread()
@@ -676,8 +677,7 @@ public class Minecraft implements IPlayerUsage
 
     public void run()
     {
-        //disabled until ready.
-        //BlazeLoader.init(new File(System.getProperty("user.dir")));
+        BlazeLoader.init(new File(System.getProperty("user.dir")));
 
         this.running = true;
         CrashReport var2;

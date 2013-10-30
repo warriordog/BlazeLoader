@@ -1,5 +1,6 @@
 package net.minecraft.src;
 
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.server.MinecraftServer;
 
@@ -45,6 +46,7 @@ public class IntegratedServer extends MinecraftServer
         {
             throw new Error();
         }
+        mergeCommandHandlers(BlazeLoader.commandManager);
     }
 
     protected void loadAllWorlds(String par1Str, String par2Str, long par3, WorldType par5WorldType, String par6Str)

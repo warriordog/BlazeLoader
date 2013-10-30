@@ -29,6 +29,7 @@ public class TweakLauncher implements ITweaker {
     protected List<String> ignoredArgs;
     private String username = "";
     private String session = "";
+    private boolean useASM = false;
 
     public TweakLauncher(){
         logger.logInfo("BL tweak loader starting.");
@@ -43,6 +44,12 @@ public class TweakLauncher implements ITweaker {
         int sessionIndex = args.indexOf("--session");
         if(sessionIndex != -1 && sessionIndex < args.size()){
             session = args.get(sessionIndex + 1);
+        }
+        if(args.contains("-useASM")){
+            useASM = true;
+            logger.logDetail("-useASM detected, using ASM instead of proxy system.");
+        }else{
+            logger.logDetail("-useASM not detected, using proxy system instead of ASM.");
         }
         hasInit = true;
         this.gameDir = gameDir;
@@ -99,6 +106,9 @@ public class TweakLauncher implements ITweaker {
                         e.printStackTrace();
                     }
                 }
+                if(useASM){
+                    classLoader.registerTransformer("net.acomputerdog.BlazeLoader.tweaklauncher.BLTransformer");
+                }
             }else{
                 logger.logFatal("tweakList is null!  Unable to inject secondary tweaks!");
             }
@@ -112,7 +122,7 @@ public class TweakLauncher implements ITweaker {
      * Get the main class.
      */
     public String getLaunchTarget() {
-        return "net.acomputerdog.BlazeLoader.tweaklauncher.BLMain";
+        return !useASM ? "net.acomputerdog.BlazeLoader.tweaklauncher.BLMain" : "net.minecraft.client.main.Main";
     }
 
     @Override
@@ -153,6 +163,7 @@ public class TweakLauncher implements ITweaker {
             }
         }
     }
+
     /*
     private void parseArgs(List<String> args)
     {

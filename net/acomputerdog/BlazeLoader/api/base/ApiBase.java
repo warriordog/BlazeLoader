@@ -1,10 +1,10 @@
 package net.acomputerdog.BlazeLoader.api.base;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.acomputerdog.BlazeLoader.proxy.ProfilerProxy;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;
 import net.minecraft.src.Minecraft;
+import net.minecraft.src.Profiler;
 
 import java.io.File;
 
@@ -46,7 +46,7 @@ public class ApiBase {
     /**
      * The game profiler.  Mods that wish to include profiler support can use this.
      */
-    public static ProfilerProxy theProfiler = null;
+    public static Profiler theProfiler = null;
 
     /**
      * Shuts down the game with a specified error code.  Use 0 for normal shutdown.
