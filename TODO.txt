@@ -3,9 +3,9 @@
 + completed
 ==================================================
 
--Move mods folder to version-specific folder
++Move mods folder to version-specific folder
 -Fix exceptions thrown if a mod returns false for isCompatibleWithBLVersion()
--Fix bug with EChatColor after re-obfuscation.
++Fix bug with EChatColor after re-obfuscation.
 -Fix forge compatibility with tweak loading.
 -Add query support (return list of mods)
 +Add support for tweak loading.
