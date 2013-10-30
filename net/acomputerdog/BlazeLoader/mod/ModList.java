@@ -61,16 +61,15 @@ public class ModList {
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 }else{
-                    iterator.remove();
                     BlazeLoader.getLogger().logError("Mod " + mod.getModName() + " is not compatible!  Unloading!");
                 }
+                iterator.remove();
             } catch (Exception e){
                 if(mod != null){
                     loadedMods.remove(mod);
                 }
                 BlazeLoader.getLogger().logError("Could not initialize mod: " + cls.getName());
                 e.printStackTrace();
-            } finally{
                 iterator.remove();
             }
         }
