@@ -3,7 +3,6 @@ package net.minecraft.src;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.server.MinecraftServer;
 
-import java.lang.reflect.Field;
 import java.net.SocketAddress;
 
 /**
@@ -16,42 +15,32 @@ public class IntegratedPlayerList extends ServerConfigurationManager
      */
     private NBTTagCompound hostPlayerData;
 
-    public IntegratedPlayerList(IntegratedServer par1IntegratedServer)
+    public IntegratedPlayerList(IntegratedServer server)
     {
-        super(par1IntegratedServer);
-        for(Field f : ServerConfigurationManager.class.getDeclaredFields()){
-            if(MinecraftServer.class.isAssignableFrom(f.getType())){
-                try{
-                    f.setAccessible(true);
-                    f.set(this, par1IntegratedServer);
-                }catch(Exception e){
-                    throw new RuntimeException("Could not replace mcServer!", e);
-                }
-            }
-        }
+        super(server);
         this.viewDistance = 10;
     }
 
     /**
-     * also stores the NBTTags if this is an intergratedPlayerList
+     * also stores the NBTTags if this is an integratedPlayerList
      */
-    protected void writePlayerData(EntityPlayerMP par1EntityPlayerMP)
+    protected void writePlayerData(EntityPlayerMP player)
     {
-        if (par1EntityPlayerMP.getCommandSenderName().equals(this.getIntegratedServer().getServerOwner()))
+        if (player.getCommandSenderName().equals(this.getIntegratedServer().getServerOwner()))
         {
             this.hostPlayerData = new NBTTagCompound();
-            par1EntityPlayerMP.writeToNBT(this.hostPlayerData);
+            player.writeToNBT(this.hostPlayerData);
         }
 
-        super.writePlayerData(par1EntityPlayerMP);
+        super.writePlayerData(player);
     }
 
     /**
      * checks ban-lists, then white-lists, then space for the server. Returns null on success, or an error message
      */
-    public String allowUserToConnect(SocketAddress par1SocketAddress, String par2Str)
+    public String allowUserToConnect(SocketAddress socket, String playerName)
     {
-        return par2Str.equalsIgnoreCase(this.getIntegratedServer().getServerOwner()) ? "That name is already taken." : super.allowUserToConnect(par1SocketAddress, par2Str);
+        return playerName.equalsIgnoreCase(this.getIntegratedServer().getServerOwner()) ? "That name is already taken." : super.allowUserToConnect(socket, playerName);
     }
 
     /**
@@ -80,27 +69,27 @@ public class IntegratedPlayerList extends ServerConfigurationManager
      * beat the game rather than dying
      */
     @Override
-    public EntityPlayerMP respawnPlayer(EntityPlayerMP par1EntityPlayerMP, int par2, boolean par3) {
-        EntityPlayerMP player = super.respawnPlayer(par1EntityPlayerMP, par2, par3);
-        ModList.eventPlayerSpawn(par1EntityPlayerMP, player, par2, par3);
-        return player;
+    public EntityPlayerMP respawnPlayer(EntityPlayerMP player, int dimension, boolean didWin) {
+        EntityPlayerMP newPlayer = super.respawnPlayer(player, dimension, didWin);
+        ModList.eventPlayerSpawn(player, newPlayer, dimension, didWin);
+        return newPlayer;
     }
 
     /**
      * Called when a player disconnects from the game. Writes player data to disk and removes them from the world.
      */
     @Override
-    public void playerLoggedOut(EntityPlayerMP par1EntityPlayerMP) {
-        super.playerLoggedOut(par1EntityPlayerMP);
-        ModList.eventPlayerLogout(par1EntityPlayerMP);
+    public void playerLoggedOut(EntityPlayerMP player) {
+        super.playerLoggedOut(player);
+        ModList.eventPlayerLogout(player);
     }
 
     /**
      * Called when a player successfully logs in. Reads player data from disk and inserts the player into the world.
      */
     @Override
-    public void playerLoggedIn(EntityPlayerMP par1EntityPlayerMP) {
-        super.playerLoggedIn(par1EntityPlayerMP);
-        ModList.eventPlayerLogin(par1EntityPlayerMP);
+    public void playerLoggedIn(EntityPlayerMP player) {
+        super.playerLoggedIn(player);
+        ModList.eventPlayerLogin(player);
     }
 }
