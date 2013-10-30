@@ -37,9 +37,9 @@ public class Profiler
     /**
      * Start section
      */
-    public void startSection(String par1Str)
+    public void startSection(String sectionName)
     {
-        ModList.startSection(par1Str);
+        ModList.startSection(sectionName);
 
         if (this.profilingEnabled)
         {
@@ -48,7 +48,7 @@ public class Profiler
                 this.profilingSection = this.profilingSection + ".";
             }
 
-            this.profilingSection = this.profilingSection + par1Str;
+            this.profilingSection = this.profilingSection + sectionName;
             this.sectionList.add(this.profilingSection);
             this.timestampList.add(System.nanoTime());
         }
@@ -61,10 +61,10 @@ public class Profiler
     {
         if (this.profilingEnabled)
         {
-            long var1 = System.nanoTime();
+            long nanoTime = System.nanoTime();
             long var3 = (Long) this.timestampList.remove(this.timestampList.size() - 1);
             this.sectionList.remove(this.sectionList.size() - 1);
-            long var5 = var1 - var3;
+            long var5 = nanoTime - var3;
 
             if (this.profilingMap.containsKey(this.profilingSection))
             {
@@ -88,7 +88,7 @@ public class Profiler
     /**
      * Get profiling data
      */
-    public List getProfilingData(String par1Str)
+    public List getProfilingData(String section)
     {
         if (!this.profilingEnabled)
         {
@@ -97,12 +97,12 @@ public class Profiler
         else
         {
             long var3 = this.profilingMap.containsKey("root") ? (Long) this.profilingMap.get("root") : 0L;
-            long var5 = this.profilingMap.containsKey(par1Str) ? (Long) this.profilingMap.get(par1Str) : -1L;
+            long var5 = this.profilingMap.containsKey(section) ? (Long) this.profilingMap.get(section) : -1L;
             ArrayList var7 = new ArrayList();
 
-            if (par1Str.length() > 0)
+            if (section.length() > 0)
             {
-                par1Str = par1Str + ".";
+                section = section + ".";
             }
 
             long var8 = 0L;
@@ -110,7 +110,7 @@ public class Profiler
             for (Object o : this.profilingMap.keySet()) {
                 String var11 = (String) o;
 
-                if (var11.length() > par1Str.length() && var11.startsWith(par1Str) && var11.indexOf(".", par1Str.length() + 1) < 0) {
+                if (var11.length() > section.length() && var11.startsWith(section) && var11.indexOf(".", section.length() + 1) < 0) {
                     var8 += (Long) this.profilingMap.get(var11);
                 }
             }
@@ -134,12 +134,12 @@ public class Profiler
             {
                 var12 = (String)var20.next();
 
-                if (var12.length() > par1Str.length() && var12.startsWith(par1Str) && var12.indexOf(".", par1Str.length() + 1) < 0)
+                if (var12.length() > section.length() && var12.startsWith(section) && var12.indexOf(".", section.length() + 1) < 0)
                 {
                     long var13 = (Long) this.profilingMap.get(var12);
                     double var15 = (double)var13 * 100.0D / (double)var8;
                     double var17 = (double)var13 * 100.0D / (double)var3;
-                    String var19 = var12.substring(par1Str.length());
+                    String var19 = var12.substring(section.length());
                     var7.add(new ProfilerResult(var19, var15, var17));
                 }
             }
@@ -158,7 +158,7 @@ public class Profiler
             }
 
             Collections.sort(var7);
-            var7.add(0, new ProfilerResult(par1Str, 100.0D, (double)var8 * 100.0D / (double)var3));
+            var7.add(0, new ProfilerResult(section, 100.0D, (double)var8 * 100.0D / (double)var3));
             return var7;
         }
     }
@@ -166,10 +166,10 @@ public class Profiler
     /**
      * End current section and start a new section
      */
-    public void endStartSection(String par1Str)
+    public void endStartSection(String section)
     {
         this.endSection();
-        this.startSection(par1Str);
+        this.startSection(section);
     }
 
     public String getNameOfLastSection()
