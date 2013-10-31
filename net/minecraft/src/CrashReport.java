@@ -150,7 +150,7 @@ public class CrashReport
         var1.append("Description: ");
         var1.append(this.description);
         var1.append("\n\n");
-        var1.append("BlazeLoader data: \n");
+        var1.append("-- BlazeLoader --\n");
         var1.append("BlazeLoader version: ").append(Version.getStringVersion()).append("\n");
         var1.append("Active mod: ").append(getActiveMod()).append("\n");
         var1.append("\n");
@@ -305,7 +305,7 @@ public class CrashReport
     public static String getActiveMod(){
         Mod mod = BlazeLoader.activeMod;
         if(mod != null){
-            return mod.getModName() + "(" + mod.getModId() + "." + mod.getStringModVersion() + ")";
+            return mod.getModName() + "(" + mod.getModId() + " - " + mod.getStringModVersion() + ")";
         }else{
             return "none(null)";
         }
