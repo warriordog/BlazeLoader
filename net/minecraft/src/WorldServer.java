@@ -260,91 +260,93 @@ public class WorldServer extends World
      */
     protected void tickBlocksAndAmbiance()
     {
-        super.tickBlocksAndAmbiance();
+        if(ModList.eventTickBlocksAndAmbiance(this)){
+            super.tickBlocksAndAmbiance();
 
-        for (Object activeChunkSet : this.activeChunkSet) {
-            ChunkCoordIntPair loc = (ChunkCoordIntPair) activeChunkSet;
-            int chunkX = loc.chunkXPos * 16;
-            int chunkZ = loc.chunkZPos * 16;
-            this.theProfiler.startSection("getChunk");
-            Chunk chunk = this.getChunkFromChunkCoords(loc.chunkXPos, loc.chunkZPos);
-            this.moodSoundAndLightCheck(chunkX, chunkZ, chunk);
-            this.theProfiler.endStartSection("tickChunk");
-            chunk.updateSkylight();
-            this.theProfiler.endStartSection("thunder");
-            int randNum;
-            int blockX;
-            int blockZ;
-            int precipitationHeight;
+            for (Object activeChunkSet : this.activeChunkSet) {
+                ChunkCoordIntPair loc = (ChunkCoordIntPair) activeChunkSet;
+                int chunkX = loc.chunkXPos * 16;
+                int chunkZ = loc.chunkZPos * 16;
+                this.theProfiler.startSection("getChunk");
+                Chunk chunk = this.getChunkFromChunkCoords(loc.chunkXPos, loc.chunkZPos);
+                this.moodSoundAndLightCheck(chunkX, chunkZ, chunk);
+                this.theProfiler.endStartSection("tickChunk");
+                chunk.updateSkylight();
+                this.theProfiler.endStartSection("thunder");
+                int randNum;
+                int blockX;
+                int blockZ;
+                int precipitationHeight;
 
-            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering()) {
-                this.updateLCG = this.updateLCG * 3 + 1013904223;
-                randNum = this.updateLCG >> 2;
-                blockX = chunkX + (randNum & 15);
-                blockZ = chunkZ + (randNum >> 8 & 15);
-                precipitationHeight = this.getPrecipitationHeight(blockX, blockZ);
+                if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering()) {
+                    this.updateLCG = this.updateLCG * 3 + 1013904223;
+                    randNum = this.updateLCG >> 2;
+                    blockX = chunkX + (randNum & 15);
+                    blockZ = chunkZ + (randNum >> 8 & 15);
+                    precipitationHeight = this.getPrecipitationHeight(blockX, blockZ);
 
-                if (this.canLightningStrikeAt(blockX, precipitationHeight, blockZ)) {
-                    this.addWeatherEffect(new EntityLightningBolt(this, (double) blockX, (double) precipitationHeight, (double) blockZ));
-                }
-            }
-
-            this.theProfiler.endStartSection("iceandsnow");
-            int blockID;
-
-            if (this.rand.nextInt(16) == 0) {
-                this.updateLCG = this.updateLCG * 3 + 1013904223;
-                randNum = this.updateLCG >> 2;
-                blockX = randNum & 15;
-                blockZ = randNum >> 8 & 15;
-                precipitationHeight = this.getPrecipitationHeight(blockX + chunkX, blockZ + chunkZ);
-
-                if (this.isBlockFreezableNaturally(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ)) {
-                    this.setBlock(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ, Block.ice.blockID);
+                    if (this.canLightningStrikeAt(blockX, precipitationHeight, blockZ)) {
+                        this.addWeatherEffect(new EntityLightningBolt(this, (double) blockX, (double) precipitationHeight, (double) blockZ));
+                    }
                 }
 
-                if (this.isRaining() && this.canSnowAt(blockX + chunkX, precipitationHeight, blockZ + chunkZ)) {
-                    this.setBlock(blockX + chunkX, precipitationHeight, blockZ + chunkZ, Block.snow.blockID);
-                }
+                this.theProfiler.endStartSection("iceandsnow");
+                int blockID;
 
-                if (this.isRaining()) {
-                    BiomeGenBase biomeGen = this.getBiomeGenForCoords(blockX + chunkX, blockZ + chunkZ);
+                if (this.rand.nextInt(16) == 0) {
+                    this.updateLCG = this.updateLCG * 3 + 1013904223;
+                    randNum = this.updateLCG >> 2;
+                    blockX = randNum & 15;
+                    blockZ = randNum >> 8 & 15;
+                    precipitationHeight = this.getPrecipitationHeight(blockX + chunkX, blockZ + chunkZ);
 
-                    if (biomeGen.canSpawnLightningBolt()) {
-                        blockID = this.getBlockId(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
+                    if (this.isBlockFreezableNaturally(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ)) {
+                        this.setBlock(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ, Block.ice.blockID);
+                    }
 
-                        if (blockID != 0) {
-                            Block.blocksList[blockID].fillWithRain(this, blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
+                    if (this.isRaining() && this.canSnowAt(blockX + chunkX, precipitationHeight, blockZ + chunkZ)) {
+                        this.setBlock(blockX + chunkX, precipitationHeight, blockZ + chunkZ, Block.snow.blockID);
+                    }
+
+                    if (this.isRaining()) {
+                        BiomeGenBase biomeGen = this.getBiomeGenForCoords(blockX + chunkX, blockZ + chunkZ);
+
+                        if (biomeGen.canSpawnLightningBolt()) {
+                            blockID = this.getBlockId(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
+
+                            if (blockID != 0) {
+                                Block.blocksList[blockID].fillWithRain(this, blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
+                            }
                         }
                     }
                 }
-            }
 
-            this.theProfiler.endStartSection("tickTiles");
-            ExtendedBlockStorage[] blockStorageArray = chunk.getBlockStorageArray();
-            blockX = blockStorageArray.length;
+                this.theProfiler.endStartSection("tickTiles");
+                ExtendedBlockStorage[] blockStorageArray = chunk.getBlockStorageArray();
+                blockX = blockStorageArray.length;
 
-            for (blockZ = 0; blockZ < blockX; ++blockZ) {
-                ExtendedBlockStorage blockStorage = blockStorageArray[blockZ];
+                for (blockZ = 0; blockZ < blockX; ++blockZ) {
+                    ExtendedBlockStorage blockStorage = blockStorageArray[blockZ];
 
-                if (blockStorage != null && blockStorage.getNeedsRandomTick()) {
-                    for (int var20 = 0; var20 < 3; ++var20) {
-                        this.updateLCG = this.updateLCG * 3 + 1013904223;
-                        blockID = this.updateLCG >> 2;
-                        int xPos = blockID & 15;
-                        int zPos = blockID >> 8 & 15;
-                        int yPos = blockID >> 16 & 15;
-                        int blockID_2 = blockStorage.getExtBlockID(xPos, yPos, zPos);
-                        Block block = Block.blocksList[blockID_2];
+                    if (blockStorage != null && blockStorage.getNeedsRandomTick()) {
+                        for (int var20 = 0; var20 < 3; ++var20) {
+                            this.updateLCG = this.updateLCG * 3 + 1013904223;
+                            blockID = this.updateLCG >> 2;
+                            int xPos = blockID & 15;
+                            int zPos = blockID >> 8 & 15;
+                            int yPos = blockID >> 16 & 15;
+                            int blockID_2 = blockStorage.getExtBlockID(xPos, yPos, zPos);
+                            Block block = Block.blocksList[blockID_2];
 
-                        if (block != null && block.getTickRandomly()) {
-                            block.updateTick(this, xPos + chunkX, yPos + blockStorage.getYLocation(), zPos + chunkZ, this.rand);
+                            if (block != null && block.getTickRandomly()) {
+                                block.updateTick(this, xPos + chunkX, yPos + blockStorage.getYLocation(), zPos + chunkZ, this.rand);
+                            }
                         }
                     }
                 }
-            }
 
-            this.theProfiler.endSection();
+                this.theProfiler.endSection();
+            }
         }
     }
 

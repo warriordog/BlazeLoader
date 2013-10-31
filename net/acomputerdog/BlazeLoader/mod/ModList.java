@@ -224,4 +224,17 @@ public class ModList {
         BlazeLoader.activeMod = null;
         return packet;
     }
+
+    public static boolean eventTickBlocksAndAmbiance(WorldServer server){
+        boolean doVanilla = true;
+        for(Mod mod : loadedMods){
+            BlazeLoader.activeMod = mod;
+            boolean didHandle = mod.eventTickBlocksAndAmbiance(server, doVanilla);
+            if(doVanilla){
+                doVanilla = didHandle;
+            }
+        }
+        BlazeLoader.activeMod = null;
+        return doVanilla;
+    }
 }
