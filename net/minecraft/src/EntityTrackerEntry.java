@@ -49,23 +49,23 @@ public class EntityTrackerEntry
      */
     public Set trackingPlayers = new HashSet();
 
-    public EntityTrackerEntry(Entity par1Entity, int par2, int par3, boolean par4)
+    public EntityTrackerEntry(Entity entity, int blocksDistanceThreshold, int updateFrequency, boolean updateVelocity)
     {
-        this.myEntity = par1Entity;
-        this.blocksDistanceThreshold = par2;
-        this.updateFrequency = par3;
-        this.sendVelocityUpdates = par4;
-        this.lastScaledXPosition = MathHelper.floor_double(par1Entity.posX * 32.0D);
-        this.lastScaledYPosition = MathHelper.floor_double(par1Entity.posY * 32.0D);
-        this.lastScaledZPosition = MathHelper.floor_double(par1Entity.posZ * 32.0D);
-        this.lastYaw = MathHelper.floor_float(par1Entity.rotationYaw * 256.0F / 360.0F);
-        this.lastPitch = MathHelper.floor_float(par1Entity.rotationPitch * 256.0F / 360.0F);
-        this.lastHeadMotion = MathHelper.floor_float(par1Entity.getRotationYawHead() * 256.0F / 360.0F);
+        this.myEntity = entity;
+        this.blocksDistanceThreshold = blocksDistanceThreshold;
+        this.updateFrequency = updateFrequency;
+        this.sendVelocityUpdates = updateVelocity;
+        this.lastScaledXPosition = MathHelper.floor_double(entity.posX * 32.0D);
+        this.lastScaledYPosition = MathHelper.floor_double(entity.posY * 32.0D);
+        this.lastScaledZPosition = MathHelper.floor_double(entity.posZ * 32.0D);
+        this.lastYaw = MathHelper.floor_float(entity.rotationYaw * 256.0F / 360.0F);
+        this.lastPitch = MathHelper.floor_float(entity.rotationPitch * 256.0F / 360.0F);
+        this.lastHeadMotion = MathHelper.floor_float(entity.getRotationYawHead() * 256.0F / 360.0F);
     }
 
-    public boolean equals(Object par1Obj)
+    public boolean equals(Object object)
     {
-        return par1Obj instanceof EntityTrackerEntry ? ((EntityTrackerEntry)par1Obj).myEntity.entityId == this.myEntity.entityId : false;
+        return object instanceof EntityTrackerEntry && ((EntityTrackerEntry) object).myEntity.entityId == this.myEntity.entityId;
     }
 
     public int hashCode()
@@ -76,7 +76,7 @@ public class EntityTrackerEntry
     /**
      * also sends velocity, rotation, and riding info.
      */
-    public void sendLocationToAllClients(List par1List)
+    public void sendLocationToAllClients(List clients)
     {
         this.playerEntitiesUpdated = false;
 
@@ -87,7 +87,7 @@ public class EntityTrackerEntry
             this.posZ = this.myEntity.posZ;
             this.isDataInitialized = true;
             this.playerEntitiesUpdated = true;
-            this.sendEventsToPlayers(par1List);
+            this.sendEventsToPlayers(clients);
         }
 
         if (this.field_85178_v != this.myEntity.ridingEntity || this.myEntity.ridingEntity != null && this.ticks % 60 == 0)
@@ -105,7 +105,7 @@ public class EntityTrackerEntry
             {
                 MapData var26 = Item.map.getMapData(var24, this.myEntity.worldObj);
 
-                for (Object aPar1List : par1List) {
+                for (Object aPar1List : clients) {
                     EntityPlayer var28 = (EntityPlayer) aPar1List;
                     EntityPlayerMP var29 = (EntityPlayerMP) var28;
                     var26.updateVisiblePlayers(var29, var24);
@@ -271,25 +271,25 @@ public class EntityTrackerEntry
     /**
      * if this is a player, then it is not informed
      */
-    public void sendPacketToAllTrackingPlayers(Packet par1Packet)
+    public void sendPacketToAllTrackingPlayers(Packet packet)
     {
 
         for (Object trackingPlayer : this.trackingPlayers) {
             EntityPlayerMP var3 = (EntityPlayerMP) trackingPlayer;
-            var3.playerNetServerHandler.sendPacketToPlayer(par1Packet);
+            var3.playerNetServerHandler.sendPacketToPlayer(packet);
         }
     }
 
     /**
      * if this is a player, then it recieves the message also
      */
-    public void sendPacketToAllAssociatedPlayers(Packet par1Packet)
+    public void sendPacketToAllAssociatedPlayers(Packet packet)
     {
-        this.sendPacketToAllTrackingPlayers(par1Packet);
+        this.sendPacketToAllTrackingPlayers(packet);
 
         if (this.myEntity instanceof EntityPlayerMP)
         {
-            ((EntityPlayerMP)this.myEntity).playerNetServerHandler.sendPacketToPlayer(par1Packet);
+            ((EntityPlayerMP)this.myEntity).playerNetServerHandler.sendPacketToPlayer(packet);
         }
     }
 
@@ -302,36 +302,36 @@ public class EntityTrackerEntry
         }
     }
 
-    public void removeFromWatchingList(EntityPlayerMP par1EntityPlayerMP)
+    public void removeFromWatchingList(EntityPlayerMP packet)
     {
-        if (this.trackingPlayers.contains(par1EntityPlayerMP))
+        if (this.trackingPlayers.contains(packet))
         {
-            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
-            this.trackingPlayers.remove(par1EntityPlayerMP);
+            packet.destroyedItemsNetCache.add(this.myEntity.entityId);
+            this.trackingPlayers.remove(packet);
         }
     }
 
     /**
      * if the player is more than the distance threshold (typically 64) then the player is removed instead
      */
-    public void tryStartWachingThis(EntityPlayerMP par1EntityPlayerMP)
+    public void tryStartWachingThis(EntityPlayerMP packet)
     {
-        if (par1EntityPlayerMP != this.myEntity)
+        if (packet != this.myEntity)
         {
-            double var2 = par1EntityPlayerMP.posX - (double)(this.lastScaledXPosition / 32);
-            double var4 = par1EntityPlayerMP.posZ - (double)(this.lastScaledZPosition / 32);
+            double var2 = packet.posX - (double)(this.lastScaledXPosition / 32);
+            double var4 = packet.posZ - (double)(this.lastScaledZPosition / 32);
 
             if (var2 >= (double)(-this.blocksDistanceThreshold) && var2 <= (double)this.blocksDistanceThreshold && var4 >= (double)(-this.blocksDistanceThreshold) && var4 <= (double)this.blocksDistanceThreshold)
             {
-                if (!this.trackingPlayers.contains(par1EntityPlayerMP) && (this.isPlayerWatchingThisChunk(par1EntityPlayerMP) || this.myEntity.forceSpawn))
+                if (!this.trackingPlayers.contains(packet) && (this.isPlayerWatchingThisChunk(packet) || this.myEntity.forceSpawn))
                 {
-                    this.trackingPlayers.add(par1EntityPlayerMP);
+                    this.trackingPlayers.add(packet);
                     Packet var6 = this.getPacketForThisEntity();
-                    par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(var6);
+                    packet.playerNetServerHandler.sendPacketToPlayer(var6);
 
                     if (!this.myEntity.getDataWatcher().getIsBlank())
                     {
-                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet40EntityMetadata(this.myEntity.entityId, this.myEntity.getDataWatcher(), true));
+                        packet.playerNetServerHandler.sendPacketToPlayer(new Packet40EntityMetadata(this.myEntity.entityId, this.myEntity.getDataWatcher(), true));
                     }
 
                     if (this.myEntity instanceof EntityLivingBase)
@@ -341,7 +341,7 @@ public class EntityTrackerEntry
 
                         if (!var8.isEmpty())
                         {
-                            par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet44UpdateAttributes(this.myEntity.entityId, var8));
+                            packet.playerNetServerHandler.sendPacketToPlayer(new Packet44UpdateAttributes(this.myEntity.entityId, var8));
                         }
                     }
 
@@ -351,17 +351,17 @@ public class EntityTrackerEntry
 
                     if (this.sendVelocityUpdates && !(var6 instanceof Packet24MobSpawn))
                     {
-                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet28EntityVelocity(this.myEntity.entityId, this.myEntity.motionX, this.myEntity.motionY, this.myEntity.motionZ));
+                        packet.playerNetServerHandler.sendPacketToPlayer(new Packet28EntityVelocity(this.myEntity.entityId, this.myEntity.motionX, this.myEntity.motionY, this.myEntity.motionZ));
                     }
 
                     if (this.myEntity.ridingEntity != null)
                     {
-                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet39AttachEntity(0, this.myEntity, this.myEntity.ridingEntity));
+                        packet.playerNetServerHandler.sendPacketToPlayer(new Packet39AttachEntity(0, this.myEntity, this.myEntity.ridingEntity));
                     }
 
                     if (this.myEntity instanceof EntityLiving && ((EntityLiving)this.myEntity).getLeashedToEntity() != null)
                     {
-                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet39AttachEntity(1, this.myEntity, ((EntityLiving)this.myEntity).getLeashedToEntity()));
+                        packet.playerNetServerHandler.sendPacketToPlayer(new Packet39AttachEntity(1, this.myEntity, ((EntityLiving)this.myEntity).getLeashedToEntity()));
                     }
 
                     if (this.myEntity instanceof EntityLivingBase)
@@ -372,7 +372,7 @@ public class EntityTrackerEntry
 
                             if (var13 != null)
                             {
-                                par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet5PlayerInventory(this.myEntity.entityId, var10, var13));
+                                packet.playerNetServerHandler.sendPacketToPlayer(new Packet5PlayerInventory(this.myEntity.entityId, var10, var13));
                             }
                         }
                     }
@@ -383,7 +383,7 @@ public class EntityTrackerEntry
 
                         if (var11.isPlayerSleeping())
                         {
-                            par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet17Sleep(this.myEntity, 0, MathHelper.floor_double(this.myEntity.posX), MathHelper.floor_double(this.myEntity.posY), MathHelper.floor_double(this.myEntity.posZ)));
+                            packet.playerNetServerHandler.sendPacketToPlayer(new Packet17Sleep(this.myEntity, 0, MathHelper.floor_double(this.myEntity.posX), MathHelper.floor_double(this.myEntity.posY), MathHelper.floor_double(this.myEntity.posZ)));
                         }
                     }
 
@@ -393,28 +393,28 @@ public class EntityTrackerEntry
 
                         for (Object o : var14.getActivePotionEffects()) {
                             PotionEffect var9 = (PotionEffect) o;
-                            par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(this.myEntity.entityId, var9));
+                            packet.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(this.myEntity.entityId, var9));
                         }
                     }
                 }
             }
-            else if (this.trackingPlayers.contains(par1EntityPlayerMP))
+            else if (this.trackingPlayers.contains(packet))
             {
-                this.trackingPlayers.remove(par1EntityPlayerMP);
-                par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
+                this.trackingPlayers.remove(packet);
+                packet.destroyedItemsNetCache.add(this.myEntity.entityId);
             }
         }
     }
 
-    private boolean isPlayerWatchingThisChunk(EntityPlayerMP par1EntityPlayerMP)
+    private boolean isPlayerWatchingThisChunk(EntityPlayerMP player)
     {
-        return par1EntityPlayerMP.getServerForPlayer().getPlayerManager().isPlayerWatchingChunk(par1EntityPlayerMP, this.myEntity.chunkCoordX, this.myEntity.chunkCoordZ);
+        return player.getServerForPlayer().getPlayerManager().isPlayerWatchingChunk(player, this.myEntity.chunkCoordX, this.myEntity.chunkCoordZ);
     }
 
-    public void sendEventsToPlayers(List par1List)
+    public void sendEventsToPlayers(List players)
     {
-        for (Object aPar1List : par1List) {
-            this.tryStartWachingThis((EntityPlayerMP) aPar1List);
+        for (Object player : players) {
+            this.tryStartWachingThis((EntityPlayerMP) player);
         }
     }
 
@@ -571,12 +571,12 @@ public class EntityTrackerEntry
         }
     }
 
-    public void removePlayerFromTracker(EntityPlayerMP par1EntityPlayerMP)
+    public void removePlayerFromTracker(EntityPlayerMP player)
     {
-        if (this.trackingPlayers.contains(par1EntityPlayerMP))
+        if (this.trackingPlayers.contains(player))
         {
-            this.trackingPlayers.remove(par1EntityPlayerMP);
-            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
+            this.trackingPlayers.remove(player);
+            player.destroyedItemsNetCache.add(this.myEntity.entityId);
         }
     }
 }
