@@ -20,20 +20,20 @@ public class CrashReport
 
     /** The Throwable that is the "cause" for this crash and Crash Report. */
     private final Throwable cause;
-    private final CrashReportCategory field_85061_c = new CrashReportCategory(this, "System Details");
+    private final CrashReportCategory systemDetailsCategory = new CrashReportCategory(this, "System Details");
 
     /** Holds the keys and values of all crash report sections. */
     private final List crashReportSections = new ArrayList();
 
     /** File of crash report. */
     private File crashReportFile;
-    private boolean field_85059_f = true;
-    private StackTraceElement[] field_85060_g = new StackTraceElement[0];
+    private boolean existsCrashReport = true;
+    private StackTraceElement[] stackTrace = new StackTraceElement[0];
 
-    public CrashReport(String par1Str, Throwable par2Throwable)
+    public CrashReport(String description, Throwable cause)
     {
-        this.description = par1Str;
-        this.cause = par2Throwable;
+        this.description = description;
+        this.cause = cause;
         this.populateEnvironment();
     }
 
@@ -43,15 +43,15 @@ public class CrashReport
      */
     private void populateEnvironment()
     {
-        this.field_85061_c.addCrashSectionCallable("Minecraft Version", new CallableMinecraftVersion(this));
-        this.field_85061_c.addCrashSectionCallable("Operating System", new CallableOSInfo(this));
-        this.field_85061_c.addCrashSectionCallable("Java Version", new CallableJavaInfo(this));
-        this.field_85061_c.addCrashSectionCallable("Java VM Version", new CallableJavaInfo2(this));
-        this.field_85061_c.addCrashSectionCallable("Memory", new CallableMemoryInfo(this));
-        this.field_85061_c.addCrashSectionCallable("JVM Flags", new CallableJVMFlags(this));
-        this.field_85061_c.addCrashSectionCallable("AABB Pool Size", new CallableCrashMemoryReport(this));
-        this.field_85061_c.addCrashSectionCallable("Suspicious classes", new CallableSuspiciousClasses(this));
-        this.field_85061_c.addCrashSectionCallable("IntCache", new CallableIntCache(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Minecraft Version", new CallableMinecraftVersion(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Operating System", new CallableOSInfo(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Java Version", new CallableJavaInfo(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Java VM Version", new CallableJavaInfo2(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Memory", new CallableMemoryInfo(this));
+        this.systemDetailsCategory.addCrashSectionCallable("JVM Flags", new CallableJVMFlags(this));
+        this.systemDetailsCategory.addCrashSectionCallable("AABB Pool Size", new CallableCrashMemoryReport(this));
+        this.systemDetailsCategory.addCrashSectionCallable("Suspicious classes", new CallableSuspiciousClasses(this));
+        this.systemDetailsCategory.addCrashSectionCallable("IntCache", new CallableIntCache(this));
     }
 
     /**
@@ -73,29 +73,29 @@ public class CrashReport
     /**
      * Gets the various sections of the crash report into the given StringBuilder
      */
-    public void getSectionsInStringBuilder(StringBuilder par1StringBuilder)
+    public void getSectionsInStringBuilder(StringBuilder stringBuilder)
     {
-        if (this.field_85060_g != null && this.field_85060_g.length > 0)
+        if (this.stackTrace != null && this.stackTrace.length > 0)
         {
-            par1StringBuilder.append("-- Head --\n");
-            par1StringBuilder.append("Stacktrace:\n");
-            StackTraceElement[] var2 = this.field_85060_g;
+            stringBuilder.append("-- Head --\n");
+            stringBuilder.append("Stacktrace:\n");
+            StackTraceElement[] var2 = this.stackTrace;
 
             for (StackTraceElement var5 : var2) {
-                par1StringBuilder.append("\t").append("at ").append(var5.toString());
-                par1StringBuilder.append("\n");
+                stringBuilder.append("\t").append("at ").append(var5.toString());
+                stringBuilder.append("\n");
             }
 
-            par1StringBuilder.append("\n");
+            stringBuilder.append("\n");
         }
 
         for (Object crashReportSection : this.crashReportSections) {
             CrashReportCategory var7 = (CrashReportCategory) crashReportSection;
-            var7.func_85072_a(par1StringBuilder);
-            par1StringBuilder.append("\n\n");
+            var7.func_85072_a(stringBuilder);
+            stringBuilder.append("\n\n");
         }
 
-        this.field_85061_c.func_85072_a(par1StringBuilder);
+        this.systemDetailsCategory.func_85072_a(stringBuilder);
     }
 
     /**
@@ -178,7 +178,7 @@ public class CrashReport
     /**
      * Saves the complete crash report to the given File.
      */
-    public boolean saveToFile(File par1File, ILogAgent par2ILogAgent)
+    public boolean saveToFile(File crashReportFile, ILogAgent logger)
     {
         if (this.crashReportFile != null)
         {
@@ -186,22 +186,22 @@ public class CrashReport
         }
         else
         {
-            if (par1File.getParentFile() != null)
+            if (crashReportFile.getParentFile() != null)
             {
-                par1File.getParentFile().mkdirs();
+                crashReportFile.getParentFile().mkdirs();
             }
 
             try
             {
-                FileWriter var3 = new FileWriter(par1File);
+                FileWriter var3 = new FileWriter(crashReportFile);
                 var3.write(this.getCompleteReport());
                 var3.close();
-                this.crashReportFile = par1File;
+                this.crashReportFile = crashReportFile;
                 return true;
             }
             catch (Throwable var4)
             {
-                par2ILogAgent.logSevereException("Could not save crash report to " + par1File, var4);
+                logger.logSevereException("Could not save crash report to " + crashReportFile, var4);
                 return false;
             }
         }
@@ -209,27 +209,27 @@ public class CrashReport
 
     public CrashReportCategory getCategory()
     {
-        return this.field_85061_c;
+        return this.systemDetailsCategory;
     }
 
     /**
      * Creates a CrashReportCategory
      */
-    public CrashReportCategory makeCategory(String par1Str)
+    public CrashReportCategory makeCategory(String categoryName)
     {
-        return this.makeCategoryDepth(par1Str, 1);
+        return this.makeCategoryDepth(categoryName, 1);
     }
 
     /**
      * Creates a CrashReportCategory for the given stack trace depth
      */
-    public CrashReportCategory makeCategoryDepth(String par1Str, int par2)
+    public CrashReportCategory makeCategoryDepth(String categoryName, int depth)
     {
-        CrashReportCategory var3 = new CrashReportCategory(this, par1Str);
+        CrashReportCategory var3 = new CrashReportCategory(this, categoryName);
 
-        if (this.field_85059_f)
+        if (this.existsCrashReport)
         {
-            int var4 = var3.func_85073_a(par2);
+            int var4 = var3.func_85073_a(depth);
             StackTraceElement[] var5 = this.cause.getStackTrace();
             StackTraceElement var6 = null;
             StackTraceElement var7 = null;
@@ -244,7 +244,7 @@ public class CrashReport
                 }
             }
 
-            this.field_85059_f = var3.func_85069_a(var6, var7);
+            this.existsCrashReport = var3.func_85069_a(var6, var7);
 
             if (var4 > 0 && !this.crashReportSections.isEmpty())
             {
@@ -253,12 +253,12 @@ public class CrashReport
             }
             else if (var5 != null && var5.length >= var4)
             {
-                this.field_85060_g = new StackTraceElement[var5.length - var4];
-                System.arraycopy(var5, 0, this.field_85060_g, 0, this.field_85060_g.length);
+                this.stackTrace = new StackTraceElement[var5.length - var4];
+                System.arraycopy(var5, 0, this.stackTrace, 0, this.stackTrace.length);
             }
             else
             {
-                this.field_85059_f = false;
+                this.existsCrashReport = false;
             }
         }
 
@@ -286,17 +286,17 @@ public class CrashReport
     /**
      * Creates a crash report for the exception
      */
-    public static CrashReport makeCrashReport(Throwable par0Throwable, String par1Str)
+    public static CrashReport makeCrashReport(Throwable cause, String description)
     {
         CrashReport var2;
 
-        if (par0Throwable instanceof ReportedException)
+        if (cause instanceof ReportedException)
         {
-            var2 = ((ReportedException)par0Throwable).getCrashReport();
+            var2 = ((ReportedException)cause).getCrashReport();
         }
         else
         {
-            var2 = new CrashReport(par1Str, par0Throwable);
+            var2 = new CrashReport(description, cause);
         }
 
         return var2;
