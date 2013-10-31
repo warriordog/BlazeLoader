@@ -22,7 +22,7 @@ public class EntityList
     private static Map<Class, Integer> classToIDMapping = new HashMap<Class, Integer>();
 
     /** Maps entity names to their numeric identifiers */
-    private static Map<String, Integer> stringToIDMapping = new HashMap<String, Integer>();
+    public static Map<String, Integer> stringToIDMapping = new HashMap<String, Integer>();
 
     /** This is a HashMap of the Creative Entity Eggs/Spawners. */
     public static HashMap<Integer, EntityEggInfo> entityEggs = new LinkedHashMap<Integer, EntityEggInfo>();

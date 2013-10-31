@@ -432,7 +432,7 @@ public class Minecraft implements IPlayerUsage
         this.defaultResourcePacks.add(this.mcDefaultResourcePack);
     }
 
-    private ByteBuffer readImage(File imageFile) throws IOException
+    public ByteBuffer readImage(File imageFile) throws IOException
     {
         BufferedImage var2 = ImageIO.read(imageFile);
         int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
@@ -622,7 +622,7 @@ public class Minecraft implements IPlayerUsage
     /**
      * Checks for an OpenGL error. If there is one, prints the error ID and error string.
      */
-    private void checkGLError(String errorLocation)
+    public void checkGLError(String errorLocation)
     {
         int var2 = GL11.glGetError();
 
@@ -752,7 +752,7 @@ public class Minecraft implements IPlayerUsage
     /**
      * Called repeatedly from run()
      */
-    private void runGameLoop()
+    protected void runGameLoop()
     {
         AxisAlignedBB.getAABBPool().cleanPool();
 
@@ -2427,11 +2427,4 @@ public class Minecraft implements IPlayerUsage
         return minecraft.mcLanguageManager;
     }
 
-    public void setTPS(float tps){
-        this.timer.ticksPerSecond = tps;
-    }
-
-    public float getTPS(){
-        return this.timer.ticksPerSecond;
-    }
 }

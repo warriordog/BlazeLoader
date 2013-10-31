@@ -48,7 +48,7 @@ public class NetClientHandler extends NetHandler
     private GuiScreen field_98183_l;
 
     /** RNG. */
-    Random rand = new Random();
+    public Random rand = new Random();
 
     public NetClientHandler(Minecraft minecraft, String address, int port) throws IOException
     {
@@ -860,7 +860,7 @@ public class NetClientHandler extends NetHandler
         }
     }
 
-    private Entity getEntityByID(int entityID)
+    public Entity getEntityByID(int entityID)
     {
         return entityID == this.mc.thePlayer.entityId ? this.mc.thePlayer : this.worldClient.getEntityByID(entityID);
     }

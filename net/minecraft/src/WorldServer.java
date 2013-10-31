@@ -175,7 +175,7 @@ public class WorldServer extends World
         }
     }
 
-    protected void wakeAllPlayers()
+    public void wakeAllPlayers()
     {
         this.allPlayersSleeping = false;
 
@@ -788,14 +788,14 @@ public class WorldServer extends World
     /**
      * Saves the chunks to disk.
      */
-    protected void saveLevel() throws MinecraftException
+    public void saveLevel() throws MinecraftException
     {
         this.checkSessionLock();
         this.saveHandler.saveWorldInfoWithPlayer(this.worldInfo, this.mcServer.getConfigurationManager().getHostPlayerData());
         this.mapStorage.saveAllData();
     }
 
-    protected void onEntityAdded(Entity entity)
+    public void onEntityAdded(Entity entity)
     {
         super.onEntityAdded(entity);
         this.entityIdMap.addKey(entity.entityId, entity);
@@ -809,7 +809,7 @@ public class WorldServer extends World
         }
     }
 
-    protected void onEntityRemoved(Entity entity)
+    public void onEntityRemoved(Entity entity)
     {
         super.onEntityRemoved(entity);
         this.entityIdMap.removeObject(entity.entityId);

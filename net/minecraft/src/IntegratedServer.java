@@ -157,7 +157,7 @@ public class IntegratedServer extends MinecraftServer
         return this.theWorldSettings.getHardcoreEnabled();
     }
 
-    protected File getDataDirectory()
+    public File getDataDirectory()
     {
         return this.mc.mcDataDir;
     }
@@ -298,7 +298,7 @@ public class IntegratedServer extends MinecraftServer
         return this.getServerListeningThread();
     }
 
-    protected void mergeCommandHandlers(CommandHandler handlerToMerge){
+    public void mergeCommandHandlers(CommandHandler handlerToMerge){
         CommandHandler newManager = (CommandHandler)this.getCommandManager();
         for(Object command : handlerToMerge.getCommands().values()){
             newManager.registerCommand((ICommand)command);

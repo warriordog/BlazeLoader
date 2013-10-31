@@ -418,7 +418,7 @@ public class EntityTrackerEntry
         }
     }
 
-    private Packet getPacketForThisEntity()
+    public Packet getPacketForThisEntity()
     {
         if (this.myEntity.isDead)
         {

@@ -22,7 +22,7 @@ public class Profiler
     private String profilingSection = "";
 
     /** Profiling map */
-    private final Map profilingMap = new HashMap();
+    public final Map profilingMap = new HashMap();
 
     /**
      * Clear profiling.

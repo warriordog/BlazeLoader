@@ -126,7 +126,7 @@ public class EntityRenderer
     float[] rainYCoords;
 
     /** Fog color buffer */
-    FloatBuffer fogColorBuffer = GLAllocation.createDirectFloatBuffer(16);
+    public FloatBuffer fogColorBuffer = GLAllocation.createDirectFloatBuffer(16);
 
     /** red component of the fog color */
     float fogColorRed;
@@ -403,7 +403,7 @@ public class EntityRenderer
     /**
      * sets up player's eye (or camera in third person mode)
      */
-    private void orientCamera(float direction)
+    public void orientCamera(float direction)
     {
         EntityLivingBase var2 = this.mc.renderViewEntity;
         float var3 = var2.yOffset - 1.62F;
@@ -1326,7 +1326,7 @@ public class EntityRenderer
     /**
      * Render rain and snow
      */
-    protected void renderRainSnow(float par1)
+    public void renderRainSnow(float par1)
     {
         float var2 = this.mc.theWorld.getRainStrength(par1);
 
@@ -1835,7 +1835,7 @@ public class EntityRenderer
     /**
      * Update and return fogColorBuffer with the RGBA values passed as arguments
      */
-    private FloatBuffer setFogColorBuffer(float par1, float par2, float par3, float par4)
+    public FloatBuffer setFogColorBuffer(float par1, float par2, float par3, float par4)
     {
         this.fogColorBuffer.clear();
         this.fogColorBuffer.put(par1).put(par2).put(par3).put(par4);
