@@ -2,10 +2,7 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.WorldClient;
-import net.minecraft.src.WorldServer;
+import net.minecraft.src.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -185,5 +182,13 @@ public class ModList {
         for(Mod mod : loadedMods){
             mod.eventTickServerWorld(world);
         }
+    }
+
+    public static Packet23VehicleSpawn createSpawnPacket(Entity myEntity){
+        Packet23VehicleSpawn packet = null;
+        for(Mod mod : loadedMods){
+            packet = mod.createSpawnPacket(myEntity, packet != null);
+        }
+        return packet;
     }
 }

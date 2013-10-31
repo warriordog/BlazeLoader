@@ -32,6 +32,12 @@ public class BLTransformer implements IClassTransformer{
                 return readClass(Profiler.class.getName(), bytes);
             }else if(name.equals(WorldServer.class.getName())){
                 return readClass(WorldServer.class.getName(), bytes);
+            }else if(name.equals(EntityList.class.getName())){
+                return readClass(EntityList.class.getName(), bytes);
+            }else if(name.equals(NetClientHandler.class.getName())){
+                return readClass(NetClientHandler.class.getName(), bytes);
+            }else if(name.equals(EntityTrackerEntry.class.getName())){
+                return readClass(EntityTrackerEntry.class.getName(), bytes);
             }else{
                 return bytes;
             }

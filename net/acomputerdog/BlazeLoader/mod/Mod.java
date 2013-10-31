@@ -1,10 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.annotation.Beta;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.GuiScreen;
-import net.minecraft.src.WorldClient;
-import net.minecraft.src.WorldServer;
+import net.minecraft.src.*;
 
 /**
  * Base class of mods.  Mods should extend this class.
@@ -215,5 +212,15 @@ public abstract class Mod {
     @Override
     public String toString() {
         return this.getModId();
+    }
+
+    /**
+     * Creates a spawn packet for the given entity.
+     * @param entity The entity to create the spawn packet for.
+     * @param isHandled True if another mod has already created a packet for this entity.
+     * @return Return a spawn packet for the given entity, or null if none exists.
+     */
+    public Packet23VehicleSpawn createSpawnPacket(Entity entity, boolean isHandled){
+        return null;
     }
 }
