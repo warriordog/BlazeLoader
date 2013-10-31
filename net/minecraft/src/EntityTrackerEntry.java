@@ -2,7 +2,10 @@ package net.minecraft.src;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Tracks an entity.
@@ -101,20 +104,16 @@ public class EntityTrackerEntry
             if (var24 != null && var24.getItem() instanceof ItemMap)
             {
                 MapData var26 = Item.map.getMapData(var24, this.myEntity.worldObj);
-                Iterator var27 = par1List.iterator();
 
-                while (var27.hasNext())
-                {
-                    EntityPlayer var28 = (EntityPlayer)var27.next();
-                    EntityPlayerMP var29 = (EntityPlayerMP)var28;
+                for (Object aPar1List : par1List) {
+                    EntityPlayer var28 = (EntityPlayer) aPar1List;
+                    EntityPlayerMP var29 = (EntityPlayerMP) var28;
                     var26.updateVisiblePlayers(var29, var24);
 
-                    if (var29.playerNetServerHandler.packetSize() <= 5)
-                    {
+                    if (var29.playerNetServerHandler.packetSize() <= 5) {
                         Packet var30 = Item.map.createMapDataPacket(var24, this.myEntity.worldObj, var29);
 
-                        if (var30 != null)
-                        {
+                        if (var30 != null) {
                             var29.playerNetServerHandler.sendPacketToPlayer(var30);
                         }
                     }
@@ -274,11 +273,9 @@ public class EntityTrackerEntry
      */
     public void sendPacketToAllTrackingPlayers(Packet par1Packet)
     {
-        Iterator var2 = this.trackingPlayers.iterator();
 
-        while (var2.hasNext())
-        {
-            EntityPlayerMP var3 = (EntityPlayerMP)var2.next();
+        for (Object trackingPlayer : this.trackingPlayers) {
+            EntityPlayerMP var3 = (EntityPlayerMP) trackingPlayer;
             var3.playerNetServerHandler.sendPacketToPlayer(par1Packet);
         }
     }
@@ -298,12 +295,10 @@ public class EntityTrackerEntry
 
     public void informAllAssociatedPlayersOfItemDestruction()
     {
-        Iterator var1 = this.trackingPlayers.iterator();
 
-        while (var1.hasNext())
-        {
-            EntityPlayerMP var2 = (EntityPlayerMP)var1.next();
-            var2.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.entityId));
+        for (Object trackingPlayer : this.trackingPlayers) {
+            EntityPlayerMP var2 = (EntityPlayerMP) trackingPlayer;
+            var2.destroyedItemsNetCache.add(this.myEntity.entityId);
         }
     }
 
@@ -311,7 +306,7 @@ public class EntityTrackerEntry
     {
         if (this.trackingPlayers.contains(par1EntityPlayerMP))
         {
-            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.entityId));
+            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
             this.trackingPlayers.remove(par1EntityPlayerMP);
         }
     }
@@ -395,11 +390,9 @@ public class EntityTrackerEntry
                     if (this.myEntity instanceof EntityLivingBase)
                     {
                         EntityLivingBase var14 = (EntityLivingBase)this.myEntity;
-                        Iterator var12 = var14.getActivePotionEffects().iterator();
 
-                        while (var12.hasNext())
-                        {
-                            PotionEffect var9 = (PotionEffect)var12.next();
+                        for (Object o : var14.getActivePotionEffects()) {
+                            PotionEffect var9 = (PotionEffect) o;
                             par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(this.myEntity.entityId, var9));
                         }
                     }
@@ -408,7 +401,7 @@ public class EntityTrackerEntry
             else if (this.trackingPlayers.contains(par1EntityPlayerMP))
             {
                 this.trackingPlayers.remove(par1EntityPlayerMP);
-                par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.entityId));
+                par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
             }
         }
     }
@@ -420,9 +413,8 @@ public class EntityTrackerEntry
 
     public void sendEventsToPlayers(List par1List)
     {
-        for (int var2 = 0; var2 < par1List.size(); ++var2)
-        {
-            this.tryStartWachingThis((EntityPlayerMP)par1List.get(var2));
+        for (Object aPar1List : par1List) {
+            this.tryStartWachingThis((EntityPlayerMP) aPar1List);
         }
     }
 
@@ -493,7 +485,6 @@ public class EntityTrackerEntry
                 if (this.myEntity instanceof EntityFireball)
                 {
                     EntityFireball var6 = (EntityFireball)this.myEntity;
-                    var2 = null;
                     byte var3 = 63;
 
                     if (this.myEntity instanceof EntitySmallFireball)
@@ -585,7 +576,7 @@ public class EntityTrackerEntry
         if (this.trackingPlayers.contains(par1EntityPlayerMP))
         {
             this.trackingPlayers.remove(par1EntityPlayerMP);
-            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.entityId));
+            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.entityId);
         }
     }
 }
