@@ -38,12 +38,12 @@ public class Minecraft implements IPlayerUsage
     /** A 10MiB preallocation to ensure the heap is reasonably sized. */
     public static byte[] memoryReserve = new byte[10485760];
     private static final List macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
-    private final ILogAgent mcLogAgent;
+    public final ILogAgent mcLogAgent;
     private final File fileResourcepacks;
     private ServerData currentServerData;
 
     /** The RenderEngine instance used by Minecraft */
-    private TextureManager renderEngine;
+    public TextureManager renderEngine;
 
     /**
      * Set to 'this' in Minecraft constructor; used by some settings get methods
@@ -60,7 +60,7 @@ public class Minecraft implements IPlayerUsage
     public Timer timer = new Timer(20.0F);
 
     /** Instance of PlayerUsageSnooper. */
-    private PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getSystemTimeMillis());
+    public PlayerUsageSnooper usageSnooper = new PlayerUsageSnooper("client", this, MinecraftServer.getSystemTimeMillis());
     public WorldClient theWorld;
     public RenderGlobal renderGlobal;
     public EntityClientPlayerMP thePlayer;

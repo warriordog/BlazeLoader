@@ -16,7 +16,7 @@ public class IntegratedServer extends MinecraftServer
 {
     /** The Minecraft instance. */
     private final Minecraft mc;
-    private final WorldSettings theWorldSettings;
+    public final WorldSettings theWorldSettings;
     private final ILogAgent serverLogAgent;
 
     /** Instance of IntegratedServerListenThread. */
