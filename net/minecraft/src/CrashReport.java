@@ -23,7 +23,7 @@ public class CrashReport
     private final CrashReportCategory systemDetailsCategory = new CrashReportCategory(this, "System Details");
 
     /** Holds the keys and values of all crash report sections. */
-    private final List crashReportSections = new ArrayList();
+    private final List<CrashReportCategory> crashReportSections = new ArrayList<CrashReportCategory>();
 
     /** File of crash report. */
     private File crashReportFile;
@@ -248,7 +248,7 @@ public class CrashReport
 
             if (var4 > 0 && !this.crashReportSections.isEmpty())
             {
-                CrashReportCategory var8 = (CrashReportCategory)this.crashReportSections.get(this.crashReportSections.size() - 1);
+                CrashReportCategory var8 = this.crashReportSections.get(this.crashReportSections.size() - 1);
                 var8.func_85070_b(var4);
             }
             else if (var5 != null && var5.length >= var4)
