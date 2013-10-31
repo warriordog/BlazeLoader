@@ -1,6 +1,8 @@
 package net.minecraft.src;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.main.Version;
+import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.server.MinecraftServer;
 
@@ -302,4 +304,26 @@ public class IntegratedServer extends MinecraftServer
             newManager.registerCommand((ICommand)command);
         }
     }
+
+    /**
+     * Used by RCon's Query in the form of "MajorServerMod 1.2.3: MyPlugin 1.3; AnotherPlugin 2.1; AndSoForth 1.0".
+     */
+    @Override
+    public String getPlugins() {
+        String plugins = "BlazeLoader " + Version.getStringVersion() + ":";
+        for(Mod mod : ModList.getLoadedMods()){
+            plugins = plugins.concat(" " + mod.getModName() + " " + mod.getStringModVersion() + ";");
+        }
+        int lastSemi = plugins.lastIndexOf(";");
+        if(lastSemi != -1){
+            plugins = plugins.substring(0, lastSemi);
+        }
+        return plugins;
+    }
+
+    @Override
+    public String getServerModName() {
+        return "BlazeLoader";
+    }
+
 }
