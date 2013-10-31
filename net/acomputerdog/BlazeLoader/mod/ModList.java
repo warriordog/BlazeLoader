@@ -216,7 +216,10 @@ public class ModList {
         Packet23VehicleSpawn packet = null;
         for(Mod mod : loadedMods){
             BlazeLoader.activeMod = mod;
-            packet = mod.createSpawnPacket(myEntity, packet != null);
+            Packet23VehicleSpawn modPacket = mod.createSpawnPacket(myEntity, packet != null);
+            if(modPacket != null){
+                packet = modPacket;
+            }
         }
         BlazeLoader.activeMod = null;
         return packet;
