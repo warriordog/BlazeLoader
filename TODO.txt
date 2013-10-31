@@ -3,7 +3,8 @@
 + completed
 ==================================================
 
--Test ASM launching with vanilla and forge.
+-Test ASM launching with forge.
++Test ASM launching with vanilla.
 +Replace Proxy system with ASM.
 +Move mods folder to version-specific folder
 +Fix exceptions thrown if a mod returns false for isCompatibleWithBLVersion()
