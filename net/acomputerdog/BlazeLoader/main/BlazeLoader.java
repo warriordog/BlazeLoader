@@ -28,8 +28,6 @@ public final class BlazeLoader {
     public static boolean isInTick = false;
     public static long ticks = 0;
     public static CommandHandler commandManager = new CommandHandler();
-    public static CraftingManager craftingManager = null;
-    public static FurnaceRecipes smeltingManager = null;
 
     private static Settings theSettings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
@@ -67,9 +65,6 @@ public final class BlazeLoader {
             if(level != null){
                 Settings.minimumLogLevel = level;
             }
-
-            craftingManager = CraftingManager.getInstance();
-            smeltingManager = FurnaceRecipes.smelting();
 
             if(Settings.useVersionMods){
                 Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";
