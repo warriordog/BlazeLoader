@@ -8,7 +8,6 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -81,11 +80,8 @@ public class CrashReport
             par1StringBuilder.append("-- Head --\n");
             par1StringBuilder.append("Stacktrace:\n");
             StackTraceElement[] var2 = this.field_85060_g;
-            int var3 = var2.length;
 
-            for (int var4 = 0; var4 < var3; ++var4)
-            {
-                StackTraceElement var5 = var2[var4];
+            for (StackTraceElement var5 : var2) {
                 par1StringBuilder.append("\t").append("at ").append(var5.toString());
                 par1StringBuilder.append("\n");
             }
@@ -93,11 +89,8 @@ public class CrashReport
             par1StringBuilder.append("\n");
         }
 
-        Iterator var6 = this.crashReportSections.iterator();
-
-        while (var6.hasNext())
-        {
-            CrashReportCategory var7 = (CrashReportCategory)var6.next();
+        for (Object crashReportSection : this.crashReportSections) {
+            CrashReportCategory var7 = (CrashReportCategory) crashReportSection;
             var7.func_85072_a(par1StringBuilder);
             par1StringBuilder.append("\n\n");
         }
@@ -135,10 +128,7 @@ public class CrashReport
                     var2.close();
                 }
             }
-            catch (IOException var10)
-            {
-                ;
-            }
+            catch (IOException ignored){}
         }
 
         return var3;
@@ -160,10 +150,10 @@ public class CrashReport
         var1.append("Description: ");
         var1.append(this.description);
         var1.append("\n\n");
-        var1.append("BlazeLoader data: ");
-        var1.append("BlazeLoader version: " + Version.getStringVersion());
-        var1.append("Active mod: " + getActiveMod());
-        var1.append("\n\n");
+        var1.append("BlazeLoader data: \n");
+        var1.append("BlazeLoader version: ").append(Version.getStringVersion()).append("\n");
+        var1.append("Active mod: ").append(getActiveMod()).append("\n");
+        var1.append("\n");
         var1.append(this.getCauseStackTraceOrString());
         var1.append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
 
