@@ -38,6 +38,8 @@ public class BLTransformer implements IClassTransformer{
                 return readClass(NetClientHandler.class.getName(), bytes);
             }else if(name.equals(EntityTrackerEntry.class.getName())){
                 return readClass(EntityTrackerEntry.class.getName(), bytes);
+            }else if(name.equals(CrashReport.class.getName())){
+                return readClass(CrashReport.class.getName(), bytes);
             }else{
                 return bytes;
             }
@@ -45,6 +47,7 @@ public class BLTransformer implements IClassTransformer{
     }
 
     public byte[] readClass(String name, byte[] original){
+        TweakLauncher.logger.logDetail("Loading class: " + name);
         try{
             InputStream in = getClass().getResourceAsStream((isOBF ? "/net/minecraft/src/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");
             if(in != null){
@@ -53,14 +56,14 @@ public class BLTransformer implements IClassTransformer{
                 if(bin.read(bytes, 0, bytes.length) != -1){
                     return bytes;
                 }else{
-                    System.out.println("End of stream while loading a class!");
+                    TweakLauncher.logger.logError("End of stream while loading a class!");
                     return original;
                 }
             }else{
                 return original;
             }
         }catch(Exception e){
-            System.out.println("Could not load a class!");
+            TweakLauncher.logger.logError("Could not load a class!");
             e.printStackTrace();
             return original;
         }
@@ -69,8 +72,10 @@ public class BLTransformer implements IClassTransformer{
     private static boolean isGameOBF(){
         try{
             Class.forName("net.minecraft.src.Block");
+            TweakLauncher.logger.logDetail("Running in a non-obfuscated environment.");
             return false;
         }catch(Exception ignored){
+            TweakLauncher.logger.logDetail("Running in an obfuscated environment, this is the real deal!");
             return true;
         }
     }
