@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
 import net.acomputerdog.BlazeLoader.main.command.CommandBL;
+import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
@@ -36,6 +37,8 @@ public final class BlazeLoader {
     private static boolean hasLoadedSettings = false;
     private static boolean hasInit = false;
     private static HashMap<Class, Render> entityMap = null;
+
+    public static Mod activeMod = null;
 
     public static void init(File mainDir){
         ApiBase.theProfiler.startSection("BL_Init");
