@@ -2426,4 +2426,12 @@ public class Minecraft implements IPlayerUsage
     {
         return minecraft.mcLanguageManager;
     }
+
+    public void setTPS(float tps){
+        this.timer.ticksPerSecond = tps;
+    }
+
+    public float getTPS(){
+        return this.timer.ticksPerSecond;
+    }
 }
