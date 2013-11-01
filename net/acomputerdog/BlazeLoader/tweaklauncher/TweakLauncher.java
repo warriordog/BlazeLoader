@@ -106,8 +106,6 @@ public class TweakLauncher implements ITweaker {
         }else{
             logger.logFatal("attempted to inject tweaks before scanning for other tweaks!");
         }
-        
-        classLoader.registerTransformer("net.acomputerdog.BlazeLoader.ams.AccessTransformer");
     }
 
     @Override

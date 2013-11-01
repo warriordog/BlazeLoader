@@ -18,6 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
@@ -27,6 +28,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
+@Beta(stable = false)
 public class AccessTransformer implements IClassTransformer
 {
 	private Map<String, AccessModifier> modifiers = new HashMap<String, AccessModifier>();
@@ -122,6 +124,7 @@ public class AccessTransformer implements IClassTransformer
 		return fixedAccess;
 	}
 
+	@SuppressWarnings("resource")
 	private void readRules(String rules) throws IOException
 	{
 		File file = new File(rules);
@@ -162,6 +165,8 @@ public class AccessTransformer implements IClassTransformer
 
 			modifiers.put(descriptor[0].replace('/', '.'), m);
 		}
+
+		reader.close();
 	}
 
 	public static void main(String[] args)
