@@ -3,4 +3,4 @@
 -Minecraft
 -Gson (included with MC)
 -JOptSimple (included with MC)
--ASM (included with launcher)
+-LegacyLauncher (included with launcher)
