@@ -4,7 +4,6 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -17,7 +16,7 @@ public class EntityTracker
     /**
      * List of tracked entities, used for iteration operations on tracked entities.
      */
-    private Set trackedEntities = new HashSet();
+    private Set<EntityTrackerEntry> trackedEntities = new HashSet<EntityTrackerEntry>();
     private IntHashMap trackedEntityIDs = new IntHashMap();
     private int entityViewDistance;
 
@@ -37,14 +36,11 @@ public class EntityTracker
         {
             this.addEntityToTracker(par1Entity, 512, 2);
             EntityPlayerMP var2 = (EntityPlayerMP)par1Entity;
-            Iterator var3 = this.trackedEntities.iterator();
 
-            while (var3.hasNext())
-            {
-                EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
 
-                if (var4.myEntity != var2)
-                {
+                if (var4.myEntity != var2) {
                     var4.tryStartWachingThis(var2);
                 }
             }
@@ -200,11 +196,9 @@ public class EntityTracker
         if (par1Entity instanceof EntityPlayerMP)
         {
             EntityPlayerMP var2 = (EntityPlayerMP)par1Entity;
-            Iterator var3 = this.trackedEntities.iterator();
 
-            while (var3.hasNext())
-            {
-                EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
                 var4.removeFromWatchingList(var2);
             }
         }
@@ -220,31 +214,24 @@ public class EntityTracker
 
     public void updateTrackedEntities()
     {
-        ArrayList var1 = new ArrayList();
-        Iterator var2 = this.trackedEntities.iterator();
+        ArrayList<Entity> var1 = new ArrayList<Entity>();
 
-        while (var2.hasNext())
-        {
-            EntityTrackerEntry var3 = (EntityTrackerEntry)var2.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry var3 = (EntityTrackerEntry) trackedEntity;
             var3.sendLocationToAllClients(this.theWorld.playerEntities);
 
-            if (var3.playerEntitiesUpdated && var3.myEntity instanceof EntityPlayerMP)
-            {
-                var1.add((EntityPlayerMP)var3.myEntity);
+            if (var3.playerEntitiesUpdated && var3.myEntity instanceof EntityPlayerMP) {
+                var1.add(var3.myEntity);
             }
         }
 
-        for (int var6 = 0; var6 < var1.size(); ++var6)
-        {
-            EntityPlayerMP var7 = (EntityPlayerMP)var1.get(var6);
-            Iterator var4 = this.trackedEntities.iterator();
+        for (Object aVar1 : var1) {
+            EntityPlayerMP var7 = (EntityPlayerMP) aVar1;
 
-            while (var4.hasNext())
-            {
-                EntityTrackerEntry var5 = (EntityTrackerEntry)var4.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var5 = (EntityTrackerEntry) trackedEntity;
 
-                if (var5.myEntity != var7)
-                {
+                if (var5.myEntity != var7) {
                     var5.tryStartWachingThis(var7);
                 }
             }
@@ -279,25 +266,20 @@ public class EntityTracker
 
     public void removePlayerFromTrackers(EntityPlayerMP par1EntityPlayerMP)
     {
-        Iterator var2 = this.trackedEntities.iterator();
 
-        while (var2.hasNext())
-        {
-            EntityTrackerEntry var3 = (EntityTrackerEntry)var2.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry var3 = (EntityTrackerEntry) trackedEntity;
             var3.removePlayerFromTracker(par1EntityPlayerMP);
         }
     }
 
     public void func_85172_a(EntityPlayerMP par1EntityPlayerMP, Chunk par2Chunk)
     {
-        Iterator var3 = this.trackedEntities.iterator();
 
-        while (var3.hasNext())
-        {
-            EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
 
-            if (var4.myEntity != par1EntityPlayerMP && var4.myEntity.chunkCoordX == par2Chunk.xPosition && var4.myEntity.chunkCoordZ == par2Chunk.zPosition)
-            {
+            if (var4.myEntity != par1EntityPlayerMP && var4.myEntity.chunkCoordX == par2Chunk.xPosition && var4.myEntity.chunkCoordZ == par2Chunk.zPosition) {
                 var4.tryStartWachingThis(par1EntityPlayerMP);
             }
         }
