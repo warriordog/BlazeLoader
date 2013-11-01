@@ -1,7 +1,10 @@
 package net.acomputerdog.BlazeLoader.api.reflect;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
+
 import java.lang.reflect.Method;
 
+@Beta(stable = true)
 /**
  * Api functions to simplify reflective tasks.
  */

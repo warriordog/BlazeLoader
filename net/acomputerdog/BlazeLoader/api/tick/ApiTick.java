@@ -9,6 +9,7 @@ import net.minecraft.src.Timer;
  */
 public class ApiTick {
 
+    @Deprecated
     /**
      * The game's tick timer.
      */

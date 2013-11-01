@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.src.*;
 
 /**
@@ -136,7 +135,7 @@ public abstract class Mod {
         this.eventPlayerLogout();
     }
 
-    @Beta(stable = false)
+    @Deprecated
     /**
      * Called when a non-local player respawns.  Only works for other players.
      * @param oldPlayer The player that died.
@@ -148,6 +147,7 @@ public abstract class Mod {
         this.eventOtherPlayerRespawn();
     }
 
+    @Deprecated
     /**
      * Called when the client player dies.
      */
@@ -173,6 +173,7 @@ public abstract class Mod {
      */
     public void eventPlayerLogout(){}
 
+    @Deprecated
     /**
      * Called when a non-local player respawns.  Only works for other players.
      * No-args version of eventOtherPlayerRespawn(EntityPlayerMP, EntityPlayerMP, int, boolean)

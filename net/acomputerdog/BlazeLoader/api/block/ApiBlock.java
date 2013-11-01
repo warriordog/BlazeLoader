@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.src.Block;
@@ -45,7 +44,6 @@ public class ApiBlock {
         return id;
     }
 
-    @Beta(stable = true)
     /**
      * Overrides and existing block as well as any other fields referencing it.
      * Eg:  If overriding the block with ID 1, Block.blockStone will also be replaces.
