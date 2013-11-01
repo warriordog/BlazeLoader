@@ -40,6 +40,8 @@ public class BLTransformer implements IClassTransformer{
                 return readClass(EntityTrackerEntry.class.getName(), bytes);
             }else if(name.equals(CrashReport.class.getName())){
                 return readClass(CrashReport.class.getName(), bytes);
+            }else if(name.equals(EntityTracker.class.getName())){
+                return readClass(EntityTracker.class.getName(), bytes);
             }else{
                 return bytes;
             }

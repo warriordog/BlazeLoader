@@ -253,4 +253,15 @@ public abstract class Mod {
     public Packet23VehicleSpawn createSpawnPacket(Entity entity, boolean isHandled){
         return null;
     }
+
+    /**
+     * Adds an entity to an entity tracker.
+     * @param tracker The tracker to add the entity to.
+     * @param entity The entity to add.
+     * @param isHandled True if another mod has already handled the event.
+     * @return Return true if the entity was added, false otherwise.
+     */
+    public boolean addEntityToTracker(EntityTracker tracker, Entity entity, boolean isHandled){
+        return false;
+    }
 }

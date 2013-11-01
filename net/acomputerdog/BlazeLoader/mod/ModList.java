@@ -247,4 +247,16 @@ public class ModList {
         BlazeLoader.activeMod = null;
         return allow;
     }
+
+    public static void addEntityToTracker(EntityTracker tracker, Entity entity){
+        boolean isHandled = false;
+        for(Mod mod : loadedMods){
+            BlazeLoader.activeMod = mod;
+            boolean didHandle = mod.addEntityToTracker(tracker, entity, isHandled);
+            if(didHandle){
+                isHandled = true;
+            }
+        }
+        BlazeLoader.activeMod = null;
+    }
 }
