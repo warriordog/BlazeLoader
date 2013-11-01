@@ -65,19 +65,13 @@ public class AccessTransformer implements IClassTransformer
 
 		if (m.description.isEmpty())
 		{
-			// for (FieldNode fNode : cNode.fields) Y U NO let me do this !! -_-
-			List<FieldNode> fNodes = cNode.fields;
-
-			for (FieldNode fNode : fNodes)
+			for (FieldNode fNode : cNode.fields)
 				if (fNode.name.equals(m.name))
 					fNode.access = getFixedAccess(fNode.access, m);
 		}
 		else
 		{
-			// for (MethodNode mNode : cNode.methods) and again >:(
-			List<MethodNode> mNodes = cNode.methods;
-
-			for (MethodNode mNode : mNodes)
+			for (MethodNode mNode : cNode.methods)
 				if ((mNode.name.equals(m.name)) && (mNode.desc.equals(m.description)))
 					mNode.access = getFixedAccess(mNode.access, m);
 		}
