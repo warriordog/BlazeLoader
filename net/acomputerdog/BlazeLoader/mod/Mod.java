@@ -199,15 +199,26 @@ public abstract class Mod {
      * @return Return true to disable the vanilla event handling.
      */
     public boolean eventTickBlocksAndAmbiance(WorldServer server, boolean isHandled){
-        return this.eventTickBlocksAndAmbiance();
+        return this.eventTickBlocksAndAmbiance(isHandled);
     }
 
     /**
      * No-args version of eventTickBlocksAndAmbiance(WorldServer, boolean)
+     * @param isHandled Set to true if a mod has already handled this event (so this mod does not have to re-handle vanilla behavior)
      * @return Return true to disable the vanilla event handling.
      */
-    public boolean eventTickBlocksAndAmbiance(){
+    public boolean eventTickBlocksAndAmbiance(boolean isHandled){
         return false;
+    }
+
+    /**
+     * Called when a player attempts to log in.  This is after the game has already checked if the user is valid.
+     * @param username The username of the player attempting to join.
+     * @param isAllowed The result of the game's user check.  True if the player is allowed to join.
+     * @return Return true to allow the player to join, false to prevent it.
+     */
+    public boolean eventPlayerLoginAttempt(String username, boolean isAllowed){
+        return isAllowed;
     }
 
     /**

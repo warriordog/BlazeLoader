@@ -237,4 +237,14 @@ public class ModList {
         BlazeLoader.activeMod = null;
         return doVanilla;
     }
+
+    public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed){
+        boolean allow = isAllowed;
+        for(Mod mod : loadedMods){
+            BlazeLoader.activeMod = mod;
+            allow = mod.eventPlayerLoginAttempt(username, isAllowed);
+        }
+        BlazeLoader.activeMod = null;
+        return allow;
+    }
 }

@@ -92,4 +92,12 @@ public class IntegratedPlayerList extends ServerConfigurationManager
         super.playerLoggedIn(player);
         ModList.eventPlayerLogin(player);
     }
+
+    /**
+     * Determine if the player is allowed to connect based on current server settings.
+     */
+    @Override
+    public boolean isAllowedToLogin(String username) {
+        return ModList.eventPlayerLoginAttempt(username, super.isAllowedToLogin(username));
+    }
 }
