@@ -23,10 +23,11 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
+
+import static org.objectweb.asm.Opcodes.*;
 
 @Beta(stable = false)
 public class AccessTransformer implements IClassTransformer
@@ -90,17 +91,17 @@ public class AccessTransformer implements IClassTransformer
 
 		switch (access & 7)
 		{
-			case Opcodes.ACC_PRIVATE :
+			case ACC_PRIVATE :
 				fixedAccess |= targetAccess;
 				break;
 			case 0 :
-				fixedAccess |= (targetAccess != Opcodes.ACC_PRIVATE ? targetAccess : 0);
+				fixedAccess |= (targetAccess != ACC_PRIVATE ? targetAccess : 0);
 				break;
-			case Opcodes.ACC_PROTECTED :
-				fixedAccess |= (targetAccess != Opcodes.ACC_PRIVATE && targetAccess != 0 ? targetAccess : Opcodes.ACC_PROTECTED);
+			case ACC_PROTECTED :
+				fixedAccess |= (targetAccess != ACC_PRIVATE && targetAccess != 0 ? targetAccess : ACC_PROTECTED);
 				break;
-			case Opcodes.ACC_PUBLIC :
-				fixedAccess |= (targetAccess != Opcodes.ACC_PRIVATE && targetAccess != 0 && targetAccess != Opcodes.ACC_PROTECTED ? targetAccess : Opcodes.ACC_PUBLIC);
+			case ACC_PUBLIC :
+				fixedAccess |= (targetAccess != ACC_PRIVATE && targetAccess != 0 && targetAccess != ACC_PROTECTED ? targetAccess : ACC_PUBLIC);
 				break;
 			default :
 				throw new IllegalArgumentException("Invalid AccessMode: " + access);
@@ -109,9 +110,9 @@ public class AccessTransformer implements IClassTransformer
 		if (m.changeFinal)
 		{
 			if (m.setFinal)
-				fixedAccess |= Opcodes.ACC_FINAL;
+				fixedAccess |= ACC_FINAL;
 			else
-				fixedAccess |= ~Opcodes.ACC_FINAL;
+				fixedAccess |= ~ACC_FINAL;
 		}
 
 		m.newAccessMode = fixedAccess;
@@ -318,18 +319,6 @@ public class AccessTransformer implements IClassTransformer
 		}
 	}
 
-	private void assertMatch(Matcher m, String s)
-	{
-		m.reset(s);
-		illegalAssert(m.matches(), "Malformed Line: " + s);
-	}
-
-	private void illegalAssert(boolean b, String error)
-	{
-		if (!b)
-			throw new IllegalArgumentException(error);
-	}
-
 	private class AccessModifier
 	{
 		public String name = "";
@@ -344,11 +333,11 @@ public class AccessTransformer implements IClassTransformer
 		private void setAccesMode(String mode)
 		{
 			if (mode.startsWith("public"))
-				accessMode = Opcodes.ACC_PUBLIC;
+				accessMode = ACC_PUBLIC;
 			else if (mode.startsWith("private"))
-				accessMode = Opcodes.ACC_PRIVATE;
+				accessMode = ACC_PRIVATE;
 			else if (mode.startsWith("protected"))
-				accessMode = Opcodes.ACC_PROTECTED;
+				accessMode = ACC_PROTECTED;
 			else
 				throw new IllegalArgumentException("Malformed AccessMode: " + mode);
 
