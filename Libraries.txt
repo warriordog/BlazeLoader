@@ -4,3 +4,4 @@
 -Gson (included with MC)
 -JOptSimple (included with MC)
 -LegacyLauncher (included with launcher)
+-ASM (Possibly will be soon needed)
