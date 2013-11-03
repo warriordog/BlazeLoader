@@ -1,5 +1,10 @@
 package net.acomputerdog.BlazeLoader.asm;
 
+import static org.objectweb.asm.Opcodes.ACC_FINAL;
+import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+import static org.objectweb.asm.Opcodes.ACC_PROTECTED;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -10,10 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -27,12 +32,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import static org.objectweb.asm.Opcodes.*;
-
 @Beta(stable = false)
 public class AccessTransformer implements IClassTransformer
 {
-	private Map<String, AccessModifier> modifiers = new HashMap<String, AccessModifier>();
+	private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
+	private List<String> fullChangeClasses = new ArrayList<String>();
 
 	protected AccessTransformer() throws IOException
 	{
@@ -57,24 +61,62 @@ public class AccessTransformer implements IClassTransformer
 		ClassReader reader = new ClassReader(bytes);
 		reader.accept(cNode, 0);
 
-		AccessModifier m = modifiers.get(name);
-
-		if (m.changeClassVisibility)
+		if (fullChangeClasses.contains(name))
 		{
-			cNode.access = getFixedAccess(cNode.access, m);
+			List<AccessModifier> mods = new ArrayList<AccessModifier>();
+
+			AccessModifier m = new AccessModifier();
+			m.accessMode = ACC_PUBLIC;
+			m.changeClassVisibility = true;
+			mods.add(m);
+
+			m = new AccessModifier();
+			m.accessMode = ACC_PUBLIC;
+			m.name = "*";
+			mods.add(m);
+
+			m = new AccessModifier();
+			m.accessMode = ACC_PUBLIC;
+			m.name = "*";
+			m.description = "<dummy>";
+			mods.add(m);
+
+			modifiers.put(name, mods);
 		}
 
-		if (m.description.isEmpty())
+		List<AccessModifier> mods = modifiers.get(name);
+
+		for (AccessModifier m : mods)
 		{
-			for (FieldNode fNode : cNode.fields)
-				if (fNode.name.equals(m.name))
-					fNode.access = getFixedAccess(fNode.access, m);
-		}
-		else
-		{
-			for (MethodNode mNode : cNode.methods)
-				if ((mNode.name.equals(m.name)) && (mNode.desc.equals(m.description)))
-					mNode.access = getFixedAccess(mNode.access, m);
+
+			if (m.changeClassVisibility)
+			{
+				cNode.access = getFixedAccess(cNode.access, m);
+				continue;
+			}
+
+			if (m.description.isEmpty())
+			{
+				for (FieldNode fNode : cNode.fields)
+					if (fNode.name.equals(m.name) || m.name.equals("*"))
+					{
+						fNode.access = getFixedAccess(fNode.access, m);
+
+						if (!(m.name.equals("*")))
+							break;
+					}
+			}
+			else
+			{
+				for (MethodNode mNode : cNode.methods)
+					if (((mNode.name.equals(m.name)) && (mNode.desc.equals(m.description))) || m.name.equals("*"))
+					{
+						mNode.access = getFixedAccess(mNode.access, m);
+
+						if (!(m.name.equals("*")))
+							break;
+					}
+			}
 		}
 
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
@@ -142,7 +184,7 @@ public class AccessTransformer implements IClassTransformer
 			m.setAccesMode(parts[0]);
 			String[] descriptor = parts[1].split(".");
 
-			if (descriptor.length == 0)
+			if (descriptor.length == 1)
 				m.changeClassVisibility = true;
 			else
 			{
@@ -158,10 +200,16 @@ public class AccessTransformer implements IClassTransformer
 					m.name = name;
 			}
 
-			modifiers.put(descriptor[0].replace('/', '.'), m);
+			if (descriptor[1].equals("*"))
+				fullChangeClasses.add(descriptor[0]);
+
+			List<AccessModifier> mods = new ArrayList<AccessModifier>();
+			mods.add(m);
+			modifiers.put(descriptor[0].replace('/', '.'), mods);
 		}
 
 		reader.close();
+		System.out.printf("readed %s access rules from %s", modifiers.size(), rules);
 	}
 
 	public static void main(String[] args)
