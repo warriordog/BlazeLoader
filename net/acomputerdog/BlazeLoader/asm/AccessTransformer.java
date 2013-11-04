@@ -38,9 +38,9 @@ public class AccessTransformer implements IClassTransformer
 	private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
 	private List<String> fullChangeClasses = new ArrayList<String>();
 
-	protected AccessTransformer() throws IOException
+	public AccessTransformer() throws IOException
 	{
-		this("BL_AT.cfg");
+		this("bl_AT.cfg");
 	}
 
 	protected AccessTransformer(String rules) throws IOException
@@ -161,54 +161,60 @@ public class AccessTransformer implements IClassTransformer
 		return fixedAccess;
 	}
 
-	@SuppressWarnings("resource")
 	private void readRules(String rules) throws IOException
 	{
 		File file = new File(rules);
+
 		BufferedReader reader = new BufferedReader(new FileReader(file));
-
-		while (reader.readLine() != null)
+		
+		try
 		{
-			String line = reader.readLine();
-
-			if (line.startsWith("#") || line.isEmpty() || line == null)
-				continue;
-
-			String[] sections = line.split("#");
-			String[] parts = sections[0].split(" ");
-
-			if (parts.length > 2)
-				throw new IllegalArgumentException("Malformed Line: " + line);
-
-			AccessModifier m = new AccessModifier();
-			m.setAccesMode(parts[0]);
-			String[] descriptor = parts[1].split(".");
-
-			if (descriptor.length == 1)
-				m.changeClassVisibility = true;
-			else
+			while (reader.readLine() != null)
 			{
-				String name = descriptor[1];
-				int index = name.indexOf('(');
+				String line = reader.readLine();
 
-				if (index > 0)
-				{
-					m.name = name.substring(0, index);
-					m.description = name.substring(index);
-				}
+				if (line.startsWith("#") || line.isEmpty() || line == null)
+					continue;
+
+				String[] sections = line.split("#");
+				String[] parts = sections[0].split(" ");
+
+				if (parts.length > 2)
+					throw new IllegalArgumentException("Malformed Line: " + line);
+
+				AccessModifier m = new AccessModifier();
+				m.setAccesMode(parts[0]);
+				String[] descriptor = parts[1].split(".");
+
+				if (descriptor.length == 1)
+					m.changeClassVisibility = true;
 				else
-					m.name = name;
+				{
+					String name = descriptor[1];
+					int index = name.indexOf('(');
+
+					if (index > 0)
+					{
+						m.name = name.substring(0, index);
+						m.description = name.substring(index);
+					}
+					else
+						m.name = name;
+				}
+
+				if (descriptor[1].equals("*"))
+					fullChangeClasses.add(descriptor[0]);
+
+				List<AccessModifier> mods = new ArrayList<AccessModifier>();
+				mods.add(m);
+				modifiers.put(descriptor[0].replace('/', '.'), mods);
 			}
-
-			if (descriptor[1].equals("*"))
-				fullChangeClasses.add(descriptor[0]);
-
-			List<AccessModifier> mods = new ArrayList<AccessModifier>();
-			mods.add(m);
-			modifiers.put(descriptor[0].replace('/', '.'), mods);
+		}
+		finally
+		{
+			reader.close();
 		}
 
-		reader.close();
 		System.out.printf("readed %s access rules from %s", modifiers.size(), rules);
 	}
 
