@@ -13,8 +13,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class AccessTransformer implements IClassTransformer
 
 	public AccessTransformer() throws IOException
 	{
-		this("bl_AT.cfg");
+		this("bl_at.cfg");
 	}
 
 	protected AccessTransformer(String rules) throws IOException
@@ -164,9 +165,15 @@ public class AccessTransformer implements IClassTransformer
 	private void readRules(String rules) throws IOException
 	{
 		File file = new File(rules);
+		URL rulesFile;
 
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		
+		if (file.exists())
+			rulesFile = file.toURI().toURL();
+		else
+			rulesFile = AccessTransformer.class.getClassLoader().getResource(rules);
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(rulesFile.openStream()));
+
 		try
 		{
 			while (reader.readLine() != null)
