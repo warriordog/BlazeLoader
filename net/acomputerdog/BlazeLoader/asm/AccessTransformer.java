@@ -176,10 +176,10 @@ public class AccessTransformer implements IClassTransformer
 
 		try
 		{
-			while (reader.readLine() != null)
-			{
-				String line = reader.readLine();
+			String line;
 
+			while ((line = reader.readLine()) != null)
+			{
 				if (line.startsWith("#") || line.isEmpty() || line == null)
 					continue;
 
@@ -191,7 +191,10 @@ public class AccessTransformer implements IClassTransformer
 
 				AccessModifier m = new AccessModifier();
 				m.setAccesMode(parts[0]);
-				String[] descriptor = parts[1].split(".");
+				String[] descriptor = parts[1].split("\\.");
+
+				if (descriptor.length > 2)
+					throw new IllegalArgumentException("Malformed Line: " + line);
 
 				if (descriptor.length == 1)
 					m.changeClassVisibility = true;
@@ -210,7 +213,7 @@ public class AccessTransformer implements IClassTransformer
 				}
 
 				if (descriptor[1].equals("*"))
-					fullChangeClasses.add(descriptor[0]);
+					fullChangeClasses.add(descriptor[0].replace('/', '.'));
 
 				List<AccessModifier> mods = new ArrayList<AccessModifier>();
 				mods.add(m);
@@ -222,7 +225,7 @@ public class AccessTransformer implements IClassTransformer
 			reader.close();
 		}
 
-		System.out.printf("readed %s access rules from %s", modifiers.size(), rules);
+		System.out.printf("read %s access rules from %s\n", modifiers.size(), rules);
 	}
 
 	public static void main(String[] args)
