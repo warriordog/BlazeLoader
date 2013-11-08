@@ -1,8 +1,8 @@
 package net.acomputerdog.BlazeLoader.api.recipe;
 
+import net.minecraft.src.CraftingManager;
 import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.MinecraftPackageAccessor;
 
 /**
  * API function related to vanilla crafting
@@ -15,7 +15,7 @@ public class ApiRecipe {
 	 * @param args An object array on how to form the recipe e.g. "##", "##", "##", Character.valueOf('#'), new ItemStack(Block.door)
 	 */
 	public static void addShapedRecipe(ItemStack output, Object... args){
-		MinecraftPackageAccessor.addShapedRecipe(output, args);
+		CraftingManager.getInstance().addRecipe(output, args);
 	}
 	
 	/**
@@ -24,7 +24,7 @@ public class ApiRecipe {
 	 * @param args An object array of itemStacks to use
 	 */
 	public static void addShapelessRecipe(ItemStack output, Object... args){
-		MinecraftPackageAccessor.addShapelessRecipe(output, args);
+		CraftingManager.getInstance().addShapelessRecipe(output, args);
 	}
 	
 	/**
