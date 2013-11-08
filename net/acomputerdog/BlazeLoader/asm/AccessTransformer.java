@@ -25,6 +25,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import net.acomputerdog.BlazeLoader.annotation.Beta;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
@@ -64,25 +65,21 @@ public class AccessTransformer implements IClassTransformer
 
 		if (fullChangeClasses.contains(name))
 		{
-			List<AccessModifier> mods = new ArrayList<AccessModifier>();
-
 			AccessModifier m = new AccessModifier();
 			m.accessMode = ACC_PUBLIC;
 			m.changeClassVisibility = true;
-			mods.add(m);
+			addToMap(name, m);
 
 			m = new AccessModifier();
 			m.accessMode = ACC_PUBLIC;
 			m.name = "*";
-			mods.add(m);
+			addToMap(name, m);
 
 			m = new AccessModifier();
 			m.accessMode = ACC_PUBLIC;
 			m.name = "*";
 			m.description = "<dummy>";
-			mods.add(m);
-
-			modifiers.put(name, mods);
+			addToMap(name, m);
 		}
 
 		List<AccessModifier> mods = modifiers.get(name);
@@ -180,6 +177,8 @@ public class AccessTransformer implements IClassTransformer
 
 			while ((line = reader.readLine()) != null)
 			{
+				System.out.println(line);
+
 				if (line.startsWith("#") || line.isEmpty() || line == null)
 					continue;
 
@@ -213,11 +212,12 @@ public class AccessTransformer implements IClassTransformer
 				}
 
 				if (descriptor[1].equals("*"))
+				{
 					fullChangeClasses.add(descriptor[0].replace('/', '.'));
+					System.out.println("*");
+				}
 
-				List<AccessModifier> mods = new ArrayList<AccessModifier>();
-				mods.add(m);
-				modifiers.put(descriptor[0].replace('/', '.'), mods);
+				addToMap(descriptor[0].replace('/', '.'), m);
 			}
 		}
 		finally
@@ -225,7 +225,7 @@ public class AccessTransformer implements IClassTransformer
 			reader.close();
 		}
 
-		System.out.printf("read %s access rules from %s\n", modifiers.size(), rules);
+		BlazeLoader.getLogger().logInfo("loaded " + countRules() + " access rules from: " + rules);
 	}
 
 	public static void main(String[] args)
@@ -381,6 +381,34 @@ public class AccessTransformer implements IClassTransformer
 				}
 			}
 		}
+	}
+
+	private void addToMap(String name, AccessModifier m)
+	{
+		List<AccessModifier> mods;
+
+		if (!modifiers.containsKey(name))
+		{
+			mods = new ArrayList<AccessModifier>();
+			mods.add(m);
+			modifiers.put(name, mods);
+		}
+		else
+		{
+			mods = modifiers.get(name);
+			mods.add(m);
+			modifiers.put(name, mods);
+		}
+	}
+
+	private int countRules()
+	{
+		int count = 0;
+
+		for (String name : modifiers.keySet())
+			count += modifiers.get(name).size();
+
+		return count;
 	}
 
 	private class AccessModifier
