@@ -274,7 +274,7 @@ public class NetClientHandler extends NetHandler
             var8 = new EntityFallingSand(this.worldClient, var2, var4, var6, packet.throwerEntityId & 65535, packet.throwerEntityId >> 16);
             packet.throwerEntityId = 0;
         }else{
-            EntityList.createEntityByID(packet.type, this.worldClient);
+            var8 = EntityList.createEntityByID(packet.type, this.worldClient);
         }
 
         if (var8 != null)
