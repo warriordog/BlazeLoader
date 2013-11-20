@@ -3,6 +3,7 @@
 + completed
 ==================================================
 
++Update to 1.7.2 as soon as MCP is updated
 -Test ASM launching with forge.
 +Test ASM launching with vanilla.
 +Replace Proxy system with ASM.
