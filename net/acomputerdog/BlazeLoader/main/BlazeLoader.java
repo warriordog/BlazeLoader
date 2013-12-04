@@ -23,22 +23,22 @@ import java.util.Map;
  * Main class of BlazeLoader.  Contains various internal fields and methods.
  */
 public final class BlazeLoader {
-    public static int freeBlockId = 1;
-    public static int freeItemId = 1;
-    public static int freeEntityId = 1;
+    public static int currFreeBlockId = 1;
+    public static int currFreeItemId = 1;
+    public static int currFreeEntityId = 1;
     public static boolean isInTick = false;
-    public static long ticks = 0;
-    public static CommandHandler commandManager = new CommandHandler();
+    public static long numTicks = 0;
+    public static CommandHandler commandHandler = new CommandHandler();
 
-    private static Settings theSettings = new Settings();
+    private static Settings settings = new Settings();
     private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).setPrettyPrinting().create();
     private static File settingsFile;
-    private static boolean hasLoadedSettings = false;
+    private static boolean settingsLoaded = false;
     private static boolean hasInit = false;
     private static HashMap<Class, Render> entityMap = null;
 
-    public static Mod activeMod = null;
+    public static Mod currActiveMod = null;
 
     public static void init(File mainDir){
         ApiBase.theProfiler.startSection("BL_Init");
@@ -121,52 +121,52 @@ public final class BlazeLoader {
     }
 
     public static int updateFreeBlockId(){
-        while(freeBlockId < Block.blocksList.length && Block.blocksList[freeBlockId] != null){
-            freeBlockId++;
+        while(currFreeBlockId < Block.blocksList.length && Block.blocksList[currFreeBlockId] != null){
+            currFreeBlockId++;
         }
-        if(Block.blocksList[freeBlockId] != null){
-            freeBlockId = 1;
-            while(freeBlockId < Block.blocksList.length && Block.blocksList[freeBlockId] != null){
-                freeBlockId++;
+        if(Block.blocksList[currFreeBlockId] != null){
+            currFreeBlockId = 1;
+            while(currFreeBlockId < Block.blocksList.length && Block.blocksList[currFreeBlockId] != null){
+                currFreeBlockId++;
             }
-            if(Block.blocksList[freeBlockId] != null){
+            if(Block.blocksList[currFreeBlockId] != null){
                 throw new RuntimeException("No free block IDs available!");
             }
         }
-        return freeBlockId;
+        return currFreeBlockId;
     }
 
     public static int resetFreeBlockId(){
-        freeBlockId = 1;
+        currFreeBlockId = 1;
         return updateFreeBlockId();
     }
 
     public static int updateFreeItemId(){
-        while(freeItemId < Item.itemsList.length && Item.itemsList[freeItemId] != null){
-            freeItemId++;
+        while(currFreeItemId < Item.itemsList.length && Item.itemsList[currFreeItemId] != null){
+            currFreeItemId++;
         }
-        if(Item.itemsList[freeItemId] != null){
-            freeItemId = 1;
-            while(freeItemId < Item.itemsList.length && Item.itemsList[freeItemId] != null){
-                freeItemId++;
+        if(Item.itemsList[currFreeItemId] != null){
+            currFreeItemId = 1;
+            while(currFreeItemId < Item.itemsList.length && Item.itemsList[currFreeItemId] != null){
+                currFreeItemId++;
             }
-            if(Item.itemsList[freeItemId] != null){
+            if(Item.itemsList[currFreeItemId] != null){
                 throw new RuntimeException("No free Item IDs available!");
             }
         }
-        return freeItemId;
+        return currFreeItemId;
     }
 
     public static int resetFreeItemId(){
-        freeItemId = 1;
+        currFreeItemId = 1;
         return updateFreeItemId();
     }
 
     public static void loadSettings(){
-        hasLoadedSettings = true;
+        settingsLoaded = true;
         try {
-            theSettings = gson.fromJson(new FileReader(settingsFile), Settings.class);
-            if(theSettings == null){
+            settings = gson.fromJson(new FileReader(settingsFile), Settings.class);
+            if(settings == null){
                 saveSettings();
             }
         }catch (FileNotFoundException e) {
@@ -181,14 +181,14 @@ public final class BlazeLoader {
     }
 
     public static void saveSettings(){
-        if(!hasLoadedSettings){
-            hasLoadedSettings = true;
+        if(!settingsLoaded){
+            settingsLoaded = true;
             loadSettings();
         }
         PrintWriter writer = null;
         try{
             writer = new PrintWriter(new BufferedWriter(new FileWriter(settingsFile)));
-            gson.toJson(theSettings, writer);
+            gson.toJson(settings, writer);
             writer.close();
         } catch(IOException e){
             logger.logError("Could not save settings!");

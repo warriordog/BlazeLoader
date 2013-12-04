@@ -303,7 +303,7 @@ public class CrashReport
     }
 
     public static String getActiveMod(){
-        Mod mod = BlazeLoader.activeMod;
+        Mod mod = BlazeLoader.currActiveMod;
         if(mod != null){
             return mod.getModName() + "(" + mod.getModId() + " - " + mod.getStringModVersion() + ")";
         }else{

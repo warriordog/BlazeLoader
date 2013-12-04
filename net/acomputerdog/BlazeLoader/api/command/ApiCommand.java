@@ -16,7 +16,7 @@ public class ApiCommand {
      * @return Return the command manager, or a temporary replacement.
      */
     public static CommandHandler getCommandManager(){
-        return BlazeLoader.commandManager;
+        return BlazeLoader.commandHandler;
     }
 
     /**
@@ -24,7 +24,7 @@ public class ApiCommand {
      * @param command The command to register.
      */
     public static void registerCommand(ICommand command){
-        BlazeLoader.commandManager.registerCommand(command);
+        BlazeLoader.commandHandler.registerCommand(command);
     }
 
     /**
@@ -33,7 +33,7 @@ public class ApiCommand {
      * @param command The command to execute.
      */
     public static void useCommand(ICommandSender sender, String command){
-        BlazeLoader.commandManager.executeCommand(sender, command);
+        BlazeLoader.commandHandler.executeCommand(sender, command);
     }
 
     /**

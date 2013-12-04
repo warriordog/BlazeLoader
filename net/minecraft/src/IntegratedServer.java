@@ -48,7 +48,7 @@ public class IntegratedServer extends MinecraftServer
         {
             throw new Error();
         }
-        mergeCommandHandlers(BlazeLoader.commandManager);
+        mergeCommandHandlers(BlazeLoader.commandHandler);
     }
 
     protected void loadAllWorlds(String mapName, String worldName, long ignored, WorldType worldType, String ignored_2)

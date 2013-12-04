@@ -1369,7 +1369,7 @@ public class Minecraft implements IPlayerUsage
     public void runTick()
     {
         BlazeLoader.isInTick = true;
-        BlazeLoader.ticks++;
+        BlazeLoader.numTicks++;
         if (this.rightClickDelayTimer > 0)
         {
             --this.rightClickDelayTimer;

@@ -13,13 +13,13 @@ public class ApiItem {
      * @return Returns a free Item ID
      */
     public static int getFreeItemId(){
-        if(Item.itemsList[BlazeLoader.freeItemId] == null){
-            int id = BlazeLoader.freeItemId;
-            BlazeLoader.freeItemId++;
+        if(Item.itemsList[BlazeLoader.currFreeItemId] == null){
+            int id = BlazeLoader.currFreeItemId;
+            BlazeLoader.currFreeItemId++;
             return id;
         }else{
             int id = BlazeLoader.updateFreeItemId();
-            BlazeLoader.freeItemId++;
+            BlazeLoader.currFreeItemId++;
             return id;
         }
     }
@@ -31,7 +31,7 @@ public class ApiItem {
      */
     public static int recheckItemIds(){
         int id = BlazeLoader.resetFreeItemId();
-        BlazeLoader.freeItemId++;
+        BlazeLoader.currFreeItemId++;
         return id;
     }
 }

@@ -26,10 +26,10 @@ public class ModList {
     private static Mod getCompatibleModFromList(Mod mod){
         if(mod != null){
             for(Mod m : loadedMods){
-                BlazeLoader.activeMod = mod;
+                BlazeLoader.currActiveMod = mod;
                 if (mod.getModId().equals(m.getModId()))return m;
             }
-            BlazeLoader.activeMod = null;
+            BlazeLoader.currActiveMod = null;
         }
         return null;
     }
@@ -82,7 +82,7 @@ public class ModList {
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             ApiBase.theProfiler.startSection("mod_" + mod.getModId());
             try{
                 mod.start();
@@ -92,7 +92,7 @@ public class ModList {
             }
             ApiBase.theProfiler.endSection();
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         ApiBase.theProfiler.endSection();
     }
 
@@ -100,7 +100,7 @@ public class ModList {
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             try{
                 mod.stop();
                 BlazeLoader.getLogger().logDetail("Stopped mod: " + mod.getModName());
@@ -110,153 +110,153 @@ public class ModList {
                 e.printStackTrace();
             }
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void tick(){
         ApiBase.theProfiler.startSection("tick_mods");
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             ApiBase.theProfiler.startSection("mod_" + mod.getModId());
             mod.eventTick();
             ApiBase.theProfiler.endSection();
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         ApiBase.theProfiler.endSection();
     }
 
     public static GuiScreen onGui(GuiScreen gui){
         GuiScreen newGui = gui;
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             if(newGui == gui){
                 newGui = mod.eventDisplayGui(gui, false);
             }else{
                 newGui = mod.eventDisplayGui(gui, true);
             }
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         return newGui;
     }
 
     public static void startSection(String name){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventProfilerStart(name);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void endSection(String name){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventProfilerEnd(name);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void loadWorld(WorldClient par1WorldClient, String par2Str){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventLoadWorld(par1WorldClient, par2Str);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void unloadWorld(){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventUnloadWorld();
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void eventPlayerLogin(EntityPlayerMP player){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventPlayerLogin(player);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void eventPlayerLogout(EntityPlayerMP player){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventPlayerLogout(player);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     @Deprecated
     public static void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventOtherPlayerRespawn(oldPlayer, newPlayer, dimension, causedByDeath);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void eventClientPlayerDeath(){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventClientPlayerDeath();
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static void eventTickServerWorld(WorldServer world){
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             mod.eventTickServerWorld(world);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 
     public static Packet23VehicleSpawn createSpawnPacket(Entity myEntity){
         Packet23VehicleSpawn packet = null;
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             Packet23VehicleSpawn modPacket = mod.createSpawnPacket(myEntity, packet != null);
             if(modPacket != null){
                 packet = modPacket;
             }
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         return packet;
     }
 
     public static boolean eventTickBlocksAndAmbiance(WorldServer server){
         boolean doVanilla = true;
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             boolean didHandle = mod.eventTickBlocksAndAmbiance(server, doVanilla);
             if(doVanilla){
                 doVanilla = didHandle;
             }
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         return doVanilla;
     }
 
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed){
         boolean allow = isAllowed;
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             allow = mod.eventPlayerLoginAttempt(username, isAllowed);
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
         return allow;
     }
 
     public static void addEntityToTracker(EntityTracker tracker, Entity entity){
         boolean isHandled = false;
         for(Mod mod : loadedMods){
-            BlazeLoader.activeMod = mod;
+            BlazeLoader.currActiveMod = mod;
             boolean didHandle = mod.addEntityToTracker(tracker, entity, isHandled);
             if(didHandle){
                 isHandled = true;
             }
         }
-        BlazeLoader.activeMod = null;
+        BlazeLoader.currActiveMod = null;
     }
 }

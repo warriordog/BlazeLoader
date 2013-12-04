@@ -22,13 +22,13 @@ public class ApiBlock {
      */
     public static int getFreeBlockId(){
 
-        if(Block.blocksList[BlazeLoader.freeBlockId] == null){
-            int id =  BlazeLoader.freeBlockId;
-            BlazeLoader.freeBlockId++;
+        if(Block.blocksList[BlazeLoader.currFreeBlockId] == null){
+            int id =  BlazeLoader.currFreeBlockId;
+            BlazeLoader.currFreeBlockId++;
             return id;
         }else{
             int id =  BlazeLoader.updateFreeBlockId();
-            BlazeLoader.freeBlockId++;
+            BlazeLoader.currFreeBlockId++;
             return id;
         }
     }
@@ -40,7 +40,7 @@ public class ApiBlock {
      */
     public static int recheckBlockIds(){
         int id =  BlazeLoader.resetFreeBlockId();
-        BlazeLoader.freeBlockId++;
+        BlazeLoader.currFreeBlockId++;
         return id;
     }
 
