@@ -163,7 +163,7 @@ public class Minecraft implements IPlayerUsage
     private long field_83002_am = -1L;
     private ReloadableResourceManager mcResourceManager;
     private final MetadataSerializer metadataSerializer_ = new MetadataSerializer();
-    private List defaultResourcePacks = Lists.newArrayList();
+    private List<ResourcePack> defaultResourcePacks = Lists.newArrayList();
     private DefaultResourcePack mcDefaultResourcePack;
     private ResourcePackRepository mcResourcePackRepository;
     private LanguageManager mcLanguageManager;
@@ -411,7 +411,7 @@ public class Minecraft implements IPlayerUsage
 
     public void refreshResources()
     {
-        ArrayList var1 = Lists.newArrayList(this.defaultResourcePacks);
+        ArrayList<ResourcePack> var1 = Lists.newArrayList(this.defaultResourcePacks);
 
         for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
             ResourcePackRepositoryEntry var3 = (ResourcePackRepositoryEntry) o;
@@ -437,7 +437,6 @@ public class Minecraft implements IPlayerUsage
         BufferedImage var2 = ImageIO.read(imageFile);
         int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
         ByteBuffer var4 = ByteBuffer.allocate(4 * var3.length);
-        int var6 = var3.length;
 
         for (int var8 : var3) {
             var4.putInt(var8 << 8 | var8 >> 24 & 255);
