@@ -178,30 +178,24 @@ public class CrashReport
     /**
      * Saves the complete crash report to the given File.
      */
-    public boolean saveToFile(File crashReportFile, ILogAgent logger)
-    {
-        if (this.crashReportFile != null)
-        {
+    public boolean saveToFile(File crashReportFile, ILogAgent logger) {
+        if (this.crashReportFile != null) {
             return false;
-        }
-        else
-        {
-            if (crashReportFile.getParentFile() != null)
-            {
-                crashReportFile.getParentFile().mkdirs();
+        } else {
+            if (crashReportFile.getParentFile() != null) {
+                if (!crashReportFile.getParentFile().mkdirs()) {
+                    System.out.print("Could not create crash report file!");
+                }
             }
 
-            try
-            {
-                FileWriter var3 = new FileWriter(crashReportFile);
-                var3.write(this.getCompleteReport());
-                var3.close();
+            try {
+                FileWriter crashReportWritere = new FileWriter(crashReportFile);
+                crashReportWritere.write(this.getCompleteReport());
+                crashReportWritere.close();
                 this.crashReportFile = crashReportFile;
                 return true;
-            }
-            catch (Throwable var4)
-            {
-                logger.logSevereException("Could not save crash report to " + crashReportFile, var4);
+            } catch (Throwable t) {
+                logger.logSevereException("Could not save crash report to " + crashReportFile, t);
                 return false;
             }
         }
@@ -215,31 +209,26 @@ public class CrashReport
     /**
      * Creates a CrashReportCategory
      */
-    public CrashReportCategory makeCategory(String categoryName)
-    {
+    public CrashReportCategory makeCategory(String categoryName) {
         return this.makeCategoryDepth(categoryName, 1);
     }
 
     /**
      * Creates a CrashReportCategory for the given stack trace depth
      */
-    public CrashReportCategory makeCategoryDepth(String categoryName, int depth)
-    {
+    public CrashReportCategory makeCategoryDepth(String categoryName, int depth) {
         CrashReportCategory var3 = new CrashReportCategory(this, categoryName);
 
-        if (this.existsCrashReport)
-        {
+        if (this.existsCrashReport) {
             int var4 = var3.func_85073_a(depth);
             StackTraceElement[] var5 = this.cause.getStackTrace();
             StackTraceElement var6 = null;
             StackTraceElement var7 = null;
 
-            if (var5 != null && var5.length - var4 < var5.length)
-            {
+            if (var5 != null && var5.length - var4 < var5.length) {
                 var6 = var5[var5.length - var4];
 
-                if (var5.length + 1 - var4 < var5.length)
-                {
+                if (var5.length + 1 - var4 < var5.length) {
                     var7 = var5[var5.length + 1 - var4];
                 }
             }
