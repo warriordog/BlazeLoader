@@ -17,95 +17,17 @@ import java.util.List;
 public class ApiBlock {
 
     /**
-     * Gets an available block ID.  Throws a RuntimeException if none are available.
-     * @return Returns a free Block ID
-     */
-    public static int getFreeBlockId(){
-
-        if(Block.blocksList[BlazeLoader.currFreeBlockId] == null){
-            int id =  BlazeLoader.currFreeBlockId;
-            BlazeLoader.currFreeBlockId++;
-            return id;
-        }else{
-            int id =  BlazeLoader.updateFreeBlockId();
-            BlazeLoader.currFreeBlockId++;
-            return id;
-        }
-    }
-
-    /**
-     * Gets an available block ID, checking for used IDs that have been freed.
-     * Throws a RuntimeException if none are available.
-     * @return Returns a free Block ID.
-     */
-    public static int recheckBlockIds(){
-        int id =  BlazeLoader.resetFreeBlockId();
-        BlazeLoader.currFreeBlockId++;
-        return id;
-    }
-
-    /**
-     * Overrides and existing block as well as any other fields referencing it.
-     * Eg:  If overriding the block with ID 1, Block.blockStone will also be replaces.
-     * @param block The block class to create the block from.
-     * @param blockID The ID of the new block.
-     * @param blockArgs Arguments to pass to the constructor of the new block.
-     */
-    public static void overrideBlock(Class<? extends Block> block, int blockID, Object[] blockArgs){
-        Block oldBlock = Block.blocksList[blockID];
-        List<Field> newBlocks = new ArrayList<Field>();
-        if(oldBlock != null){
-            for(Field f : Block.class.getDeclaredFields()){
-                try{
-                    f.setAccessible(true);
-                    if(f.get(null) == oldBlock){
-                        newBlocks.add(f);
-                    }
-                }catch(Exception e){
-                    throw new RuntimeException("Could not get block field!", e);
-                }
-            }
-            Block.blocksList[blockID] = null;
-        }
-        Block blockInstance = null;
-        for(Constructor c : block.getDeclaredConstructors()){
-            if(c.getParameterTypes().length == blockArgs.length){
-                try{
-                    c.setAccessible(true);
-                    blockInstance = (Block)c.newInstance(blockArgs);
-                }catch(Exception e){
-                    throw new RuntimeException("Could not create new block!", e);
-                }
-            }
-        }
-        for(Field f : newBlocks){
-            try{
-                f.setAccessible(true);
-                int modifiers = f.getModifiers();
-                if(Modifier.isFinal(modifiers)){
-                    Field theModifiers = Field.class.getDeclaredField("modifiers");
-                    theModifiers.setAccessible(true);
-                    theModifiers.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-                }
-                f.set(null, blockInstance);
-            }catch(Exception e){
-                throw new RuntimeException("Could not replace block field!", e);
-            }
-        }
-    }
-
-    /**
      * Sets the block at a specified location.
      * @param world The world to change the block in.  Should be a dimension index returned by getDimensionIndex.
      * @param x The X-coordinate to change.
      * @param y The Y-coordinate to change.
      * @param z The Z-coordinate to change.
-     * @param id The block ID to set.
+     * @param block the block to set
      * @param metadata The block Metadata to set.
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static void setBlock(int world, int x, int y, int z, int id, int metadata, int notifyFlag){
-        getServerForDimension(world).setBlock(x, y, z, id, metadata, notifyFlag);
+    public static void setBlock(int world, int x, int y, int z, Block block, int metadata, int notifyFlag){
+        getServerForDimension(world).func_147465_d(x, y, z, block, metadata, notifyFlag);
     }
 
     /**
@@ -133,15 +55,15 @@ public class ApiBlock {
     }
 
     /**
-     * Gets the Block ID of a location.
-     * @param world The world to get the ID from.
+     * Gets the Block at a location.
+     * @param world The world to get the block from.
      * @param x The X-coordinate to get.
      * @param y The Y-coordinate to get.
      * @param z The Z-coordinate to get.
-     * @return Return the block ID at the specified location.
+     * @return Return the block at the specified location.
      */
-    public static int getBlockId(int world, int x, int y, int z){
-        return getServerForDimension(world).getBlockId(x, y, z);
+    public static Block getBlockId(int world, int x, int y, int z){
+        return getServerForDimension(world).func_147439_a(x, y, z);
     }
 
     /**

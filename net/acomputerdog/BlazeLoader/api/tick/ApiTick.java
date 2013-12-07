@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.util.MinecraftPackageAccessor;
+import net.minecraft.util.MinecraftPackageAccessorA;
 import net.minecraft.util.Timer;
 
 /**
@@ -20,7 +20,7 @@ public class ApiTick {
      * @return Returns the game's current tick rate.
      */
     public static float getTPS(){
-        return MinecraftPackageAccessor.getTPS();
+        return MinecraftPackageAccessorA.getTPS();
     }
 
     /**
@@ -28,7 +28,7 @@ public class ApiTick {
      * @param tps The new tick rate.
      */
     public static void setTPS(float tps){
-        MinecraftPackageAccessor.setTPS(tps);
+        MinecraftPackageAccessorA.setTPS(tps);
     }
 
     /**

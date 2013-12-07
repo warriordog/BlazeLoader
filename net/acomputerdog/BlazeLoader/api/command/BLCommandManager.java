@@ -5,6 +5,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
@@ -25,9 +27,9 @@ public class BLCommandManager extends CommandHandler {
             var5 = false;
         }
 
-        ChatMessageComponent var6 = ChatMessageComponent.createFromTranslationWithSubstitutions("chat.type.admin", par1ICommandSender.getCommandSenderName(), ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj));
-        var6.setColor(EnumChatFormatting.GRAY);
-        var6.setItalic(true);
+        ChatComponentTranslation var6 = new ChatComponentTranslation("chat.type.admin", par1ICommandSender.getCommandSenderName(), new ChatComponentTranslation(par3Str, par4ArrayOfObj));
+        var6.func_150255_a(new ChatStyle().func_150238_a(EnumChatFormatting.GRAY));
+        var6.func_150255_a(new ChatStyle().func_150238_a(EnumChatFormatting.ITALIC));
 
         if (var5)
         {
@@ -48,7 +50,7 @@ public class BLCommandManager extends CommandHandler {
 
         if ((par2 & 1) != 1)
         {
-            par1ICommandSender.func_145747_a(ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj));
+            par1ICommandSender.func_145747_a(new ChatComponentTranslation(par3Str, par4ArrayOfObj));
         }
     }
 }

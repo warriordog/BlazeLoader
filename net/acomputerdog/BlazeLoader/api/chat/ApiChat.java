@@ -1,7 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.chat;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentStyle;
 import net.minecraft.util.ChatComponentText;
 
 /**

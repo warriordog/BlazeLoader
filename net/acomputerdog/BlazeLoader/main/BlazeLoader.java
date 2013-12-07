@@ -29,8 +29,6 @@ import java.util.Map;
  * Main class of BlazeLoader.  Contains various internal fields and methods.
  */
 public final class BlazeLoader {
-    public static int currFreeBlockId = 1;
-    public static int currFreeItemId = 1;
     public static int currFreeEntityId = 1;
     public static boolean isInTick = false;
     public static long numTicks = 0;
@@ -124,48 +122,6 @@ public final class BlazeLoader {
 
     public static BLLogger getLogger(){
         return logger;
-    }
-
-    public static int updateFreeBlockId(){
-        while(currFreeBlockId < Block.blocksList.length && Block.blocksList[currFreeBlockId] != null){
-            currFreeBlockId++;
-        }
-        if(Block.blocksList[currFreeBlockId] != null){
-            currFreeBlockId = 1;
-            while(currFreeBlockId < Block.blocksList.length && Block.blocksList[currFreeBlockId] != null){
-                currFreeBlockId++;
-            }
-            if(Block.blocksList[currFreeBlockId] != null){
-                throw new RuntimeException("No free block IDs available!");
-            }
-        }
-        return currFreeBlockId;
-    }
-
-    public static int resetFreeBlockId(){
-        currFreeBlockId = 1;
-        return updateFreeBlockId();
-    }
-
-    public static int updateFreeItemId(){
-        while(currFreeItemId < Item.itemsList.length && Item.itemsList[currFreeItemId] != null){
-            currFreeItemId++;
-        }
-        if(Item.itemsList[currFreeItemId] != null){
-            currFreeItemId = 1;
-            while(currFreeItemId < Item.itemsList.length && Item.itemsList[currFreeItemId] != null){
-                currFreeItemId++;
-            }
-            if(Item.itemsList[currFreeItemId] != null){
-                throw new RuntimeException("No free Item IDs available!");
-            }
-        }
-        return currFreeItemId;
-    }
-
-    public static int resetFreeItemId(){
-        currFreeItemId = 1;
-        return updateFreeItemId();
     }
 
     public static void loadSettings(){
