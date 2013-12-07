@@ -1,16 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Api for block-specific functions

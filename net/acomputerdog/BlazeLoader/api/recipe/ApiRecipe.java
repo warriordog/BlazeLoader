@@ -5,7 +5,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.MinecraftPackageAccessorB;
-import net.minecraft.util.MinecraftPackageAccessorA;
 
 /**
  * API function related to vanilla crafting

@@ -360,6 +360,23 @@ public class EntityRenderer implements ResourceManagerReloadListener
         }
     }
 
+
+    public ShaderGroup func_147706_e()
+    {
+        return this.field_147707_d;
+    }
+
+    public void func_147704_a(int p_147704_1_, int p_147704_2_)
+    {
+        if (OpenGlHelper.field_148824_g)
+        {
+            if (this.field_147707_d != null)
+            {
+                this.field_147707_d.func_148026_a(p_147704_1_, p_147704_2_);
+            }
+        }
+    }
+
     /**
      * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
      */
@@ -456,22 +473,6 @@ public class EntityRenderer implements ResourceManagerReloadListener
                         this.mc.field_147125_j = (EntityLivingBase) this.pointedEntity;
                     }
                 }
-            }
-        }
-    }
-
-    public ShaderGroup func_147706_e()
-    {
-        return this.field_147707_d;
-    }
-
-    public void func_147704_a(int p_147704_1_, int p_147704_2_)
-    {
-        if (OpenGlHelper.field_148824_g)
-        {
-            if (this.field_147707_d != null)
-            {
-                this.field_147707_d.func_148026_a(p_147704_1_, p_147704_2_);
             }
         }
     }
@@ -1190,7 +1191,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
                         private static final String __OBFID = "CL_00000950";
                         public String call()
                         {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", new Object[] {Integer.valueOf(var16), Integer.valueOf(var18), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", Integer.valueOf(var16), Integer.valueOf(var18), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY()));
                         }
                     });
                     var11.addCrashSectionCallable("Screen size", new Callable()
@@ -1198,9 +1199,9 @@ public class EntityRenderer implements ResourceManagerReloadListener
                         private static final String __OBFID = "CL_00000951";
                         public String call()
                         {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", new Object[] {Integer.valueOf(var13.getScaledWidth()), Integer.valueOf(var13.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(var13.getScaleFactor())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", Integer.valueOf(var13.getScaledWidth()), Integer.valueOf(var13.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(var13.getScaleFactor()));
                         }
-                    });;
+                    });
                     throw new ReportedException(var10);
                 }
             }
@@ -1312,12 +1313,15 @@ public class EntityRenderer implements ResourceManagerReloadListener
             this.mc.mcProfiler.endStartSection("terrain");
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
             GL11.glPushMatrix();
-            var5.func_147589_a(var4, var14, par1);
+            var5.sortAndRender(var4, 0, (double)par1);
             GL11.glShadeModel(GL11.GL_FLAT);
             EntityPlayer var17;
 
             if (this.debugViewDirection == 0)
             {
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                GL11.glPopMatrix();
+                GL11.glPushMatrix();
                 RenderHelper.enableStandardItemLighting();
                 this.mc.mcProfiler.endStartSection("entities");
                 var5.func_147589_a(var4, var14, par1);
@@ -1957,11 +1961,11 @@ public class EntityRenderer implements ResourceManagerReloadListener
                 if (par1 < 0)
                 {
                     GL11.glFogf(GL11.GL_FOG_START, 0.0F);
-                    GL11.glFogf(GL11.GL_FOG_END, var6);
+                    GL11.glFogf(GL11.GL_FOG_END, var6 * 0.8F);
                 }
                 else
                 {
-                    GL11.glFogf(GL11.GL_FOG_START, var6 * 0.75F);
+                    GL11.glFogf(GL11.GL_FOG_START, var6 * 0.25F);
                     GL11.glFogf(GL11.GL_FOG_END, var6);
                 }
 
@@ -2028,11 +2032,11 @@ public class EntityRenderer implements ResourceManagerReloadListener
                 if (par1 < 0)
                 {
                     GL11.glFogf(GL11.GL_FOG_START, 0.0F);
-                    GL11.glFogf(GL11.GL_FOG_END, var6 * 0.8F);
+                    GL11.glFogf(GL11.GL_FOG_END, var6);
                 }
                 else
                 {
-                    GL11.glFogf(GL11.GL_FOG_START, var6 * 0.25F);
+                    GL11.glFogf(GL11.GL_FOG_START, var6 * 0.75F);
                     GL11.glFogf(GL11.GL_FOG_END, var6);
                 }
 

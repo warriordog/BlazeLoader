@@ -11,12 +11,10 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
 import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.command.CommandHandler;
-import net.minecraft.item.Item;
 import net.minecraft.util.Timer;
 
 import java.io.*;

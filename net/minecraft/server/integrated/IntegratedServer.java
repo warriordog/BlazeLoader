@@ -242,7 +242,6 @@ public class IntegratedServer extends MinecraftServer
             }
             catch (IOException var5)
             {
-                ;
             }
 
             if (var3 <= 0)
@@ -250,7 +249,7 @@ public class IntegratedServer extends MinecraftServer
                 var3 = 25564;
             }
 
-            this.func_147137_ag().func_151265_a((InetAddress)null, var3);
+            this.func_147137_ag().func_151265_a(null, var3);
             logger.info("Started on " + var3);
             this.isPublic = true;
             this.lanServerPing = new ThreadLanServerPing(this.getMOTD(), var3 + "");
@@ -330,11 +329,11 @@ public class IntegratedServer extends MinecraftServer
         }
     }
 
-
     /**
      * previously getPlugins
      * Used by RCon's Query in the form of "MajorServerMod 1.2.3: MyPlugin 1.3; AnotherPlugin 2.1; AndSoForth 1.0".
      */
+    /*
     @Override
     public String func_147133_T() {
         String plugins = "BlazeLoader " + Version.getStringVersion() + ":";
@@ -347,6 +346,7 @@ public class IntegratedServer extends MinecraftServer
         }
         return plugins;
     }
+    */
 
     @Override
     public String getServerModName() {

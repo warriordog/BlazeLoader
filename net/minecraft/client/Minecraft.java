@@ -32,6 +32,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLeashKnot;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -109,7 +110,7 @@ public class Minecraft implements IPlayerUsage
 
     /** A 10MiB preallocation to ensure the heap is reasonably sized. */
     public static byte[] memoryReserve = new byte[10485760];
-    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode[]{new DisplayMode(2560, 1600), new DisplayMode(2880, 1800)});
+    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
     private final File fileResourcepacks;
     private ServerData currentServerData;
 
@@ -143,7 +144,7 @@ public class Minecraft implements IPlayerUsage
      * changing the viewpoint mid-render.
      */
     public EntityLivingBase renderViewEntity;
-    public EntityLivingBase field_147125_j;
+    public Entity field_147125_j;
     public EffectRenderer effectRenderer;
     private final Session session;
     private boolean isGamePaused;
@@ -323,7 +324,6 @@ public class Minecraft implements IPlayerUsage
         }
         catch (Exception var4)
         {
-            ;
         }
     }
 
@@ -347,7 +347,6 @@ public class Minecraft implements IPlayerUsage
                     }
                     catch (InterruptedException var2)
                     {
-                        ;
                     }
                 }
             }
@@ -477,7 +476,6 @@ public class Minecraft implements IPlayerUsage
         this.field_147124_at = new Framebuffer(this.displayWidth, this.displayHeight, true);
         this.field_147124_at.func_147604_a(0.0F, 0.0F, 0.0F, 0.0F);
         this.guiAchievement = new GuiAchievement(this);
-        this.guiAchievement = new GuiAchievement(this);
         this.metadataSerializer_.registerMetadataSectionType(new TextureMetadataSectionSerializer(), TextureMetadataSection.class);
         this.metadataSerializer_.registerMetadataSectionType(new FontMetadataSectionSerializer(), FontMetadataSection.class);
         this.metadataSerializer_.registerMetadataSectionType(new AnimationMetadataSectionSerializer(), AnimationMetadataSection.class);
@@ -525,7 +523,8 @@ public class Minecraft implements IPlayerUsage
                     return "Error: " + var3.getLocalizedMessage();
                 }
             }
-        });        this.mouseHelper = new MouseHelper();
+        });
+        this.mouseHelper = new MouseHelper();
         this.checkGLError("Pre startup");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -600,7 +599,7 @@ public class Minecraft implements IPlayerUsage
     private ByteBuffer readImage(File par1File) throws IOException
     {
         BufferedImage var2 = ImageIO.read(par1File);
-        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), (int[])null, 0, var2.getWidth());
+        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
         ByteBuffer var4 = ByteBuffer.allocate(4 * var3.length);
         int[] var5 = var3;
         int var6 = var3.length;
@@ -1955,7 +1954,6 @@ public class Minecraft implements IPlayerUsage
                     {
                         while (this.gameSettings.keyBindUseItem.func_151468_f())
                         {
-                            ;
                         }
 
                         while (true)
@@ -2158,9 +2156,9 @@ public class Minecraft implements IPlayerUsage
         this.func_147108_a(null);
         SocketAddress var11 = this.theIntegratedServer.func_147137_ag().func_151270_a();
         INetworkManager var12 = INetworkManager.func_150722_a(var11);
-        var12.func_150719_a(new NetHandlerLoginClient(var12, this, (GuiScreen)null));
-        var12.func_150725_a(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN), new GenericFutureListener[0]);
-        var12.func_150725_a(new C00PacketLoginStart(this.getSession().func_148256_e()), new GenericFutureListener[0]);
+        var12.func_150719_a(new NetHandlerLoginClient(var12, this, null));
+        var12.func_150725_a(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN));
+        var12.func_150725_a(new C00PacketLoginStart(this.getSession().func_148256_e()));
         this.myNetworkManager = var12;
     }
 
@@ -2809,7 +2807,6 @@ public class Minecraft implements IPlayerUsage
             }
             catch (NoSuchFieldError var2)
             {
-                ;
             }
 
             try
@@ -2818,7 +2815,6 @@ public class Minecraft implements IPlayerUsage
             }
             catch (NoSuchFieldError var1)
             {
-                ;
             }
         }
     }
