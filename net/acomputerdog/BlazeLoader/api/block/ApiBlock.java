@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.api.block;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.block.Block;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.lang.reflect.Constructor;
@@ -27,7 +28,21 @@ public class ApiBlock {
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
     public static void setBlock(int world, int x, int y, int z, Block block, int metadata, int notifyFlag){
-        getServerForDimension(world).func_147465_d(x, y, z, block, metadata, notifyFlag);
+        setBlock(getServerForDimension(world), x, y, z, block, metadata, notifyFlag);
+    }
+
+    /**
+     * Sets the block at a specified location.
+     * @param world The world to change the block in..
+     * @param x The X-coordinate to change.
+     * @param y The Y-coordinate to change.
+     * @param z The Z-coordinate to change.
+     * @param block the block to set
+     * @param metadata The block Metadata to set.
+     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
+     */
+    public static void setBlock(World world, int x, int y, int z, Block block, int metadata, int notifyFlag){
+        world.func_147465_d(x, y, z, block, metadata, notifyFlag);
     }
 
     /**
