@@ -1,6 +1,8 @@
 package net.minecraft.src;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.entity.EntityTracker;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.*;

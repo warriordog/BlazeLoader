@@ -1,16 +1,35 @@
-package net.minecraft.src;
+package net.minecraft.entity;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.entity.passive.IAnimals;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.*;
+import net.minecraft.network.Packet;
+import net.minecraft.util.IntHashMap;
+import net.minecraft.util.ReportedException;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Tracks an entity and manages client updates.
  */
 public class EntityTracker
 {
+    private static final Logger logger = LogManager.getLogger();
     private final WorldServer theWorld;
 
     /**
@@ -125,7 +144,7 @@ public class EntityTracker
         {
             this.addEntityToTracker(entity, 160, 10, true);
         }
-        else if (entity instanceof EntityFallingSand)
+        else if (entity instanceof EntityFallingBlock)
         {
             this.addEntityToTracker(entity, 160, 20, true);
         }
@@ -150,7 +169,7 @@ public class EntityTracker
         this.addEntityToTracker(entity, viewDistance, updateFrequency, false);
     }
 
-    public void addEntityToTracker(Entity entity, int viewDistance, int updateFrequency, boolean updateVelocity)
+    public void addEntityToTracker(Entity entity, int viewDistance, final int updateFrequency, boolean updateVelocity)
     {
         if (viewDistance > this.entityViewDistance)
         {
@@ -159,14 +178,14 @@ public class EntityTracker
 
         try
         {
-            if (this.trackedEntityIDs.containsItem(entity.entityId))
+            if (this.trackedEntityIDs.containsItem(entity.func_145782_y()))
             {
                 throw new IllegalStateException("Entity is already tracked!");
             }
 
             EntityTrackerEntry var5 = new EntityTrackerEntry(entity, viewDistance, updateFrequency, updateVelocity);
             this.trackedEntities.add(var5);
-            this.trackedEntityIDs.addKey(entity.entityId, var5);
+            this.trackedEntityIDs.addKey(entity.func_145782_y(), var5);
             var5.sendEventsToPlayers(this.theWorld.playerEntities);
         }
         catch (Throwable var11)
@@ -174,10 +193,24 @@ public class EntityTracker
             CrashReport var6 = CrashReport.makeCrashReport(var11, "Adding entity to track");
             CrashReportCategory var7 = var6.makeCategory("Entity To Track");
             var7.addCrashSection("Tracking range", viewDistance + " blocks");
-            var7.addCrashSectionCallable("Update interval", new CallableEntityTracker(this, updateFrequency));
+            var7.addCrashSectionCallable("Update interval", new Callable()
+            {
+                private static final String __OBFID = "CL_00001432";
+                public String call()
+                {
+                    String var1 = "Once per " + updateFrequency + " ticks";
+
+                    if (updateFrequency == Integer.MAX_VALUE)
+                    {
+                        var1 = "Maximum (" + var1 + ")";
+                    }
+
+                    return var1;
+                }
+            });
             entity.addEntityCrashInfo(var7);
             CrashReportCategory var8 = var6.makeCategory("Entity That Is Already Tracked");
-            ((EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.entityId)).myEntity.addEntityCrashInfo(var8);
+            ((EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.func_145782_y())).myEntity.addEntityCrashInfo(var8);
 
             try
             {
@@ -185,8 +218,7 @@ public class EntityTracker
             }
             catch (ReportedException var10)
             {
-                System.err.println("\"Silently\" catching entity tracking error.");
-                var10.printStackTrace();
+                logger.error("\"Silently\" catching entity tracking error.");
             }
         }
     }
@@ -203,7 +235,7 @@ public class EntityTracker
             }
         }
 
-        EntityTrackerEntry var5 = (EntityTrackerEntry)this.trackedEntityIDs.removeObject(entity.entityId);
+        EntityTrackerEntry var5 = (EntityTrackerEntry)this.trackedEntityIDs.removeObject(entity.func_145782_y());
 
         if (var5 != null)
         {
@@ -243,11 +275,11 @@ public class EntityTracker
      */
     public void sendPacketToAllPlayersTrackingEntity(Entity entity, Packet packet)
     {
-        EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.entityId);
+        EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.func_145782_y());
 
         if (var3 != null)
         {
-            var3.sendPacketToAllTrackingPlayers(packet);
+            var3.func_151259_a(packet);
         }
     }
 
@@ -256,11 +288,11 @@ public class EntityTracker
      */
     public void sendPacketToAllAssociatedPlayers(Entity entity, Packet packet)
     {
-        EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.entityId);
+        EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.func_145782_y());
 
         if (var3 != null)
         {
-            var3.sendPacketToAllAssociatedPlayers(packet);
+            var3.func_151259_a(packet);
         }
     }
 

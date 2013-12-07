@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.main.Version;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.File;

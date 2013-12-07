@@ -2,6 +2,7 @@ package net.minecraft.src;
 
 import com.google.common.base.Charsets;
 import net.minecraft.client.ClientBrandRetriever;
+import net.minecraft.entity.EntityList;
 import org.lwjgl.input.Keyboard;
 
 import javax.crypto.SecretKey;

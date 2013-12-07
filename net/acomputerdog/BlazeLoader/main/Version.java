@@ -13,7 +13,7 @@ public final class Version {
      * @return Return the global version of BlazeLoader.
      */
     public static int getGlobalVersion(){
-        return 1;
+        return 2;
     }
 
     /**
@@ -22,7 +22,7 @@ public final class Version {
      * @return Get the version of the API features of BlazeLoader
      */
     public static int getApiVersion(){
-        return 6;
+        return 0;
     }
 
     /**
@@ -31,7 +31,7 @@ public final class Version {
      * @return Return an int representing the version of BL's internal components.
      */
     public static int getInternalVersion(){
-        return 17;
+        return 0;
     }
 
     /**
@@ -47,6 +47,6 @@ public final class Version {
      * @return Returns a String representing the version of Minecraft, ex. "1.6.4".
      */
     public static String getMinecraftVersion(){
-        return "1.6.4";
+        return "1.7.2";
     }
 }

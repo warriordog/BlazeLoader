@@ -1,14 +1,28 @@
-package net.minecraft.src;
+package net.minecraft.entity;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import net.minecraft.entity.ai.EntityMinecartMobSpawner;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
+import net.minecraft.entity.projectile.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatBase;
+import net.minecraft.stats.StatList;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 /**
  * Holds mappings of entities to ids, classes, names, and spawn eggs.
  */
 public class EntityList
 {
+    private static final Logger logger = LogManager.getLogger();
+
     /** Provides a mapping between entity classes and a string */
     private static Map<String, Class> stringToClassMapping = new HashMap<String, Class>();
 
@@ -27,6 +41,7 @@ public class EntityList
     /** This is a HashMap of the Creative Entity Eggs/Spawners. */
     public static HashMap<Integer, EntityEggInfo> entityEggs = new LinkedHashMap<Integer, EntityEggInfo>();
 
+    private static final String __OBFID = "CL_00001538";
     /**
      * adds a mapping between Entity classes and both a string representation and an ID
      */
@@ -118,7 +133,7 @@ public class EntityList
         }
         else
         {
-            world.getWorldLogAgent().logWarning("Skipping Entity with id " + NBTData.getString("id"));
+            logger.warn("Skipping Entity with id " + NBTData.getString("id"));
         }
 
         return var2;
@@ -147,7 +162,7 @@ public class EntityList
 
         if (var2 == null)
         {
-            world.getWorldLogAgent().logWarning("Skipping Entity with id " + entityID);
+            logger.warn("Skipping Entity with id " + entityID);
         }
 
         return var2;
@@ -196,6 +211,11 @@ public class EntityList
         return stringToIDMapping.get(string);
     }
 
+    public static Set func_151515_b()
+    {
+        return Collections.unmodifiableSet(stringToIDMapping.keySet());
+    }
+
     static
     {
         addMapping(EntityItem.class, "Item", 1);
@@ -213,7 +233,7 @@ public class EntityList
         addMapping(EntityItemFrame.class, "ItemFrame", 18);
         addMapping(EntityWitherSkull.class, "WitherSkull", 19);
         addMapping(EntityTNTPrimed.class, "PrimedTnt", 20);
-        addMapping(EntityFallingSand.class, "FallingSand", 21);
+        addMapping(EntityFallingBlock.class, "FallingSand", 21);
         addMapping(EntityFireworkRocket.class, "FireworksRocketEntity", 22);
         addMapping(EntityBoat.class, "Boat", 41);
         addMapping(EntityMinecartEmpty.class, "MinecartRideable", 42);
@@ -222,6 +242,7 @@ public class EntityList
         addMapping(EntityMinecartTNT.class, "MinecartTNT", 45);
         addMapping(EntityMinecartHopper.class, "MinecartHopper", 46);
         addMapping(EntityMinecartMobSpawner.class, "MinecartSpawner", 47);
+        addMapping(EntityMinecartCommandBlock.class, "MinecartCommandBlock", 40);
         addMapping(EntityLiving.class, "Mob", 48);
         addMapping(EntityMob.class, "Monster", 49);
         addMapping(EntityCreeper.class, "Creeper", 50, 894731, 0);
@@ -255,4 +276,25 @@ public class EntityList
         addMapping(EntityVillager.class, "Villager", 120, 5651507, 12422002);
         addMapping(EntityEnderCrystal.class, "EnderCrystal", 200);
     }
+
+
+    public static class EntityEggInfo
+    {
+        public final int spawnedID;
+        public final int primaryColor;
+        public final int secondaryColor;
+        public final StatBase field_151512_d;
+        public final StatBase field_151513_e;
+        private static final String __OBFID = "CL_00001539";
+
+        public EntityEggInfo(int par1, int par2, int par3)
+        {
+            this.spawnedID = par1;
+            this.primaryColor = par2;
+            this.secondaryColor = par3;
+            this.field_151512_d = StatList.func_151182_a(this);
+            this.field_151513_e = StatList.func_151176_b(this);
+        }
+    }
+
 }

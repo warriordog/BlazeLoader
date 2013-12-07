@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.minecraft.src.*;
+import net.minecraft.entity.EntityTracker;
+import net.minecraft.src.WorldServer;
 
 /**
  * Base class of mods.  Mods should extend this class.

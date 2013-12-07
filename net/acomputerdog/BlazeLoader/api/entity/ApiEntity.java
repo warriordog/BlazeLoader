@@ -1,8 +1,8 @@
 package net.acomputerdog.BlazeLoader.api.entity;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.entity.EntityList;
 import net.minecraft.src.EntityEggInfo;
-import net.minecraft.src.EntityList;
 
 /**
  * Api for entity-related functions

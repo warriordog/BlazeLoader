@@ -1,5 +1,10 @@
 package net.acomputerdog.BlazeLoader.tweaklauncher;
 
+import net.minecraft.client.render.EntityRenderer;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.src.*;
 
