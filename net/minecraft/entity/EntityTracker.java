@@ -39,6 +39,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+
 /**
  * Tracks an entity and manages client updates.
  */
