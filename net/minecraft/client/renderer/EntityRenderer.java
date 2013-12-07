@@ -49,7 +49,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
-
+import net.acomputerdog.BlazeLoader.mod.ModList;
 public class EntityRenderer implements ResourceManagerReloadListener
 {
     private static final Logger field_147710_q = LogManager.getLogger();
@@ -1204,6 +1204,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
                 }
             }
         }
+		ModList.tick();
     }
 
     public void renderWorld(float par1, long par2)

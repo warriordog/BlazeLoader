@@ -54,7 +54,11 @@ import net.minecraft.world.gen.feature.WorldGeneratorBonusChest;
 import net.minecraft.world.storage.ISaveHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 
+/**
+ * A server-side world.  Replaces WorldServerProxy.
+ */
 public class WorldServer extends World
 {
     private static final Logger field_147491_a = LogManager.getLogger();
@@ -79,6 +83,9 @@ public class WorldServer extends World
      */
     private final Teleporter worldTeleporter;
     private final SpawnerAnimals animalSpawner = new SpawnerAnimals();
+   /**
+     * Double buffer of ServerBlockEventList[] for holding pending BlockEventData's
+     */
     private WorldServer.ServerBlockEventList[] field_147490_S = new WorldServer.ServerBlockEventList[] {new WorldServer.ServerBlockEventList(null), new WorldServer.ServerBlockEventList(null)};
     private int field_147489_T;
     private static final WeightedRandomChestContent[] bonusChestContent = new WeightedRandomChestContent[] {new WeightedRandomChestContent(Items.field_151055_y, 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150344_f), 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150364_r), 0, 1, 3, 10), new WeightedRandomChestContent(Items.field_151049_t, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151053_p, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151050_s, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151039_o, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151034_e, 0, 2, 3, 5), new WeightedRandomChestContent(Items.field_151025_P, 0, 2, 3, 3), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150363_s), 0, 1, 3, 10)};
@@ -129,6 +136,7 @@ public class WorldServer extends World
      */
     public void tick()
     {
+		ModList.eventTickServerWorld(this);
         super.tick();
 
         if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting != EnumDifficulty.HARD)
@@ -300,103 +308,116 @@ public class WorldServer extends World
 
     protected void func_147456_g()
     {
-        super.func_147456_g();
-        int var1 = 0;
-        int var2 = 0;
-        Iterator var3 = this.activeChunkSet.iterator();
-
-        while (var3.hasNext())
-        {
-            ChunkCoordIntPair var4 = (ChunkCoordIntPair)var3.next();
-            int var5 = var4.chunkXPos * 16;
-            int var6 = var4.chunkZPos * 16;
-            this.theProfiler.startSection("getChunk");
-            Chunk var7 = this.getChunkFromChunkCoords(var4.chunkXPos, var4.chunkZPos);
-            this.func_147467_a(var5, var6, var7);
-            this.theProfiler.endStartSection("tickChunk");
-            var7.func_150804_b(false);
-            this.theProfiler.endStartSection("thunder");
-            int var8;
-            int var9;
-            int var10;
-            int var11;
-
-            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering())
-            {
-                this.updateLCG = this.updateLCG * 3 + 1013904223;
-                var8 = this.updateLCG >> 2;
-                var9 = var5 + (var8 & 15);
-                var10 = var6 + (var8 >> 8 & 15);
-                var11 = this.getPrecipitationHeight(var9, var10);
-
-                if (this.canLightningStrikeAt(var9, var11, var10))
-                {
-                    this.addWeatherEffect(new EntityLightningBolt(this, (double)var9, (double)var11, (double)var10));
-                }
-            }
-
-            this.theProfiler.endStartSection("iceandsnow");
-
-            if (this.rand.nextInt(16) == 0)
-            {
-                this.updateLCG = this.updateLCG * 3 + 1013904223;
-                var8 = this.updateLCG >> 2;
-                var9 = var8 & 15;
-                var10 = var8 >> 8 & 15;
-                var11 = this.getPrecipitationHeight(var9 + var5, var10 + var6);
-
-                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6))
-                {
-                    this.func_147449_b(var9 + var5, var11 - 1, var10 + var6, Blocks.field_150432_aD);
-                }
-
-                if (this.isRaining() && this.func_147478_e(var9 + var5, var11, var10 + var6, true))
-                {
-                    this.func_147449_b(var9 + var5, var11, var10 + var6, Blocks.field_150431_aC);
-                }
-
-                if (this.isRaining())
-                {
-                    BiomeGenBase var12 = this.getBiomeGenForCoords(var9 + var5, var10 + var6);
-
-                    if (var12.canSpawnLightningBolt())
-                    {
-                        this.func_147439_a(var9 + var5, var11 - 1, var10 + var6).func_149639_l(this, var9 + var5, var11 - 1, var10 + var6);
-                    }
-                }
-            }
-
-            this.theProfiler.endStartSection("tickBlocks");
-            ExtendedBlockStorage[] var18 = var7.getBlockStorageArray();
-            var9 = var18.length;
-
-            for (var10 = 0; var10 < var9; ++var10)
-            {
-                ExtendedBlockStorage var20 = var18[var10];
-
-                if (var20 != null && var20.getNeedsRandomTick())
-                {
-                    for (int var19 = 0; var19 < 3; ++var19)
-                    {
-                        this.updateLCG = this.updateLCG * 3 + 1013904223;
-                        int var13 = this.updateLCG >> 2;
-                        int var14 = var13 & 15;
-                        int var15 = var13 >> 8 & 15;
-                        int var16 = var13 >> 16 & 15;
-                        ++var2;
-                        Block var17 = var20.func_150819_a(var14, var16, var15);
-
-                        if (var17.func_149653_t())
-                        {
-                            ++var1;
-                            var17.func_149674_a(this, var14 + var5, var16 + var20.getYLocation(), var15 + var6, this.rand);
-                        }
-                    }
-                }
-            }
-
-            this.theProfiler.endSection();
-        }
+		if(ModList.eventTickBlocksAndAmbiance(this)){
+	        super.func_147456_g();
+	        int var1 = 0;
+	        int var2 = 0;
+	        Iterator var3 = this.activeChunkSet.iterator();
+	
+	        while (var3.hasNext())
+	        {
+	            ChunkCoordIntPair var4 = (ChunkCoordIntPair)var3.next();
+	            int var5 = var4.chunkXPos * 16;
+	            int var6 = var4.chunkZPos * 16;
+	            this.theProfiler.startSection("getChunk");
+	            Chunk var7 = this.getChunkFromChunkCoords(var4.chunkXPos, var4.chunkZPos);
+	            this.func_147467_a(var5, var6, var7);
+	            this.theProfiler.endStartSection("tickChunk");
+	            var7.func_150804_b(false);
+	            this.theProfiler.endStartSection("thunder");
+	            int var8;
+	            int var9;
+	            int var10;
+	            int var11;
+	
+	            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering())
+	            {
+	                this.updateLCG = this.updateLCG * 3 + 1013904223;
+	                var8 = this.updateLCG >> 2;
+	                var9 = var5 + (var8 & 15);
+	                var10 = var6 + (var8 >> 8 & 15);
+	                var11 = this.getPrecipitationHeight(var9, var10);
+	
+	                if (this.canLightningStrikeAt(var9, var11, var10))
+	                {
+	                    this.addWeatherEffect(new EntityLightningBolt(this, (double)var9, (double)var11, (double)var10));
+	                }
+	            }
+	
+	            this.theProfiler.endStartSection("iceandsnow");
+	
+	
+	            if (this.rand.nextInt(16) == 0)
+	            {
+	                this.updateLCG = this.updateLCG * 3 + 1013904223;
+	                var8 = this.updateLCG >> 2;
+	                var9 = var8 & 15;
+	                var10 = var8 >> 8 & 15;
+	                var11 = this.getPrecipitationHeight(var9 + var5, var10 + var6);
+	
+	                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6))
+	                {
+	                    this.func_147449_b(var9 + var5, var11 - 1, var10 + var6, Blocks.field_150432_aD);
+	                }
+	
+	                if (this.isRaining() && this.func_147478_e(var9 + var5, var11, var10 + var6, true))
+	                {
+	                    this.func_147449_b(var9 + var5, var11, var10 + var6, Blocks.field_150431_aC);
+	                }
+	
+	                if (this.isRaining())
+	                {
+	                    BiomeGenBase var12 = this.getBiomeGenForCoords(var9 + var5, var10 + var6);
+	
+	
+	                    if (var12.canSpawnLightningBolt())
+	                    {
+	                        this.func_147439_a(var9 + var5, var11 - 1, var10 + var6).func_149639_l(this, var9 + var5, var11 - 1, var10 + var6);
+	                    }
+	                }
+	            }
+	
+	            this.theProfiler.endStartSection("tickBlocks");
+	            ExtendedBlockStorage[] var18 = var7.getBlockStorageArray();
+	            var9 = var18.length;
+	
+	            for (var10 = 0; var10 < var9; ++var10)
+	            {
+	                ExtendedBlockStorage var20 = var18[var10];
+	
+	
+	
+	
+	                if (var20 != null && var20.getNeedsRandomTick())
+	                {
+	                    for (int var19 = 0; var19 < 3; ++var19)
+	                    {
+	                        this.updateLCG = this.updateLCG * 3 + 1013904223;
+	                        int var13 = this.updateLCG >> 2;
+	                        int var14 = var13 & 15;
+	                        int var15 = var13 >> 8 & 15;
+	                        int var16 = var13 >> 16 & 15;
+	                        ++var2;
+	                        Block var17 = var20.func_150819_a(var14, var16, var15);
+	
+	
+	
+	
+	
+	                        if (var17.func_149653_t())
+	                        {
+	                            ++var1;
+	                            var17.func_149674_a(this, var14 + var5, var16 + var20.getYLocation(), var15 + var6, this.rand);
+	                        }
+	                    }
+	                }
+	
+	
+	            }
+	
+	            this.theProfiler.endSection();
+	        }
+		}
     }
 
     public boolean func_147477_a(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
@@ -666,6 +687,9 @@ public class WorldServer extends World
         return this.theChunkProviderServer;
     }
 
+    /**
+     * pars: min x,y,z , max x,y,z
+     */
     public List func_147486_a(int p_147486_1_, int p_147486_2_, int p_147486_3_, int p_147486_4_, int p_147486_5_, int p_147486_6_)
     {
         ArrayList var7 = new ArrayList();
@@ -931,6 +955,10 @@ public class WorldServer extends World
         return var11;
     }
 
+	/**
+     * Adds a block event with the given Args to the blockEventCache. During the next tick(), the block specified will
+     * have its onBlockEvent handler called with the given parameters. Args: X,Y,Z, BlockID, EventID, EventParameter
+     */
     public void func_147452_c(int p_147452_1_, int p_147452_2_, int p_147452_3_, Block p_147452_4_, int p_147452_5_, int p_147452_6_)
     {
         BlockEventData var7 = new BlockEventData(p_147452_1_, p_147452_2_, p_147452_3_, p_147452_4_, p_147452_5_, p_147452_6_);
@@ -950,6 +978,9 @@ public class WorldServer extends World
         while (!var9.equals(var7));
     }
 
+    /**
+     * Send and apply locally all pending BlockEvents to each player with 64m radius of the event.
+     */
     private void func_147488_Z()
     {
         while (!this.field_147490_S[this.field_147489_T].isEmpty())
@@ -972,6 +1003,9 @@ public class WorldServer extends World
         }
     }
 
+    /**
+     * Called to apply a pending BlockEvent to apply to the current world.
+     */
     private boolean func_147485_a(BlockEventData p_147485_1_)
     {
         Block var2 = this.func_147439_a(p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c());

@@ -71,51 +71,40 @@ public class EntityList
     private static final Logger field_151516_b = LogManager.getLogger();
 
     /** Provides a mapping between entity classes and a string */
-    private static Map stringToClassMapping = new HashMap();
+    private static Map<String, Class> stringToClassMapping = new HashMap<String, Class>();
 
     /** Provides a mapping between a string and an entity classes */
-    private static Map classToStringMapping = new HashMap();
+    private static Map<Class, String> classToStringMapping = new HashMap<Class, String>();
 
     /** provides a mapping between an entityID and an Entity Class */
-    private static Map IDtoClassMapping = new HashMap();
+    private static Map<Integer, Class> IDtoClassMapping = new HashMap<Integer, Class>();
 
     /** provides a mapping between an Entity Class and an entity ID */
-    private static Map classToIDMapping = new HashMap();
+    private static Map<Class, Integer> classToIDMapping = new HashMap<Class, Integer>();
 
     /** Maps entity names to their numeric identifiers */
-    private static Map stringToIDMapping = new HashMap();
+    private static Map<String, Integer> stringToIDMapping = new HashMap<String, Integer>();
 
     /** This is a HashMap of the Creative Entity Eggs/Spawners. */
-    public static HashMap entityEggs = new LinkedHashMap();
+    public static HashMap<Integer, EntityEggInfo> entityEggs = new LinkedHashMap<Integer, EntityEggInfo>();
     private static final String __OBFID = "CL_00001538";
 
     /**
      * adds a mapping between Entity classes and both a string representation and an ID
      */
-    private static void addMapping(Class par0Class, String par1Str, int par2)
-    {
-        if (stringToClassMapping.containsKey(par1Str))
-        {
-            throw new IllegalArgumentException("ID is already registered: " + par1Str);
-        }
-        else if (IDtoClassMapping.containsKey(Integer.valueOf(par2)))
-        {
-            throw new IllegalArgumentException("ID is already registered: " + par2);
-        }
-        else
-        {
-            stringToClassMapping.put(par1Str, par0Class);
-            classToStringMapping.put(par0Class, par1Str);
-            IDtoClassMapping.put(Integer.valueOf(par2), par0Class);
-            classToIDMapping.put(par0Class, Integer.valueOf(par2));
-            stringToIDMapping.put(par1Str, Integer.valueOf(par2));
-        }
+    public static void addMapping(Class par0Class, String par1Str, int par2)
+	{
+        stringToClassMapping.put(par1Str, par0Class);
+        classToStringMapping.put(par0Class, par1Str);
+        IDtoClassMapping.put(Integer.valueOf(par2), par0Class);
+        classToIDMapping.put(par0Class, Integer.valueOf(par2));
+        stringToIDMapping.put(par1Str, Integer.valueOf(par2));
     }
 
     /**
      * Adds a entity mapping with egg info.
      */
-    private static void addMapping(Class par0Class, String par1Str, int par2, int par3, int par4)
+    public static void addMapping(Class par0Class, String par1Str, int par2, int par3, int par4)
     {
         addMapping(par0Class, par1Str, par2);
         entityEggs.put(Integer.valueOf(par2), new EntityList.EntityEggInfo(par2, par3, par4));
@@ -261,6 +250,14 @@ public class EntityList
     }
 
     public static void func_151514_a() {}
+    /**
+     * Gets an entity ID from a String.
+     * @param string The string identifying the entity.
+     * @return Return then ID of the entity.
+     */
+    public static int getIDFromString(String string){
+        return stringToIDMapping.get(string);
+    }
 
     public static Set func_151515_b()
     {

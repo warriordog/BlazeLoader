@@ -19,7 +19,20 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.main.Version;
+import net.acomputerdog.BlazeLoader.mod.Mod;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ReportedException;
+import net.minecraft.world.gen.layer.IntCache;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+/**
+ * Generates a crash report.
+ */
 public class CrashReport
 {
     private static final Logger field_147150_a = LogManager.getLogger();
@@ -269,6 +282,10 @@ public class CrashReport
         var1.append("Description: ");
         var1.append(this.description);
         var1.append("\n\n");
+		var1.append("-- BlazeLoader --\n");
+        var1.append("BlazeLoader version: ").append(Version.getStringVersion()).append("\n");
+        var1.append("Active mod: ").append(getActiveMod()).append("\n");
+        var1.append("\n");
         var1.append(this.getCauseStackTraceOrString());
         var1.append("\n\nA detailed walkthrough of the error, its code path and all known details is as follows:\n");
 
@@ -412,5 +429,13 @@ public class CrashReport
         }
 
         return var2;
+	}
+    public static String getActiveMod(){
+        Mod mod = BlazeLoader.currActiveMod;
+        if(mod != null){
+            return mod.getModName() + "(" + mod.getModId() + " - " + mod.getStringModVersion() + ")";
+        }else{
+            return "none(null)";
+        }
     }
 }

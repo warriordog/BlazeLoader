@@ -38,7 +38,10 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.acomputerdog.BlazeLoader.mod.ModList;
+/**
+ * Tracks an entity and manages client updates.
+ */
 public class EntityTracker
 {
     private static final Logger field_151249_a = LogManager.getLogger();
@@ -175,6 +178,8 @@ public class EntityTracker
         else if (par1Entity instanceof EntityEnderCrystal)
         {
             this.addEntityToTracker(par1Entity, 256, Integer.MAX_VALUE, false);
+        }else{
+            ModList.addEntityToTracker(this, par1Entity);
         }
     }
 
@@ -293,6 +298,9 @@ public class EntityTracker
         }
     }
 
+    /**
+     * does not send the packet to the entity if the entity is a player
+     */
     public void func_151247_a(Entity p_151247_1_, Packet p_151247_2_)
     {
         EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(p_151247_1_.func_145782_y());

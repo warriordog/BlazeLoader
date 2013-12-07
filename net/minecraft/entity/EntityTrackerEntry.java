@@ -56,7 +56,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.acomputerdog.BlazeLoader.mod.ModList;
+/**
+ * Tracks an entity.
+ */
 public class EntityTrackerEntry
 {
     private static final Logger field_151262_p = LogManager.getLogger();
@@ -317,6 +320,10 @@ public class EntityTrackerEntry
         }
     }
 
+    /**
+     * previously sendPacketToAllTrackingPlayers
+     * if this is a player, then it is not informed
+     */
     public void func_151259_a(Packet p_151259_1_)
     {
         Iterator var2 = this.trackingPlayers.iterator();
@@ -605,8 +612,13 @@ public class EntityTrackerEntry
                     return new S11PacketSpawnExperienceOrb((EntityXPOrb)this.myEntity);
                 }
                 else
-                {
-                    throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
+                {                   
+					S0EPacketSpawnObject spawnPacket = ModList.createSpawnPacket(myEntity);
+                    if(spawnPacket != null){
+                        return spawnPacket;
+                    }else{
+                        throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
+                    }
                 }
             }
         }

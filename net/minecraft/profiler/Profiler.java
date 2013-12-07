@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 
+/**
+ * Profiles various Minecraft functions.  Replaces ProfilerProxy.
+ */
 public class Profiler
 {
     private static final Logger field_151234_b = LogManager.getLogger();
@@ -44,6 +48,7 @@ public class Profiler
      */
     public void startSection(String par1Str)
     {
+		ModList.startSection(par1Str);
         if (this.profilingEnabled)
         {
             if (this.profilingSection.length() > 0)
@@ -85,6 +90,7 @@ public class Profiler
 
             this.profilingSection = !this.sectionList.isEmpty() ? (String)this.sectionList.get(this.sectionList.size() - 1) : "";
         }
+		ModList.endSection(getNameOfLastSection());
     }
 
     /**

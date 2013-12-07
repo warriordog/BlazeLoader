@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ThreadLanServerPing;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.profiler.PlayerUsageSnooper;
 import net.minecraft.server.MinecraftServer;
@@ -22,7 +24,11 @@ import net.minecraft.world.demo.DemoWorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.mod.ModList;
+/**
+ * The single-player server.  Replaces IntegratedServerProxy.
+ */
 public class IntegratedServer extends MinecraftServer
 {
     private static final Logger field_147148_h = LogManager.getLogger();
@@ -47,6 +53,7 @@ public class IntegratedServer extends MinecraftServer
         this.setConfigurationManager(new IntegratedPlayerList(this));
         this.mc = par1Minecraft;
         this.theWorldSettings = par4WorldSettings;
+		mergeCommandHandlers(BlazeLoader.commandHandler);
     }
 
     protected void loadAllWorlds(String par1Str, String par2Str, long par3, WorldType par5WorldType, String par6Str)
@@ -143,6 +150,9 @@ public class IntegratedServer extends MinecraftServer
         return this.theWorldSettings.getGameType();
     }
 
+    /**
+     * Defaults to "1" (Easy) for the dedicated server, defaults to "2" (Normal) on the client.
+     */
     public EnumDifficulty func_147135_j()
     {
         return this.mc.gameSettings.difficulty;
@@ -180,11 +190,10 @@ public class IntegratedServer extends MinecraftServer
     public CrashReport addServerInfoToCrashReport(CrashReport par1CrashReport)
     {
         par1CrashReport = super.addServerInfoToCrashReport(par1CrashReport);
-        par1CrashReport.getCategory().addCrashSectionCallable("Type", new Callable()
-        {
+        par1CrashReport.getCategory().addCrashSectionCallable("Type", new Callable() {
             private static final String __OBFID = "CL_00001130";
-            public String call()
-            {
+
+            public String call() {
                 return "Integrated Server (map_client.txt)";
             }
         });
@@ -316,5 +325,35 @@ public class IntegratedServer extends MinecraftServer
     public int func_110455_j()
     {
         return 4;
+    }
+	public void mergeCommandHandlers(CommandHandler handlerToMerge){
+        CommandHandler newManager = (CommandHandler)this.getCommandManager();
+        for(Object command : handlerToMerge.getCommands().values()){
+            newManager.registerCommand((ICommand)command);
+        }
+    }
+
+    /**
+     * previously getPlugins
+     * Used by RCon's Query in the form of "MajorServerMod 1.2.3: MyPlugin 1.3; AnotherPlugin 2.1; AndSoForth 1.0".
+     */
+    /*
+    @Override
+    public String func_147133_T() {
+        String plugins = "BlazeLoader " + Version.getStringVersion() + ":";
+        for(Mod mod : ModList.getLoadedMods()){
+            plugins = plugins.concat(" " + mod.getModName() + " " + mod.getStringModVersion() + ";");
+        }
+        int lastSemi = plugins.lastIndexOf(";");
+        if(lastSemi != -1){
+            plugins = plugins.substring(0, lastSemi);
+        }
+        return plugins;
+    }
+    */
+
+    @Override
+    public String getServerModName() {
+        return "BlazeLoader";
     }
 }

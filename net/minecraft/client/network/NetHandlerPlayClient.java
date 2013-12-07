@@ -337,6 +337,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         {
             var8 = new EntityFallingBlock(this.field_147300_g, var2, var4, var6, Block.func_149729_e(p_147235_1_.func_149009_m() & 65535), p_147235_1_.func_149009_m() >> 16);
             p_147235_1_.func_149002_g(0);
+		} else {
+            var8 = EntityList.createEntityByID(p_147235_1_.func_148993_l(), this.field_147300_g);
         }
 
         if (var8 != null)
