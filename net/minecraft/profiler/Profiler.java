@@ -1,7 +1,5 @@
 package net.minecraft.profiler;
 
-import net.acomputerdog.BlazeLoader.mod.ModList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,9 +9,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Profiles various Minecraft functions.  Replaces ProfilerProxy.
- */
 public class Profiler
 {
     private static final Logger field_151234_b = LogManager.getLogger();
@@ -31,9 +26,9 @@ public class Profiler
     private String profilingSection = "";
 
     /** Profiling map */
-    public final Map profilingMap = new HashMap();
-
+    private final Map profilingMap = new HashMap();
     private static final String __OBFID = "CL_00001497";
+
     /**
      * Clear profiling.
      */
@@ -47,10 +42,8 @@ public class Profiler
     /**
      * Start section
      */
-    public void startSection(String sectionName)
+    public void startSection(String par1Str)
     {
-        ModList.startSection(sectionName);
-
         if (this.profilingEnabled)
         {
             if (this.profilingSection.length() > 0)
@@ -58,9 +51,9 @@ public class Profiler
                 this.profilingSection = this.profilingSection + ".";
             }
 
-            this.profilingSection = this.profilingSection + sectionName;
+            this.profilingSection = this.profilingSection + par1Str;
             this.sectionList.add(this.profilingSection);
-            this.timestampList.add(System.nanoTime());
+            this.timestampList.add(Long.valueOf(System.nanoTime()));
         }
     }
 
@@ -71,18 +64,18 @@ public class Profiler
     {
         if (this.profilingEnabled)
         {
-            long nanoTime = System.nanoTime();
-            long var3 = (Long) this.timestampList.remove(this.timestampList.size() - 1);
+            long var1 = System.nanoTime();
+            long var3 = ((Long)this.timestampList.remove(this.timestampList.size() - 1)).longValue();
             this.sectionList.remove(this.sectionList.size() - 1);
-            long var5 = nanoTime - var3;
+            long var5 = var1 - var3;
 
             if (this.profilingMap.containsKey(this.profilingSection))
             {
-                this.profilingMap.put(this.profilingSection, (Long) this.profilingMap.get(this.profilingSection) + var5);
+                this.profilingMap.put(this.profilingSection, Long.valueOf(((Long)this.profilingMap.get(this.profilingSection)).longValue() + var5));
             }
             else
             {
-                this.profilingMap.put(this.profilingSection, var5);
+                this.profilingMap.put(this.profilingSection, Long.valueOf(var5));
             }
 
             if (var5 > 100000000L)
@@ -92,13 +85,12 @@ public class Profiler
 
             this.profilingSection = !this.sectionList.isEmpty() ? (String)this.sectionList.get(this.sectionList.size() - 1) : "";
         }
-        ModList.endSection(getNameOfLastSection());
     }
 
     /**
      * Get profiling data
      */
-    public List getProfilingData(String section)
+    public List getProfilingData(String par1Str)
     {
         if (!this.profilingEnabled)
         {
@@ -106,22 +98,25 @@ public class Profiler
         }
         else
         {
-            long var3 = this.profilingMap.containsKey("root") ? (Long) this.profilingMap.get("root") : 0L;
-            long var5 = this.profilingMap.containsKey(section) ? (Long) this.profilingMap.get(section) : -1L;
+            long var3 = this.profilingMap.containsKey("root") ? ((Long)this.profilingMap.get("root")).longValue() : 0L;
+            long var5 = this.profilingMap.containsKey(par1Str) ? ((Long)this.profilingMap.get(par1Str)).longValue() : -1L;
             ArrayList var7 = new ArrayList();
 
-            if (section.length() > 0)
+            if (par1Str.length() > 0)
             {
-                section = section + ".";
+                par1Str = par1Str + ".";
             }
 
             long var8 = 0L;
+            Iterator var10 = this.profilingMap.keySet().iterator();
 
-            for (Object o : this.profilingMap.keySet()) {
-                String var11 = (String) o;
+            while (var10.hasNext())
+            {
+                String var11 = (String)var10.next();
 
-                if (var11.length() > section.length() && var11.startsWith(section) && var11.indexOf(".", section.length() + 1) < 0) {
-                    var8 += (Long) this.profilingMap.get(var11);
+                if (var11.length() > par1Str.length() && var11.startsWith(par1Str) && var11.indexOf(".", par1Str.length() + 1) < 0)
+                {
+                    var8 += ((Long)this.profilingMap.get(var11)).longValue();
                 }
             }
 
@@ -144,12 +139,12 @@ public class Profiler
             {
                 var12 = (String)var20.next();
 
-                if (var12.length() > section.length() && var12.startsWith(section) && var12.indexOf(".", section.length() + 1) < 0)
+                if (var12.length() > par1Str.length() && var12.startsWith(par1Str) && var12.indexOf(".", par1Str.length() + 1) < 0)
                 {
-                    long var13 = (Long) this.profilingMap.get(var12);
+                    long var13 = ((Long)this.profilingMap.get(var12)).longValue();
                     double var15 = (double)var13 * 100.0D / (double)var8;
                     double var17 = (double)var13 * 100.0D / (double)var3;
-                    String var19 = var12.substring(section.length());
+                    String var19 = var12.substring(par1Str.length());
                     var7.add(new Profiler.Result(var19, var15, var17));
                 }
             }
@@ -159,7 +154,7 @@ public class Profiler
             while (var20.hasNext())
             {
                 var12 = (String)var20.next();
-                this.profilingMap.put(var12, (Long) this.profilingMap.get(var12) * 999L / 1000L);
+                this.profilingMap.put(var12, Long.valueOf(((Long)this.profilingMap.get(var12)).longValue() * 999L / 1000L));
             }
 
             if ((float)var8 > var21)
@@ -168,7 +163,7 @@ public class Profiler
             }
 
             Collections.sort(var7);
-            var7.add(0, new Profiler.Result(section, 100.0D, (double)var8 * 100.0D / (double)var3));
+            var7.add(0, new Profiler.Result(par1Str, 100.0D, (double)var8 * 100.0D / (double)var3));
             return var7;
         }
     }
@@ -176,10 +171,10 @@ public class Profiler
     /**
      * End current section and start a new section
      */
-    public void endStartSection(String section)
+    public void endStartSection(String par1Str)
     {
         this.endSection();
-        this.startSection(section);
+        this.startSection(par1Str);
     }
 
     public String getNameOfLastSection()

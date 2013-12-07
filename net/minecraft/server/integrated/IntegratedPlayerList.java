@@ -1,17 +1,12 @@
 package net.minecraft.server.integrated;
 
 import com.mojang.authlib.GameProfile;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import java.net.SocketAddress;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 
-import java.net.SocketAddress;
-
-/**
- * Manages players on the IntegratedServer.  Replaces IntegratedServerProxy.
- */
 public class IntegratedPlayerList extends ServerConfigurationManager
 {
     /**
@@ -20,39 +15,32 @@ public class IntegratedPlayerList extends ServerConfigurationManager
     private NBTTagCompound hostPlayerData;
     private static final String __OBFID = "CL_00001128";
 
-    public IntegratedPlayerList(IntegratedServer server)
+    public IntegratedPlayerList(IntegratedServer par1IntegratedServer)
     {
-        super(server);
+        super(par1IntegratedServer);
         this.viewDistance = 10;
     }
 
     /**
-     * also stores the NBTTags if this is an integratedPlayerList
+     * also stores the NBTTags if this is an intergratedPlayerList
      */
-    public void writePlayerData(EntityPlayerMP player)
+    protected void writePlayerData(EntityPlayerMP par1EntityPlayerMP)
     {
-        if (player.getCommandSenderName().equals(this.getIntegratedServer().getServerOwner()))
+        if (par1EntityPlayerMP.getCommandSenderName().equals(this.getServerInstance().getServerOwner()))
         {
             this.hostPlayerData = new NBTTagCompound();
-            player.writeToNBT(this.hostPlayerData);
+            par1EntityPlayerMP.writeToNBT(this.hostPlayerData);
         }
 
-        super.writePlayerData(player);
+        super.writePlayerData(par1EntityPlayerMP);
     }
 
-    /**
-     * previously allowUserToConnect
-     * checks ban-lists, then white-lists, then space for the server. Returns null on success, or an error message
-     */
     public String func_148542_a(SocketAddress p_148542_1_, GameProfile p_148542_2_)
     {
         return p_148542_2_.getName().equalsIgnoreCase(this.getServerInstance().getServerOwner()) && this.getPlayerForUsername(p_148542_2_.getName()) != null ? "That name is already taken." : super.func_148542_a(p_148542_1_, p_148542_2_);
     }
 
-    /**
-     * get the associated Integrated Server
-     */
-    public IntegratedServer getIntegratedServer()
+    public IntegratedServer getServerInstance()
     {
         return (IntegratedServer)super.getServerInstance();
     }
@@ -63,47 +51,5 @@ public class IntegratedPlayerList extends ServerConfigurationManager
     public NBTTagCompound getHostPlayerData()
     {
         return this.hostPlayerData;
-    }
-
-    public MinecraftServer getServerInstance()
-    {
-        return this.getIntegratedServer();
-    }
-    /**
-     * creates and returns a respawned player based on the provided PlayerEntity. Args are the PlayerEntityMP to
-     * respawn, an INT for the dimension to respawn into (usually 0), and a boolean value that is true if the player
-     * beat the game rather than dying
-     */
-    @Override
-    public EntityPlayerMP respawnPlayer(EntityPlayerMP player, int dimension, boolean didWin) {
-        EntityPlayerMP newPlayer = super.respawnPlayer(player, dimension, didWin);
-        ModList.eventPlayerSpawn(player, newPlayer, dimension, didWin);
-        return newPlayer;
-    }
-
-    /**
-     * Called when a player disconnects from the game. Writes player data to disk and removes them from the world.
-     */
-    @Override
-    public void playerLoggedOut(EntityPlayerMP player) {
-        super.playerLoggedOut(player);
-        ModList.eventPlayerLogout(player);
-    }
-
-    /**
-     * Called when a player successfully logs in. Reads player data from disk and inserts the player into the world.
-     */
-    @Override
-    public void playerLoggedIn(EntityPlayerMP player) {
-        super.playerLoggedIn(player);
-        ModList.eventPlayerLogin(player);
-    }
-
-    /**
-     * Determine if the player is allowed to connect based on current server settings.
-     */
-    @Override
-    public boolean isAllowedToLogin(String username) {
-        return ModList.eventPlayerLoginAttempt(username, super.isAllowedToLogin(username));
     }
 }

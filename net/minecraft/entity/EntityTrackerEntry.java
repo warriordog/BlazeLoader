@@ -1,37 +1,65 @@
 package net.minecraft.entity;
 
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.ServersideAttributeMap;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.item.*;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.EntityEnderCrystal;
+import net.minecraft.entity.item.EntityEnderEye;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityExpBottle;
+import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.EntityPainting;
+import net.minecraft.entity.item.EntityTNTPrimed;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.*;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityEgg;
+import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntityPotion;
+import net.minecraft.entity.projectile.EntitySmallFireball;
+import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.S04PacketEntityEquipment;
+import net.minecraft.network.play.server.S0APacketUseBed;
+import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
+import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.S0FPacketSpawnMob;
+import net.minecraft.network.play.server.S10PacketSpawnPainting;
+import net.minecraft.network.play.server.S11PacketSpawnExperienceOrb;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import net.minecraft.network.play.server.S14PacketEntity;
+import net.minecraft.network.play.server.S18PacketEntityTeleport;
+import net.minecraft.network.play.server.S19PacketEntityHeadLook;
+import net.minecraft.network.play.server.S1BPacketEntityAttach;
+import net.minecraft.network.play.server.S1CPacketEntityMetadata;
+import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.network.play.server.S20PacketEntityProperties;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-/**
- * Tracks an entity.
- */
 public class EntityTrackerEntry
 {
     private static final Logger field_151262_p = LogManager.getLogger();
-
     public Entity myEntity;
     public int blocksDistanceThreshold;
 
@@ -70,23 +98,23 @@ public class EntityTrackerEntry
     public Set trackingPlayers = new HashSet();
     private static final String __OBFID = "CL_00001443";
 
-    public EntityTrackerEntry(Entity entity, int blocksDistanceThreshold, int updateFrequency, boolean updateVelocity)
+    public EntityTrackerEntry(Entity par1Entity, int par2, int par3, boolean par4)
     {
-        this.myEntity = entity;
-        this.blocksDistanceThreshold = blocksDistanceThreshold;
-        this.updateFrequency = updateFrequency;
-        this.sendVelocityUpdates = updateVelocity;
-        this.lastScaledXPosition = MathHelper.floor_double(entity.posX * 32.0D);
-        this.lastScaledYPosition = MathHelper.floor_double(entity.posY * 32.0D);
-        this.lastScaledZPosition = MathHelper.floor_double(entity.posZ * 32.0D);
-        this.lastYaw = MathHelper.floor_float(entity.rotationYaw * 256.0F / 360.0F);
-        this.lastPitch = MathHelper.floor_float(entity.rotationPitch * 256.0F / 360.0F);
-        this.lastHeadMotion = MathHelper.floor_float(entity.getRotationYawHead() * 256.0F / 360.0F);
+        this.myEntity = par1Entity;
+        this.blocksDistanceThreshold = par2;
+        this.updateFrequency = par3;
+        this.sendVelocityUpdates = par4;
+        this.lastScaledXPosition = MathHelper.floor_double(par1Entity.posX * 32.0D);
+        this.lastScaledYPosition = MathHelper.floor_double(par1Entity.posY * 32.0D);
+        this.lastScaledZPosition = MathHelper.floor_double(par1Entity.posZ * 32.0D);
+        this.lastYaw = MathHelper.floor_float(par1Entity.rotationYaw * 256.0F / 360.0F);
+        this.lastPitch = MathHelper.floor_float(par1Entity.rotationPitch * 256.0F / 360.0F);
+        this.lastHeadMotion = MathHelper.floor_float(par1Entity.getRotationYawHead() * 256.0F / 360.0F);
     }
 
-    public boolean equals(Object object)
+    public boolean equals(Object par1Obj)
     {
-        return object instanceof EntityTrackerEntry && ((EntityTrackerEntry) object).myEntity.func_145782_y() == this.myEntity.func_145782_y();
+        return par1Obj instanceof EntityTrackerEntry ? ((EntityTrackerEntry)par1Obj).myEntity.func_145782_y() == this.myEntity.func_145782_y() : false;
     }
 
     public int hashCode()
@@ -97,7 +125,7 @@ public class EntityTrackerEntry
     /**
      * also sends velocity, rotation, and riding info.
      */
-    public void sendLocationToAllClients(List clients)
+    public void sendLocationToAllClients(List par1List)
     {
         this.playerEntitiesUpdated = false;
 
@@ -108,7 +136,7 @@ public class EntityTrackerEntry
             this.posZ = this.myEntity.posZ;
             this.isDataInitialized = true;
             this.playerEntitiesUpdated = true;
-            this.sendEventsToPlayers(clients);
+            this.sendEventsToPlayers(par1List);
         }
 
         if (this.field_85178_v != this.myEntity.ridingEntity || this.myEntity.ridingEntity != null && this.ticks % 60 == 0)
@@ -125,13 +153,17 @@ public class EntityTrackerEntry
             if (var24 != null && var24.getItem() instanceof ItemMap)
             {
                 MapData var26 = Items.field_151098_aY.getMapData(var24, this.myEntity.worldObj);
+                Iterator var27 = par1List.iterator();
 
-                for (Object aPar1List : clients) {
-                    EntityPlayer var28 = (EntityPlayer) aPar1List;
-                    EntityPlayerMP var29 = (EntityPlayerMP) var28;
+                while (var27.hasNext())
+                {
+                    EntityPlayer var28 = (EntityPlayer)var27.next();
+                    EntityPlayerMP var29 = (EntityPlayerMP)var28;
                     var26.updateVisiblePlayers(var29, var24);
                     Packet var30 = Items.field_151098_aY.func_150911_c(var24, this.myEntity.worldObj, var29);
-                    if (var30 != null) {
+
+                    if (var30 != null)
+                    {
                         var29.playerNetServerHandler.func_147359_a(var30);
                     }
                 }
@@ -202,7 +234,7 @@ public class EntityTrackerEntry
 
                 if (var10 != null)
                 {
-                    this.func_151259_a((Packet) var10);
+                    this.func_151259_a((Packet)var10);
                 }
 
                 this.func_111190_b();
@@ -230,7 +262,7 @@ public class EntityTrackerEntry
 
                 if (var25)
                 {
-                    this.func_151259_a(new S14PacketEntity.S16PacketEntityLook(this.myEntity.func_145782_y(), (byte) var2, (byte) var3));
+                    this.func_151259_a(new S14PacketEntity.S16PacketEntityLook(this.myEntity.func_145782_y(), (byte)var2, (byte)var3));
                     this.lastYaw = var2;
                     this.lastPitch = var3;
                 }
@@ -246,7 +278,7 @@ public class EntityTrackerEntry
 
             if (Math.abs(var2 - this.lastHeadMotion) >= 4)
             {
-                this.func_151259_a(new S19PacketEntityHeadLook(this.myEntity, (byte) var2));
+                this.func_151259_a(new S19PacketEntityHeadLook(this.myEntity, (byte)var2));
                 this.lastHeadMotion = var2;
             }
 
@@ -285,72 +317,68 @@ public class EntityTrackerEntry
         }
     }
 
-    /**
-     * previously sendPacketToAllTrackingPlayers
-     * if this is a player, then it is not informed
-     */
-    public void func_151259_a(Packet packet)
+    public void func_151259_a(Packet p_151259_1_)
     {
+        Iterator var2 = this.trackingPlayers.iterator();
 
-        for (Object trackingPlayer : this.trackingPlayers) {
-            EntityPlayerMP var3 = (EntityPlayerMP) trackingPlayer;
-            var3.playerNetServerHandler.func_147359_a(packet);
+        while (var2.hasNext())
+        {
+            EntityPlayerMP var3 = (EntityPlayerMP)var2.next();
+            var3.playerNetServerHandler.func_147359_a(p_151259_1_);
         }
     }
 
-    /**
-     * previously sendPacketToAllAssociatedPlayers
-     * if this is a player, then it recieves the message also
-     */
-    public void func_151261_b(Packet packet)
+    public void func_151261_b(Packet p_151261_1_)
     {
-        this.func_151259_a(packet);
+        this.func_151259_a(p_151261_1_);
 
         if (this.myEntity instanceof EntityPlayerMP)
         {
-            ((EntityPlayerMP)this.myEntity).playerNetServerHandler.func_147359_a(packet);
+            ((EntityPlayerMP)this.myEntity).playerNetServerHandler.func_147359_a(p_151261_1_);
         }
     }
 
     public void informAllAssociatedPlayersOfItemDestruction()
     {
+        Iterator var1 = this.trackingPlayers.iterator();
 
-        for (Object trackingPlayer : this.trackingPlayers) {
-            EntityPlayerMP var2 = (EntityPlayerMP) trackingPlayer;
-            var2.destroyedItemsNetCache.add(this.myEntity.func_145782_y());
+        while (var1.hasNext())
+        {
+            EntityPlayerMP var2 = (EntityPlayerMP)var1.next();
+            var2.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.func_145782_y()));
         }
     }
 
-    public void removeFromWatchingList(EntityPlayerMP packet)
+    public void removeFromWatchingList(EntityPlayerMP par1EntityPlayerMP)
     {
-        if (this.trackingPlayers.contains(packet))
+        if (this.trackingPlayers.contains(par1EntityPlayerMP))
         {
-            packet.destroyedItemsNetCache.add(this.myEntity.func_145782_y());
-            this.trackingPlayers.remove(packet);
+            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.func_145782_y()));
+            this.trackingPlayers.remove(par1EntityPlayerMP);
         }
     }
 
     /**
      * if the player is more than the distance threshold (typically 64) then the player is removed instead
      */
-    public void tryStartWachingThis(EntityPlayerMP packet)
+    public void tryStartWachingThis(EntityPlayerMP par1EntityPlayerMP)
     {
-        if (packet != this.myEntity)
+        if (par1EntityPlayerMP != this.myEntity)
         {
-            double var2 = packet.posX - (double)(this.lastScaledXPosition / 32);
-            double var4 = packet.posZ - (double)(this.lastScaledZPosition / 32);
+            double var2 = par1EntityPlayerMP.posX - (double)(this.lastScaledXPosition / 32);
+            double var4 = par1EntityPlayerMP.posZ - (double)(this.lastScaledZPosition / 32);
 
             if (var2 >= (double)(-this.blocksDistanceThreshold) && var2 <= (double)this.blocksDistanceThreshold && var4 >= (double)(-this.blocksDistanceThreshold) && var4 <= (double)this.blocksDistanceThreshold)
             {
-                if (!this.trackingPlayers.contains(packet) && (this.isPlayerWatchingThisChunk(packet) || this.myEntity.forceSpawn))
+                if (!this.trackingPlayers.contains(par1EntityPlayerMP) && (this.isPlayerWatchingThisChunk(par1EntityPlayerMP) || this.myEntity.forceSpawn))
                 {
-                    this.trackingPlayers.add(packet);
+                    this.trackingPlayers.add(par1EntityPlayerMP);
                     Packet var6 = this.func_151260_c();
-                    packet.playerNetServerHandler.func_147359_a(var6);
+                    par1EntityPlayerMP.playerNetServerHandler.func_147359_a(var6);
 
                     if (!this.myEntity.getDataWatcher().getIsBlank())
                     {
-                        packet.playerNetServerHandler.func_147359_a(new S1CPacketEntityMetadata(this.myEntity.func_145782_y(), this.myEntity.getDataWatcher(), true));
+                        par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S1CPacketEntityMetadata(this.myEntity.func_145782_y(), this.myEntity.getDataWatcher(), true));
                     }
 
                     if (this.myEntity instanceof EntityLivingBase)
@@ -360,7 +388,7 @@ public class EntityTrackerEntry
 
                         if (!var8.isEmpty())
                         {
-                            packet.playerNetServerHandler.func_147359_a(new S20PacketEntityProperties(this.myEntity.func_145782_y(), var8));
+                            par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S20PacketEntityProperties(this.myEntity.func_145782_y(), var8));
                         }
                     }
 
@@ -370,17 +398,17 @@ public class EntityTrackerEntry
 
                     if (this.sendVelocityUpdates && !(var6 instanceof S0FPacketSpawnMob))
                     {
-                        packet.playerNetServerHandler.func_147359_a(new S12PacketEntityVelocity(this.myEntity.func_145782_y(), this.myEntity.motionX, this.myEntity.motionY, this.myEntity.motionZ));
+                        par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S12PacketEntityVelocity(this.myEntity.func_145782_y(), this.myEntity.motionX, this.myEntity.motionY, this.myEntity.motionZ));
                     }
 
                     if (this.myEntity.ridingEntity != null)
                     {
-                        packet.playerNetServerHandler.func_147359_a(new S1BPacketEntityAttach(0, this.myEntity, this.myEntity.ridingEntity));
+                        par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S1BPacketEntityAttach(0, this.myEntity, this.myEntity.ridingEntity));
                     }
 
                     if (this.myEntity instanceof EntityLiving && ((EntityLiving)this.myEntity).getLeashedToEntity() != null)
                     {
-                        packet.playerNetServerHandler.func_147359_a(new S1BPacketEntityAttach(1, this.myEntity, ((EntityLiving) this.myEntity).getLeashedToEntity()));
+                        par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S1BPacketEntityAttach(1, this.myEntity, ((EntityLiving)this.myEntity).getLeashedToEntity()));
                     }
 
                     if (this.myEntity instanceof EntityLivingBase)
@@ -391,7 +419,7 @@ public class EntityTrackerEntry
 
                             if (var13 != null)
                             {
-                                packet.playerNetServerHandler.func_147359_a(new S04PacketEntityEquipment(this.myEntity.func_145782_y(), var10, var13));
+                                par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S04PacketEntityEquipment(this.myEntity.func_145782_y(), var10, var13));
                             }
                         }
                     }
@@ -402,45 +430,45 @@ public class EntityTrackerEntry
 
                         if (var11.isPlayerSleeping())
                         {
-                            packet.playerNetServerHandler.func_147359_a(new S0APacketUseBed(var11, MathHelper.floor_double(this.myEntity.posX), MathHelper.floor_double(this.myEntity.posY), MathHelper.floor_double(this.myEntity.posZ)));
+                            par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S0APacketUseBed(var11, MathHelper.floor_double(this.myEntity.posX), MathHelper.floor_double(this.myEntity.posY), MathHelper.floor_double(this.myEntity.posZ)));
                         }
                     }
 
                     if (this.myEntity instanceof EntityLivingBase)
                     {
                         EntityLivingBase var14 = (EntityLivingBase)this.myEntity;
+                        Iterator var12 = var14.getActivePotionEffects().iterator();
 
-                        for (Object o : var14.getActivePotionEffects()) {
-                            PotionEffect var9 = (PotionEffect) o;
-                            packet.playerNetServerHandler.func_147359_a(new S1DPacketEntityEffect(this.myEntity.func_145782_y(), var9));
+                        while (var12.hasNext())
+                        {
+                            PotionEffect var9 = (PotionEffect)var12.next();
+                            par1EntityPlayerMP.playerNetServerHandler.func_147359_a(new S1DPacketEntityEffect(this.myEntity.func_145782_y(), var9));
                         }
                     }
                 }
             }
-            else if (this.trackingPlayers.contains(packet))
+            else if (this.trackingPlayers.contains(par1EntityPlayerMP))
             {
-                this.trackingPlayers.remove(packet);
-                packet.destroyedItemsNetCache.add(this.myEntity.func_145782_y());
+                this.trackingPlayers.remove(par1EntityPlayerMP);
+                par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.func_145782_y()));
             }
         }
     }
 
-    private boolean isPlayerWatchingThisChunk(EntityPlayerMP player)
+    private boolean isPlayerWatchingThisChunk(EntityPlayerMP par1EntityPlayerMP)
     {
-        return player.getServerForPlayer().getPlayerManager().isPlayerWatchingChunk(player, this.myEntity.chunkCoordX, this.myEntity.chunkCoordZ);
+        return par1EntityPlayerMP.getServerForPlayer().getPlayerManager().isPlayerWatchingChunk(par1EntityPlayerMP, this.myEntity.chunkCoordX, this.myEntity.chunkCoordZ);
     }
 
-    public void sendEventsToPlayers(List players)
+    public void sendEventsToPlayers(List par1List)
     {
-        for (Object player : players) {
-            this.tryStartWachingThis((EntityPlayerMP) player);
+        for (int var2 = 0; var2 < par1List.size(); ++var2)
+        {
+            this.tryStartWachingThis((EntityPlayerMP)par1List.get(var2));
         }
     }
 
-    /**
-     * previously getPacketForThisEntity
-     */
-    public Packet func_151260_c()
+    private Packet func_151260_c()
     {
         if (this.myEntity.isDead)
         {
@@ -506,8 +534,8 @@ public class EntityTrackerEntry
 
                 if (this.myEntity instanceof EntityFireball)
                 {
-                    var2 = null;
                     EntityFireball var6 = (EntityFireball)this.myEntity;
+                    var2 = null;
                     byte var3 = 63;
 
                     if (this.myEntity instanceof EntitySmallFireball)
@@ -578,12 +606,7 @@ public class EntityTrackerEntry
                 }
                 else
                 {
-                    S0EPacketSpawnObject spawnPacket = ModList.createSpawnPacket(myEntity);
-                    if(spawnPacket != null){
-                        return spawnPacket;
-                    }else{
-                        throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
-                    }
+                    throw new IllegalArgumentException("Don\'t know how to add " + this.myEntity.getClass() + "!");
                 }
             }
         }
@@ -594,12 +617,12 @@ public class EntityTrackerEntry
         }
     }
 
-    public void removePlayerFromTracker(EntityPlayerMP player)
+    public void removePlayerFromTracker(EntityPlayerMP par1EntityPlayerMP)
     {
-        if (this.trackingPlayers.contains(player))
+        if (this.trackingPlayers.contains(par1EntityPlayerMP))
         {
-            this.trackingPlayers.remove(player);
-            player.destroyedItemsNetCache.add(this.myEntity.func_145782_y());
+            this.trackingPlayers.remove(par1EntityPlayerMP);
+            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.func_145782_y()));
         }
     }
 }
