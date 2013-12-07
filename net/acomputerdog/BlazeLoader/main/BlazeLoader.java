@@ -11,7 +11,7 @@ import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
 import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
-import net.minecraft.src.*;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.lang.reflect.Field;

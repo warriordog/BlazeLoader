@@ -1,7 +1,11 @@
-package net.minecraft.src;
+package net.minecraft.server.integrated;
 
+import com.mojang.authlib.GameProfile;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 
 import java.net.SocketAddress;
 
@@ -14,6 +18,7 @@ public class IntegratedPlayerList extends ServerConfigurationManager
      * Holds the NBT data for the host player's save file, so this can be written to level.dat.
      */
     private NBTTagCompound hostPlayerData;
+    private static final String __OBFID = "CL_00001128";
 
     public IntegratedPlayerList(IntegratedServer server)
     {
@@ -36,11 +41,12 @@ public class IntegratedPlayerList extends ServerConfigurationManager
     }
 
     /**
+     * previously allowUserToConnect
      * checks ban-lists, then white-lists, then space for the server. Returns null on success, or an error message
      */
-    public String allowUserToConnect(SocketAddress socket, String playerName)
+    public String func_148542_a(SocketAddress p_148542_1_, GameProfile p_148542_2_)
     {
-        return playerName.equalsIgnoreCase(this.getIntegratedServer().getServerOwner()) ? "That name is already taken." : super.allowUserToConnect(socket, playerName);
+        return p_148542_2_.getName().equalsIgnoreCase(this.getServerInstance().getServerOwner()) && this.getPlayerForUsername(p_148542_2_.getName()) != null ? "That name is already taken." : super.func_148542_a(p_148542_1_, p_148542_2_);
     }
 
     /**

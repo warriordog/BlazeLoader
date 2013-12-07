@@ -1,9 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.base;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;
-import net.minecraft.src.Minecraft;
 import net.minecraft.src.Profiler;
 
 import java.io.File;
