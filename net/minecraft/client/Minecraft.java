@@ -900,7 +900,6 @@ public class Minecraft implements IPlayerUsage
             }
             catch (MinecraftError var12)
             {
-                this.shutdownMinecraftApplet();
                 break;
             }
             catch (ReportedException var13)
@@ -909,7 +908,6 @@ public class Minecraft implements IPlayerUsage
                 this.freeMemory();
                 field_147123_G.fatal("Reported exception thrown!", var13);
                 this.displayCrashReport(var13.getCrashReport());
-                this.shutdownMinecraftApplet();
                 break;
             }
             catch (Throwable var14)
@@ -918,12 +916,12 @@ public class Minecraft implements IPlayerUsage
                 this.freeMemory();
                 field_147123_G.fatal("Unreported exception thrown!", var14);
                 this.displayCrashReport(var2);
-                this.shutdownMinecraftApplet();
                 break;
             }
 
             return;
         }
+        this.shutdownMinecraftApplet();
     }
 
     /**
