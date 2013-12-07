@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.tick;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.MinecraftPackageAccessor;
+import net.minecraft.util.MinecraftPackageAccessor;
 import net.minecraft.src.Timer;
 
 /**

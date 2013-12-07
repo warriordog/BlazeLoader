@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.api.recipe;
 
 import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.ItemStack;
-import net.minecraft.src.MinecraftPackageAccessor;
+import net.minecraft.util.MinecraftPackageAccessor;
 
 /**
  * API function related to vanilla crafting

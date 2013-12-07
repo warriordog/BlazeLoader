@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.src.NetClientHandler;
 import net.minecraft.src.Profiler;
 import net.minecraft.src.WorldServer;
 
@@ -44,8 +43,8 @@ public class BLTransformer implements IClassTransformer{
                 return readClass(WorldServer.class.getName(), bytes);
             }else if(name.equals(EntityList.class.getName())){
                 return readClass(EntityList.class.getName(), bytes);
-            }else if(name.equals(NetClientHandler.class.getName())){
-                return readClass(NetClientHandler.class.getName(), bytes);
+            }else if(name.equals(NetHandlerPlayClient.class.getName())){
+                return readClass(NetHandlerPlayClient.class.getName(), bytes);
             }else if(name.equals(EntityTrackerEntry.class.getName())){
                 return readClass(EntityTrackerEntry.class.getName(), bytes);
             }else if(name.equals(CrashReport.class.getName())){

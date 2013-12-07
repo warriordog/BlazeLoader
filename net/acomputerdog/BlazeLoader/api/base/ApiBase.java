@@ -2,6 +2,7 @@ package net.acomputerdog.BlazeLoader.api.base;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.ILogAgent;
 import net.minecraft.src.Profiler;
@@ -17,11 +18,6 @@ public class ApiBase {
      * The instance of Minecraft
      */
     public static Minecraft theMinecraft = null;
-
-    /**
-     * The game logger
-     */
-    public static ILogAgent globalLogger = null;
 
     /**
      * Local player controller
@@ -46,7 +42,7 @@ public class ApiBase {
     /**
      * The game profiler.  Mods that wish to include profiler support can use this.
      */
-    public static Profiler theProfiler = null;
+    public static net.minecraft.profiler.Profiler theProfiler = null;
 
     /**
      * Shuts down the game with a specified error code.  Use 0 for normal shutdown.
