@@ -1,7 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.chat;
 
-import net.minecraft.src.ChatMessageComponent;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 /**
  * API for chat-related functions.

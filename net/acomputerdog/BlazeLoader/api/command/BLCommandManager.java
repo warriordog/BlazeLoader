@@ -1,12 +1,16 @@
 package net.acomputerdog.BlazeLoader.api.command;
 
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.src.*;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  * A modified version of ServerCommandManager.  Exactly the same but does not auto-load vanilla commands.
  */
-public class BLCommandManager extends CommandHandler{
+public class BLCommandManager extends CommandHandler {
 
     /**
      * Sends a message to the admins of the server from a given CommandSender with the given resource string and given

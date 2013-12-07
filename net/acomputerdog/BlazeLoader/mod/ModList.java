@@ -2,7 +2,14 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
@@ -213,11 +220,11 @@ public class ModList {
         BlazeLoader.currActiveMod = null;
     }
 
-    public static Packet23VehicleSpawn createSpawnPacket(Entity myEntity){
-        Packet23VehicleSpawn packet = null;
+    public static S0EPacketSpawnObject createSpawnPacket(Entity myEntity){
+        S0EPacketSpawnObject packet = null;
         for(Mod mod : loadedMods){
             BlazeLoader.currActiveMod = mod;
-            Packet23VehicleSpawn modPacket = mod.createSpawnPacket(myEntity, packet != null);
+            S0EPacketSpawnObject modPacket = mod.createSpawnPacket(myEntity, packet != null);
             if(modPacket != null){
                 packet = modPacket;
             }

@@ -454,7 +454,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
 
                     if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame)
                     {
-                        this.mc.field_147125_j = this.pointedEntity;
+                        this.mc.field_147125_j = (EntityLivingBase) this.pointedEntity;
                     }
                 }
             }

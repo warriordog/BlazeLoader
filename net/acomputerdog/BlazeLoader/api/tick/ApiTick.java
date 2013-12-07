@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.api.tick;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.util.MinecraftPackageAccessor;
-import net.minecraft.src.Timer;
+import net.minecraft.util.Timer;
 
 /**
  * Api for function related to the world tick.

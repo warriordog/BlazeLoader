@@ -1,4 +1,4 @@
-package net.minecraft.client.client;
+package net.minecraft.client.network;
 
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;

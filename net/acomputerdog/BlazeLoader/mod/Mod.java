@@ -1,6 +1,13 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.world.WorldServer;
 
 /**
@@ -301,7 +308,7 @@ public abstract class Mod {
      * @param isHandled True if another mod has already created a packet for this entity.
      * @return Return a spawn packet for the given entity, or null if none exists.
      */
-    public Packet23VehicleSpawn createSpawnPacket(Entity entity, boolean isHandled){
+    public S0EPacketSpawnObject createSpawnPacket(Entity entity, boolean isHandled){
         return null;
     }
 

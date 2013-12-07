@@ -3,8 +3,6 @@ package net.acomputerdog.BlazeLoader.api.base;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.src.EntityClientPlayerMP;
-import net.minecraft.src.ILogAgent;
 
 import java.io.File;
 

@@ -2,8 +2,8 @@ package net.acomputerdog.BlazeLoader.api.command;
 
 import net.acomputerdog.BlazeLoader.api.chat.ApiChat;
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
-import net.minecraft.src.CommandBase;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
 
 /**
  * A superclass for commands that wish to include BL utilities.

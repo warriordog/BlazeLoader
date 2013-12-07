@@ -3,7 +3,7 @@ package net.acomputerdog.BlazeLoader.main.command;
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 import java.util.List;
 

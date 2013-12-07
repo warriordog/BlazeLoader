@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.recipe;
 
-import net.minecraft.src.FurnaceRecipes;
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.MinecraftPackageAccessor;
 
 /**

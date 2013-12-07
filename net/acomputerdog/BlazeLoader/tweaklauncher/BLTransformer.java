@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.tweaklauncher;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.render.EntityRenderer;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.EntityList;
@@ -82,7 +83,7 @@ public class BLTransformer implements IClassTransformer{
 
     private static boolean isGameOBF(){
         try{
-            Class.forName("net.minecraft.src.Block");
+            Class.forName("net.minecraft.client.Minecraft");
             TweakLauncher.logger.logDetail("Running in a non-obfuscated environment.");
             return false;
         }catch(Exception ignored){

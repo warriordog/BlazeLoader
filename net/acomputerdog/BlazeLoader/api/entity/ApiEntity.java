@@ -2,7 +2,6 @@ package net.acomputerdog.BlazeLoader.api.entity;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.entity.EntityList;
-import net.minecraft.src.EntityEggInfo;
 
 /**
  * Api for entity-related functions
@@ -24,7 +23,7 @@ public class ApiEntity {
      * @param entityId The entityID for this egg.
      * @param eggInfo The EntityEggInfo to register.
      */
-    public static void registerEntityEggInfo(int entityId, EntityEggInfo eggInfo){
+    public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo){
         EntityList.entityEggs.put(entityId, eggInfo);
     }
 

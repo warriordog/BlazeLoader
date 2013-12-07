@@ -2,8 +2,8 @@ package net.acomputerdog.BlazeLoader.api.render;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.FontRenderer;
-import net.minecraft.src.Render;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.entity.Render;
 
 /**
  * Contains functions related to game rendering.

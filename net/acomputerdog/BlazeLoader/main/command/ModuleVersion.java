@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.main.command;
 
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.main.Version;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Module that adds /bl version.  Gives the version of BL.

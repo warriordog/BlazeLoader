@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.Block;
+import net.minecraft.block.Block;
 import net.minecraft.world.WorldServer;
 
 import java.lang.reflect.Constructor;

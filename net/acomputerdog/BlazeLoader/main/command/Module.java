@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.main.command;
 
 import net.acomputerdog.BlazeLoader.api.chat.ApiChat;
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Base class for modules of CommandBL

@@ -10,7 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.client.NetHandlerPlayClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.achievement.GuiAchievement;

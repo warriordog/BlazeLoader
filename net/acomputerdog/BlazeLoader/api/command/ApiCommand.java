@@ -1,9 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.command;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.CommandHandler;
-import net.minecraft.src.ICommand;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Api functions related to commands
