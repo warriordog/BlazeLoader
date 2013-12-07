@@ -9,8 +9,8 @@ import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.src.Profiler;
-import net.minecraft.src.WorldServer;
+import net.minecraft.profiler.Profiler;
+import net.minecraft.world.WorldServer;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;

@@ -1,17 +1,68 @@
-package net.minecraft.src;
+package net.minecraft.world;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEventData;
+import net.minecraft.block.material.Material;
 import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWaterMob;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.network.play.server.S19PacketEntityStatus;
+import net.minecraft.network.play.server.S24PacketBlockAction;
+import net.minecraft.network.play.server.S27PacketExplosion;
+import net.minecraft.network.play.server.S2APacketParticles;
+import net.minecraft.network.play.server.S2BPacketChangeGameState;
+import net.minecraft.network.play.server.S2CPacketSpawnGlobalEntity;
+import net.minecraft.profiler.Profiler;
+import net.minecraft.scoreboard.ScoreboardSaveData;
+import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.IntHashMap;
+import net.minecraft.util.ReportedException;
+import net.minecraft.util.Vec3;
+import net.minecraft.util.WeightedRandom;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraft.world.chunk.storage.IChunkLoader;
+import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.gen.feature.WorldGeneratorBonusChest;
+import net.minecraft.world.storage.ISaveHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.*;
 
 /**
  * A server-side world.  Replaces WorldServerProxy.
  */
 public class WorldServer extends World
 {
+    private static final Logger field_147491_a = LogManager.getLogger();
     private final MinecraftServer mcServer;
     private final EntityTracker theEntityTracker;
     private final PlayerManager thePlayerManager;
@@ -37,22 +88,19 @@ public class WorldServer extends World
     /**
      * Double buffer of ServerBlockEventList[] for holding pending BlockEventData's
      */
-    private ServerBlockEventList[] blockEventCache = new ServerBlockEventList[] {new ServerBlockEventList(null), new ServerBlockEventList(null)};
-
-    /**
-     * The index into the blockEventCache; either 0, or 1, toggled in sendBlockEventPackets  where all BlockEvent are
-     * applied locally and send to clients.
-     */
-    private int blockEventCacheIndex;
-    private static final WeightedRandomChestContent[] bonusChestContent = new WeightedRandomChestContent[] {new WeightedRandomChestContent(Item.stick.itemID, 0, 1, 3, 10), new WeightedRandomChestContent(Block.planks.blockID, 0, 1, 3, 10), new WeightedRandomChestContent(Block.wood.blockID, 0, 1, 3, 10), new WeightedRandomChestContent(Item.axeStone.itemID, 0, 1, 1, 3), new WeightedRandomChestContent(Item.axeWood.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.pickaxeStone.itemID, 0, 1, 1, 3), new WeightedRandomChestContent(Item.pickaxeWood.itemID, 0, 1, 1, 5), new WeightedRandomChestContent(Item.appleRed.itemID, 0, 2, 3, 5), new WeightedRandomChestContent(Item.bread.itemID, 0, 2, 3, 3)};
+    private WorldServer.ServerBlockEventList[] field_147490_S = new WorldServer.ServerBlockEventList[] {new WorldServer.ServerBlockEventList(null), new WorldServer.ServerBlockEventList(null)};
+    private int field_147489_T;
+    private static final WeightedRandomChestContent[] bonusChestContent = new WeightedRandomChestContent[] {new WeightedRandomChestContent(Items.field_151055_y, 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150344_f), 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150364_r), 0, 1, 3, 10), new WeightedRandomChestContent(Items.field_151049_t, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151053_p, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151050_s, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151039_o, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151034_e, 0, 2, 3, 5), new WeightedRandomChestContent(Items.field_151025_P, 0, 2, 3, 3), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150363_s), 0, 1, 3, 10)};
     private List pendingTickListEntriesThisTick = new ArrayList();
 
     /** An IntHashMap of entity IDs (integers) to their Entity objects. */
     private IntHashMap entityIdMap;
 
-    public WorldServer(MinecraftServer server, ISaveHandler saveHandler, String worldName, int dimension, WorldSettings worldSettings, Profiler profiler, ILogAgent logger)
+    private static final String __OBFID = "CL_00001437";
+
+    public WorldServer(MinecraftServer server, ISaveHandler saveHandler, String worldName, int dimension, WorldSettings worldSettings, Profiler profiler)
     {
-        super(saveHandler, worldName, worldSettings, WorldProvider.getProviderForDimension(dimension), profiler, logger);
+        super(saveHandler, worldName, worldSettings, WorldProvider.getProviderForDimension(dimension), profiler);
         this.mcServer = server;
         this.theEntityTracker = new EntityTracker(this);
         this.thePlayerManager = new PlayerManager(this, server.getConfigurationManager().getViewDistance());
@@ -95,9 +143,9 @@ public class WorldServer extends World
 
         super.tick();
 
-        if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting < 3)
+        if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting != EnumDifficulty.HARD)
         {
-            this.difficultySetting = 3;
+            this.difficultySetting = EnumDifficulty.HARD;
         }
 
         this.provider.worldChunkMgr.cleanupCache();
@@ -138,8 +186,8 @@ public class WorldServer extends World
 
         this.theProfiler.endStartSection("tickPending");
         this.tickUpdates(false);
-        this.theProfiler.endStartSection("tickTiles");
-        this.tickBlocksAndAmbiance();
+        this.theProfiler.endStartSection("tickBlocks");
+        this.func_147456_g();
         this.theProfiler.endStartSection("chunkMap");
         this.thePlayerManager.updatePlayerInstances();
         this.theProfiler.endStartSection("village");
@@ -148,16 +196,17 @@ public class WorldServer extends World
         this.theProfiler.endStartSection("portalForcer");
         this.worldTeleporter.removeStalePortalLocations(this.getTotalWorldTime());
         this.theProfiler.endSection();
-        this.sendAndApplyBlockEvents();
+        this.func_147488_Z();
     }
 
     /**
      * only spawns creatures allowed by the chunkProvider
      */
-    public SpawnListEntry spawnRandomCreature(EnumCreatureType creatureType, int x, int y, int z)
+
+    public BiomeGenBase.SpawnListEntry spawnRandomCreature(EnumCreatureType creatureType, int x, int y, int z)
     {
         List spawnTypes = this.getChunkProvider().getPossibleCreatures(creatureType, x, y, z);
-        return spawnTypes != null && !spawnTypes.isEmpty() ? (SpawnListEntry)WeightedRandom.getRandomItem(this.rand, spawnTypes) : null;
+        return spawnTypes != null && !spawnTypes.isEmpty() ? (BiomeGenBase.SpawnListEntry)WeightedRandom.getRandomItem(this.rand, spawnTypes) : null;
     }
 
     /**
@@ -177,7 +226,7 @@ public class WorldServer extends World
         }
     }
 
-    public void wakeAllPlayers()
+    protected void wakeAllPlayers()
     {
         this.allPlayersSleeping = false;
 
@@ -240,7 +289,7 @@ public class WorldServer extends World
         int spawnZ = this.worldInfo.getSpawnZ();
         int currY = 0;
 
-        while (this.getFirstUncoveredBlock(spawnX, spawnZ) == 0)
+        while (this.func_147474_b(spawnX, spawnZ).func_149688_o() == Material.field_151579_a)
         {
             spawnX += this.rand.nextInt(8) - this.rand.nextInt(8);
             spawnZ += this.rand.nextInt(8) - this.rand.nextInt(8);
@@ -260,20 +309,22 @@ public class WorldServer extends World
      * plays random cave ambient sounds and runs updateTick on random blocks within each chunk in the vacinity of a
      * player
      */
-    protected void tickBlocksAndAmbiance()
+    protected void func_147456_g()
     {
         if(ModList.eventTickBlocksAndAmbiance(this)){
-            super.tickBlocksAndAmbiance();
+            super.func_147456_g();
 
+            int var1 = 0;
+            int var2 = 0;
             for (Object activeChunkSet : this.activeChunkSet) {
                 ChunkCoordIntPair loc = (ChunkCoordIntPair) activeChunkSet;
                 int chunkX = loc.chunkXPos * 16;
                 int chunkZ = loc.chunkZPos * 16;
                 this.theProfiler.startSection("getChunk");
                 Chunk chunk = this.getChunkFromChunkCoords(loc.chunkXPos, loc.chunkZPos);
-                this.moodSoundAndLightCheck(chunkX, chunkZ, chunk);
+                this.func_147467_a(chunkX, chunkZ, chunk);
                 this.theProfiler.endStartSection("tickChunk");
-                chunk.updateSkylight();
+                chunk.func_150804_b(false);
                 this.theProfiler.endStartSection("thunder");
                 int randNum;
                 int blockX;
@@ -302,23 +353,25 @@ public class WorldServer extends World
                     blockZ = randNum >> 8 & 15;
                     precipitationHeight = this.getPrecipitationHeight(blockX + chunkX, blockZ + chunkZ);
 
-                    if (this.isBlockFreezableNaturally(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ)) {
-                        this.setBlock(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ, Block.ice.blockID);
+
+
+                    if (this.isBlockFreezableNaturally(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ))
+                    {
+                        this.func_147449_b(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ, Blocks.field_150432_aD);
                     }
 
-                    if (this.isRaining() && this.canSnowAt(blockX + chunkX, precipitationHeight, blockZ + chunkZ)) {
-                        this.setBlock(blockX + chunkX, precipitationHeight, blockZ + chunkZ, Block.snow.blockID);
+                    if (this.isRaining() && this.func_147478_e(blockX + chunkX, precipitationHeight, blockZ + chunkX, true))
+                    {
+                        this.func_147449_b(blockX + chunkX, precipitationHeight, blockZ + chunkX, Blocks.field_150431_aC);
                     }
 
-                    if (this.isRaining()) {
-                        BiomeGenBase biomeGen = this.getBiomeGenForCoords(blockX + chunkX, blockZ + chunkZ);
+                    if (this.isRaining())
+                    {
+                        BiomeGenBase var12 = this.getBiomeGenForCoords(blockX + chunkX, blockZ + chunkX);
 
-                        if (biomeGen.canSpawnLightningBolt()) {
-                            blockID = this.getBlockId(blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
-
-                            if (blockID != 0) {
-                                Block.blocksList[blockID].fillWithRain(this, blockX + chunkX, precipitationHeight - 1, blockZ + chunkZ);
-                            }
+                        if (var12.canSpawnLightningBolt())
+                        {
+                            this.func_147439_a(blockX + chunkX, precipitationHeight - 1, blockZ + chunkX).func_149639_l(this, blockX + chunkX, precipitationHeight - 1, blockZ + chunkX);
                         }
                     }
                 }
@@ -337,11 +390,10 @@ public class WorldServer extends World
                             int xPos = blockID & 15;
                             int zPos = blockID >> 8 & 15;
                             int yPos = blockID >> 16 & 15;
-                            int blockID_2 = blockStorage.getExtBlockID(xPos, yPos, zPos);
-                            Block block = Block.blocksList[blockID_2];
+                            Block block = blockStorage.func_150819_a(xPos, yPos, zPos);
 
-                            if (block != null && block.getTickRandomly()) {
-                                block.updateTick(this, xPos + chunkX, yPos + blockStorage.getYLocation(), zPos + chunkZ, this.rand);
+                            if (block != null && block.func_149653_t()) {
+                                block.func_149674_a(this, xPos + chunkX, yPos + blockStorage.getYLocation(), zPos + chunkZ, this.rand);
                             }
                         }
                     }
@@ -352,76 +404,68 @@ public class WorldServer extends World
         }
     }
 
-    /**
-     * Returns true if the given block will receive a scheduled tick in this tick. Args: X, Y, Z, blockID
-     */
-    public boolean isBlockTickScheduledThisTick(int x, int y, int z, int blockID)
+    public boolean func_147477_a(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)
     {
-        return this.pendingTickListEntriesThisTick.contains(new NextTickListEntry(x, y, z, blockID));
+        NextTickListEntry var5 = new NextTickListEntry(p_147477_1_, p_147477_2_, p_147477_3_, p_147477_4_);
+        return this.pendingTickListEntriesThisTick.contains(var5);
     }
 
-    /**
-     * Schedules a tick to a block with a delay (Most commonly the tick rate)
-     */
-    public void scheduleBlockUpdate(int x, int y, int z, int blockID, int delay)
+    public void func_147464_a(int p_147464_1_, int p_147464_2_, int p_147464_3_, Block p_147464_4_, int p_147464_5_)
     {
-        this.scheduleBlockUpdateWithPriority(x, y, z, blockID, delay, 0);
+        this.func_147454_a(p_147464_1_, p_147464_2_, p_147464_3_, p_147464_4_, p_147464_5_, 0);
     }
 
-    public void scheduleBlockUpdateWithPriority(int x, int y, int z, int blockID, int delay, int priority)
+    public void func_147454_a(int p_147454_1_, int p_147454_2_, int p_147454_3_, Block p_147454_4_, int p_147454_5_, int p_147454_6_)
     {
-        NextTickListEntry tickListEntry = new NextTickListEntry(x, y, z, blockID);
+        NextTickListEntry var7 = new NextTickListEntry(p_147454_1_, p_147454_2_, p_147454_3_, p_147454_4_);
         byte var8 = 0;
 
-        if (this.scheduledUpdatesAreImmediate && blockID > 0)
+        if (this.scheduledUpdatesAreImmediate && p_147454_4_.func_149688_o() != Material.field_151579_a)
         {
-            if (Block.blocksList[blockID].func_82506_l())
+            if (p_147454_4_.func_149698_L())
             {
                 var8 = 8;
 
-                if (this.checkChunksExist(tickListEntry.xCoord - var8, tickListEntry.yCoord - var8, tickListEntry.zCoord - var8, tickListEntry.xCoord + var8, tickListEntry.yCoord + var8, tickListEntry.zCoord + var8))
+                if (this.checkChunksExist(var7.xCoord - var8, var7.yCoord - var8, var7.zCoord - var8, var7.xCoord + var8, var7.yCoord + var8, var7.zCoord + var8))
                 {
-                    int var9 = this.getBlockId(tickListEntry.xCoord, tickListEntry.yCoord, tickListEntry.zCoord);
+                    Block var9 = this.func_147439_a(var7.xCoord, var7.yCoord, var7.zCoord);
 
-                    if (var9 == tickListEntry.blockID && var9 > 0)
+                    if (var9.func_149688_o() != Material.field_151579_a && var9 == var7.func_151351_a())
                     {
-                        Block.blocksList[var9].updateTick(this, tickListEntry.xCoord, tickListEntry.yCoord, tickListEntry.zCoord, this.rand);
+                        var9.func_149674_a(this, var7.xCoord, var7.yCoord, var7.zCoord, this.rand);
                     }
                 }
 
                 return;
             }
 
-            delay = 1;
+            p_147454_5_ = 1;
         }
 
-        if (this.checkChunksExist(x - var8, y - var8, z - var8, x + var8, y + var8, z + var8))
+        if (this.checkChunksExist(p_147454_1_ - var8, p_147454_2_ - var8, p_147454_3_ - var8, p_147454_1_ + var8, p_147454_2_ + var8, p_147454_3_ + var8))
         {
-            if (blockID > 0)
+            if (p_147454_4_.func_149688_o() != Material.field_151579_a)
             {
-                tickListEntry.setScheduledTime((long) delay + this.worldInfo.getWorldTotalTime());
-                tickListEntry.setPriority(priority);
+                var7.setScheduledTime((long)p_147454_5_ + this.worldInfo.getWorldTotalTime());
+                var7.setPriority(p_147454_6_);
             }
 
-            if (!this.pendingTickListEntriesHashSet.contains(tickListEntry))
+            if (!this.pendingTickListEntriesHashSet.contains(var7))
             {
-                this.pendingTickListEntriesHashSet.add(tickListEntry);
-                this.pendingTickListEntriesTreeSet.add(tickListEntry);
+                this.pendingTickListEntriesHashSet.add(var7);
+                this.pendingTickListEntriesTreeSet.add(var7);
             }
         }
     }
 
-    /**
-     * Schedules a block update from the saved information in a chunk. Called when the chunk is loaded.
-     */
-    public void scheduleBlockUpdateFromLoad(int x, int y, int z, int blockID, int delay, int priority)
+    public void func_147446_b(int p_147446_1_, int p_147446_2_, int p_147446_3_, Block p_147446_4_, int p_147446_5_, int p_147446_6_)
     {
-        NextTickListEntry var7 = new NextTickListEntry(x, y, z, blockID);
-        var7.setPriority(priority);
+        NextTickListEntry var7 = new NextTickListEntry(p_147446_1_, p_147446_2_, p_147446_3_, p_147446_4_);
+        var7.setPriority(p_147446_6_);
 
-        if (blockID > 0)
+        if (p_147446_4_.func_149688_o() != Material.field_151579_a)
         {
-            var7.setScheduledTime((long)delay + this.worldInfo.getWorldTotalTime());
+            var7.setScheduledTime((long)p_147446_5_ + this.worldInfo.getWorldTotalTime());
         }
 
         if (!this.pendingTickListEntriesHashSet.contains(var7))
@@ -506,13 +550,13 @@ public class WorldServer extends World
 
                 if (this.checkChunksExist(var4.xCoord - var5, var4.yCoord - var5, var4.zCoord - var5, var4.xCoord + var5, var4.yCoord + var5, var4.zCoord + var5))
                 {
-                    int var6 = this.getBlockId(var4.xCoord, var4.yCoord, var4.zCoord);
+                    Block var6 = this.func_147439_a(var4.xCoord, var4.yCoord, var4.zCoord);
 
-                    if (var6 > 0 && Block.isAssociatedBlockID(var6, var4.blockID))
+                    if (var6.func_149688_o() != Material.field_151579_a && Block.func_149680_a(var6, var4.func_151351_a()))
                     {
                         try
                         {
-                            Block.blocksList[var6].updateTick(this, var4.xCoord, var4.yCoord, var4.zCoord, this.rand);
+                            var6.func_149674_a(this, var4.xCoord, var4.yCoord, var4.zCoord, this.rand);
                         }
                         catch (Throwable var13)
                         {
@@ -529,14 +573,14 @@ public class WorldServer extends World
                                 var10 = -1;
                             }
 
-                            CrashReportCategory.addBlockCrashInfo(var9, var4.xCoord, var4.yCoord, var4.zCoord, var6, var10);
+                            CrashReportCategory.func_147153_a(var9, var4.xCoord, var4.yCoord, var4.zCoord, var6, var10);
                             throw new ReportedException(var8);
                         }
                     }
                 }
                 else
                 {
-                    this.scheduleBlockUpdate(var4.xCoord, var4.yCoord, var4.zCoord, var4.blockID, 0);
+                    this.func_147464_a(var4.xCoord, var4.yCoord, var4.zCoord, var4.func_151351_a(), 0);
                 }
             }
 
@@ -569,7 +613,7 @@ public class WorldServer extends World
 
                 if (!this.pendingTickListEntriesThisTick.isEmpty())
                 {
-                    System.out.println(this.pendingTickListEntriesThisTick.size());
+                    field_147491_a.debug("toBeTicked = " + this.pendingTickListEntriesThisTick.size());
                 }
             }
 
@@ -629,19 +673,21 @@ public class WorldServer extends World
     /**
      * pars: min x,y,z , max x,y,z
      */
-    public List getAllTileEntityInBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+    public List func_147486_a(int p_147486_1_, int p_147486_2_, int p_147486_3_, int p_147486_4_, int p_147486_5_, int p_147486_6_)
     {
-        ArrayList entities = new ArrayList();
+        ArrayList var7 = new ArrayList();
 
-        for (Object tileEntityList : this.loadedTileEntityList) {
-            TileEntity currEntity = (TileEntity) tileEntityList;
+        for (int var8 = 0; var8 < this.field_147482_g.size(); ++var8)
+        {
+            TileEntity var9 = (TileEntity)this.field_147482_g.get(var8);
 
-            if (currEntity.xCoord >= minX && currEntity.yCoord >= minY && currEntity.zCoord >= minZ && currEntity.xCoord < maxX && currEntity.yCoord < maxY && currEntity.zCoord < maxZ) {
-                entities.add(currEntity);
+            if (var9.field_145851_c >= p_147486_1_ && var9.field_145848_d >= p_147486_2_ && var9.field_145849_e >= p_147486_3_ && var9.field_145851_c < p_147486_4_ && var9.field_145848_d < p_147486_5_ && var9.field_145849_e < p_147486_6_)
+            {
+                var7.add(var9);
             }
         }
 
-        return entities;
+        return var7;
     }
 
     /**
@@ -688,19 +734,19 @@ public class WorldServer extends World
             WorldChunkManager chunkManager = this.provider.worldChunkMgr;
             List spawnBiomes = chunkManager.getBiomesToSpawnIn();
             Random random = new Random(this.getSeed());
-            ChunkPosition position = chunkManager.findBiomePosition(0, 0, 256, spawnBiomes, random);
+            ChunkPosition position = chunkManager.func_150795_a(0, 0, 256, spawnBiomes, random);
             int var6 = 0;
             int var7 = this.provider.getAverageGroundLevel();
             int var8 = 0;
 
             if (position != null)
             {
-                var6 = position.x;
-                var8 = position.z;
+                var6 = position.field_151329_a;
+                var8 = position.field_151328_c;
             }
             else
             {
-                this.getWorldLogAgent().logWarning("Unable to find spawn biome");
+                field_147491_a.warn("Unable to find spawn biome");
             }
 
             int var9 = 0;
@@ -802,27 +848,27 @@ public class WorldServer extends World
     public void onEntityAdded(Entity entity)
     {
         super.onEntityAdded(entity);
-        this.entityIdMap.addKey(entity.entityId, entity);
+        this.entityIdMap.addKey(entity.func_145782_y(), entity);
         Entity[] entityParts = entity.getParts();
 
         if (entityParts != null)
         {
             for (Entity aVar2 : entityParts) {
-                this.entityIdMap.addKey(aVar2.entityId, aVar2);
+                this.entityIdMap.addKey(aVar2.func_145782_y(), aVar2);
             }
         }
     }
 
-    public void onEntityRemoved(Entity entity)
+    protected void onEntityRemoved(Entity entity)
     {
         super.onEntityRemoved(entity);
-        this.entityIdMap.removeObject(entity.entityId);
+        this.entityIdMap.removeObject(entity.func_145782_y());
         Entity[] entityParts = entity.getParts();
 
         if (entityParts != null)
         {
             for (Entity aVar2 : entityParts) {
-                this.entityIdMap.removeObject(aVar2.entityId);
+                this.entityIdMap.removeObject(aVar2.func_145782_y());
             }
         }
     }
@@ -842,7 +888,7 @@ public class WorldServer extends World
     {
         if (super.addWeatherEffect(entity))
         {
-            this.mcServer.getConfigurationManager().sendToAllNear(entity.posX, entity.posY, entity.posZ, 512.0D, this.provider.dimensionId, new Packet71Weather(entity));
+            this.mcServer.getConfigurationManager().func_148541_a(entity.posX, entity.posY, entity.posZ, 512.0D, this.provider.dimensionId, new S2CPacketSpawnGlobalEntity(entity));
             return true;
         }
         else
@@ -856,7 +902,7 @@ public class WorldServer extends World
      */
     public void setEntityState(Entity entity, byte par2)
     {
-        this.getEntityTracker().sendPacketToAllAssociatedPlayers(entity, new Packet38EntityStatus(entity.entityId, par2));
+        this.getEntityTracker().func_151248_b(entity, new S19PacketEntityStatus(entity, par2));
     }
 
     /**
@@ -879,7 +925,7 @@ public class WorldServer extends World
             EntityPlayer var13 = (EntityPlayer) playerEntity;
 
             if (var13.getDistanceSq(x, y, z) < 4096.0D) {
-                ((EntityPlayerMP) var13).playerNetServerHandler.sendPacketToPlayer(new Packet60Explosion(x, y, z, force, var11.affectedBlockPositions, (Vec3) var11.func_77277_b().get(var13)));
+                ((EntityPlayerMP) var13).playerNetServerHandler.func_147359_a(new S27PacketExplosion(x, y, z, force, var11.affectedBlockPositions, (Vec3) var11.func_77277_b().get(var13)));
             }
         }
 
@@ -890,17 +936,17 @@ public class WorldServer extends World
      * Adds a block event with the given Args to the blockEventCache. During the next tick(), the block specified will
      * have its onBlockEvent handler called with the given parameters. Args: X,Y,Z, BlockID, EventID, EventParameter
      */
-    public void addBlockEvent(int x, int y, int z, int blockID, int eventID, int eventData)
+    public void func_147452_c(int p_147452_1_, int p_147452_2_, int p_147452_3_, Block p_147452_4_, int p_147452_5_, int p_147452_6_)
     {
-        BlockEventData var7 = new BlockEventData(x, y, z, blockID, eventID, eventData);
-        Iterator var8 = this.blockEventCache[this.blockEventCacheIndex].iterator();
+        BlockEventData var7 = new BlockEventData(p_147452_1_, p_147452_2_, p_147452_3_, p_147452_4_, p_147452_5_, p_147452_6_);
+        Iterator var8 = this.field_147490_S[this.field_147489_T].iterator();
         BlockEventData var9;
 
         do
         {
             if (!var8.hasNext())
             {
-                this.blockEventCache[this.blockEventCacheIndex].add(var7);
+                this.field_147490_S[this.field_147489_T].add(var7);
                 return;
             }
 
@@ -912,32 +958,35 @@ public class WorldServer extends World
     /**
      * Send and apply locally all pending BlockEvents to each player with 64m radius of the event.
      */
-    private void sendAndApplyBlockEvents()
+    private void func_147488_Z()
     {
-        while (!this.blockEventCache[this.blockEventCacheIndex].isEmpty())
+        while (!this.field_147490_S[this.field_147489_T].isEmpty())
         {
-            int var1 = this.blockEventCacheIndex;
-            this.blockEventCacheIndex ^= 1;
+            int var1 = this.field_147489_T;
+            this.field_147489_T ^= 1;
+            Iterator var2 = this.field_147490_S[var1].iterator();
 
-            for (Object o : this.blockEventCache[var1]) {
-                BlockEventData var3 = (BlockEventData) o;
+            while (var2.hasNext())
+            {
+                BlockEventData var3 = (BlockEventData)var2.next();
 
-                if (this.onBlockEventReceived(var3)) {
-                    this.mcServer.getConfigurationManager().sendToAllNear((double) var3.getX(), (double) var3.getY(), (double) var3.getZ(), 64.0D, this.provider.dimensionId, new Packet54PlayNoteBlock(var3.getX(), var3.getY(), var3.getZ(), var3.getBlockID(), var3.getEventID(), var3.getEventParameter()));
+                if (this.func_147485_a(var3))
+                {
+                    this.mcServer.getConfigurationManager().func_148541_a((double)var3.func_151340_a(), (double)var3.func_151342_b(), (double)var3.func_151341_c(), 64.0D, this.provider.dimensionId, new S24PacketBlockAction(var3.func_151340_a(), var3.func_151342_b(), var3.func_151341_c(), var3.func_151337_f(), var3.func_151339_d(), var3.func_151338_e()));
                 }
             }
 
-            this.blockEventCache[var1].clear();
+            this.field_147490_S[var1].clear();
         }
     }
 
     /**
      * Called to apply a pending BlockEvent to apply to the current world.
      */
-    private boolean onBlockEventReceived(BlockEventData blockEventData)
+    private boolean func_147485_a(BlockEventData p_147485_1_)
     {
-        int var2 = this.getBlockId(blockEventData.getX(), blockEventData.getY(), blockEventData.getZ());
-        return var2 == blockEventData.getBlockID() ? Block.blocksList[var2].onBlockEventReceived(this, blockEventData.getX(), blockEventData.getY(), blockEventData.getZ(), blockEventData.getEventID(), blockEventData.getEventParameter()) : false;
+        Block var2 = this.func_147439_a(p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c());
+        return var2 == p_147485_1_.func_151337_f() ? var2.func_149696_a(this, p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c(), p_147485_1_.func_151339_d(), p_147485_1_.func_151338_e()) : false;
     }
 
     /**
@@ -956,15 +1005,25 @@ public class WorldServer extends World
         boolean var1 = this.isRaining();
         super.updateWeather();
 
+        if (this.prevRainingStrength != this.rainingStrength)
+        {
+            this.mcServer.getConfigurationManager().func_148537_a(new S2BPacketChangeGameState(7, this.rainingStrength), this.provider.dimensionId);
+        }
+
+        if (this.prevThunderingStrength != this.thunderingStrength)
+        {
+            this.mcServer.getConfigurationManager().func_148537_a(new S2BPacketChangeGameState(8, this.thunderingStrength), this.provider.dimensionId);
+        }
+
         if (var1 != this.isRaining())
         {
             if (var1)
             {
-                this.mcServer.getConfigurationManager().sendPacketToAllPlayers(new Packet70GameEvent(2, 0));
+                this.mcServer.getConfigurationManager().func_148540_a(new S2BPacketChangeGameState(2, 0));
             }
             else
             {
-                this.mcServer.getConfigurationManager().sendPacketToAllPlayers(new Packet70GameEvent(1, 0));
+                this.mcServer.getConfigurationManager().func_148540_a(new S2BPacketChangeGameState(1, 0));
             }
         }
     }
@@ -993,5 +1052,37 @@ public class WorldServer extends World
     public Teleporter getDefaultTeleporter()
     {
         return this.worldTeleporter;
+    }
+
+    public void func_147487_a(String p_147487_1_, double p_147487_2_, double p_147487_4_, double p_147487_6_, int p_147487_8_, double p_147487_9_, double p_147487_11_, double p_147487_13_, double p_147487_15_)
+    {
+        S2APacketParticles var17 = new S2APacketParticles(p_147487_1_, (float)p_147487_2_, (float)p_147487_4_, (float)p_147487_6_, (float)p_147487_9_, (float)p_147487_11_, (float)p_147487_13_, (float)p_147487_15_, p_147487_8_);
+
+        for (int var18 = 0; var18 < this.playerEntities.size(); ++var18)
+        {
+            EntityPlayerMP var19 = (EntityPlayerMP)this.playerEntities.get(var18);
+            ChunkCoordinates var20 = var19.getPlayerCoordinates();
+            double var21 = p_147487_2_ - (double)var20.posX;
+            double var23 = p_147487_4_ - (double)var20.posY;
+            double var25 = p_147487_6_ - (double)var20.posZ;
+            double var27 = var21 * var21 + var23 * var23 + var25 * var25;
+
+            if (var27 <= 256.0D)
+            {
+                var19.playerNetServerHandler.func_147359_a(var17);
+            }
+        }
+    }
+
+    static class ServerBlockEventList extends ArrayList
+    {
+        private static final String __OBFID = "CL_00001439";
+
+        private ServerBlockEventList() {}
+
+        ServerBlockEventList(Object par1ServerBlockEvent)
+        {
+            this();
+        }
     }
 }

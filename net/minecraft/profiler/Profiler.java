@@ -1,14 +1,23 @@
-package net.minecraft.src;
+package net.minecraft.profiler;
 
 import net.acomputerdog.BlazeLoader.mod.ModList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Profiles various Minecraft functions.  Replaces ProfilerProxy.
  */
 public class Profiler
 {
+    private static final Logger field_151234_b = LogManager.getLogger();
+
     /** List of parent sections */
     private final List sectionList = new ArrayList();
 
@@ -24,6 +33,7 @@ public class Profiler
     /** Profiling map */
     public final Map profilingMap = new HashMap();
 
+    private static final String __OBFID = "CL_00001497";
     /**
      * Clear profiling.
      */
@@ -77,7 +87,7 @@ public class Profiler
 
             if (var5 > 100000000L)
             {
-                System.out.println("Something\'s taking too long! \'" + this.profilingSection + "\' took aprox " + (double)var5 / 1000000.0D + " ms");
+                field_151234_b.warn("Something\'s taking too long! \'" + this.profilingSection + "\' took aprox " + (double)var5 / 1000000.0D + " ms");
             }
 
             this.profilingSection = !this.sectionList.isEmpty() ? (String)this.sectionList.get(this.sectionList.size() - 1) : "";
@@ -140,7 +150,7 @@ public class Profiler
                     double var15 = (double)var13 * 100.0D / (double)var8;
                     double var17 = (double)var13 * 100.0D / (double)var3;
                     String var19 = var12.substring(section.length());
-                    var7.add(new ProfilerResult(var19, var15, var17));
+                    var7.add(new Profiler.Result(var19, var15, var17));
                 }
             }
 
@@ -154,11 +164,11 @@ public class Profiler
 
             if ((float)var8 > var21)
             {
-                var7.add(new ProfilerResult("unspecified", (double)((float)var8 - var21) * 100.0D / (double)var8, (double)((float)var8 - var21) * 100.0D / (double)var3));
+                var7.add(new Profiler.Result("unspecified", (double)((float)var8 - var21) * 100.0D / (double)var8, (double)((float)var8 - var21) * 100.0D / (double)var3));
             }
 
             Collections.sort(var7);
-            var7.add(0, new ProfilerResult(section, 100.0D, (double)var8 * 100.0D / (double)var3));
+            var7.add(0, new Profiler.Result(section, 100.0D, (double)var8 * 100.0D / (double)var3));
             return var7;
         }
     }
@@ -175,5 +185,35 @@ public class Profiler
     public String getNameOfLastSection()
     {
         return this.sectionList.size() == 0 ? "[UNKNOWN]" : (String)this.sectionList.get(this.sectionList.size() - 1);
+    }
+
+    public static final class Result implements Comparable
+    {
+        public double field_76332_a;
+        public double field_76330_b;
+        public String field_76331_c;
+        private static final String __OBFID = "CL_00001498";
+
+        public Result(String par1Str, double par2, double par4)
+        {
+            this.field_76331_c = par1Str;
+            this.field_76332_a = par2;
+            this.field_76330_b = par4;
+        }
+
+        public int compareTo(Profiler.Result par1ProfilerResult)
+        {
+            return par1ProfilerResult.field_76332_a < this.field_76332_a ? -1 : (par1ProfilerResult.field_76332_a > this.field_76332_a ? 1 : par1ProfilerResult.field_76331_c.compareTo(this.field_76331_c));
+        }
+
+        public int func_76329_a()
+        {
+            return (this.field_76331_c.hashCode() & 11184810) + 4473924;
+        }
+
+        public int compareTo(Object par1Obj)
+        {
+            return this.compareTo((Profiler.Result)par1Obj);
+        }
     }
 }

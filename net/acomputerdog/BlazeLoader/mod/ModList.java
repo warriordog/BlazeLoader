@@ -3,7 +3,7 @@ package net.acomputerdog.BlazeLoader.mod;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.src.WorldServer;
+import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
 import java.util.Iterator;

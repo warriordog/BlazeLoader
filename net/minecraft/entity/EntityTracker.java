@@ -286,7 +286,7 @@ public class EntityTracker
     /**
      * sends to the entity if the entity is a player
      */
-    public void sendPacketToAllAssociatedPlayers(Entity entity, Packet packet)
+    public void func_151248_b(Entity entity, Packet packet)
     {
         EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.func_145782_y());
 
