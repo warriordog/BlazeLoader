@@ -36,19 +36,19 @@ public class BLCommandManager extends CommandHandler {
                 EntityPlayerMP var8 = (EntityPlayerMP) aPlayerEntityList;
 
                 if (var8 != par1ICommandSender && MinecraftServer.getServer().getConfigurationManager().isPlayerOpped(var8.getCommandSenderName())) {
-                    var8.sendChatToPlayer(var6);
+                    var8.func_145747_a(var6);
                 }
             }
         }
 
         if (par1ICommandSender != MinecraftServer.getServer())
         {
-            MinecraftServer.getServer().sendChatToPlayer(var6);
+            MinecraftServer.getServer().func_145747_a(var6);
         }
 
         if ((par2 & 1) != 1)
         {
-            par1ICommandSender.sendChatToPlayer(ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj));
+            par1ICommandSender.func_145747_a(ChatMessageComponent.createFromTranslationWithSubstitutions(par3Str, par4ArrayOfObj));
         }
     }
 }

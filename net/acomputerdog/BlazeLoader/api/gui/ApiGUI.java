@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.gui;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.minecraft.src.GuiScreen;
+import net.minecraft.client.gui.GuiScreen;
 
 /**
  * API functions for GUI-related tasks.

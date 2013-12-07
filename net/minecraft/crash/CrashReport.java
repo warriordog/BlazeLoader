@@ -294,7 +294,7 @@ public class CrashReport
     /**
      * Saves the complete crash report to the given File.
      */
-    public boolean saveToFile(File crashReportFile) {
+    public boolean func_147149_a(File crashReportFile) {
         if (this.crashReportFile != null) {
             return false;
         } else {
