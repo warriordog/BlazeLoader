@@ -1,4 +1,4 @@
-package net.minecraft.client.render;
+package net.minecraft.client.renderer;
 
 import com.google.gson.JsonSyntaxException;
 import net.acomputerdog.BlazeLoader.mod.ModList;
@@ -12,7 +12,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityRainFX;
 import net.minecraft.client.particle.EntitySmokeFX;
-import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.culling.ClippingHelperImpl;
 import net.minecraft.client.renderer.culling.Frustrum;
 import net.minecraft.client.renderer.texture.DynamicTexture;

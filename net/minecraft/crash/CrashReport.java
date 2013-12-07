@@ -178,7 +178,7 @@ public class CrashReport
     {
         if ((this.stackTrace == null || this.stackTrace.length <= 0) && this.crashReportSections.size() > 0)
         {
-            this.stackTrace = (StackTraceElement[])ArrayUtils.subarray((this.crashReportSections.get(0)).func_147152_a(), 0, 1);
+            this.stackTrace = (StackTraceElement[]) ArrayUtils.subarray((this.crashReportSections.get(0)).func_147152_a(), 0, 1);
         }
 
         if (this.stackTrace != null && this.stackTrace.length > 0)

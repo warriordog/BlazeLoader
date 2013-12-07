@@ -838,7 +838,7 @@ public class WorldServer extends World
     /**
      * Saves the chunks to disk.
      */
-    public void saveLevel() throws MinecraftException
+    protected void saveLevel() throws MinecraftException
     {
         this.checkSessionLock();
         this.saveHandler.saveWorldInfoWithPlayer(this.worldInfo, this.mcServer.getConfigurationManager().getHostPlayerData());

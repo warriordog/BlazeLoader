@@ -273,7 +273,7 @@ public class EntityTracker
     /**
      * does not send the packet to the entity if the entity is a player
      */
-    public void sendPacketToAllPlayersTrackingEntity(Entity entity, Packet packet)
+    public void func_151247_a(Entity entity, Packet packet)
     {
         EntityTrackerEntry var3 = (EntityTrackerEntry)this.trackedEntityIDs.lookup(entity.func_145782_y());
 
@@ -305,7 +305,7 @@ public class EntityTracker
         }
     }
 
-    public void trackEntitiesInChunk(EntityPlayerMP player, Chunk chunk)
+    public void func_85172_a(EntityPlayerMP player, Chunk chunk)
     {
 
         for (Object trackedEntity : this.trackedEntities) {

@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
  */
 public class IntegratedServer extends MinecraftServer
 {
-    private static final Logger field_147148_h = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
     /** The Minecraft instance. */
     private final Minecraft mc;
     public final WorldSettings theWorldSettings;
@@ -100,13 +100,13 @@ public class IntegratedServer extends MinecraftServer
      */
     protected boolean startServer() throws IOException
     {
-        field_147148_h.info("Starting integrated minecraft server version 1.7.2");
+        logger.info("Starting integrated minecraft server version 1.7.2");
         this.setOnlineMode(false);
         this.setCanSpawnAnimals(true);
         this.setCanSpawnNPCs(true);
         this.setAllowPvp(true);
         this.setAllowFlight(true);
-        field_147148_h.info("Generating keypair");
+        logger.info("Generating keypair");
         this.setKeyPair(CryptManager.createNewKeyPair());
         this.loadAllWorlds(this.getFolderName(), this.getWorldName(), this.theWorldSettings.getSeed(), this.theWorldSettings.getTerrainType(), this.theWorldSettings.func_82749_j());
         this.setMOTD(this.getServerOwner() + " - " + this.worldServers[0].getWorldInfo().getWorldName());
@@ -123,7 +123,7 @@ public class IntegratedServer extends MinecraftServer
 
         if (!var1 && this.isGamePaused)
         {
-            field_147148_h.info("Saving and pausing game...");
+            logger.info("Saving and pausing game...");
             this.getConfigurationManager().saveAllPlayerData();
             this.saveAllWorlds(false);
         }
@@ -251,7 +251,7 @@ public class IntegratedServer extends MinecraftServer
             }
 
             this.func_147137_ag().func_151265_a((InetAddress)null, var3);
-            field_147148_h.info("Started on " + var3);
+            logger.info("Started on " + var3);
             this.isPublic = true;
             this.lanServerPing = new ThreadLanServerPing(this.getMOTD(), var3 + "");
             this.lanServerPing.start();

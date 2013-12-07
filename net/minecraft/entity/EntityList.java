@@ -216,6 +216,8 @@ public class EntityList
         return Collections.unmodifiableSet(stringToIDMapping.keySet());
     }
 
+    public static void func_151514_a() {}
+
     static
     {
         addMapping(EntityItem.class, "Item", 1);

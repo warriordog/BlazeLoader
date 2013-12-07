@@ -85,8 +85,6 @@ public class ModList {
 
     public static void start(){
         ApiBase.theProfiler.startSection("start_mods");
-        BlazeLoader.updateFreeBlockId();
-        BlazeLoader.updateFreeItemId();
         Iterator<Mod> iterator = loadedMods.iterator();
         while(iterator.hasNext()){
             Mod mod = iterator.next();

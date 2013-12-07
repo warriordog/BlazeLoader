@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.tweaklauncher;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.render.EntityRenderer;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityTracker;
