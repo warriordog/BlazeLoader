@@ -77,8 +77,20 @@ public class ApiBlock {
      * @param z The Z-coordinate to get.
      * @return Return the block at the specified location.
      */
-    public static Block getBlockId(int world, int x, int y, int z){
+    public static Block getBlock(int world, int x, int y, int z){
         return getServerForDimension(world).func_147439_a(x, y, z);
+    }
+
+    /**
+     * Gets the Block at a location.
+     * @param world The world to get the block from.
+     * @param x The X-coordinate to get.
+     * @param y The Y-coordinate to get.
+     * @param z The Z-coordinate to get.
+     * @return Return the block at the specified location.
+     */
+    public static Block getBlock(World world, int x, int y, int z){
+        return world.func_147439_a(x, y, z);
     }
 
     /**
