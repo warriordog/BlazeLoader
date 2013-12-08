@@ -1,24 +1,5 @@
 package net.minecraft.crash;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Callable;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ReportedException;
-import net.minecraft.world.gen.layer.IntCache;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.main.Version;
 import net.acomputerdog.BlazeLoader.mod.Mod;
@@ -29,6 +10,18 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Generates a crash report.
@@ -122,16 +115,12 @@ public class CrashReport
                 List var2 = var1.getInputArguments();
                 int var3 = 0;
                 StringBuilder var4 = new StringBuilder();
-                Iterator var5 = var2.iterator();
 
-                while (var5.hasNext())
-                {
-                    String var6 = (String)var5.next();
+                for (Object aVar2 : var2) {
+                    String var6 = (String) aVar2;
 
-                    if (var6.startsWith("-X"))
-                    {
-                        if (var3++ > 0)
-                        {
+                    if (var6.startsWith("-X")) {
+                        if (var3++ > 0) {
                             var4.append(" ");
                         }
 
@@ -139,7 +128,7 @@ public class CrashReport
                     }
                 }
 
-                return String.format("%d total; %s", new Object[] {Integer.valueOf(var3), var4.toString()});
+                return String.format("%d total; %s", var3, var4.toString());
             }
         });
         this.field_85061_c.addCrashSectionCallable("AABB Pool Size", new Callable()
@@ -189,7 +178,7 @@ public class CrashReport
     {
         if ((this.field_85060_g == null || this.field_85060_g.length <= 0) && this.crashReportSections.size() > 0)
         {
-            this.field_85060_g = (StackTraceElement[])ArrayUtils.subarray(((CrashReportCategory)this.crashReportSections.get(0)).func_147152_a(), 0, 1);
+            this.field_85060_g = ArrayUtils.subarray(((CrashReportCategory)this.crashReportSections.get(0)).func_147152_a(), 0, 1);
         }
 
         if (this.field_85060_g != null && this.field_85060_g.length > 0)
@@ -199,9 +188,7 @@ public class CrashReport
             StackTraceElement[] var2 = this.field_85060_g;
             int var3 = var2.length;
 
-            for (int var4 = 0; var4 < var3; ++var4)
-            {
-                StackTraceElement var5 = var2[var4];
+            for (StackTraceElement var5 : var2) {
                 par1StringBuilder.append("\t").append("at ").append(var5.toString());
                 par1StringBuilder.append("\n");
             }
@@ -209,11 +196,8 @@ public class CrashReport
             par1StringBuilder.append("\n");
         }
 
-        Iterator var6 = this.crashReportSections.iterator();
-
-        while (var6.hasNext())
-        {
-            CrashReportCategory var7 = (CrashReportCategory)var6.next();
+        for (Object crashReportSection : this.crashReportSections) {
+            CrashReportCategory var7 = (CrashReportCategory) crashReportSection;
             var7.func_85072_a(par1StringBuilder);
             par1StringBuilder.append("\n\n");
         }
@@ -248,7 +232,7 @@ public class CrashReport
             ((Throwable)var3).setStackTrace(this.cause.getStackTrace());
         }
 
-        String var4 = ((Throwable)var3).toString();
+        String var4 = var3.toString();
 
         try
         {

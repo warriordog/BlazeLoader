@@ -1,12 +1,12 @@
 package net.minecraft.server.integrated;
 
 import com.mojang.authlib.GameProfile;
-import java.net.SocketAddress;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+
+import java.net.SocketAddress;
 
 
 /**

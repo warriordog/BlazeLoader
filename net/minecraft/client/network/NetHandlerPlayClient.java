@@ -3,35 +3,12 @@ package net.minecraft.client.network;
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.util.concurrent.GenericFutureListener;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.GuiDisconnected;
-import net.minecraft.client.gui.GuiDownloadTerrain;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiMerchant;
-import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiPlayerInfo;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiScreenDemo;
-import net.minecraft.client.gui.GuiScreenDisconnectedOnline;
-import net.minecraft.client.gui.GuiWinGame;
-import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.IProgressMeter;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.ServerList;
@@ -41,42 +18,17 @@ import net.minecraft.client.particle.EntityPickupFX;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IMerchant;
-import net.minecraft.entity.NpcMerchant;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityEnderEye;
-import net.minecraft.entity.item.EntityEnderPearl;
-import net.minecraft.entity.item.EntityExpBottle;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityPainting;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.item.*;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntitySmallFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.entity.projectile.EntityWitherSkull;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
@@ -92,94 +44,14 @@ import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.network.play.server.S00PacketKeepAlive;
-import net.minecraft.network.play.server.S01PacketJoinGame;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S03PacketTimeUpdate;
-import net.minecraft.network.play.server.S04PacketEntityEquipment;
-import net.minecraft.network.play.server.S05PacketSpawnPosition;
-import net.minecraft.network.play.server.S06PacketUpdateHealth;
-import net.minecraft.network.play.server.S07PacketRespawn;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S09PacketHeldItemChange;
-import net.minecraft.network.play.server.S0APacketUseBed;
-import net.minecraft.network.play.server.S0BPacketAnimation;
-import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
-import net.minecraft.network.play.server.S0DPacketCollectItem;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
-import net.minecraft.network.play.server.S0FPacketSpawnMob;
-import net.minecraft.network.play.server.S10PacketSpawnPainting;
-import net.minecraft.network.play.server.S11PacketSpawnExperienceOrb;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.network.play.server.S13PacketDestroyEntities;
-import net.minecraft.network.play.server.S14PacketEntity;
-import net.minecraft.network.play.server.S18PacketEntityTeleport;
-import net.minecraft.network.play.server.S19PacketEntityHeadLook;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
-import net.minecraft.network.play.server.S1BPacketEntityAttach;
-import net.minecraft.network.play.server.S1CPacketEntityMetadata;
-import net.minecraft.network.play.server.S1DPacketEntityEffect;
-import net.minecraft.network.play.server.S1EPacketRemoveEntityEffect;
-import net.minecraft.network.play.server.S1FPacketSetExperience;
-import net.minecraft.network.play.server.S20PacketEntityProperties;
-import net.minecraft.network.play.server.S21PacketChunkData;
-import net.minecraft.network.play.server.S22PacketMultiBlockChange;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.network.play.server.S24PacketBlockAction;
-import net.minecraft.network.play.server.S25PacketBlockBreakAnim;
-import net.minecraft.network.play.server.S26PacketMapChunkBulk;
-import net.minecraft.network.play.server.S27PacketExplosion;
-import net.minecraft.network.play.server.S28PacketEffect;
-import net.minecraft.network.play.server.S29PacketSoundEffect;
-import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.network.play.server.S2BPacketChangeGameState;
-import net.minecraft.network.play.server.S2CPacketSpawnGlobalEntity;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.network.play.server.S2EPacketCloseWindow;
-import net.minecraft.network.play.server.S2FPacketSetSlot;
-import net.minecraft.network.play.server.S30PacketWindowItems;
-import net.minecraft.network.play.server.S31PacketWindowProperty;
-import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-import net.minecraft.network.play.server.S33PacketUpdateSign;
-import net.minecraft.network.play.server.S34PacketMaps;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.network.play.server.S36PacketSignEditorOpen;
-import net.minecraft.network.play.server.S37PacketStatistics;
-import net.minecraft.network.play.server.S38PacketPlayerListItem;
-import net.minecraft.network.play.server.S39PacketPlayerAbilities;
-import net.minecraft.network.play.server.S3APacketTabComplete;
-import net.minecraft.network.play.server.S3BPacketScoreboardObjective;
-import net.minecraft.network.play.server.S3CPacketUpdateScore;
-import net.minecraft.network.play.server.S3DPacketDisplayScoreboard;
-import net.minecraft.network.play.server.S3EPacketTeams;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
-import net.minecraft.network.play.server.S40PacketDisconnect;
+import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.scoreboard.Score;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.ScoreObjectiveCriteria;
-import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.*;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.StatBase;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBeacon;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityFlowerPot;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
+import net.minecraft.tileentity.*;
+import net.minecraft.util.*;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.WorldProviderSurface;
@@ -190,6 +62,12 @@ import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class NetHandlerPlayClient implements INetHandlerPlayClient
 {
@@ -233,7 +111,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         this.field_147304_c = p_147282_1_.func_149193_h();
         this.field_147299_f.playerController.setGameType(p_147282_1_.func_149198_e());
         this.field_147299_f.gameSettings.sendSettingsToServer();
-        this.field_147302_e.func_150725_a(new C17PacketCustomPayload("MC|Brand", ClientBrandRetriever.getClientModName().getBytes(Charsets.UTF_8)), new GenericFutureListener[0]);
+        this.field_147302_e.func_150725_a(new C17PacketCustomPayload("MC|Brand", ClientBrandRetriever.getClientModName().getBytes(Charsets.UTF_8)));
     }
 
     public void func_147235_a(S0EPacketSpawnObject p_147235_1_)
@@ -286,7 +164,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         }
         else if (p_147235_1_.func_148993_l() == 76)
         {
-            var8 = new EntityFireworkRocket(this.field_147300_g, var2, var4, var6, (ItemStack)null);
+            var8 = new EntityFireworkRocket(this.field_147300_g, var2, var4, var6, null);
         }
         else if (p_147235_1_.func_148993_l() == 63)
         {
@@ -323,7 +201,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         }
         else if (p_147235_1_.func_148993_l() == 50)
         {
-            var8 = new EntityTNTPrimed(this.field_147300_g, var2, var4, var6, (EntityLivingBase)null);
+            var8 = new EntityTNTPrimed(this.field_147300_g, var2, var4, var6, null);
         }
         else if (p_147235_1_.func_148993_l() == 51)
         {
@@ -354,9 +232,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             {
                 int var10 = p_147235_1_.func_149001_c() - ((Entity)var8).func_145782_y();
 
-                for (int var11 = 0; var11 < var12.length; ++var11)
-                {
-                    var12[var11].func_145769_d(var12[var11].func_145782_y() + var10);
+                for (Entity aVar12 : var12) {
+                    aVar12.func_145769_d(aVar12.func_145782_y() + var10);
                 }
             }
 
@@ -549,7 +426,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         var2.ySize = 0.0F;
         var2.motionX = var2.motionY = var2.motionZ = 0.0D;
         var2.setPositionAndRotation(var3, var5, var7, var9, var10);
-        this.field_147302_e.func_150725_a(new C03PacketPlayer.C06PacketPlayerPosLook(var2.posX, var2.boundingBox.minY, var2.posY, var2.posZ, p_147258_1_.func_148931_f(), p_147258_1_.func_148930_g(), p_147258_1_.func_148929_h()), new GenericFutureListener[0]);
+        this.field_147302_e.func_150725_a(new C03PacketPlayer.C06PacketPlayerPosLook(var2.posX, var2.boundingBox.minY, var2.posY, var2.posZ, p_147258_1_.func_148931_f(), p_147258_1_.func_148930_g(), p_147258_1_.func_148929_h()));
 
         if (!this.field_147309_h)
         {
@@ -557,7 +434,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             this.field_147299_f.thePlayer.prevPosY = this.field_147299_f.thePlayer.posY;
             this.field_147299_f.thePlayer.prevPosZ = this.field_147299_f.thePlayer.posZ;
             this.field_147309_h = true;
-            this.field_147299_f.func_147108_a((GuiScreen)null);
+            this.field_147299_f.func_147108_a(null);
         }
     }
 
@@ -584,9 +461,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
                     this.field_147300_g.func_147492_c(var10 + var2, var12, var11 + var3, Block.func_149729_e(var8), var9);
                 }
             }
-            catch (IOException var13)
+            catch (IOException ignored)
             {
-                ;
             }
         }
     }
@@ -627,7 +503,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
     public void func_147231_a(IChatComponent p_147231_1_)
     {
-        this.field_147299_f.loadWorld((WorldClient)null);
+        this.field_147299_f.loadWorld(null);
 
         if (this.field_147307_j != null)
         {
@@ -641,13 +517,13 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
     public void func_147297_a(Packet p_147297_1_)
     {
-        this.field_147302_e.func_150725_a(p_147297_1_, new GenericFutureListener[0]);
+        this.field_147302_e.func_150725_a(p_147297_1_);
     }
 
     public void func_147246_a(S0DPacketCollectItem p_147246_1_)
     {
         Entity var2 = this.field_147300_g.getEntityByID(p_147246_1_.func_149354_c());
-        Object var3 = (EntityLivingBase)this.field_147300_g.getEntityByID(p_147246_1_.func_149353_d());
+        Object var3 = this.field_147300_g.getEntityByID(p_147246_1_.func_149353_d());
 
         if (var3 == null)
         {
@@ -730,9 +606,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         {
             int var12 = p_147281_1_.func_149024_d() - var10.func_145782_y();
 
-            for (int var13 = 0; var13 < var11.length; ++var13)
-            {
-                var11[var13].func_145769_d(var11[var13].func_145782_y() + var12);
+            for (Entity aVar11 : var11) {
+                aVar11.func_145769_d(aVar11.func_145782_y() + var12);
             }
         }
 
@@ -797,7 +672,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             if (var4)
             {
                 GameSettings var5 = this.field_147299_f.gameSettings;
-                this.field_147299_f.ingameGUI.func_110326_a(I18n.getStringParams("mount.onboard", new Object[] {GameSettings.getKeyDisplayString(var5.keyBindSneak.func_151463_i())}), false);
+                this.field_147299_f.ingameGUI.func_110326_a(I18n.getStringParams("mount.onboard", GameSettings.getKeyDisplayString(var5.keyBindSneak.func_151463_i())), false);
             }
         }
         else if (p_147243_1_.func_149404_c() == 1 && var2 != null && var2 instanceof EntityLiving)
@@ -855,7 +730,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
     public void func_147283_a(S27PacketExplosion p_147283_1_)
     {
-        Explosion var2 = new Explosion(this.field_147299_f.theWorld, (Entity)null, p_147283_1_.func_149148_f(), p_147283_1_.func_149143_g(), p_147283_1_.func_149145_h(), p_147283_1_.func_149146_i());
+        Explosion var2 = new Explosion(this.field_147299_f.theWorld, null, p_147283_1_.func_149148_f(), p_147283_1_.func_149143_g(), p_147283_1_.func_149145_h(), p_147283_1_.func_149146_i());
         var2.affectedBlockPositions = p_147283_1_.func_149150_j();
         var2.doExplosionB(true);
         this.field_147299_f.thePlayer.motionX += (double)p_147283_1_.func_149149_c();
@@ -1190,7 +1065,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
         if (var3 >= 0 && var3 < S2BPacketChangeGameState.field_149142_a.length && S2BPacketChangeGameState.field_149142_a[var3] != null)
         {
-            var2.func_146105_b(new ChatComponentTranslation(S2BPacketChangeGameState.field_149142_a[var3], new Object[0]));
+            var2.func_146105_b(new ChatComponentTranslation(S2BPacketChangeGameState.field_149142_a[var3]));
         }
 
         if (var3 == 1)
@@ -1221,15 +1096,15 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             }
             else if (var4 == 101.0F)
             {
-                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.movement", new Object[] {GameSettings.getKeyDisplayString(var6.keyBindForward.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindLeft.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindBack.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindRight.func_151463_i())}));
+                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.movement", GameSettings.getKeyDisplayString(var6.keyBindForward.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindLeft.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindBack.func_151463_i()), GameSettings.getKeyDisplayString(var6.keyBindRight.func_151463_i())));
             }
             else if (var4 == 102.0F)
             {
-                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.jump", new Object[] {GameSettings.getKeyDisplayString(var6.keyBindJump.func_151463_i())}));
+                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.jump", GameSettings.getKeyDisplayString(var6.keyBindJump.func_151463_i())));
             }
             else if (var4 == 103.0F)
             {
-                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.inventory", new Object[] {GameSettings.getKeyDisplayString(var6.field_151445_Q.func_151463_i())}));
+                this.field_147299_f.ingameGUI.func_146158_b().func_146227_a(new ChatComponentTranslation("demo.help.inventory", GameSettings.getKeyDisplayString(var6.field_151445_Q.func_151463_i())));
             }
         }
         else if (var3 == 6)
@@ -1275,7 +1150,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         {
             Entry var4 = (Entry)var3.next();
             var5 = (StatBase)var4.getKey();
-            var6 = ((Integer)var4.getValue()).intValue();
+            var6 = (Integer) var4.getValue();
 
             if (var5.isAchievement() && var6 > 0)
             {
@@ -1446,9 +1321,9 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
                                 this.field_146297_k.getResourcePackRepository().func_148526_a(var8);
                             }
 
-                            this.field_146297_k.func_147108_a((GuiScreen)null);
+                            this.field_146297_k.func_147108_a(null);
                         }
-                    }, I18n.getStringParams("multiplayer.texturePrompt.line1", new Object[0]), I18n.getStringParams("multiplayer.texturePrompt.line2", new Object[0]), 0));
+                    }, I18n.getStringParams("multiplayer.texturePrompt.line1"), I18n.getStringParams("multiplayer.texturePrompt.line2"), 0));
                 }
             }
         }
@@ -1501,7 +1376,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
         if (p_147254_1_.func_149370_d().length() == 0)
         {
-            var2.func_96530_a(p_147254_1_.func_149371_c(), (ScoreObjective)null);
+            var2.func_96530_a(p_147254_1_.func_149371_c(), null);
         }
         else
         {
@@ -1600,25 +1475,20 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
             else
             {
                 BaseAttributeMap var3 = ((EntityLivingBase)var2).getAttributeMap();
-                Iterator var4 = p_147290_1_.func_149441_d().iterator();
 
-                while (var4.hasNext())
-                {
-                    S20PacketEntityProperties.Snapshot var5 = (S20PacketEntityProperties.Snapshot)var4.next();
+                for (Object o : p_147290_1_.func_149441_d()) {
+                    S20PacketEntityProperties.Snapshot var5 = (S20PacketEntityProperties.Snapshot) o;
                     AttributeInstance var6 = var3.getAttributeInstanceByName(var5.func_151409_a());
 
-                    if (var6 == null)
-                    {
+                    if (var6 == null) {
                         var6 = var3.func_111150_b(new RangedAttribute(var5.func_151409_a(), 0.0D, 2.2250738585072014E-308D, Double.MAX_VALUE));
                     }
 
                     var6.setAttribute(var5.func_151410_b());
                     var6.func_142049_d();
-                    Iterator var7 = var5.func_151408_c().iterator();
 
-                    while (var7.hasNext())
-                    {
-                        AttributeModifier var8 = (AttributeModifier)var7.next();
+                    for (Object o1 : var5.func_151408_c()) {
+                        AttributeModifier var8 = (AttributeModifier) o1;
                         var6.applyModifier(var8);
                     }
                 }

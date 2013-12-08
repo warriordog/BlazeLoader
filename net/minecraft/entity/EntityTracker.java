@@ -1,36 +1,16 @@
 package net.minecraft.entity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityEnderEye;
-import net.minecraft.entity.item.EntityEnderPearl;
-import net.minecraft.entity.item.EntityExpBottle;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.item.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityEgg;
-import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntitySmallFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.network.Packet;
 import net.minecraft.util.IntHashMap;
 import net.minecraft.util.ReportedException;
@@ -38,7 +18,11 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Tracks an entity and manages client updates.
@@ -72,14 +56,11 @@ public class EntityTracker
         {
             this.addEntityToTracker(par1Entity, 512, 2);
             EntityPlayerMP var2 = (EntityPlayerMP)par1Entity;
-            Iterator var3 = this.trackedEntities.iterator();
 
-            while (var3.hasNext())
-            {
-                EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
 
-                if (var4.myEntity != var2)
-                {
+                if (var4.myEntity != var2) {
                     var4.tryStartWachingThis(var2);
                 }
             }
@@ -248,11 +229,9 @@ public class EntityTracker
         if (par1Entity instanceof EntityPlayerMP)
         {
             EntityPlayerMP var2 = (EntityPlayerMP)par1Entity;
-            Iterator var3 = this.trackedEntities.iterator();
 
-            while (var3.hasNext())
-            {
-                EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
                 var4.removeFromWatchingList(var2);
             }
         }
@@ -269,30 +248,23 @@ public class EntityTracker
     public void updateTrackedEntities()
     {
         ArrayList var1 = new ArrayList();
-        Iterator var2 = this.trackedEntities.iterator();
 
-        while (var2.hasNext())
-        {
-            EntityTrackerEntry var3 = (EntityTrackerEntry)var2.next();
+        for (Object trackedEntity1 : this.trackedEntities) {
+            EntityTrackerEntry var3 = (EntityTrackerEntry) trackedEntity1;
             var3.sendLocationToAllClients(this.theWorld.playerEntities);
 
-            if (var3.playerEntitiesUpdated && var3.myEntity instanceof EntityPlayerMP)
-            {
-                var1.add((EntityPlayerMP)var3.myEntity);
+            if (var3.playerEntitiesUpdated && var3.myEntity instanceof EntityPlayerMP) {
+                var1.add(var3.myEntity);
             }
         }
 
-        for (int var6 = 0; var6 < var1.size(); ++var6)
-        {
-            EntityPlayerMP var7 = (EntityPlayerMP)var1.get(var6);
-            Iterator var4 = this.trackedEntities.iterator();
+        for (Object aVar1 : var1) {
+            EntityPlayerMP var7 = (EntityPlayerMP) aVar1;
 
-            while (var4.hasNext())
-            {
-                EntityTrackerEntry var5 = (EntityTrackerEntry)var4.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry var5 = (EntityTrackerEntry) trackedEntity;
 
-                if (var5.myEntity != var7)
-                {
+                if (var5.myEntity != var7) {
                     var5.tryStartWachingThis(var7);
                 }
             }
@@ -324,25 +296,20 @@ public class EntityTracker
 
     public void removePlayerFromTrackers(EntityPlayerMP par1EntityPlayerMP)
     {
-        Iterator var2 = this.trackedEntities.iterator();
 
-        while (var2.hasNext())
-        {
-            EntityTrackerEntry var3 = (EntityTrackerEntry)var2.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry var3 = (EntityTrackerEntry) trackedEntity;
             var3.removePlayerFromTracker(par1EntityPlayerMP);
         }
     }
 
     public void func_85172_a(EntityPlayerMP par1EntityPlayerMP, Chunk par2Chunk)
     {
-        Iterator var3 = this.trackedEntities.iterator();
 
-        while (var3.hasNext())
-        {
-            EntityTrackerEntry var4 = (EntityTrackerEntry)var3.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry var4 = (EntityTrackerEntry) trackedEntity;
 
-            if (var4.myEntity != par1EntityPlayerMP && var4.myEntity.chunkCoordX == par2Chunk.xPosition && var4.myEntity.chunkCoordZ == par2Chunk.zPosition)
-            {
+            if (var4.myEntity != par1EntityPlayerMP && var4.myEntity.chunkCoordX == par2Chunk.xPosition && var4.myEntity.chunkCoordZ == par2Chunk.zPosition) {
                 var4.tryStartWachingThis(par1EntityPlayerMP);
             }
         }

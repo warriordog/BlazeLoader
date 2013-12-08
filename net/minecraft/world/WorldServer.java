@@ -187,10 +187,9 @@ public class WorldServer extends World {
      */
     public void updateAllPlayersSleepingFlag() {
         this.allPlayersSleeping = !this.playerEntities.isEmpty();
-        Iterator var1 = this.playerEntities.iterator();
 
-        while (var1.hasNext()) {
-            EntityPlayer var2 = (EntityPlayer) var1.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var2 = (EntityPlayer) playerEntity;
 
             if (!var2.isPlayerSleeping()) {
                 this.allPlayersSleeping = false;
@@ -201,10 +200,9 @@ public class WorldServer extends World {
 
     protected void wakeAllPlayers() {
         this.allPlayersSleeping = false;
-        Iterator var1 = this.playerEntities.iterator();
 
-        while (var1.hasNext()) {
-            EntityPlayer var2 = (EntityPlayer) var1.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var2 = (EntityPlayer) playerEntity;
 
             if (var2.isPlayerSleeping()) {
                 var2.wakeUpPlayer(false, false, true);
@@ -273,10 +271,9 @@ public class WorldServer extends World {
         super.func_147456_g();
         int var1 = 0;
         int var2 = 0;
-        Iterator var3 = this.activeChunkSet.iterator();
 
-        while (var3.hasNext()) {
-            ChunkCoordIntPair var4 = (ChunkCoordIntPair) var3.next();
+        for (Object anActiveChunkSet : this.activeChunkSet) {
+            ChunkCoordIntPair var4 = (ChunkCoordIntPair) anActiveChunkSet;
             int var5 = var4.chunkXPos * 16;
             int var6 = var4.chunkZPos * 16;
             this.theProfiler.startSection("getChunk");
@@ -585,8 +582,8 @@ public class WorldServer extends World {
     public List func_147486_a(int p_147486_1_, int p_147486_2_, int p_147486_3_, int p_147486_4_, int p_147486_5_, int p_147486_6_) {
         ArrayList var7 = new ArrayList();
 
-        for (int var8 = 0; var8 < this.field_147482_g.size(); ++var8) {
-            TileEntity var9 = (TileEntity) this.field_147482_g.get(var8);
+        for (Object aField_147482_g : this.field_147482_g) {
+            TileEntity var9 = (TileEntity) aField_147482_g;
 
             if (var9.field_145851_c >= p_147486_1_ && var9.field_145848_d >= p_147486_2_ && var9.field_145849_e >= p_147486_3_ && var9.field_145851_c < p_147486_4_ && var9.field_145848_d < p_147486_5_ && var9.field_145849_e < p_147486_6_) {
                 var7.add(var9);
@@ -731,8 +728,8 @@ public class WorldServer extends World {
         Entity[] var2 = par1Entity.getParts();
 
         if (var2 != null) {
-            for (int var3 = 0; var3 < var2.length; ++var3) {
-                this.entityIdMap.addKey(var2[var3].func_145782_y(), var2[var3]);
+            for (Entity aVar2 : var2) {
+                this.entityIdMap.addKey(aVar2.func_145782_y(), aVar2);
             }
         }
     }
@@ -743,8 +740,8 @@ public class WorldServer extends World {
         Entity[] var2 = par1Entity.getParts();
 
         if (var2 != null) {
-            for (int var3 = 0; var3 < var2.length; ++var3) {
-                this.entityIdMap.removeObject(var2[var3].func_145782_y());
+            for (Entity aVar2 : var2) {
+                this.entityIdMap.removeObject(aVar2.func_145782_y());
             }
         }
     }
@@ -789,10 +786,8 @@ public class WorldServer extends World {
             var11.affectedBlockPositions.clear();
         }
 
-        Iterator var12 = this.playerEntities.iterator();
-
-        while (var12.hasNext()) {
-            EntityPlayer var13 = (EntityPlayer) var12.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer var13 = (EntityPlayer) playerEntity;
 
             if (var13.getDistanceSq(par2, par4, par6) < 4096.0D) {
                 ((EntityPlayerMP) var13).playerNetServerHandler.func_147359_a(new S27PacketExplosion(par2, par4, par6, par8, var11.affectedBlockPositions, (Vec3) var11.func_77277_b().get(var13)));
@@ -829,10 +824,9 @@ public class WorldServer extends World {
         while (!this.field_147490_S[this.field_147489_T].isEmpty()) {
             int var1 = this.field_147489_T;
             this.field_147489_T ^= 1;
-            Iterator var2 = this.field_147490_S[var1].iterator();
 
-            while (var2.hasNext()) {
-                BlockEventData var3 = (BlockEventData) var2.next();
+            for (Object o : this.field_147490_S[var1]) {
+                BlockEventData var3 = (BlockEventData) o;
 
                 if (this.func_147485_a(var3)) {
                     this.mcServer.getConfigurationManager().func_148541_a((double) var3.func_151340_a(), (double) var3.func_151342_b(), (double) var3.func_151341_c(), 64.0D, this.provider.dimensionId, new S24PacketBlockAction(var3.func_151340_a(), var3.func_151342_b(), var3.func_151341_c(), var3.func_151337_f(), var3.func_151339_d(), var3.func_151338_e()));
@@ -910,8 +904,8 @@ public class WorldServer extends World {
     public void func_147487_a(String p_147487_1_, double p_147487_2_, double p_147487_4_, double p_147487_6_, int p_147487_8_, double p_147487_9_, double p_147487_11_, double p_147487_13_, double p_147487_15_) {
         S2APacketParticles var17 = new S2APacketParticles(p_147487_1_, (float) p_147487_2_, (float) p_147487_4_, (float) p_147487_6_, (float) p_147487_9_, (float) p_147487_11_, (float) p_147487_13_, (float) p_147487_15_, p_147487_8_);
 
-        for (int var18 = 0; var18 < this.playerEntities.size(); ++var18) {
-            EntityPlayerMP var19 = (EntityPlayerMP) this.playerEntities.get(var18);
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayerMP var19 = (EntityPlayerMP) playerEntity;
             ChunkCoordinates var20 = var19.getPlayerCoordinates();
             double var21 = p_147487_2_ - (double) var20.posX;
             double var23 = p_147487_4_ - (double) var20.posY;

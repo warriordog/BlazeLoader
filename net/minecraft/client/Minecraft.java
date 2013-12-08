@@ -1,7 +1,6 @@
 package net.minecraft.client;
 
 import com.google.common.collect.Lists;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
@@ -107,7 +106,7 @@ public class Minecraft implements IPlayerUsage
 
     /** A 10MiB preallocation to ensure the heap is reasonably sized. */
     public static byte[] memoryReserve = new byte[10485760];
-    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode[] {new DisplayMode(2560, 1600), new DisplayMode(2880, 1800)});
+    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
     private final File fileResourcepacks;
     private ServerData currentServerData;
 
@@ -318,9 +317,8 @@ public class Minecraft implements IPlayerUsage
                 var3.set(var1, p_147105_0_);
             }
         }
-        catch (Exception var4)
+        catch (Exception ignored)
         {
-            ;
         }
     }
 
@@ -342,9 +340,8 @@ public class Minecraft implements IPlayerUsage
                     {
                         Thread.sleep(2147483647L);
                     }
-                    catch (InterruptedException var2)
+                    catch (InterruptedException ignored)
                     {
-                        ;
                     }
                 }
             }
@@ -459,9 +456,8 @@ public class Minecraft implements IPlayerUsage
             {
                 Thread.sleep(1000L);
             }
-            catch (InterruptedException var4)
+            catch (InterruptedException ignored)
             {
-                ;
             }
 
             if (this.fullscreen)
@@ -516,7 +512,7 @@ public class Minecraft implements IPlayerUsage
             {
                 try
                 {
-                    return String.format(par1Str, new Object[] {GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.field_151445_Q.func_151463_i())});
+                    return String.format(par1Str, GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.field_151445_Q.func_151463_i()));
                 }
                 catch (Exception var3)
                 {
@@ -572,11 +568,9 @@ public class Minecraft implements IPlayerUsage
     public void refreshResources()
     {
         ArrayList var1 = Lists.newArrayList(this.defaultResourcePacks);
-        Iterator var2 = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        while (var2.hasNext())
-        {
-            ResourcePackRepository.Entry var3 = (ResourcePackRepository.Entry)var2.next();
+        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
+            ResourcePackRepository.Entry var3 = (ResourcePackRepository.Entry) o;
             var1.add(var3.getResourcePack());
         }
 
@@ -602,7 +596,7 @@ public class Minecraft implements IPlayerUsage
     private ByteBuffer readImage(File par1File) throws IOException
     {
         BufferedImage var2 = ImageIO.read(par1File);
-        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), (int[])null, 0, var2.getWidth());
+        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
         ByteBuffer var4 = ByteBuffer.allocate(4 * var3.length);
         int[] var5 = var3;
         int var6 = var3.length;
@@ -625,36 +619,29 @@ public class Minecraft implements IPlayerUsage
 
         if (!var1.contains(var2) && Util.getOSType() == Util.EnumOS.MACOS)
         {
-            Iterator var3 = macDisplayModes.iterator();
 
-            while (var3.hasNext())
-            {
-                DisplayMode var4 = (DisplayMode)var3.next();
+            for (Object macDisplayMode : macDisplayModes) {
+                DisplayMode var4 = (DisplayMode) macDisplayMode;
                 boolean var5 = true;
                 Iterator var6 = var1.iterator();
                 DisplayMode var7;
 
-                while (var6.hasNext())
-                {
-                    var7 = (DisplayMode)var6.next();
+                while (var6.hasNext()) {
+                    var7 = (DisplayMode) var6.next();
 
-                    if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() && var7.getHeight() == var4.getHeight())
-                    {
+                    if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() && var7.getHeight() == var4.getHeight()) {
                         var5 = false;
                         break;
                     }
                 }
 
-                if (!var5)
-                {
+                if (!var5) {
                     var6 = var1.iterator();
 
-                    while (var6.hasNext())
-                    {
-                        var7 = (DisplayMode)var6.next();
+                    while (var6.hasNext()) {
+                        var7 = (DisplayMode) var6.next();
 
-                        if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() / 2 && var7.getHeight() == var4.getHeight() / 2)
-                        {
+                        if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() / 2 && var7.getHeight() == var4.getHeight() / 2) {
                             var2 = var7;
                             break;
                         }
@@ -722,10 +709,10 @@ public class Minecraft implements IPlayerUsage
         float var8 = 0.00390625F;
         Tessellator var9 = Tessellator.instance;
         var9.startDrawingQuads();
-        var9.addVertexWithUV((double)(par1 + 0), (double)(par2 + par6), 0.0D, (double)((float)(par3 + 0) * var7), (double)((float)(par4 + par6) * var8));
+        var9.addVertexWithUV((double)(par1), (double)(par2 + par6), 0.0D, (double)((float)(par3) * var7), (double)((float)(par4 + par6) * var8));
         var9.addVertexWithUV((double)(par1 + par5), (double)(par2 + par6), 0.0D, (double)((float)(par3 + par5) * var7), (double)((float)(par4 + par6) * var8));
-        var9.addVertexWithUV((double)(par1 + par5), (double)(par2 + 0), 0.0D, (double)((float)(par3 + par5) * var7), (double)((float)(par4 + 0) * var8));
-        var9.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), 0.0D, (double)((float)(par3 + 0) * var7), (double)((float)(par4 + 0) * var8));
+        var9.addVertexWithUV((double)(par1 + par5), (double)(par2), 0.0D, (double)((float)(par3 + par5) * var7), (double)((float)(par4) * var8));
+        var9.addVertexWithUV((double)(par1), (double)(par2), 0.0D, (double)((float)(par3) * var7), (double)((float)(par4) * var8));
         var9.draw();
     }
 
@@ -779,7 +766,7 @@ public class Minecraft implements IPlayerUsage
 	            this.ingameGUI.func_146158_b().func_146231_a();
 	        }
 	
-	        this.currentScreen = (GuiScreen)p_147108_1_;
+	        this.currentScreen = p_147108_1_;
 	
 	        if (p_147108_1_ != null)
 	        {
@@ -787,7 +774,7 @@ public class Minecraft implements IPlayerUsage
 	            ScaledResolution var2 = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
 	            int var3 = var2.getScaledWidth();
 	            int var4 = var2.getScaledHeight();
-	            ((GuiScreen)p_147108_1_).func_146280_a(this, var3, var4);
+	            p_147108_1_.func_146280_a(this, var3, var4);
 	            this.skipRenderWorld = false;
 	        }
 	        else
@@ -827,20 +814,18 @@ public class Minecraft implements IPlayerUsage
 
             try
             {
-                this.loadWorld((WorldClient)null);
+                this.loadWorld(null);
             }
-            catch (Throwable var7)
+            catch (Throwable ignored)
             {
-                ;
             }
 
             try
             {
                 GLAllocation.deleteTexturesAndDisplayLists();
             }
-            catch (Throwable var6)
+            catch (Throwable ignored)
             {
-                ;
             }
 
             this.field_147127_av.func_147685_d();
@@ -1111,9 +1096,8 @@ public class Minecraft implements IPlayerUsage
             memoryReserve = new byte[0];
             this.renderGlobal.deleteAllDisplayLists();
         }
-        catch (Throwable var4)
+        catch (Throwable ignored)
         {
-            ;
         }
 
         try
@@ -1122,19 +1106,17 @@ public class Minecraft implements IPlayerUsage
             AxisAlignedBB.getAABBPool().clearPool();
             this.theWorld.getWorldVec3Pool().clearAndFreeCache();
         }
-        catch (Throwable var3)
+        catch (Throwable ignored)
         {
-            ;
         }
 
         try
         {
             System.gc();
-            this.loadWorld((WorldClient)null);
+            this.loadWorld(null);
         }
-        catch (Throwable var2)
+        catch (Throwable ignored)
         {
-            ;
         }
 
         System.gc();
@@ -1231,37 +1213,34 @@ public class Minecraft implements IPlayerUsage
             double var9 = 0.0D;
             int var13;
 
-            for (int var11 = 0; var11 < var3.size(); ++var11)
-            {
-                Profiler.Result var12 = (Profiler.Result)var3.get(var11);
+            for (Object aVar3 : var3) {
+                Profiler.Result var12 = (Profiler.Result) aVar3;
                 var13 = MathHelper.floor_double(var12.field_76332_a / 4.0D) + 1;
                 var5.startDrawing(6);
                 var5.setColorOpaque_I(var12.func_76329_a());
-                var5.addVertex((double)var7, (double)var8, 0.0D);
+                var5.addVertex((double) var7, (double) var8, 0.0D);
                 int var14;
                 float var15;
                 float var17;
                 float var16;
 
-                for (var14 = var13; var14 >= 0; --var14)
-                {
-                    var15 = (float)((var9 + var12.field_76332_a * (double)var14 / (double)var13) * Math.PI * 2.0D / 100.0D);
-                    var16 = MathHelper.sin(var15) * (float)var6;
-                    var17 = MathHelper.cos(var15) * (float)var6 * 0.5F;
-                    var5.addVertex((double)((float)var7 + var16), (double)((float)var8 - var17), 0.0D);
+                for (var14 = var13; var14 >= 0; --var14) {
+                    var15 = (float) ((var9 + var12.field_76332_a * (double) var14 / (double) var13) * Math.PI * 2.0D / 100.0D);
+                    var16 = MathHelper.sin(var15) * (float) var6;
+                    var17 = MathHelper.cos(var15) * (float) var6 * 0.5F;
+                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17), 0.0D);
                 }
 
                 var5.draw();
                 var5.startDrawing(5);
                 var5.setColorOpaque_I((var12.func_76329_a() & 16711422) >> 1);
 
-                for (var14 = var13; var14 >= 0; --var14)
-                {
-                    var15 = (float)((var9 + var12.field_76332_a * (double)var14 / (double)var13) * Math.PI * 2.0D / 100.0D);
-                    var16 = MathHelper.sin(var15) * (float)var6;
-                    var17 = MathHelper.cos(var15) * (float)var6 * 0.5F;
-                    var5.addVertex((double)((float)var7 + var16), (double)((float)var8 - var17), 0.0D);
-                    var5.addVertex((double)((float)var7 + var16), (double)((float)var8 - var17 + 10.0F), 0.0D);
+                for (var14 = var13; var14 >= 0; --var14) {
+                    var15 = (float) ((var9 + var12.field_76332_a * (double) var14 / (double) var13) * Math.PI * 2.0D / 100.0D);
+                    var16 = MathHelper.sin(var15) * (float) var6;
+                    var17 = MathHelper.cos(var15) * (float) var6 * 0.5F;
+                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17), 0.0D);
+                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17 + 10.0F), 0.0D);
                 }
 
                 var5.draw();
@@ -1335,7 +1314,7 @@ public class Minecraft implements IPlayerUsage
             {
                 this.inGameHasFocus = true;
                 this.mouseHelper.grabMouseCursor();
-                this.func_147108_a((GuiScreen)null);
+                this.func_147108_a(null);
                 this.leftClickCounter = 10000;
             }
         }
@@ -1646,7 +1625,7 @@ public class Minecraft implements IPlayerUsage
         {
             if (this.thePlayer.getHealth() <= 0.0F)
             {
-                this.func_147108_a((GuiScreen)null);
+                this.func_147108_a(null);
             }
             else if (this.thePlayer.isPlayerSleeping() && this.theWorld != null)
             {
@@ -1655,7 +1634,7 @@ public class Minecraft implements IPlayerUsage
         }
         else if (this.currentScreen != null && this.currentScreen instanceof GuiSleepMP && !this.thePlayer.isPlayerSleeping())
         {
-            this.func_147108_a((GuiScreen)null);
+            this.func_147108_a(null);
         }
 
         if (this.currentScreen != null)
@@ -1966,7 +1945,6 @@ public class Minecraft implements IPlayerUsage
                     {
                         while (this.gameSettings.keyBindUseItem.func_151468_f())
                         {
-                            ;
                         }
 
                         while (true)
@@ -2111,7 +2089,7 @@ public class Minecraft implements IPlayerUsage
      */
     public void launchIntegratedServer(String par1Str, String par2Str, WorldSettings par3WorldSettings)
     {
-        this.loadWorld((WorldClient)null);
+        this.loadWorld(null);
         System.gc();
         ISaveHandler var4 = this.saveLoader.getSaveLoader(par1Str, false);
         WorldInfo var5 = var4.loadWorldInfo();
@@ -2142,7 +2120,7 @@ public class Minecraft implements IPlayerUsage
             throw new ReportedException(var7);
         }
 
-        this.loadingScreen.displayProgressMessage(I18n.getStringParams("menu.loadingLevel", new Object[0]));
+        this.loadingScreen.displayProgressMessage(I18n.getStringParams("menu.loadingLevel"));
 
         while (!this.theIntegratedServer.serverIsInRunLoop())
         {
@@ -2150,7 +2128,7 @@ public class Minecraft implements IPlayerUsage
 
             if (var6 != null)
             {
-                this.loadingScreen.resetProgresAndWorkingMessage(I18n.getStringParams(var6, new Object[0]));
+                this.loadingScreen.resetProgresAndWorkingMessage(I18n.getStringParams(var6));
             }
             else
             {
@@ -2161,18 +2139,17 @@ public class Minecraft implements IPlayerUsage
             {
                 Thread.sleep(200L);
             }
-            catch (InterruptedException var9)
+            catch (InterruptedException ignored)
             {
-                ;
             }
         }
 
-        this.func_147108_a((GuiScreen)null);
+        this.func_147108_a(null);
         SocketAddress var11 = this.theIntegratedServer.func_147137_ag().func_151270_a();
         INetworkManager var12 = INetworkManager.func_150722_a(var11);
-        var12.func_150719_a(new NetHandlerLoginClient(var12, this, (GuiScreen)null));
-        var12.func_150725_a(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN), new GenericFutureListener[0]);
-        var12.func_150725_a(new C00PacketLoginStart(this.getSession().func_148256_e()), new GenericFutureListener[0]);
+        var12.func_150719_a(new NetHandlerLoginClient(var12, this, null));
+        var12.func_150725_a(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN));
+        var12.func_150725_a(new C00PacketLoginStart(this.getSession().func_148256_e()));
         this.myNetworkManager = var12;
     }
 
@@ -2225,7 +2202,7 @@ public class Minecraft implements IPlayerUsage
             }
 
             this.mcResourcePackRepository.func_148529_f();
-            this.setServerData((ServerData)null);
+            this.setServerData(null);
             this.integratedServerIsRunning = false;
         }
 
@@ -2333,7 +2310,7 @@ public class Minecraft implements IPlayerUsage
 
         if (this.currentScreen instanceof GuiGameOver)
         {
-            this.func_147108_a((GuiScreen)null);
+            this.func_147108_a(null);
         }
     }
 
@@ -2610,18 +2587,16 @@ public class Minecraft implements IPlayerUsage
 
     public void addServerStatsToSnooper(PlayerUsageSnooper par1PlayerUsageSnooper)
     {
-        par1PlayerUsageSnooper.addData("fps", Integer.valueOf(debugFPS));
-        par1PlayerUsageSnooper.addData("vsync_enabled", Boolean.valueOf(this.gameSettings.enableVsync));
-        par1PlayerUsageSnooper.addData("display_frequency", Integer.valueOf(Display.getDisplayMode().getFrequency()));
+        par1PlayerUsageSnooper.addData("fps", debugFPS);
+        par1PlayerUsageSnooper.addData("vsync_enabled", this.gameSettings.enableVsync);
+        par1PlayerUsageSnooper.addData("display_frequency", Display.getDisplayMode().getFrequency());
         par1PlayerUsageSnooper.addData("display_type", this.fullscreen ? "fullscreen" : "windowed");
-        par1PlayerUsageSnooper.addData("run_time", Long.valueOf((MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.func_130105_g()) / 60L * 1000L));
-        par1PlayerUsageSnooper.addData("resource_packs", Integer.valueOf(this.mcResourcePackRepository.getRepositoryEntries().size()));
+        par1PlayerUsageSnooper.addData("run_time", (MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.func_130105_g()) / 60L * 1000L);
+        par1PlayerUsageSnooper.addData("resource_packs", this.mcResourcePackRepository.getRepositoryEntries().size());
         int var2 = 0;
-        Iterator var3 = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        while (var3.hasNext())
-        {
-            ResourcePackRepository.Entry var4 = (ResourcePackRepository.Entry)var3.next();
+        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
+            ResourcePackRepository.Entry var4 = (ResourcePackRepository.Entry) o;
             par1PlayerUsageSnooper.addData("resource_pack[" + var2++ + "]", var4.getResourcePackName());
         }
 
@@ -2638,24 +2613,24 @@ public class Minecraft implements IPlayerUsage
         par1PlayerUsageSnooper.addData("client_brand", ClientBrandRetriever.getClientModName());
         par1PlayerUsageSnooper.addData("launched_version", this.launchedVersion);
         ContextCapabilities var2 = GLContext.getCapabilities();
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", Boolean.valueOf(var2.GL_ARB_multitexture));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", Boolean.valueOf(var2.GL_ARB_multisample));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", Boolean.valueOf(var2.GL_ARB_texture_cube_map));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", Boolean.valueOf(var2.GL_ARB_vertex_blend));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", Boolean.valueOf(var2.GL_ARB_matrix_palette));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", Boolean.valueOf(var2.GL_ARB_vertex_program));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", Boolean.valueOf(var2.GL_ARB_vertex_shader));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", Boolean.valueOf(var2.GL_ARB_fragment_program));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", Boolean.valueOf(var2.GL_ARB_fragment_shader));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", Boolean.valueOf(var2.GL_ARB_shader_objects));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", Boolean.valueOf(var2.GL_ARB_vertex_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", Boolean.valueOf(var2.GL_ARB_framebuffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", Boolean.valueOf(var2.GL_ARB_pixel_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", Boolean.valueOf(var2.GL_ARB_uniform_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", Boolean.valueOf(var2.GL_ARB_texture_non_power_of_two));
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS)));
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)));
-        par1PlayerUsageSnooper.addData("gl_max_texture_size", Integer.valueOf(getGLMaximumTextureSize()));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", var2.GL_ARB_multitexture);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", var2.GL_ARB_multisample);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", var2.GL_ARB_texture_cube_map);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", var2.GL_ARB_vertex_blend);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", var2.GL_ARB_matrix_palette);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", var2.GL_ARB_vertex_program);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", var2.GL_ARB_vertex_shader);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", var2.GL_ARB_fragment_program);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", var2.GL_ARB_fragment_shader);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", var2.GL_ARB_shader_objects);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", var2.GL_ARB_vertex_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", var2.GL_ARB_framebuffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", var2.GL_ARB_pixel_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", var2.GL_ARB_uniform_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", var2.GL_ARB_texture_non_power_of_two);
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS));
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS));
+        par1PlayerUsageSnooper.addData("gl_max_texture_size", getGLMaximumTextureSize());
     }
 
     /**
@@ -2822,18 +2797,16 @@ public class Minecraft implements IPlayerUsage
             {
                 field_151437_a[MovingObjectPosition.MovingObjectType.ENTITY.ordinal()] = 1;
             }
-            catch (NoSuchFieldError var2)
+            catch (NoSuchFieldError ignored)
             {
-                ;
             }
 
             try
             {
                 field_151437_a[MovingObjectPosition.MovingObjectType.BLOCK.ordinal()] = 2;
             }
-            catch (NoSuchFieldError var1)
+            catch (NoSuchFieldError ignored)
             {
-                ;
             }
         }
     }

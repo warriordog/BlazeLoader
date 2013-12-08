@@ -1,70 +1,20 @@
 package net.minecraft.entity;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 import net.minecraft.entity.ai.EntityMinecartMobSpawner;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.item.EntityEnderEye;
-import net.minecraft.entity.item.EntityEnderPearl;
-import net.minecraft.entity.item.EntityExpBottle;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.item.EntityFireworkRocket;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecartChest;
-import net.minecraft.entity.item.EntityMinecartEmpty;
-import net.minecraft.entity.item.EntityMinecartFurnace;
-import net.minecraft.entity.item.EntityMinecartHopper;
-import net.minecraft.entity.item.EntityMinecartTNT;
-import net.minecraft.entity.item.EntityPainting;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCaveSpider;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityGiantZombie;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityBat;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.entity.projectile.EntityLargeFireball;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntitySmallFireball;
-import net.minecraft.entity.projectile.EntitySnowball;
-import net.minecraft.entity.projectile.EntityWitherSkull;
+import net.minecraft.entity.item.*;
+import net.minecraft.entity.monster.*;
+import net.minecraft.entity.passive.*;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 public class EntityList
 {
@@ -96,9 +46,9 @@ public class EntityList
 	{
         stringToClassMapping.put(par1Str, par0Class);
         classToStringMapping.put(par0Class, par1Str);
-        IDtoClassMapping.put(Integer.valueOf(par2), par0Class);
-        classToIDMapping.put(par0Class, Integer.valueOf(par2));
-        stringToIDMapping.put(par1Str, Integer.valueOf(par2));
+        IDtoClassMapping.put(par2, par0Class);
+        classToIDMapping.put(par0Class, par2);
+        stringToIDMapping.put(par1Str, par2);
     }
 
     /**
@@ -107,7 +57,7 @@ public class EntityList
     public static void addMapping(Class par0Class, String par1Str, int par2, int par3, int par4)
     {
         addMapping(par0Class, par1Str, par2);
-        entityEggs.put(Integer.valueOf(par2), new EntityList.EntityEggInfo(par2, par3, par4));
+        entityEggs.put(par2, new EntityList.EntityEggInfo(par2, par3, par4));
     }
 
     /**
@@ -119,11 +69,11 @@ public class EntityList
 
         try
         {
-            Class var3 = (Class)stringToClassMapping.get(par0Str);
+            Class var3 = stringToClassMapping.get(par0Str);
 
             if (var3 != null)
             {
-                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(par1World);
             }
         }
         catch (Exception var4)
@@ -162,11 +112,11 @@ public class EntityList
 
         try
         {
-            Class var3 = (Class)stringToClassMapping.get(par0NBTTagCompound.getString("id"));
+            Class var3 = stringToClassMapping.get(par0NBTTagCompound.getString("id"));
 
             if (var3 != null)
             {
-                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(par1World);
             }
         }
         catch (Exception var4)
@@ -199,7 +149,7 @@ public class EntityList
 
             if (var3 != null)
             {
-                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(par1World);
             }
         }
         catch (Exception var4)
@@ -221,7 +171,7 @@ public class EntityList
     public static int getEntityID(Entity par0Entity)
     {
         Class var1 = par0Entity.getClass();
-        return classToIDMapping.containsKey(var1) ? ((Integer)classToIDMapping.get(var1)).intValue() : 0;
+        return classToIDMapping.containsKey(var1) ? (Integer) classToIDMapping.get(var1) : 0;
     }
 
     /**
@@ -229,7 +179,7 @@ public class EntityList
      */
     public static Class getClassFromID(int par0)
     {
-        return (Class)IDtoClassMapping.get(Integer.valueOf(par0));
+        return IDtoClassMapping.get(par0);
     }
 
     /**
@@ -237,7 +187,7 @@ public class EntityList
      */
     public static String getEntityString(Entity par0Entity)
     {
-        return (String)classToStringMapping.get(par0Entity.getClass());
+        return classToStringMapping.get(par0Entity.getClass());
     }
 
     /**
@@ -246,7 +196,7 @@ public class EntityList
     public static String getStringFromID(int par0)
     {
         Class var1 = getClassFromID(par0);
-        return var1 != null ? (String)classToStringMapping.get(var1) : null;
+        return var1 != null ? classToStringMapping.get(var1) : null;
     }
 
     public static void func_151514_a() {}

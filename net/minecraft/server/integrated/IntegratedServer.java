@@ -1,9 +1,6 @@
 package net.minecraft.server.integrated;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.concurrent.Callable;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ThreadLanServerPing;
@@ -14,18 +11,16 @@ import net.minecraft.profiler.PlayerUsageSnooper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.CryptManager;
 import net.minecraft.util.HttpUtil;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.WorldManager;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldServerMulti;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
+import net.minecraft.world.*;
 import net.minecraft.world.demo.DemoWorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.Callable;
+
 /**
  * The single-player server.  Replaces IntegratedServerProxy.
  */
@@ -245,9 +240,8 @@ public class IntegratedServer extends MinecraftServer
             {
                 var3 = HttpUtil.func_76181_a();
             }
-            catch (IOException var5)
+            catch (IOException ignored)
             {
-                ;
             }
 
             if (var3 <= 0)
@@ -255,7 +249,7 @@ public class IntegratedServer extends MinecraftServer
                 var3 = 25564;
             }
 
-            this.func_147137_ag().func_151265_a((InetAddress)null, var3);
+            this.func_147137_ag().func_151265_a(null, var3);
             field_147148_h.info("Started on " + var3);
             this.isPublic = true;
             this.lanServerPing = new ThreadLanServerPing(this.getMOTD(), var3 + "");

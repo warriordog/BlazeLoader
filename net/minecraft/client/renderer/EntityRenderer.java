@@ -1,11 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.google.gson.JsonSyntaxException;
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -34,13 +30,7 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MouseFilter;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.biome.BiomeGenBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +39,12 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.Project;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+
+import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Callable;
 public class EntityRenderer implements ResourceManagerReloadListener
 {
     private static final Logger field_147710_q = LogManager.getLogger();
@@ -418,41 +413,30 @@ public class EntityRenderer implements ResourceManagerReloadListener
                 List var11 = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.renderViewEntity, this.mc.renderViewEntity.boundingBox.addCoord(var7.xCoord * var2, var7.yCoord * var2, var7.zCoord * var2).expand((double)var10, (double)var10, (double)var10));
                 double var12 = var4;
 
-                for (int var14 = 0; var14 < var11.size(); ++var14)
-                {
-                    Entity var15 = (Entity)var11.get(var14);
+                for (Object aVar11 : var11) {
+                    Entity var15 = (Entity) aVar11;
 
-                    if (var15.canBeCollidedWith())
-                    {
+                    if (var15.canBeCollidedWith()) {
                         float var16 = var15.getCollisionBorderSize();
-                        AxisAlignedBB var17 = var15.boundingBox.expand((double)var16, (double)var16, (double)var16);
+                        AxisAlignedBB var17 = var15.boundingBox.expand((double) var16, (double) var16, (double) var16);
                         MovingObjectPosition var18 = var17.calculateIntercept(var6, var8);
 
-                        if (var17.isVecInside(var6))
-                        {
-                            if (0.0D < var12 || var12 == 0.0D)
-                            {
+                        if (var17.isVecInside(var6)) {
+                            if (0.0D < var12 || var12 == 0.0D) {
                                 this.pointedEntity = var15;
                                 var9 = var18 == null ? var6 : var18.hitVec;
                                 var12 = 0.0D;
                             }
-                        }
-                        else if (var18 != null)
-                        {
+                        } else if (var18 != null) {
                             double var19 = var6.distanceTo(var18.hitVec);
 
-                            if (var19 < var12 || var12 == 0.0D)
-                            {
-                                if (var15 == this.mc.renderViewEntity.ridingEntity)
-                                {
-                                    if (var12 == 0.0D)
-                                    {
+                            if (var19 < var12 || var12 == 0.0D) {
+                                if (var15 == this.mc.renderViewEntity.ridingEntity) {
+                                    if (var12 == 0.0D) {
                                         this.pointedEntity = var15;
                                         var9 = var18.hitVec;
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     this.pointedEntity = var15;
                                     var9 = var18.hitVec;
                                     var12 = var19;
@@ -1189,7 +1173,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
                         private static final String __OBFID = "CL_00000950";
                         public String call()
                         {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", new Object[] {Integer.valueOf(var16), Integer.valueOf(var18), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", var16, var18, Mouse.getX(), Mouse.getY());
                         }
                     });
                     var11.addCrashSectionCallable("Screen size", new Callable()
@@ -1197,7 +1181,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
                         private static final String __OBFID = "CL_00000951";
                         public String call()
                         {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", new Object[] {Integer.valueOf(var13.getScaledWidth()), Integer.valueOf(var13.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(var13.getScaleFactor())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", var13.getScaledWidth(), var13.getScaledHeight(), EntityRenderer.this.mc.displayWidth, EntityRenderer.this.mc.displayHeight, var13.getScaleFactor());
                         }
                     });
                     throw new ReportedException(var10);
