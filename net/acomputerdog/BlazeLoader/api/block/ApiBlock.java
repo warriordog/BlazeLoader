@@ -2,6 +2,8 @@ package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.minecraft.block.Block;
+import net.minecraft.command.NumberInvalidException;
+import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -21,8 +23,8 @@ public class ApiBlock {
      * @param metadata   The block Metadata to set.
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static void setBlock(int world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
-        setBlock(getServerForDimension(world), x, y, z, block, metadata, notifyFlag);
+    public static void setBlockAt(int world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
+        setBlockAt(getServerForDimension(world), x, y, z, block, metadata, notifyFlag);
     }
 
     /**
@@ -36,7 +38,7 @@ public class ApiBlock {
      * @param metadata   The block Metadata to set.
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static void setBlock(World world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
+    public static void setBlockAt(World world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
         world.func_147465_d(x, y, z, block, metadata, notifyFlag);
     }
 
@@ -75,7 +77,7 @@ public class ApiBlock {
      * @param z     The Z-coordinate to get.
      * @return Return the block at the specified location.
      */
-    public static Block getBlock(int world, int x, int y, int z) {
+    public static Block getBlockAt(int world, int x, int y, int z) {
         return getServerForDimension(world).func_147439_a(x, y, z);
     }
 
@@ -88,7 +90,7 @@ public class ApiBlock {
      * @param z     The Z-coordinate to get.
      * @return Return the block at the specified location.
      */
-    public static Block getBlock(World world, int x, int y, int z) {
+    public static Block getBlockAt(World world, int x, int y, int z) {
         return world.func_147439_a(x, y, z);
     }
 
@@ -101,7 +103,42 @@ public class ApiBlock {
      * @param z     The Z-coordinate to get.
      * @return Return the block Metadata at the specified location.
      */
-    public static int getBlockMetadata(int world, int x, int y, int z) {
+    public static int getBlockMetadataAt(int world, int x, int y, int z) {
         return getServerForDimension(world).getBlockMetadata(x, y, z);
+    }
+
+    public static Block getBlockByNameOrId(String identifier) {
+        try {
+            return getBlockById(Integer.parseInt(identifier));
+        } catch (NumberInvalidException e) {
+            return getBlockByName(identifier);
+        }
+    }
+
+    /**
+     * Gets a block by it's name
+     * @param name The name of the block
+     * @return Gets the block defined by param name.
+     */
+    public static Block getBlockByName(String name) {
+        return Block.func_149684_b(name);
+    }
+
+    /**
+     * Gets a block by it's BlockId.
+     * @param id The ID of the block.
+     * @return Return the block defined by param id.
+     */
+    public static Block getBlockById(int id) {
+        return Block.func_149729_e(id);
+    }
+
+    /**
+     * Gets a block by it's item version.
+     * @param item The item to get the block from.
+     * @return Return the block associated with param item.
+     */
+    public static Block getBlockByItem(Item item) {
+        return Block.func_149634_a(item);
     }
 }
