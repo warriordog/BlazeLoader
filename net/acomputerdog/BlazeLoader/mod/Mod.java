@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -228,14 +229,17 @@ public abstract class Mod {
     public void eventTickServerWorld() {
     }
 
+    //TODO rewrite to allow disabling vanilla
+    @Beta(stable = false)
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
-     *
      * @param server The server calling tickBlocksAndAmbiance
      */
     public void eventTickBlocksAndAmbiance(WorldServer server) {
+        this.eventTickBlocksAndAmbiance();
     }
 
+    @Beta(stable = false)
     /**
      * No-args version of eventTickBlocksAndAmbiance(WorldServer, boolean)
      */
