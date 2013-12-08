@@ -169,7 +169,6 @@ public class ModList {
         BlazeLoader.currActiveMod = null;
     }
 
-    //TODO implement
     public static void unloadWorld() {
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
