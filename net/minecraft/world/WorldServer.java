@@ -1,12 +1,6 @@
 package net.minecraft.world;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEventData;
 import net.minecraft.block.material.Material;
@@ -24,25 +18,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
-import net.minecraft.network.play.server.S24PacketBlockAction;
-import net.minecraft.network.play.server.S27PacketExplosion;
-import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.network.play.server.S2BPacketChangeGameState;
-import net.minecraft.network.play.server.S2CPacketSpawnGlobalEntity;
+import net.minecraft.network.play.server.*;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.scoreboard.ScoreboardSaveData;
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.util.IntHashMap;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.WeightedRandom;
-import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.util.*;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.chunk.Chunk;
@@ -54,7 +37,8 @@ import net.minecraft.world.gen.feature.WorldGeneratorBonusChest;
 import net.minecraft.world.storage.ISaveHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+
+import java.util.*;
 
 /**
  * A server-side world.  Replaces WorldServerProxy.
@@ -308,116 +292,97 @@ public class WorldServer extends World
 
     protected void func_147456_g()
     {
-		if(ModList.eventTickBlocksAndAmbiance(this)){
-	        super.func_147456_g();
-	        int var1 = 0;
-	        int var2 = 0;
-	        Iterator var3 = this.activeChunkSet.iterator();
-	
-	        while (var3.hasNext())
-	        {
-	            ChunkCoordIntPair var4 = (ChunkCoordIntPair)var3.next();
-	            int var5 = var4.chunkXPos * 16;
-	            int var6 = var4.chunkZPos * 16;
-	            this.theProfiler.startSection("getChunk");
-	            Chunk var7 = this.getChunkFromChunkCoords(var4.chunkXPos, var4.chunkZPos);
-	            this.func_147467_a(var5, var6, var7);
-	            this.theProfiler.endStartSection("tickChunk");
-	            var7.func_150804_b(false);
-	            this.theProfiler.endStartSection("thunder");
-	            int var8;
-	            int var9;
-	            int var10;
-	            int var11;
-	
-	            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering())
-	            {
-	                this.updateLCG = this.updateLCG * 3 + 1013904223;
-	                var8 = this.updateLCG >> 2;
-	                var9 = var5 + (var8 & 15);
-	                var10 = var6 + (var8 >> 8 & 15);
-	                var11 = this.getPrecipitationHeight(var9, var10);
-	
-	                if (this.canLightningStrikeAt(var9, var11, var10))
-	                {
-	                    this.addWeatherEffect(new EntityLightningBolt(this, (double)var9, (double)var11, (double)var10));
-	                }
-	            }
-	
-	            this.theProfiler.endStartSection("iceandsnow");
-	
-	
-	            if (this.rand.nextInt(16) == 0)
-	            {
-	                this.updateLCG = this.updateLCG * 3 + 1013904223;
-	                var8 = this.updateLCG >> 2;
-	                var9 = var8 & 15;
-	                var10 = var8 >> 8 & 15;
-	                var11 = this.getPrecipitationHeight(var9 + var5, var10 + var6);
-	
-	                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6))
-	                {
-	                    this.func_147449_b(var9 + var5, var11 - 1, var10 + var6, Blocks.field_150432_aD);
-	                }
-	
-	                if (this.isRaining() && this.func_147478_e(var9 + var5, var11, var10 + var6, true))
-	                {
-	                    this.func_147449_b(var9 + var5, var11, var10 + var6, Blocks.field_150431_aC);
-	                }
-	
-	                if (this.isRaining())
-	                {
-	                    BiomeGenBase var12 = this.getBiomeGenForCoords(var9 + var5, var10 + var6);
-	
-	
-	                    if (var12.canSpawnLightningBolt())
-	                    {
-	                        this.func_147439_a(var9 + var5, var11 - 1, var10 + var6).func_149639_l(this, var9 + var5, var11 - 1, var10 + var6);
-	                    }
-	                }
-	            }
-	
-	            this.theProfiler.endStartSection("tickBlocks");
-	            ExtendedBlockStorage[] var18 = var7.getBlockStorageArray();
-	            var9 = var18.length;
-	
-	            for (var10 = 0; var10 < var9; ++var10)
-	            {
-	                ExtendedBlockStorage var20 = var18[var10];
-	
-	
-	
-	
-	                if (var20 != null && var20.getNeedsRandomTick())
-	                {
-	                    for (int var19 = 0; var19 < 3; ++var19)
-	                    {
-	                        this.updateLCG = this.updateLCG * 3 + 1013904223;
-	                        int var13 = this.updateLCG >> 2;
-	                        int var14 = var13 & 15;
-	                        int var15 = var13 >> 8 & 15;
-	                        int var16 = var13 >> 16 & 15;
-	                        ++var2;
-	                        Block var17 = var20.func_150819_a(var14, var16, var15);
-	
-	
-	
-	
-	
-	                        if (var17.func_149653_t())
-	                        {
-	                            ++var1;
-	                            var17.func_149674_a(this, var14 + var5, var16 + var20.getYLocation(), var15 + var6, this.rand);
-	                        }
-	                    }
-	                }
-	
-	
-	            }
-	
-	            this.theProfiler.endSection();
-	        }
-		}
+        super.func_147456_g();
+        int var1 = 0;
+        int var2 = 0;
+        Iterator var3 = this.activeChunkSet.iterator();
+
+        while (var3.hasNext()) {
+            ChunkCoordIntPair var4 = (ChunkCoordIntPair) var3.next();
+            int var5 = var4.chunkXPos * 16;
+            int var6 = var4.chunkZPos * 16;
+            this.theProfiler.startSection("getChunk");
+            Chunk var7 = this.getChunkFromChunkCoords(var4.chunkXPos, var4.chunkZPos);
+            this.func_147467_a(var5, var6, var7);
+            this.theProfiler.endStartSection("tickChunk");
+            var7.func_150804_b(false);
+            this.theProfiler.endStartSection("thunder");
+            int var8;
+            int var9;
+            int var10;
+            int var11;
+
+            if (this.rand.nextInt(100000) == 0 && this.isRaining() && this.isThundering()) {
+                this.updateLCG = this.updateLCG * 3 + 1013904223;
+                var8 = this.updateLCG >> 2;
+                var9 = var5 + (var8 & 15);
+                var10 = var6 + (var8 >> 8 & 15);
+                var11 = this.getPrecipitationHeight(var9, var10);
+
+                if (this.canLightningStrikeAt(var9, var11, var10)) {
+                    this.addWeatherEffect(new EntityLightningBolt(this, (double) var9, (double) var11, (double) var10));
+                }
+            }
+
+            this.theProfiler.endStartSection("iceandsnow");
+
+
+            if (this.rand.nextInt(16) == 0) {
+                this.updateLCG = this.updateLCG * 3 + 1013904223;
+                var8 = this.updateLCG >> 2;
+                var9 = var8 & 15;
+                var10 = var8 >> 8 & 15;
+                var11 = this.getPrecipitationHeight(var9 + var5, var10 + var6);
+
+                if (this.isBlockFreezableNaturally(var9 + var5, var11 - 1, var10 + var6)) {
+                    this.func_147449_b(var9 + var5, var11 - 1, var10 + var6, Blocks.field_150432_aD);
+                }
+
+                if (this.isRaining() && this.func_147478_e(var9 + var5, var11, var10 + var6, true)) {
+                    this.func_147449_b(var9 + var5, var11, var10 + var6, Blocks.field_150431_aC);
+                }
+
+                if (this.isRaining()) {
+                    BiomeGenBase var12 = this.getBiomeGenForCoords(var9 + var5, var10 + var6);
+
+
+                    if (var12.canSpawnLightningBolt()) {
+                        this.func_147439_a(var9 + var5, var11 - 1, var10 + var6).func_149639_l(this, var9 + var5, var11 - 1, var10 + var6);
+                    }
+                }
+            }
+
+            this.theProfiler.endStartSection("tickBlocks");
+            ExtendedBlockStorage[] var18 = var7.getBlockStorageArray();
+            var9 = var18.length;
+
+            for (var10 = 0; var10 < var9; ++var10) {
+                ExtendedBlockStorage var20 = var18[var10];
+
+
+                if (var20 != null && var20.getNeedsRandomTick()) {
+                    for (int var19 = 0; var19 < 3; ++var19) {
+                        this.updateLCG = this.updateLCG * 3 + 1013904223;
+                        int var13 = this.updateLCG >> 2;
+                        int var14 = var13 & 15;
+                        int var15 = var13 >> 8 & 15;
+                        int var16 = var13 >> 16 & 15;
+                        ++var2;
+                        Block var17 = var20.func_150819_a(var14, var16, var15);
+
+
+                        if (var17.func_149653_t()) {
+                            ++var1;
+                            var17.func_149674_a(this, var14 + var5, var16 + var20.getYLocation(), var15 + var6, this.rand);
+                        }
+                    }
+                }
+
+
+            }
+
+            this.theProfiler.endSection();
+        }
     }
 
     public boolean func_147477_a(int p_147477_1_, int p_147477_2_, int p_147477_3_, Block p_147477_4_)

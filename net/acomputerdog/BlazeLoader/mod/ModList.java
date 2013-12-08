@@ -169,6 +169,7 @@ public class ModList {
         BlazeLoader.currActiveMod = null;
     }
 
+    //TODO implement
     public static void unloadWorld(){
         for(Mod mod : loadedMods){
             BlazeLoader.currActiveMod = mod;
@@ -231,17 +232,12 @@ public class ModList {
         return packet;
     }
 
-    public static boolean eventTickBlocksAndAmbiance(WorldServer server){
-        boolean doVanilla = true;
+    public static void eventTickBlocksAndAmbiance(WorldServer server) {
         for(Mod mod : loadedMods){
             BlazeLoader.currActiveMod = mod;
-            boolean didHandle = mod.eventTickBlocksAndAmbiance(server, doVanilla);
-            if(doVanilla){
-                doVanilla = didHandle;
-            }
+            mod.eventTickBlocksAndAmbiance(server);
         }
         BlazeLoader.currActiveMod = null;
-        return doVanilla;
     }
 
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed){

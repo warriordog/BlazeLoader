@@ -202,22 +202,16 @@ public abstract class Mod {
     public void eventTickServerWorld(){}
 
     /**
-     * Called when WorldServer.tickBlocksAndAmbiance is called.  Return true to disable the vanilla handling.
+     * Called when WorldServer.tickBlocksAndAmbiance is called.
      * @param server The server calling tickBlocksAndAmbiance
-     * @param isHandled Set to true if a mod has already handled this event (so this mod does not have to re-handle vanilla behavior)
-     * @return Return true to disable the vanilla event handling.
      */
-    public boolean eventTickBlocksAndAmbiance(WorldServer server, boolean isHandled){
-        return this.eventTickBlocksAndAmbiance(isHandled);
+    public void eventTickBlocksAndAmbiance(WorldServer server) {
     }
 
     /**
      * No-args version of eventTickBlocksAndAmbiance(WorldServer, boolean)
-     * @param isHandled Set to true if a mod has already handled this event (so this mod does not have to re-handle vanilla behavior)
-     * @return Return true to disable the vanilla event handling.
      */
-    public boolean eventTickBlocksAndAmbiance(boolean isHandled){
-        return false;
+    public void eventTickBlocksAndAmbiance() {
     }
 
     /**
