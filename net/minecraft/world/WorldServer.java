@@ -268,6 +268,8 @@ public class WorldServer extends World {
     }
 
     protected void func_147456_g() {
+        ModList.eventTickBlocksAndAmbiance(this);
+
         super.func_147456_g();
         int var1 = 0;
         int var2 = 0;
