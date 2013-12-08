@@ -1,8 +1,8 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.math.ApiMath;
 import net.minecraft.block.Block;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -107,12 +107,13 @@ public class ApiBlock {
         return getServerForDimension(world).getBlockMetadata(x, y, z);
     }
 
+    /**
+     * Gets a block by it's name or ID
+     * @param identifier A string representing the name or ID of the block.
+     * @return The block defined by parameter identifier
+     */
     public static Block getBlockByNameOrId(String identifier) {
-        try {
-            return getBlockById(Integer.parseInt(identifier));
-        } catch (NumberInvalidException e) {
-            return getBlockByName(identifier);
-        }
+        return ApiMath.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
     }
 
     /**
