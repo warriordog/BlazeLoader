@@ -56,7 +56,7 @@ public class ModuleVersion extends Module {
      */
     @Override
     public void execute(ICommandSender user, String[] args) {
-        sendChatLine(user, EChatColor.COLOR_AQUA + "BlazeLoader " + EChatColor.COLOR_YELLOW + "[" + Version.getStringVersion() + "]"+ EChatColor.COLOR_AQUA + " on minecraft " + EChatColor.COLOR_YELLOW + "[" + Version.getMinecraftVersion() + "]" + EChatColor.COLOR_AQUA + ".");
+        sendChatLine(user, EChatColor.COLOR_AQUA + "BlazeLoader " + EChatColor.COLOR_YELLOW + "[" + Version.getStringVersion() + "]" + EChatColor.COLOR_AQUA + " on minecraft " + EChatColor.COLOR_YELLOW + "[" + Version.getMinecraftVersion() + "]" + EChatColor.COLOR_AQUA + ".");
     }
 
     /**

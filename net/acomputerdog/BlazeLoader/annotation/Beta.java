@@ -14,6 +14,7 @@ public @interface Beta {
 
     /**
      * Is the beta item stable?  (is it likely to be soon removed or highly changed?)
+     *
      * @return Return true if the item is stable, false if not.
      */
     public boolean stable() default false;

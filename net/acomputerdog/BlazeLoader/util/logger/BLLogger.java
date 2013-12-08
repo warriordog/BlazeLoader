@@ -37,36 +37,38 @@ public class BLLogger {
 
     /**
      * Creates a new BLLogger.
+     *
      * @param owner The Object that created this BLLogger.  Used to tag output.  Object.getClass().getSimpleName() will be used unless owner is one of:
      *              null -> "UNKNOWN"
      *              Mod -> Mod.getModName()
      *              String -> will use string
      */
-    public BLLogger(Object owner){
+    public BLLogger(Object owner) {
         this(owner, false, false);
     }
 
     /**
      * Crates a new BLLogger.
-     * @param owner The Object that created this BLLogger.  Used to tag output.  Object.getClass().getSimpleName() will be used unless owner is one of:
-     *              null -> "UNKNOWN"
-     *              Mod -> Mod.getModName()
-     *              String -> will use string
+     *
+     * @param owner       The Object that created this BLLogger.  Used to tag output.  Object.getClass().getSimpleName() will be used unless owner is one of:
+     *                    null -> "UNKNOWN"
+     *                    Mod -> Mod.getModName()
+     *                    String -> will use string
      * @param includeDate Set to true to include the date in log messages.
      * @param includeTime Set to true to include the time in log messages.
      */
-    public BLLogger(Object owner, boolean includeDate, boolean includeTime){
+    public BLLogger(Object owner, boolean includeDate, boolean includeTime) {
         this.owner = owner;
-        if(owner == null){
+        if (owner == null) {
             name = "UNKNOWN";
-        }else if(owner instanceof Mod){
-            name = ((Mod)owner).getModName();
-        }else if(owner instanceof String){
-            name = (String)owner;
-        }else{
+        } else if (owner instanceof Mod) {
+            name = ((Mod) owner).getModName();
+        } else if (owner instanceof String) {
+            name = (String) owner;
+        } else {
             name = owner.getClass().getSimpleName();
         }
-        if(name == null){
+        if (name == null) {
             name = "UNKNOWN";
         }
         this.includeDate = includeDate;
@@ -75,105 +77,115 @@ public class BLLogger {
 
     /**
      * Prints out a message in the format [{name}]{message}/n.
+     *
      * @param message The message to print.
      */
-    protected void log(String message){
+    protected void log(String message) {
         System.out.println(getDate() + getTime() + "[" + name + "]" + message);
     }
 
     /**
      * Gets the date formatted for display, if enabled.
+     *
      * @return Returns the date formatted for display, or "" if disabled.
      */
-    protected String getDate(){
-        if(includeDate){
+    protected String getDate() {
+        if (includeDate) {
             return "[" + theClock.getDateAsString() + "]";
-        }else{
+        } else {
             return "";
         }
     }
 
     /**
      * Gets the time formatted for display, if enabled.
+     *
      * @return Returns the time formatted for display, or "" if disabled.
      */
-    protected String getTime(){
-        if(includeTime){
+    protected String getTime() {
+        if (includeTime) {
             return "[" + theClock.getSimpleTimeAsString() + "]";
-        }else{
+        } else {
             return "";
         }
     }
 
     /**
      * Prints out a message in the format [{name}] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logRaw(String message){
+    public void logRaw(String message) {
         log(" " + message);
     }
 
     /**
      * Prints out a message in the format [{name}][DEBUG] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logDebug(String message){
-        if(canLog(ELogLevel.DEBUG)){
+    public void logDebug(String message) {
+        if (canLog(ELogLevel.DEBUG)) {
             log("[DEBUG] " + message);
         }
     }
 
     /**
      * Prints out a message in the format [{name}][DETAIL] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logDetail(String message){
-        if(canLog(ELogLevel.DETAIL)){
+    public void logDetail(String message) {
+        if (canLog(ELogLevel.DETAIL)) {
             log("[DETAIL] " + message);
         }
     }
 
     /**
      * Prints out a message in the format [{name}][INFO] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logInfo(String message){
-        if(canLog(ELogLevel.INFO)){
+    public void logInfo(String message) {
+        if (canLog(ELogLevel.INFO)) {
             log("[INFO] " + message);
         }
     }
 
     /**
      * Prints out a message in the format [{name}][WARNING] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logWarning(String message){
-        if(canLog(ELogLevel.WARNING)){
+    public void logWarning(String message) {
+        if (canLog(ELogLevel.WARNING)) {
             log("[WARNING] " + message);
         }
     }
 
     /**
      * Prints out a message in the format [{name}][ERROR] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logError(String message){
-        if(canLog(ELogLevel.ERROR)){
+    public void logError(String message) {
+        if (canLog(ELogLevel.ERROR)) {
             log("[ERROR] " + message);
         }
     }
 
     /**
      * Prints out a message in the format [{name}][FATAL] {message}/n.
+     *
      * @param message The message to print.
      */
-    public void logFatal(String message){
-        if(canLog(ELogLevel.FATAL)){
+    public void logFatal(String message) {
+        if (canLog(ELogLevel.FATAL)) {
             log("[FATAL] " + message);
         }
     }
 
-    private static boolean canLog(ELogLevel level){
+    private static boolean canLog(ELogLevel level) {
         return level.isAllowed(Settings.minimumLogLevel);
     }
 

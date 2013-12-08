@@ -13,17 +13,18 @@ public abstract class BLCommandBase extends CommandBase {
     /**
      * Creates a new BLCommandBase without automatically registering it.
      */
-    public BLCommandBase(){
+    public BLCommandBase() {
         this(false);
     }
 
     /**
      * Creates a new BLCommandBase, optionally auto-registering it in the command list.
+     *
      * @param autoRegister If set to true, command will be automatically registered.
      */
-    public BLCommandBase(boolean autoRegister){
+    public BLCommandBase(boolean autoRegister) {
         super();
-        if(autoRegister){
+        if (autoRegister) {
             ApiCommand.registerCommand(this);
         }
     }
@@ -31,24 +32,27 @@ public abstract class BLCommandBase extends CommandBase {
 
     /**
      * Sends chat to a command user.
-     * @param target The user to send the chat to.
+     *
+     * @param target  The user to send the chat to.
      * @param message The message to send.
      */
-    protected void sendChat(ICommandSender target, String message){
+    protected void sendChat(ICommandSender target, String message) {
         ApiChat.sendChat(target, message);
     }
 
     /**
      * Sends chat to a command sender, followed by a format_reset marker.
-     * @param target The user to send the chat to.
+     *
+     * @param target  The user to send the chat to.
      * @param message The message to send.
      */
-    protected void sendChatLine(ICommandSender target, String message){
+    protected void sendChatLine(ICommandSender target, String message) {
         sendChat(target, message + EChatColor.FORMAT_RESET);
     }
 
     /**
      * Returns the name of this command.
+     *
      * @return Returns BLCommandBase.getCommandName();
      */
     @Override

@@ -14,18 +14,18 @@ import java.util.Map;
 public class CompatTable {
     private static Map<ECompatType, List<ICompatAccess>> table;
 
-    static{
+    static {
         table = new HashMap<ECompatType, List<ICompatAccess>>();
-        for(ECompatType type : ECompatType.values()){
+        for (ECompatType type : ECompatType.values()) {
             table.put(type, new ArrayList<ICompatAccess>());
         }
     }
 
-    public static List<ICompatAccess> getCompats(ECompatType type){
+    public static List<ICompatAccess> getCompats(ECompatType type) {
         return table.get(type);
     }
 
-    public static void addCompat(ICompatAccess compat){
+    public static void addCompat(ICompatAccess compat) {
         table.get(compat.getCompatType()).add(compat);
     }
 

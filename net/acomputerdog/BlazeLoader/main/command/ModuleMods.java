@@ -35,13 +35,13 @@ public class ModuleMods extends Module {
     @Override
     public void execute(ICommandSender user, String[] args) {
         List<Mod> mods = ModList.getLoadedMods();
-        if(mods.size() > 0){
+        if (mods.size() > 0) {
             sendChatLine(user, EChatColor.COLOR_AQUA + "" + EChatColor.FORMAT_UNDERLINE + mods.size() + " loaded mod(s):");
             sendChat(user, "");
-            for(Mod mod : mods){
+            for (Mod mod : mods) {
                 sendChatLine(user, EChatColor.COLOR_YELLOW + mod.getModName() + EChatColor.COLOR_WHITE + " v. " + mod.getStringModVersion() + EChatColor.COLOR_ORANGE + " - " + mod.getModDescription());
             }
-        }else{
+        } else {
             sendChatLine(user, EChatColor.COLOR_RED + "No mods are loaded!");
         }
     }
