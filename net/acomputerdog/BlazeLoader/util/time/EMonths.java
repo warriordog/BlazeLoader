@@ -20,15 +20,16 @@ public enum EMonths {
 
     private String name;
 
-    EMonths(String name){
+    EMonths(String name) {
         this.name = name;
     }
 
     /**
      * Gets the name of this month.
+     *
      * @return Return the name of this month.
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

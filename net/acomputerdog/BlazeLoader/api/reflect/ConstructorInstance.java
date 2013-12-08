@@ -11,14 +11,15 @@ public class ConstructorInstance {
 
     /**
      * Creates a new ConstructorInstance.
+     *
      * @param constructor The constructor to bind to.  Can not be null.
-     * @param object The object containing the bound constructor.  Cannot be null.
+     * @param object      The object containing the bound constructor.  Cannot be null.
      */
     public ConstructorInstance(Constructor constructor, Object object) {
-        if(constructor == null){
+        if (constructor == null) {
             throw new IllegalArgumentException("The bound constructor cannot be null!");
         }
-        if(object == null){
+        if (object == null) {
             throw new IllegalArgumentException("The bound object cannot be null!");
         }
         this.boundConstructor = constructor;
@@ -27,6 +28,7 @@ public class ConstructorInstance {
 
     /**
      * Gets the bound Constructor.
+     *
      * @return Return the bound Constructor.
      */
     public Constructor getConstructor() {
@@ -35,6 +37,7 @@ public class ConstructorInstance {
 
     /**
      * Gets the bound Object.
+     *
      * @return Return the bound Object.
      */
     public Object getObject() {

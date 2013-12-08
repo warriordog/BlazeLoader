@@ -15,15 +15,16 @@ public enum EWeekdays {
 
     private String name;
 
-    EWeekdays(String name){
+    EWeekdays(String name) {
         this.name = name;
     }
 
     /**
      * Gets the name of this day.
+     *
      * @return Returns the name of this day.
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 }

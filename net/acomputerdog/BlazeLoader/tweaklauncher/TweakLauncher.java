@@ -29,20 +29,25 @@ public class TweakLauncher implements ITweaker {
     protected List<String> ignoredArgs;
     private String username = "";
     private String session = "";
+    private String token = "";
 
-    public TweakLauncher(){
+    public TweakLauncher() {
         logger.logInfo("BL tweak loader starting.");
     }
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         int usernameIndex = args.indexOf("--username");
-        if(usernameIndex != -1 && usernameIndex < args.size()){
+        if (usernameIndex != -1 && usernameIndex < args.size()) {
             username = args.get(usernameIndex + 1);
         }
         int sessionIndex = args.indexOf("--session");
-        if(sessionIndex != -1 && sessionIndex < args.size()){
+        if (sessionIndex != -1 && sessionIndex < args.size()) {
             session = args.get(sessionIndex + 1);
+        }
+        int tokenIndex = args.indexOf("--accessToken");
+        if (tokenIndex != -1 && tokenIndex < args.size()) {
+            token = args.get(tokenIndex + 1);
         }
         hasInit = true;
         this.gameDir = gameDir;
@@ -55,55 +60,58 @@ public class TweakLauncher implements ITweaker {
         NonOptionArgumentSpec<String> invalidOptions = parser.nonOptions();
         this.ignoredArgs = options.valuesOf(invalidOptions);
 
-        if(options.has(optionSecondaryTweak)){
+        if (options.has(optionSecondaryTweak)) {
             logger.logInfo("Secondary tweaks detected.");
             tweaks = optionSecondaryTweak.values(options);
-        }else{
+        } else {
             logger.logInfo("No secondary tweaks detected.");
         }
 
         this.parseArgs(this.ignoredArgs);
 
-        requiredArgs = (Map<String, String>)Launch.blackboard.get("launchArgs");
-        if (requiredArgs == null){
+        requiredArgs = (Map<String, String>) Launch.blackboard.get("launchArgs");
+        if (requiredArgs == null) {
             requiredArgs = new HashMap<String, String>();
             Launch.blackboard.put("launchArgs", requiredArgs);
         }
-        if (!requiredArgs.containsKey("--version")){
+        if (!requiredArgs.containsKey("--version")) {
             requiredArgs.put("--version", Version.getMinecraftVersion());
         }
-        if (!requiredArgs.containsKey("--gameDir") && gameDir != null){
+        if (!requiredArgs.containsKey("--gameDir") && gameDir != null) {
             requiredArgs.put("--gameDir", gameDir.getAbsolutePath());
         }
-        if (!requiredArgs.containsKey("--assetsDir") && assetDir != null){
+        if (!requiredArgs.containsKey("--assetsDir") && assetDir != null) {
             requiredArgs.put("--assetsDir", assetDir.getAbsolutePath());
         }
-        if(!requiredArgs.containsKey("--username")){
+        if (!requiredArgs.containsKey("--username")) {
             requiredArgs.put("--username", username);
         }
-        if(!requiredArgs.containsKey("--session")){
+        if (!requiredArgs.containsKey("--session")) {
             requiredArgs.put("--session", session);
+        }
+        if (!requiredArgs.containsKey("--accessToken")) {
+            requiredArgs.put("--accessToken", token);
         }
     }
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
-        if(hasInit){
+        if (hasInit) {
             List<String> tweakList = (List<String>) Launch.blackboard.get("TweakClasses");
-            if(tweakList != null){
-                for(String tweak : tweaks){
+            if (tweakList != null) {
+                for (String tweak : tweaks) {
                     try {
                         tweakList.add(tweak);
                     } catch (Exception e) {
-                        logger.logError("Caught exception while injecting tweak: "+ tweak);
+                        logger.logError("Caught exception while injecting tweak: " + tweak);
                         e.printStackTrace();
                     }
                 }
                 classLoader.registerTransformer("net.acomputerdog.BlazeLoader.tweaklauncher.BLTransformer");
-            }else{
+            } else {
                 logger.logFatal("tweakList is null!  Unable to inject secondary tweaks!");
             }
-        }else{
+        } else {
             logger.logFatal("attempted to inject tweaks before scanning for other tweaks!");
         }
     }
@@ -119,10 +127,10 @@ public class TweakLauncher implements ITweaker {
     @Override
     public String[] getLaunchArguments() {
         List<String> args = new ArrayList<String>();
-        for (String arg : this.handledArgs){
+        for (String arg : this.handledArgs) {
             args.add(arg);
         }
-        for (Map.Entry<String, String> arg : this.requiredArgs.entrySet()){
+        for (Map.Entry<String, String> arg : this.requiredArgs.entrySet()) {
             args.add(arg.getKey().trim());
             args.add(arg.getValue().trim());
         }
@@ -132,23 +140,22 @@ public class TweakLauncher implements ITweaker {
         return args.toArray(new String[args.size()]);
     }
 
-    private void parseArgs(List<String> args)
-    {
+    private void parseArgs(List<String> args) {
         String argCategoryName = null;
 
-        for (String arg : args){
-            if (arg.startsWith("-")){
-                if (argCategoryName != null){
+        for (String arg : args) {
+            if (arg.startsWith("-")) {
+                if (argCategoryName != null) {
                     this.requiredArgs.put(argCategoryName, "");
-                }else if (arg.contains("=")){
+                } else if (arg.contains("=")) {
                     this.requiredArgs.put(arg.substring(0, arg.indexOf('=')), arg.substring(arg.indexOf('=') + 1));
-                }else{
+                } else {
                     argCategoryName = arg;
                 }
-            }else{
-                if (argCategoryName != null){
+            } else {
+                if (argCategoryName != null) {
                     this.requiredArgs.put(argCategoryName, arg);
-                }else{
+                } else {
                     this.handledArgs.add(arg);
                 }
             }
