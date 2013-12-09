@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.tweaklauncher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityTracker;
@@ -52,6 +53,8 @@ public class BLTransformer implements IClassTransformer {
                 return readClass(CrashReport.class.getName(), bytes);
             } else if (name.equals(EntityTracker.class.getName())) {
                 return readClass(EntityTracker.class.getName(), bytes);
+            } else if (name.equals(RenderGlobal.class.getName())) {
+                return readClass(RenderGlobal.class.getName(), bytes);
             } else {
                 return bytes;
             }
