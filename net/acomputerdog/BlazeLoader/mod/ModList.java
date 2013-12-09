@@ -5,11 +5,13 @@ import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
@@ -222,7 +224,7 @@ public class ModList {
         S0EPacketSpawnObject packet = null;
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
-            S0EPacketSpawnObject modPacket = mod.createSpawnPacket(myEntity, packet != null);
+            S0EPacketSpawnObject modPacket = mod.overrideCreateSpawnPacket(myEntity, packet != null);
             if (modPacket != null) {
                 packet = modPacket;
             }
@@ -253,7 +255,7 @@ public class ModList {
         boolean isHandled = false;
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
-            boolean didHandle = mod.addEntityToTracker(tracker, entity, isHandled);
+            boolean didHandle = mod.overrideAddEntityToTracker(tracker, entity, isHandled);
             if (didHandle) {
                 isHandled = true;
             }
@@ -281,6 +283,15 @@ public class ModList {
         }
         BlazeLoader.currActiveMod = null;
         return isAllowed;
+    }
+
+    public static EntityFX spawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3){
+        EntityFX entity = null;
+        for (Mod mod : loadedMods) {
+            BlazeLoader.currActiveMod = mod;
+            entity = mod.overrideSpawnParticle(name, world, x, y, z, p1, p2, p3, entity);
+        }
+        return entity;
     }
 
 }

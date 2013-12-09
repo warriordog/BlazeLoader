@@ -4,11 +4,13 @@ import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 /**
@@ -342,7 +344,7 @@ public abstract class Mod {
      * @param isHandled True if another mod has already created a packet for this entity.
      * @return Return a spawn packet for the given entity, or null if none exists.
      */
-    public S0EPacketSpawnObject createSpawnPacket(Entity entity, boolean isHandled) {
+    public S0EPacketSpawnObject overrideCreateSpawnPacket(Entity entity, boolean isHandled) {
         return null;
     }
 
@@ -354,7 +356,24 @@ public abstract class Mod {
      * @param isHandled True if another mod has already handled the event.
      * @return Return true if the entity was added, false otherwise.
      */
-    public boolean addEntityToTracker(EntityTracker tracker, Entity entity, boolean isHandled) {
+    public boolean overrideAddEntityToTracker(EntityTracker tracker, Entity entity, boolean isHandled) {
         return false;
+    }
+
+    /**
+     * Spawns a particle into thw world.
+     * @param name The name of the particle to spawn.
+     * @param world The world to spawn in.
+     * @param x The x-location to spawn at.
+     * @param y The y-location to spawn at.
+     * @param z The z-location to spawn at.
+     * @param p1 Parameter 1
+     * @param p2 Parameter 1
+     * @param p3 Parameter 1
+     * @param currParticle The particle that the previous mod generated.  Set to null if no mod has generated an particle
+     * @return A generated particle, or param currParticle to disable behavior
+     */
+    public EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3, EntityFX currParticle){
+        return currParticle;
     }
 }
