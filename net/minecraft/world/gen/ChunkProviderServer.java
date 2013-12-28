@@ -1,12 +1,5 @@
 package net.minecraft.world.gen;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import net.acomputerdog.BlazeLoader.api.world.ApiWorld;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -15,17 +8,16 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.LongHashMap;
 import net.minecraft.util.ReportedException;
-import net.minecraft.world.ChunkCoordIntPair;
-import net.minecraft.world.ChunkPosition;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.*;
 
 public class ChunkProviderServer implements IChunkProvider
 {
@@ -249,7 +241,7 @@ public class ChunkProviderServer implements IChunkProvider
             if (this.currentChunkProvider != null)
             {
                 this.currentChunkProvider.populate(par1IChunkProvider, par2, par3);
-                ApiWorld.generate(worldObj, par2, par3);
+                ApiWorld.generateChunk(worldObj, par2, par3);
                 var4.setChunkModified();
             }
         }
