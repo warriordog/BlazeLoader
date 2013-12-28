@@ -25,6 +25,7 @@ public enum ELogLevel {
 
     /**
      * Gets a String representing the name of this logging level.
+     *
      * @return Return a String representing the name of this logging level.
      */
     public String getLevelName() {
@@ -33,6 +34,7 @@ public enum ELogLevel {
 
     /**
      * Gets an int representing the priority level of this logging level.
+     *
      * @return Return an int representing the priority level of this logging level.
      */
     public int getPriority() {
@@ -41,6 +43,7 @@ public enum ELogLevel {
 
     /**
      * Returns true if this Logging level is a debug level (DEBUG or DETAIL).
+     *
      * @return Return true if this Logging level is a debug level
      */
     public boolean isDebug() {
@@ -49,6 +52,7 @@ public enum ELogLevel {
 
     /**
      * Returns true if this logging level is an error level (ERROR or FATAL)
+     *
      * @return Return true if this logging level is an error level
      */
     public boolean isError() {
@@ -57,33 +61,36 @@ public enum ELogLevel {
 
     /**
      * Returns true if this ELogLevel is allowed with the specified priority.
+     *
      * @param priority The priority to compare to.
      * @return Returns true if this ELogLevel is allowed with the specified priority.
      */
-    public boolean isAllowed(int priority){
+    public boolean isAllowed(int priority) {
         return this.priority >= priority;
     }
 
     /**
      * Returns true if this ELogLevel is allowed with the specified priority.
+     *
      * @param priority The priority to compare to.
      * @return Returns true if this ELogLevel is allowed with the specified priority.
      */
-    public boolean isAllowed(ELogLevel priority){
+    public boolean isAllowed(ELogLevel priority) {
         return this.priority >= priority.getPriority();
     }
 
     /**
      * Gets the ELogLevel identified by the given name.
+     *
      * @param name The name of the ELogLevel to get.
      * @return Return the ELogLevel identified by the given name, or null if none exists.
      */
-    public static ELogLevel getByName(String name){
-        if(name == null){
+    public static ELogLevel getByName(String name) {
+        if (name == null) {
             throw new IllegalArgumentException("name cannot be null!");
-        }else{
-            for(ELogLevel level : values()){
-                if(name.equals(level.getLevelName())){
+        } else {
+            for (ELogLevel level : values()) {
+                if (name.equals(level.getLevelName())) {
                     return level;
                 }
             }

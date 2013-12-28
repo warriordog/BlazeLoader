@@ -11,11 +11,12 @@ public class MethodInstance {
 
     /**
      * Creates a new MethodInstance.
+     *
      * @param method The method to bind to.  Can not be null.
      * @param object The object containing the bound method.  Can be null for static methods.
      */
     public MethodInstance(Method method, Object object) {
-        if(method == null){
+        if (method == null) {
             throw new IllegalArgumentException("The bound method cannot be null!");
         }
         this.boundMethod = method;
@@ -24,6 +25,7 @@ public class MethodInstance {
 
     /**
      * Gets the bound Method.
+     *
      * @return Return the bound Method.
      */
     public Method getMethod() {
@@ -32,6 +34,7 @@ public class MethodInstance {
 
     /**
      * Gets the bound Object.
+     *
      * @return Return the bound Object.
      */
     public Object getObject() {

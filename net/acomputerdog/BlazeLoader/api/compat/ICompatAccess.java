@@ -11,12 +11,14 @@ public interface ICompatAccess {
 
     /**
      * Gets the ECompatType of this Compat Access.
+     *
      * @return Return the ECompatType of this compat.
      */
     public ECompatType getCompatType();
 
     /**
      * Gets the mod that has registered this Compat Access.
+     *
      * @return Return the instance of the mod that registered this compat.
      */
     public Mod getMod();

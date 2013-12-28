@@ -6,25 +6,26 @@ import java.util.GregorianCalendar;
 /**
  * A standard date and time class utilizing System.currentTimeMillis() and Calendar.
  */
-public class StandardClock implements IDate, ITimePrecise{
+public class StandardClock implements IDate, ITimePrecise {
 
     /**
      * The calendar used to process epoch time.
      */
-    protected Calendar theCalendar= new GregorianCalendar();
+    protected Calendar theCalendar = new GregorianCalendar();
 
     /**
      * Updates the calendar's time.
      */
-    protected void updateCalendar(){
+    protected void updateCalendar() {
         theCalendar.setTimeInMillis(System.currentTimeMillis());
     }
 
     /**
      * Gets the date as a String.  Formatted [month]-[day]-[year].  Ex: 10-9-13
+     *
      * @return Return the date as a String.
      */
-    public String getDateAsString(){
+    public String getDateAsString() {
         updateCalendar();
         int month = theCalendar.get(Calendar.MONTH) + 1;
         int day = theCalendar.get(Calendar.DAY_OF_MONTH);
@@ -34,9 +35,10 @@ public class StandardClock implements IDate, ITimePrecise{
 
     /**
      * Gets the time in 24 hour format excluding milliseconds.  Format [hours]:[minute]:[seconds]
+     *
      * @return Return the time excluding milliseconds.
      */
-    public String getSimpleTimeAsString(){
+    public String getSimpleTimeAsString() {
         updateCalendar();
         int hour = theCalendar.get(Calendar.HOUR);
         int minute = theCalendar.get(Calendar.MINUTE);
@@ -46,9 +48,10 @@ public class StandardClock implements IDate, ITimePrecise{
 
     /**
      * Gets the time in 24 hour format including milliseconds.  Format [hours]:[minutes]:[seconds]:[milliseconds]
+     *
      * @return Return the time including milliseconds
      */
-    public String getComplexTimeAsString(){
+    public String getComplexTimeAsString() {
         updateCalendar();
         int hour = theCalendar.get(Calendar.HOUR);
         int minute = theCalendar.get(Calendar.MINUTE);
@@ -129,13 +132,13 @@ public class StandardClock implements IDate, ITimePrecise{
     @Override
     public boolean isLeapYear() {
         int year = getYear();
-        if(year % 400 == 0){
+        if (year % 400 == 0) {
             return true;
-        }else if(year % 100 != 0){
+        } else if (year % 100 != 0) {
             return false;
-        }else if(year % 4 == 0){
+        } else if (year % 4 == 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
 

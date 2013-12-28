@@ -27,18 +27,20 @@ public enum ENotificationType {
 
     /**
      * Gets the notification flag.
+     *
      * @return Gets the notification flag.
      */
-    public int getType(){
+    public int getType() {
         return flag;
     }
 
     /**
      * Adds this ENotificationType to another.
+     *
      * @param type The other ENotificationType to add to.
      * @return Return the value of the two ENotificationTypes added together.
      */
-    public int add(ENotificationType type){
+    public int add(ENotificationType type) {
         return flag + type.getType();
     }
 }

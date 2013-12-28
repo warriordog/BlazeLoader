@@ -1,16 +1,11 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.src.Block;
-import net.minecraft.src.WorldServer;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
+import net.acomputerdog.BlazeLoader.api.math.ApiMath;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 /**
  * Api for block-specific functions
@@ -18,143 +13,143 @@ import java.util.List;
 public class ApiBlock {
 
     /**
-     * Gets an available block ID.  Throws a RuntimeException if none are available.
-     * @return Returns a free Block ID
+     * Sets the block at a specified location.
+     *
+     * @param world      The world to change the block in.  Should be a dimension index returned by getDimensionIndex.
+     * @param x          The X-coordinate to change.
+     * @param y          The Y-coordinate to change.
+     * @param z          The Z-coordinate to change.
+     * @param block      the block to set
+     * @param metadata   The block Metadata to set.
+     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static int getFreeBlockId(){
-
-        if(Block.blocksList[BlazeLoader.freeBlockId] == null){
-            int id =  BlazeLoader.freeBlockId;
-            BlazeLoader.freeBlockId++;
-            return id;
-        }else{
-            int id =  BlazeLoader.updateFreeBlockId();
-            BlazeLoader.freeBlockId++;
-            return id;
-        }
-    }
-
-    /**
-     * Gets an available block ID, checking for used IDs that have been freed.
-     * Throws a RuntimeException if none are available.
-     * @return Returns a free Block ID.
-     */
-    public static int recheckBlockIds(){
-        int id =  BlazeLoader.resetFreeBlockId();
-        BlazeLoader.freeBlockId++;
-        return id;
-    }
-
-    @Beta(stable = true)
-    /**
-     * Overrides and existing block as well as any other fields referencing it.
-     * Eg:  If overriding the block with ID 1, Block.blockStone will also be replaces.
-     * @param block The block class to create the block from.
-     * @param blockID The ID of the new block.
-     * @param blockArgs Arguments to pass to the constructor of the new block.
-     */
-    public static void overrideBlock(Class<? extends Block> block, int blockID, Object[] blockArgs){
-        Block oldBlock = Block.blocksList[blockID];
-        List<Field> newBlocks = new ArrayList<Field>();
-        if(oldBlock != null){
-            for(Field f : Block.class.getDeclaredFields()){
-                try{
-                    f.setAccessible(true);
-                    if(f.get(null) == oldBlock){
-                        newBlocks.add(f);
-                    }
-                }catch(Exception e){
-                    throw new RuntimeException("Could not get block field!", e);
-                }
-            }
-            Block.blocksList[blockID] = null;
-        }
-        Block blockInstance = null;
-        for(Constructor c : block.getDeclaredConstructors()){
-            if(c.getParameterTypes().length == blockArgs.length){
-                try{
-                    c.setAccessible(true);
-                    blockInstance = (Block)c.newInstance(blockArgs);
-                }catch(Exception e){
-                    throw new RuntimeException("Could not create new block!", e);
-                }
-            }
-        }
-        for(Field f : newBlocks){
-            try{
-                f.setAccessible(true);
-                int modifiers = f.getModifiers();
-                if(Modifier.isFinal(modifiers)){
-                    Field theModifiers = Field.class.getDeclaredField("modifiers");
-                    theModifiers.setAccessible(true);
-                    theModifiers.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-                }
-                f.set(null, blockInstance);
-            }catch(Exception e){
-                throw new RuntimeException("Could not replace block field!", e);
-            }
-        }
+    public static void setBlockAt(int world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
+        setBlockAt(getServerForDimension(world), x, y, z, block, metadata, notifyFlag);
     }
 
     /**
      * Sets the block at a specified location.
-     * @param world The world to change the block in.  Should be a dimension index returned by getDimensionIndex.
-     * @param x The X-coordinate to change.
-     * @param y The Y-coordinate to change.
-     * @param z The Z-coordinate to change.
-     * @param id The block ID to set.
-     * @param metadata The block Metadata to set.
+     *
+     * @param world      The world to change the block in..
+     * @param x          The X-coordinate to change.
+     * @param y          The Y-coordinate to change.
+     * @param z          The Z-coordinate to change.
+     * @param block      the block to set
+     * @param metadata   The block Metadata to set.
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static void setBlock(int world, int x, int y, int z, int id, int metadata, int notifyFlag){
-        getServerForDimension(world).setBlock(x, y, z, id, metadata, notifyFlag);
+    public static void setBlockAt(World world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
+        world.func_147465_d(x, y, z, block, metadata, notifyFlag);
     }
 
     /**
      * Gets the IntegratedServer.worldServers[] index of the specified world.  As of MC1.6.2 the only possible values are -1, 0, and 1.
+     *
      * @param dimensionLevel The dimension to get the index of.
      * @return Return the index of the dimension.
      */
-    public static int getDimensionIndex(int dimensionLevel){
-        if(dimensionLevel == -1){
+    public static int getDimensionIndex(int dimensionLevel) {
+        if (dimensionLevel == -1) {
             return 1;
-        }else if(dimensionLevel == 1){
+        } else if (dimensionLevel == 1) {
             return 2;
-        }else{
+        } else {
             return dimensionLevel;
         }
     }
 
     /**
      * Gets the world for the specified dimension.  Should be a dimension index returned by getDimensionIndex.
+     *
      * @param dimension The dimension to get.
      * @return The WorldServer for the specified index.
      */
-    public static WorldServer getServerForDimension(int dimension){
+    public static WorldServer getServerForDimension(int dimension) {
         return ApiBase.theMinecraft.getIntegratedServer().worldServers[dimension];
     }
 
     /**
-     * Gets the Block ID of a location.
-     * @param world The world to get the ID from.
-     * @param x The X-coordinate to get.
-     * @param y The Y-coordinate to get.
-     * @param z The Z-coordinate to get.
-     * @return Return the block ID at the specified location.
+     * Gets the Block at a location.
+     *
+     * @param world The world to get the block from.
+     * @param x     The X-coordinate to get.
+     * @param y     The Y-coordinate to get.
+     * @param z     The Z-coordinate to get.
+     * @return Return the block at the specified location.
      */
-    public static int getBlockId(int world, int x, int y, int z){
-        return getServerForDimension(world).getBlockId(x, y, z);
+    public static Block getBlockAt(int world, int x, int y, int z) {
+        return getServerForDimension(world).func_147439_a(x, y, z);
+    }
+
+    /**
+     * Gets the Block at a location.
+     *
+     * @param world The world to get the block from.
+     * @param x     The X-coordinate to get.
+     * @param y     The Y-coordinate to get.
+     * @param z     The Z-coordinate to get.
+     * @return Return the block at the specified location.
+     */
+    public static Block getBlockAt(World world, int x, int y, int z) {
+        return world.func_147439_a(x, y, z);
     }
 
     /**
      * Gets the Block Metadata of a location.
+     *
      * @param world The world to get the Metadata from.
-     * @param x The X-coordinate to get.
-     * @param y The Y-coordinate to get.
-     * @param z The Z-coordinate to get.
+     * @param x     The X-coordinate to get.
+     * @param y     The Y-coordinate to get.
+     * @param z     The Z-coordinate to get.
      * @return Return the block Metadata at the specified location.
      */
-    public static int getBlockMetadata(int world, int x, int y, int z){
+    public static int getBlockMetadataAt(int world, int x, int y, int z) {
         return getServerForDimension(world).getBlockMetadata(x, y, z);
+    }
+
+    /**
+     * Gets a block by it's name or ID
+     * @param identifier A string representing the name or ID of the block.
+     * @return The block defined by parameter identifier
+     */
+    public static Block getBlockByNameOrId(String identifier) {
+        return ApiMath.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
+    }
+
+    /**
+     * Gets a block by it's name
+     * @param name The name of the block
+     * @return Gets the block defined by param name.
+     */
+    public static Block getBlockByName(String name) {
+        return Block.func_149684_b(name);
+    }
+
+    /**
+     * Gets a block by it's BlockId.
+     * @param id The ID of the block.
+     * @return Return the block defined by param id.
+     */
+    public static Block getBlockById(int id) {
+        return Block.func_149729_e(id);
+    }
+
+    /**
+     * Gets a block by it's item version.
+     * @param item The item to get the block from.
+     * @return Return the block associated with param item.
+     */
+    public static Block getBlockByItem(Item item) {
+        return Block.func_149634_a(item);
+    }
+
+    /**
+     * Registers a block in the block registry.
+     * @param block The block to add
+     * @param name The name to register the block as
+     * @param id The ID of the block.
+     */
+    public static void registerBlock (Block block, String name, int id) {
+        Block.field_149771_c.func_148756_a(id, name, block);
     }
 }

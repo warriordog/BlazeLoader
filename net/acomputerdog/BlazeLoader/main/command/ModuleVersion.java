@@ -2,7 +2,7 @@ package net.acomputerdog.BlazeLoader.main.command;
 
 import net.acomputerdog.BlazeLoader.api.chat.EChatColor;
 import net.acomputerdog.BlazeLoader.main.Version;
-import net.minecraft.src.ICommandSender;
+import net.minecraft.command.ICommandSender;
 
 /**
  * Module that adds /bl version.  Gives the version of BL.
@@ -56,7 +56,7 @@ public class ModuleVersion extends Module {
      */
     @Override
     public void execute(ICommandSender user, String[] args) {
-        sendChatLine(user, EChatColor.COLOR_AQUA + "BlazeLoader " + EChatColor.COLOR_YELLOW + "[" + Version.getStringVersion() + "]"+ EChatColor.COLOR_AQUA + " on minecraft " + EChatColor.COLOR_YELLOW + "[" + Version.getMinecraftVersion() + "]" + EChatColor.COLOR_AQUA + ".");
+        sendChatLine(user, EChatColor.COLOR_AQUA + "BlazeLoader " + EChatColor.COLOR_YELLOW + "[" + Version.getStringVersion() + "]" + EChatColor.COLOR_AQUA + " on minecraft " + EChatColor.COLOR_YELLOW + "[" + Version.getMinecraftVersion() + "]" + EChatColor.COLOR_AQUA + ".");
     }
 
     /**

@@ -9,18 +9,20 @@ public class MinecraftClock {
 
     /**
      * Gets the number of ticks of this day.
+     *
      * @return Return the remainder of the total number of ticks divided by 24000.
      */
-    public int getTicks(){
-        return (int)(BlazeLoader.ticks % 24000);
+    public int getTicks() {
+        return (int) (BlazeLoader.numTicks % 24000);
     }
 
     /**
      * Gets the number of days since the game started.
+     *
      * @return Return the total number of ticks divided by 24000.
      */
-    public int getDays(){
-        return (int)(BlazeLoader.ticks / 24000);
+    public int getDays() {
+        return (int) (BlazeLoader.numTicks / 24000);
     }
 
 }

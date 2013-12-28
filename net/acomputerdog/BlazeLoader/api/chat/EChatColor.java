@@ -30,38 +30,42 @@ public enum EChatColor {
     protected String code;
     private static final String sectionSign = String.valueOf('\u00a7');
 
-    EChatColor(String code){
+    EChatColor(String code) {
         this.code = code;
     }
 
     /**
      * Gets the color code of this EChatColor.
+     *
      * @return Return the color code associated with this EChatColor.
      */
-    public String get(){
+    public String get() {
         return sectionSign + code;
     }
 
     /**
      * Return the color code of this EChatColor combined with the color of otherColor.
+     *
      * @param otherColor A String representing another color to combine with.
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
-    public String get(String otherColor){
+    public String get(String otherColor) {
         return (get() + otherColor);
     }
 
     /**
      * Return the color code of this EChatColor combined with the color of otherColor.
+     *
      * @param otherColor An EChatColor representing another color to combine with.
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
-    public String get(EChatColor otherColor){
+    public String get(EChatColor otherColor) {
         return get(otherColor.get());
     }
 
     /**
      * Gets the color code of this EChatColor.
+     *
      * @return Returns the color code associated with this EChatColor.
      */
     @Override
