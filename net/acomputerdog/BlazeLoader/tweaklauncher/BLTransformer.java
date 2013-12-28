@@ -13,6 +13,7 @@ import net.minecraft.profiler.Profiler;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.ChunkProviderServer;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -55,6 +56,8 @@ public class BLTransformer implements IClassTransformer {
                 return readClass(EntityTracker.class.getName(), bytes);
             } else if (name.equals(RenderGlobal.class.getName())) {
                 return readClass(RenderGlobal.class.getName(), bytes);
+            } else if (name.equals(ChunkProviderServer.class.getName())) {
+            	return readClass(ChunkProviderServer.class.getName(), bytes);
             } else {
                 return bytes;
             }
