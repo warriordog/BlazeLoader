@@ -16,8 +16,8 @@ import net.minecraft.client.renderer.culling.ClippingHelperImpl;
 import net.minecraft.client.renderer.culling.Frustrum;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.ResourceManager;
-import net.minecraft.client.resources.ResourceManagerReloadListener;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.client.shader.ShaderLinkHelper;
 import net.minecraft.crash.CrashReport;
@@ -45,7 +45,7 @@ import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
-public class EntityRenderer implements ResourceManagerReloadListener
+public class EntityRenderer implements IResourceManagerReloadListener
 {
     private static final Logger field_147710_q = LogManager.getLogger();
     private static final ResourceLocation locationRainPng = new ResourceLocation("textures/environment/rain.png");
@@ -132,7 +132,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
 
     /** Cloud fog mode */
     private boolean cloudFog;
-    private final ResourceManager field_147711_ac;
+    private final IResourceManager field_147711_ac;
     public ShaderGroup field_147707_d;
     private static final ResourceLocation[] field_147712_ad = new ResourceLocation[] {new ResourceLocation("shaders/post/fxaa.json"), new ResourceLocation("shaders/post/art.json"), new ResourceLocation("shaders/post/bumpy.json"), new ResourceLocation("shaders/post/blobs2.json"), new ResourceLocation("shaders/post/pencil.json"), new ResourceLocation("shaders/post/color_convolve.json"), new ResourceLocation("shaders/post/deconverge.json"), new ResourceLocation("shaders/post/flip.json"), new ResourceLocation("shaders/post/invert.json"), new ResourceLocation("shaders/post/ntsc.json"), new ResourceLocation("shaders/post/outline.json"), new ResourceLocation("shaders/post/phosphor.json"), new ResourceLocation("shaders/post/scan_pincushion.json"), new ResourceLocation("shaders/post/sobel.json"), new ResourceLocation("shaders/post/bits.json"), new ResourceLocation("shaders/post/desaturate.json"), new ResourceLocation("shaders/post/green.json"), new ResourceLocation("shaders/post/blur.json"), new ResourceLocation("shaders/post/wobble.json"), new ResourceLocation("shaders/post/blobs.json"), new ResourceLocation("shaders/post/antialias.json")};
     public static final int field_147708_e = field_147712_ad.length;
@@ -198,7 +198,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
     public int debugViewDirection;
     private static final String __OBFID = "CL_00000947";
 
-    public EntityRenderer(Minecraft p_i45076_1_, ResourceManager p_i45076_2_)
+    public EntityRenderer(Minecraft p_i45076_1_, IResourceManager p_i45076_2_)
     {
         this.field_147713_ae = field_147708_e;
         this.cameraZoom = 1.0D;
@@ -269,7 +269,7 @@ public class EntityRenderer implements ResourceManagerReloadListener
         }
     }
 
-    public void onResourceManagerReload(ResourceManager par1ResourceManager)
+    public void onResourceManagerReload(IResourceManager par1ResourceManager)
     {
         if (this.field_147707_d != null)
         {

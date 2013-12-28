@@ -11,7 +11,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -109,7 +109,7 @@ public class RenderGlobal implements IWorldAccess
      */
     private final Map damagedBlocks = new HashMap();
     private final Map field_147593_P = Maps.newHashMap();
-    private Icon[] destroyBlockIcons;
+    private IIcon[] destroyBlockIcons;
     private boolean field_147595_R;
     private int field_147594_S;
     private int renderDistance = -1;
@@ -2512,9 +2512,9 @@ public class RenderGlobal implements IWorldAccess
         }
     }
 
-    public void registerDestroyBlockIcons(IconRegister par1IconRegister)
+    public void registerDestroyBlockIcons(IIconRegister par1IconRegister)
     {
-        this.destroyBlockIcons = new Icon[10];
+        this.destroyBlockIcons = new IIcon[10];
 
         for (int var2 = 0; var2 < this.destroyBlockIcons.length; ++var2)
         {

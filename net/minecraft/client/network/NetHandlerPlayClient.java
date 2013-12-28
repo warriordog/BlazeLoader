@@ -19,9 +19,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeInstance;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.*;
@@ -36,7 +36,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.EnumConnectionState;
-import net.minecraft.network.INetworkManager;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
@@ -72,7 +72,7 @@ import java.util.Map.Entry;
 public class NetHandlerPlayClient implements INetHandlerPlayClient
 {
     private static final Logger field_147301_d = LogManager.getLogger();
-    private final INetworkManager field_147302_e;
+    private final NetworkManager field_147302_e;
     private Minecraft field_147299_f;
     private WorldClient field_147300_g;
     private boolean field_147309_h;
@@ -85,7 +85,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     private Random field_147306_l = new Random();
     private static final String __OBFID = "CL_00000878";
 
-    public NetHandlerPlayClient(Minecraft p_i45061_1_, GuiScreen p_i45061_2_, INetworkManager p_i45061_3_)
+    public NetHandlerPlayClient(Minecraft p_i45061_1_, GuiScreen p_i45061_2_, NetworkManager p_i45061_3_)
     {
         this.field_147299_f = p_i45061_1_;
         this.field_147307_j = p_i45061_2_;
@@ -1336,7 +1336,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
         if (p_147291_1_.func_149338_e() == 0)
         {
-            var3 = var2.func_96535_a(p_147291_1_.func_149339_c(), ScoreObjectiveCriteria.field_96641_b);
+            var3 = var2.func_96535_a(p_147291_1_.func_149339_c(), IScoreObjectiveCriteria.field_96641_b);
             var3.setDisplayName(p_147291_1_.func_149337_d());
         }
         else
@@ -1478,7 +1478,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
 
                 for (Object o : p_147290_1_.func_149441_d()) {
                     S20PacketEntityProperties.Snapshot var5 = (S20PacketEntityProperties.Snapshot) o;
-                    AttributeInstance var6 = var3.getAttributeInstanceByName(var5.func_151409_a());
+                    IAttributeInstance var6 = var3.getAttributeInstanceByName(var5.func_151409_a());
 
                     if (var6 == null) {
                         var6 = var3.func_111150_b(new RangedAttribute(var5.func_151409_a(), 0.0D, 2.2250738585072014E-308D, Double.MAX_VALUE));
@@ -1496,7 +1496,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         }
     }
 
-    public INetworkManager func_147298_b()
+    public NetworkManager func_147298_b()
     {
         return this.field_147302_e;
     }

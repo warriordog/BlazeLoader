@@ -47,7 +47,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.EnumConnectionState;
-import net.minecraft.network.INetworkManager;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.login.client.C00PacketLoginStart;
 import net.minecraft.network.play.client.C16PacketClientStatus;
@@ -220,15 +220,15 @@ public class Minecraft implements IPlayerUsage
     private int joinPlayerCounter;
     private final boolean field_147129_ai;
     private final boolean isDemo;
-    private INetworkManager myNetworkManager;
+    private NetworkManager myNetworkManager;
     private boolean integratedServerIsRunning;
 
     /** The profiler instance */
     public final Profiler mcProfiler = new Profiler();
     private long field_83002_am = -1L;
-    private ReloadableResourceManager mcResourceManager;
-    private final MetadataSerializer metadataSerializer_ = new MetadataSerializer();
-    private List<ResourcePack> defaultResourcePacks = Lists.newArrayList();
+    private IReloadableResourceManager mcResourceManager;
+    private final IMetadataSerializer metadataSerializer_ = new IMetadataSerializer();
+    private List<IResourcePack> defaultResourcePacks = Lists.newArrayList();
     private DefaultResourcePack mcDefaultResourcePack;
     private ResourcePackRepository mcResourcePackRepository;
     private LanguageManager mcLanguageManager;
@@ -2146,7 +2146,7 @@ public class Minecraft implements IPlayerUsage
 
         this.func_147108_a(null);
         SocketAddress var11 = this.theIntegratedServer.func_147137_ag().func_151270_a();
-        INetworkManager var12 = INetworkManager.func_150722_a(var11);
+        NetworkManager var12 = NetworkManager.func_150722_a(var11);
         var12.func_150719_a(new NetHandlerLoginClient(var12, this, null));
         var12.func_150725_a(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN));
         var12.func_150725_a(new C00PacketLoginStart(this.getSession().func_148256_e()));
@@ -2746,7 +2746,7 @@ public class Minecraft implements IPlayerUsage
         return this.renderEngine;
     }
 
-    public ResourceManager getResourceManager()
+    public IResourceManager getResourceManager()
     {
         return this.mcResourceManager;
     }
