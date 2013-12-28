@@ -233,7 +233,7 @@ public class Minecraft implements IPlayerUsage
     private ResourcePackRepository mcResourcePackRepository;
     private LanguageManager mcLanguageManager;
     private Framebuffer field_147124_at;
-    private TextureMap field_147128_au;
+    public TextureMap field_147128_au;
     private SoundHandler field_147127_av;
     private MusicTicker field_147126_aw;
 
