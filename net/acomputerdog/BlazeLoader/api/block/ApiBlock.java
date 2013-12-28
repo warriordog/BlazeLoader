@@ -142,4 +142,14 @@ public class ApiBlock {
     public static Block getBlockByItem(Item item) {
         return Block.func_149634_a(item);
     }
+
+    /**
+     * Registers a block in the block registry.
+     * @param block The block to add
+     * @param name The name to register the block as
+     * @param id The ID of the block.
+     */
+    public static void registerBlock (Block block, String name, int id) {
+        Block.field_149771_c.func_148756_a(id, name, block);
+    }
 }
