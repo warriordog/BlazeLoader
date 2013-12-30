@@ -172,5 +172,5 @@
       }
     }
   ],
-  "mainClass": "net.minecraft.client.main.Main"
+  "mainClass": "net.minecraft.launchwrapper.Launch"
 }
