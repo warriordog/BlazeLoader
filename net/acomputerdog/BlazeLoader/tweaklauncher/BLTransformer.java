@@ -33,38 +33,40 @@ public class BLTransformer implements IClassTransformer {
             return bytes;
         } else {
             if (name.equals(EntityRenderer.class.getName())) {
-                return readClass(EntityRenderer.class.getName(), bytes);
+                return readClass(EntityRenderer.class, bytes);
             } else if (name.equals(IntegratedPlayerList.class.getName())) {
-                return readClass(IntegratedPlayerList.class.getName(), bytes);
+                return readClass(IntegratedPlayerList.class, bytes);
             } else if (name.equals(IntegratedServer.class.getName())) {
-                return readClass(IntegratedServer.class.getName(), bytes);
+                return readClass(IntegratedServer.class, bytes);
             } else if (name.equals(Minecraft.class.getName())) {
-                return readClass(Minecraft.class.getName(), bytes);
+                return readClass(Minecraft.class, bytes);
             } else if (name.equals(Profiler.class.getName())) {
-                return readClass(Profiler.class.getName(), bytes);
+                return readClass(Profiler.class, bytes);
             } else if (name.equals(WorldServer.class.getName())) {
-                return readClass(WorldServer.class.getName(), bytes);
+                return readClass(WorldServer.class, bytes);
             } else if (name.equals(EntityList.class.getName())) {
-                return readClass(EntityList.class.getName(), bytes);
+                return readClass(EntityList.class, bytes);
             } else if (name.equals(NetHandlerPlayClient.class.getName())) {
-                return readClass(NetHandlerPlayClient.class.getName(), bytes);
+                return readClass(NetHandlerPlayClient.class, bytes);
             } else if (name.equals(EntityTrackerEntry.class.getName())) {
-                return readClass(EntityTrackerEntry.class.getName(), bytes);
+                return readClass(EntityTrackerEntry.class, bytes);
             } else if (name.equals(CrashReport.class.getName())) {
-                return readClass(CrashReport.class.getName(), bytes);
+                return readClass(CrashReport.class, bytes);
             } else if (name.equals(EntityTracker.class.getName())) {
-                return readClass(EntityTracker.class.getName(), bytes);
+                return readClass(EntityTracker.class, bytes);
             } else if (name.equals(RenderGlobal.class.getName())) {
-                return readClass(RenderGlobal.class.getName(), bytes);
+                return readClass(RenderGlobal.class, bytes);
             } else if (name.equals(ChunkProviderServer.class.getName())) {
-            	return readClass(ChunkProviderServer.class.getName(), bytes);
+            	return readClass(ChunkProviderServer.class, bytes);
             } else {
                 return bytes;
             }
         }
     }
 
-    public byte[] readClass(String name, byte[] original) {
+    public byte[] readClass(Class cls, byte[] original) {
+        String name = null;
+        name = isOBF ? cls.getSimpleName() : cls.getName();
         TweakLauncher.logger.logDetail("Loading class: " + name);
         try {
             InputStream in = getClass().getResourceAsStream((isOBF ? "/net/minecraft/src/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");

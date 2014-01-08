@@ -30,6 +30,7 @@ public class TweakLauncher implements ITweaker {
     private String username = "";
     private String session = "";
     private String token = "";
+    private String uuid = "";
 
     public TweakLauncher() {
         logger.logInfo("BL tweak loader starting.");
@@ -48,6 +49,10 @@ public class TweakLauncher implements ITweaker {
         int tokenIndex = args.indexOf("--accessToken");
         if (tokenIndex != -1 && tokenIndex < args.size()) {
             token = args.get(tokenIndex + 1);
+        }
+        int uuidIndex = args.indexOf("--uuid");
+        if (uuidIndex != -1 && uuidIndex < args.size()) {
+            uuid = args.get(uuidIndex + 1);
         }
         hasInit = true;
         this.gameDir = gameDir;
@@ -91,6 +96,9 @@ public class TweakLauncher implements ITweaker {
         }
         if (!requiredArgs.containsKey("--accessToken")) {
             requiredArgs.put("--accessToken", token);
+        }
+        if (!requiredArgs.containsKey("--uuid")) {
+            requiredArgs.put("--uuid", uuid);
         }
     }
 
