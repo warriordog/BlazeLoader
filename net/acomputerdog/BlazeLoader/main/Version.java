@@ -35,7 +35,7 @@ public final class Version {
      * @return Return an int representing the version of BL's internal components.
      */
     public static int getInternalVersion() {
-        return 7;
+        return 8;
     }
 
     /**
