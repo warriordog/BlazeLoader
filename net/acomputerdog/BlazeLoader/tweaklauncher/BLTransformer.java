@@ -1,72 +1,40 @@
 package net.acomputerdog.BlazeLoader.tweaklauncher;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.profiler.Profiler;
-import net.minecraft.server.integrated.IntegratedPlayerList;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.gen.ChunkProviderServer;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * A class transformer that injects BL classes into the game.
  */
 public class BLTransformer implements IClassTransformer {
     public static final boolean isOBF = isGameOBF();
+    private static final List<String> overrideClasses = createOverrideList();
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (bytes == null) {
-            return null;
-        } else if (name == null) {
+        if (!isOBF) {
             return bytes;
+        }
+        if (overrideClasses.contains(name)) {
+            return readClass(name, bytes);
         } else {
-            if (name.equals(EntityRenderer.class.getName())) {
-                return readClass(EntityRenderer.class, bytes);
-            } else if (name.equals(IntegratedPlayerList.class.getName())) {
-                return readClass(IntegratedPlayerList.class, bytes);
-            } else if (name.equals(IntegratedServer.class.getName())) {
-                return readClass(IntegratedServer.class, bytes);
-            } else if (name.equals(Minecraft.class.getName())) {
-                return readClass(Minecraft.class, bytes);
-            } else if (name.equals(Profiler.class.getName())) {
-                return readClass(Profiler.class, bytes);
-            } else if (name.equals(WorldServer.class.getName())) {
-                return readClass(WorldServer.class, bytes);
-            } else if (name.equals(EntityList.class.getName())) {
-                return readClass(EntityList.class, bytes);
-            } else if (name.equals(NetHandlerPlayClient.class.getName())) {
-                return readClass(NetHandlerPlayClient.class, bytes);
-            } else if (name.equals(EntityTrackerEntry.class.getName())) {
-                return readClass(EntityTrackerEntry.class, bytes);
-            } else if (name.equals(CrashReport.class.getName())) {
-                return readClass(CrashReport.class, bytes);
-            } else if (name.equals(EntityTracker.class.getName())) {
-                return readClass(EntityTracker.class, bytes);
-            } else if (name.equals(RenderGlobal.class.getName())) {
-                return readClass(RenderGlobal.class, bytes);
-            } else if (name.equals(ChunkProviderServer.class.getName())) {
-            	return readClass(ChunkProviderServer.class, bytes);
-            } else {
-                return bytes;
-            }
+            return bytes;
         }
     }
 
-    public byte[] readClass(Class cls, byte[] original) {
-        String name = null;
-        name = isOBF ? cls.getSimpleName() : cls.getName();
+    public byte[] readClass(String name, byte[] original) {
         TweakLauncher.logger.logDetail("Loading class: " + name);
         try {
             InputStream in = getClass().getResourceAsStream((isOBF ? "/net/minecraft/src/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");
@@ -99,4 +67,36 @@ public class BLTransformer implements IClassTransformer {
             return true;
         }
     }
+
+    private static List<String> createOverrideList() {
+        List<String> ol = new ArrayList<String>();
+        if (!isOBF) {
+            TweakLauncher.logger.logInfo("Deobfuscated game detected, skipping injection.");
+            return ol;
+        }
+        CodeSource source = BLTransformer.class.getProtectionDomain().getCodeSource();
+        if (source != null) {
+            try {
+                String path = BLTransformer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                String decodedPath = URLDecoder.decode(path, "UTF-8");
+                ZipFile zf = new ZipFile(new File(decodedPath));
+                Enumeration<? extends ZipEntry> entries = zf.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    if (name.startsWith("net/minecraft/src/") && name.endsWith(".class")) {
+                        ol.add(name.substring(18, name.length() - 6));
+                    }
+                }
+            } catch (IOException e) {
+                TweakLauncher.logger.logFatal("Exception preparing to inject BlazeLoader!");
+                e.printStackTrace();
+            }
+        } else {
+            TweakLauncher.logger.logFatal("BLTransformer could not access the CodeSource!  BlazeLoader cannot be injected into minecraft!");
+            TweakLauncher.logger.logFatal("The game should still run, however BlazeLoader may not function or load at all!");
+        }
+        return ol;
+    }
+
 }

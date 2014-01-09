@@ -75,7 +75,8 @@ public class WorldServer extends World {
     /**
      * Double buffer of ServerBlockEventList[] for holding pending BlockEventData's
      */
-    private WorldServer.ServerBlockEventList[] field_147490_S = new WorldServer.ServerBlockEventList[]{new WorldServer.ServerBlockEventList(null), new WorldServer.ServerBlockEventList(null)};
+    private ServerBlockEventListNew[] field_147490_S = new ServerBlockEventListNew[] {new ServerBlockEventListNew((WorldServer.DoNothing)null), new ServerBlockEventListNew((WorldServer.DoNothing)null)};
+    //private WorldServer.ServerBlockEventList[] field_147490_S = new WorldServer.ServerBlockEventList[]{new WorldServer.ServerBlockEventList(null), new WorldServer.ServerBlockEventList(null)};
     private int field_147489_T;
     private static final WeightedRandomChestContent[] bonusChestContent = new WeightedRandomChestContent[]{new WeightedRandomChestContent(Items.field_151055_y, 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150344_f), 0, 1, 3, 10), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150364_r), 0, 1, 3, 10), new WeightedRandomChestContent(Items.field_151049_t, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151053_p, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151050_s, 0, 1, 1, 3), new WeightedRandomChestContent(Items.field_151039_o, 0, 1, 1, 5), new WeightedRandomChestContent(Items.field_151034_e, 0, 2, 3, 5), new WeightedRandomChestContent(Items.field_151025_P, 0, 2, 3, 3), new WeightedRandomChestContent(Item.func_150898_a(Blocks.field_150363_s), 0, 1, 3, 10)};
     private List pendingTickListEntriesThisTick = new ArrayList();
@@ -918,13 +919,29 @@ public class WorldServer extends World {
         }
     }
 
-    static class ServerBlockEventList extends ArrayList {
-        private static final String __OBFID = "CL_00001439";
+    class DoNothing
+    {
+        private static final String __OBFID = "CL_00001438";
+    }
 
-        private ServerBlockEventList() {
+    class ServerBlockEventListNew extends ArrayList
+    {
+
+        private ServerBlockEventListNew() {}
+
+        ServerBlockEventListNew(DoNothing par1ServerBlockEvent)
+        {
+            this();
         }
+    }
 
-        ServerBlockEventList(Object par1ServerBlockEvent) {
+    static class ServerBlockEventList extends ArrayList
+    {
+        private static final String __OBFID = "CL_00001439";
+        private ServerBlockEventList() {}
+
+        ServerBlockEventList(DoNothing par1ServerBlockEvent)
+        {
             this();
         }
     }
