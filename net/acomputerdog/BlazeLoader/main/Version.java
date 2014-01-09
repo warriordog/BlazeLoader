@@ -5,6 +5,7 @@ package net.acomputerdog.BlazeLoader.main;
  * -MUST remain backward compatible!-
  */
 public final class Version {
+    private static final boolean isOBF = isGameOBF();
 
     /**
      * Gets the global version of BlazeLoader.  A change here will RESET the status of the other two update counters.
@@ -53,5 +54,18 @@ public final class Version {
      */
     public static String getMinecraftVersion() {
         return "1.7.2";
+    }
+
+    public static boolean isGameObfuscated() {
+        return isOBF;
+    }
+
+    private static boolean isGameOBF() {
+        try {
+            Class.forName("net.minecraft.client.Minecraft");
+            return false;
+        } catch (Exception ignored) {
+            return true;
+        }
     }
 }

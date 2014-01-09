@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.tweaklauncher;
 
+import net.acomputerdog.BlazeLoader.main.Version;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import java.io.BufferedInputStream;
@@ -19,7 +20,7 @@ import java.util.zip.ZipFile;
  * A class transformer that injects BL classes into the game.
  */
 public class BLTransformer implements IClassTransformer {
-    public static final boolean isOBF = isGameOBF();
+    public static final boolean isOBF = Version.isGameObfuscated();
     private static final List<String> overrideClasses = createOverrideList();
 
     @Override
@@ -54,17 +55,6 @@ public class BLTransformer implements IClassTransformer {
             TweakLauncher.logger.logError("Could not load a class!");
             e.printStackTrace();
             return original;
-        }
-    }
-
-    private static boolean isGameOBF() {
-        try {
-            Class.forName("net.minecraft.client.Minecraft");
-            TweakLauncher.logger.logDetail("Running in a non-obfuscated environment.");
-            return false;
-        } catch (Exception ignored) {
-            TweakLauncher.logger.logDetail("Running in an obfuscated environment, this is the real deal!");
-            return true;
         }
     }
 
