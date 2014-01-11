@@ -25,7 +25,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
@@ -105,7 +104,7 @@ public class AccessTransformer implements IClassTransformer
 			reader.close();
 		}
 
-		BlazeLoader.getLogger().logInfo(String.format("Loaded %d access rules from %s", countRules(), rules));
+		System.out.println(String.format("Loaded %d access rules from %s", countRules(), rules));
 	}
 
 	@Override
