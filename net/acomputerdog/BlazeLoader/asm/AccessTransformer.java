@@ -65,8 +65,6 @@ public class AccessTransformer implements IClassTransformer
 
 			while ((line = reader.readLine()) != null)
 			{
-				System.out.println(line);
-
 				if (line.startsWith("#") || line.isEmpty() || line == null)
 					continue;
 
@@ -77,27 +75,26 @@ public class AccessTransformer implements IClassTransformer
 					throw new IllegalArgumentException("Malformed Line: " + line);
 
 				AccessModifier m = new AccessModifier();
-				m.setAccesMode(parts[0]);
-				String[] description = parts[1].replace('/', '.').split("\\.");
+				m.setAccesMode(parts[0].trim());
+				String[] description = parts[1].trim().split("\\.");
 
 				if (description.length == 1)
 					m.changeClassVisibility = true;
 				else
 				{
-					String name = description[1];
-					int parenIdx = name.indexOf('(');
+					String name = description[1].trim();
+					int index = name.indexOf('(');
 
-					if (parenIdx > 0)
+					if (index > 0)
 					{
-						m.description = name.substring(parenIdx);
-						m.name = name.substring(0, parenIdx);
+						m.description = name.substring(index);
+						m.name = name.substring(0, index);
 					}
 					else
 						m.name = name;
 				}
 
 				String className = description[0];
-				System.out.println(className);
 				addToMap(className, m);
 			}
 		}
@@ -135,8 +132,6 @@ public class AccessTransformer implements IClassTransformer
 			{
 				for (FieldNode fieldNode : classNode.fields)
 				{
-					System.out.println(String.format("Field: %s.%s %s -> %s", name, fieldNode.name, toBinary(m.oldAccessMode), toBinary(m.newAccessMode)));
-
 					if (fieldNode.name.equals(m.name))
 						fieldNode.access = getFixedAccess(fieldNode.access, m);
 				}
@@ -145,8 +140,6 @@ public class AccessTransformer implements IClassTransformer
 			{
 				for (MethodNode methodNode : classNode.methods)
 				{
-					System.out.println(String.format("Method: %s.%s%s %s -> %s", name, methodNode.name, methodNode.desc, toBinary(m.oldAccessMode), toBinary(m.newAccessMode)));
-
 					if ((methodNode.name.equals(m.name) && methodNode.desc.equals(m.description)))
 						methodNode.access = getFixedAccess(methodNode.access, m);
 				}
@@ -157,11 +150,6 @@ public class AccessTransformer implements IClassTransformer
 		classNode.accept(writer);
 
 		return writer.toByteArray();
-	}
-
-	private String toBinary(int num)
-	{
-		return String.format("%16s", Integer.toBinaryString(num)).replace(' ', '0');
 	}
 
 	private int getFixedAccess(int access, AccessModifier target)
