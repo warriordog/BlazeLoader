@@ -78,7 +78,7 @@ public class AccessTransformer implements IClassTransformer
 
 				AccessModifier m = new AccessModifier();
 				m.setAccesMode(parts[0]);
-				String[] description = parts[1].replace('/', '.').split(".");
+				String[] description = parts[1].replace('/', '.').split("\\.");
 
 				if (description.length == 1)
 					m.changeClassVisibility = true;
