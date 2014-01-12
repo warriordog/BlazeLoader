@@ -39,7 +39,7 @@ public class AccessTransformer implements IClassTransformer
 
 	protected AccessTransformer(String atFile) throws IOException
 	{
-
+		readRules(atFile);
 	}
 
 	public AccessTransformer() throws IOException
