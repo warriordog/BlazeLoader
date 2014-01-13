@@ -35,6 +35,9 @@ def check_install():
 		print '!!!! launchwrapper-1.9 not found!'
 		return False
 	
+	if not os.path.exists('bin') or not os.path.isdir('bin'):
+		os.makedirs('bin')
+	
 	print '> Found all reqquired files'
 	return True
 
