@@ -1,3 +1,4 @@
 @echo off
-runtime\bin\python\python_mcp BlazeLoader\apply_at.py %*
+cd BlazeLoader
+..\runtime\bin\python\python_mcp apply_at.py %*
 pause

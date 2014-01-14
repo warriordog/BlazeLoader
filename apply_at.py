@@ -4,17 +4,17 @@ import subprocess
 import shlex
 
 mc_ver = '1.7.2'
-mcp_dir = '.'
+mcp_dir = '../'
 jars_dir = os.path.join(mcp_dir, 'jars')
 libraries_dir = os.path.join(jars_dir, 'libraries')
 versions_dir = os.path.join(jars_dir, 'versions', '%s' % mc_ver)
 
-libs = './jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;./jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar;./BlazeLoader/bl_at.cfg'.replace('/', os.sep)
+libs = '../jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;../jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar;./bl_at.cfg'.replace('/', os.sep)
 at = 'net/acomputerdog/BlazeLoader/asm/AccessTransformer'.replace('/', os.sep)
-jar_target = './jars/versions/"{mc_version}"/"{mc_version}".jar'.format(mc_version = mc_ver)
+jar_target = '../jars/versions/"{mc_version}"/"{mc_version}".jar'.format(mc_version = mc_ver)
 
-compile_cmd = 'javac -cp ' + libs + ' -d bin ' + './BlazeLoader/' + at + '.java'
-run_cmd = 'java -cp ./bin;' + libs + ' ' + at.replace(os.sep, '.') + ' ' + jar_target + ' bl_at.cfg'
+compile_cmd = 'javac -cp' + ' ' + libs + ' ' + '-d bin' + at + '.java'
+run_cmd = 'java -cp ../bin;' + libs + ' ' + at.replace(os.sep, '.') + ' ' + jar_target + ' ' + 'bl_at.cfg'
 
 def check_install():
 	print '> Checking installation'
