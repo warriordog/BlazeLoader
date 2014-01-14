@@ -34,7 +34,7 @@ public class AccessTransformer implements IClassTransformer {
         File file = new File(rules);
         URL rulesFile;
 
-        if (file.exists()) {
+        if (file.exists() || (file = new File(System.getProperty("user.dir"), rules)).exists()) {
             rulesFile = file.toURI().toURL();
         } else {
             rulesFile = getClass().getResource(rules);
