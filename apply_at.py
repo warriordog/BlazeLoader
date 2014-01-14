@@ -9,7 +9,7 @@ jars_dir = os.path.join(mcp_dir, 'jars')
 libraries_dir = os.path.join(jars_dir, 'libraries')
 versions_dir = os.path.join(jars_dir, 'versions', '%s' % mc_ver)
 
-libs = './jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;./jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar'.replace('/', os.sep)
+libs = './jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;./jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar;./BlazeLoader/bl_at.cfg'.replace('/', os.sep)
 at = 'net/acomputerdog/BlazeLoader/asm/AccessTransformer'.replace('/', os.sep)
 jar_target = './jars/versions/"{mc_version}"/"{mc_version}".jar'.format(mc_version = mc_ver)
 
@@ -53,8 +53,9 @@ def compile_at():
 		if nextline == '' and process.poll() != None:
 			break
 		
-		print nextline
-	
+		if nextline != '':
+			print nextline
+    
 	print '> Compiled AccessTransformer'
 
 def run_at():
@@ -69,7 +70,8 @@ def run_at():
 		if nextline == '' and process.poll() != None:
 			break
 		
-		print nextline
+		if nextline != '':
+			print nextline
 	
 	print '> AccessTransformer was successfully applied'
 
