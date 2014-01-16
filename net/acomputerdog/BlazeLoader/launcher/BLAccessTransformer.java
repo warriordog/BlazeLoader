@@ -183,7 +183,7 @@ public class BLAccessTransformer implements IClassTransformer {
             }
 
             if (!hasTransformer) {
-                System.out.println("Culd not find a valid transformer to perform");
+                System.out.println("Could not find a valid transformer to perform");
                 System.exit(1);
             }
 
