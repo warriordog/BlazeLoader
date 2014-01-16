@@ -3,6 +3,8 @@ package net.acomputerdog.BlazeLoader.api.entity;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 /**
  * Api for entity-related functions
@@ -87,5 +89,17 @@ public class ApiEntity {
      */
     public static int getEntityIDFromType(String type){
         return EntityList.getIDFromString(type);
+    }
+
+    public static Entity createEntityByID(int id, World world) {
+        return EntityList.createEntityByID(id, world);
+    }
+
+    public static Entity createEntityFromNBT(NBTTagCompound nbt, World world) {
+        return EntityList.createEntityFromNBT(nbt, world);
+    }
+
+    public static Entity createEntityByName(String name, World world) {
+        return EntityList.createEntityByName(name, world);
     }
 }
