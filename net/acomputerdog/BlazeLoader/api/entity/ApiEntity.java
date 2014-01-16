@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.entity;
 
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 
 /**
@@ -41,5 +42,50 @@ public class ApiEntity {
         int currId = BlazeLoader.currFreeEntityId;
         BlazeLoader.currFreeEntityId++;
         return currId;
+    }
+
+    /**
+     * Gets the entity ID of the passed entity.
+     * @param entity The entity to get the ID from
+     * @return Return the ID of the entity
+     */
+    public static int getEntityID(Entity entity) {
+        return EntityList.getEntityID(entity);
+    }
+
+    /**
+     * Gets an entity's class from an entity ID
+     * @param id The ID of the entity.
+     * @return Return the class of the passed entity.
+     */
+    public static Class getEntityClassFromID(int id) {
+        return EntityList.getClassFromID(id);
+    }
+
+    /**
+     * Gets the type of an entity
+     * @param entity The entity who's type to get
+     * @return Return the type of the passed entity.
+     */
+    public static String getEntityType(Entity entity) {
+        return EntityList.getEntityString(entity);
+    }
+
+    /**
+     * Gets the type of an entity from it's ID
+     * @param id The ID of the entity.
+     * @return Return the type of the entity.
+     */
+    public static String getEntityTypeFromID(int id) {
+        return EntityList.getStringFromID(id);
+    }
+
+    /**
+     * Gets an entity ID from a String.
+     * @param type The string identifying the entity.
+     * @return Return then ID of the entity.
+     */
+    public static int getEntityIDFromType(String type){
+        return EntityList.getIDFromString(type);
     }
 }
