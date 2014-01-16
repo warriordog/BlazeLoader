@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.api.math.ApiMath;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -151,5 +152,9 @@ public class ApiBlock {
      */
     public static void registerBlock (Block block, String name, int id) {
         Block.field_149771_c.func_148756_a(id, name, block);
+    }
+
+    public static IIcon getBlockIcon(Block block) {
+        return block.field_149761_L;
     }
 }
