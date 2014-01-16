@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.asm;
+package net.acomputerdog.BlazeLoader.tweaklauncher;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;

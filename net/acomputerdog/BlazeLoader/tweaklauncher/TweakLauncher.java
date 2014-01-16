@@ -123,7 +123,7 @@ public class TweakLauncher implements ITweaker {
             logger.logFatal("attempted to inject tweaks before scanning for other tweaks!");
         }
         if (Version.isGameObfuscated()) {
-            classLoader.registerTransformer("net.acomputerdog.BlazeLoader.asm.AccessTransformer");
+            classLoader.registerTransformer("net.acomputerdog.BlazeLoader.tweaklauncher.AccessTransformer");
         } else {
             logger.logInfo("Deobfuscated game; AccessTransformer disabled!");
         }
