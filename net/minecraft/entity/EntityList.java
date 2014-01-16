@@ -171,7 +171,7 @@ public class EntityList
     public static int getEntityID(Entity par0Entity)
     {
         Class var1 = par0Entity.getClass();
-        return classToIDMapping.containsKey(var1) ? (Integer) classToIDMapping.get(var1) : 0;
+        return classToIDMapping.containsKey(var1) ? classToIDMapping.get(var1) : 0;
     }
 
     /**
@@ -200,6 +200,7 @@ public class EntityList
     }
 
     public static void func_151514_a() {}
+
     /**
      * Gets an entity ID from a String.
      * @param string The string identifying the entity.
