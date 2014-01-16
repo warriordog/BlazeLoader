@@ -60,10 +60,6 @@ public class BLClassTransformer implements IClassTransformer {
 
     private static List<String> createOverrideList() {
         List<String> ol = new ArrayList<String>();
-        if (!isOBF) {
-            TweakLauncher.logger.logInfo("Deobfuscated game detected, skipping injection.");
-            return ol;
-        }
         CodeSource source = BLClassTransformer.class.getProtectionDomain().getCodeSource();
         if (source != null) {
             try {
