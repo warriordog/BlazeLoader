@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.tweaklauncher;
+package net.acomputerdog.BlazeLoader.launcher;
 
 import net.acomputerdog.BlazeLoader.main.Version;
 import net.minecraft.launchwrapper.IClassTransformer;
