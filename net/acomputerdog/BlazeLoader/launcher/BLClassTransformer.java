@@ -19,7 +19,7 @@ import java.util.zip.ZipFile;
 /**
  * A class transformer that injects BL classes into the game.
  */
-public class BLTransformer implements IClassTransformer {
+public class BLClassTransformer implements IClassTransformer {
     public static final boolean isOBF = Version.isGameObfuscated();
     private static final List<String> overrideClasses = createOverrideList();
 
@@ -64,10 +64,10 @@ public class BLTransformer implements IClassTransformer {
             TweakLauncher.logger.logInfo("Deobfuscated game detected, skipping injection.");
             return ol;
         }
-        CodeSource source = BLTransformer.class.getProtectionDomain().getCodeSource();
+        CodeSource source = BLClassTransformer.class.getProtectionDomain().getCodeSource();
         if (source != null) {
             try {
-                String path = BLTransformer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+                String path = BLClassTransformer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
                 String decodedPath = URLDecoder.decode(path, "UTF-8");
                 ZipFile zf = new ZipFile(new File(decodedPath));
                 Enumeration<? extends ZipEntry> entries = zf.entries();
