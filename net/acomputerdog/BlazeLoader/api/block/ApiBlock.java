@@ -154,6 +154,11 @@ public class ApiBlock {
         Block.field_149771_c.func_148756_a(id, name, block);
     }
 
+    /**
+     * Gets the icon of a block.
+     * @param block The block to get the icon from
+     * @return Return the icon belonging to param block
+     */
     public static IIcon getBlockIcon(Block block) {
         return block.field_149761_L;
     }
