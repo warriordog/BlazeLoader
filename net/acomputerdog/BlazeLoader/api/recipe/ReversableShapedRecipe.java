@@ -8,16 +8,16 @@ public class ReversableShapedRecipe extends BShapedRecipe {
 	private boolean anyDirection = true;
 	
 	public ReversableShapedRecipe(int par1, int par2, ItemStack[] par3ArrayOfItemStack, ItemStack par4ItemStack) {
-    	super(par1, par2, par3ArrayOfItemStack, par4ItemStack);
-    }
+	    	super(par1, par2, par3ArrayOfItemStack, par4ItemStack);
+	}
 	
 	public void setReverseOnly() {
 		anyDirection = false;
 	}
 	
-	public boolean matches(InventoryCrafting var1, World var2) {
+	public boolean matches(InventoryCrafting grid, World w) {
 		if (anyDirection) {
-			return super.matches(var1, var2);
+			return super.matches(grid, w);
 		}
 		return false;
 	}
