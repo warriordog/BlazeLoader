@@ -1,4 +1,4 @@
-package net.acomputerdog.Blazeloader.api.recipe;
+package manilla.util.crafting;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -7,25 +7,27 @@ import net.minecraft.world.World;
 
 public class BShapedRecipe extends ShapedRecipes
 {
-    /** How many horizontal slots this recipe is wide. */
+    /** How many horizontal slots this recipe uses. */
     private int recipeWidth;
 
     /** How many vertical slots this recipe uses. */
     private int recipeHeight;
     
-    
+    /** How many slots wide the grid is. */
     private int craftingWidth = 3;
+    
+    /** How many slots tall the grid is. */
     private int craftingHeight = 3;
 
     /** Is a array of ItemStack that composes the recipe. */
     protected ItemStack[] recipeItems;
 
-    public BShapedRecipe(int par1, int par2, ItemStack[] par3ArrayOfItemStack, ItemStack par4ItemStack)
+    public BShapedRecipe(int width, int height, ItemStack[] inputStacks, ItemStack output)
     {
-    	super(par1, par2, par3ArrayOfItemStack, par4ItemStack);
-        this.recipeWidth = par1;
-        this.recipeHeight = par2;
-        this.recipeItems = par3ArrayOfItemStack;
+    	super(width, height, inputStacks, output);
+        this.recipeWidth = width;
+        this.recipeHeight = height;
+        this.recipeItems = inputStacks;
     }
     
     public void setCraftingSize(int width, int height) {
@@ -34,18 +36,18 @@ public class BShapedRecipe extends ShapedRecipes
     }
 
     /**
-     * Used to check if a recipe matches current crafting inventory
+     * Used to check if a recipe matches the current crafting inventory
      */
-    public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)
+    public boolean matches(InventoryCrafting craftingInventory, World w)
     {
-        for (int var3 = 0; var3 <= craftingWidth - this.recipeWidth; ++var3) {
-            for (int var4 = 0; var4 <= craftingHeight - this.recipeHeight; ++var4) {
-                if (this.checkMatch(par1InventoryCrafting, var3, var4, true))
+        for (int x = 0; x <= craftingWidth - this.recipeWidth; ++x) {
+            for (int y = 0; y <= craftingHeight - this.recipeHeight; ++y) {
+                if (this.checkMatch(craftingInventory, x, y, true))
                 {
                     return true;
                 }
 
-                if (this.checkMatch(par1InventoryCrafting, var3, var4, false))
+                if (this.checkMatch(craftingInventory, x, y, false))
                 {
                     return true;
                 }
@@ -56,45 +58,45 @@ public class BShapedRecipe extends ShapedRecipes
     }
 
     /**
-     * Checks if the region of a crafting inventory is match for the recipe.
+     * Checks if the region of a crafting inventory is a match for the recipe.
      */
-    private boolean checkMatch(InventoryCrafting par1InventoryCrafting, int par2, int par3, boolean par4)
+    private boolean checkMatch(InventoryCrafting craftingInventory, int x, int y, boolean flag)
     {
-        for (int var5 = 0; var5 < craftingWidth; ++var5)
+        for (int j = 0; j < craftingWidth; ++j)
         {
-            for (int var6 = 0; var6 < craftingHeight; ++var6)
+            for (int k = 0; k < craftingHeight; ++k)
             {
-                int var7 = var5 - par2;
-                int var8 = var6 - par3;
-                ItemStack var9 = null;
+                int col = j - x;
+                int row = k - y;
+                ItemStack result = null;
 
-                if (var7 >= 0 && var8 >= 0 && var7 < this.recipeWidth && var8 < this.recipeHeight)
+                if (col >= 0 && row >= 0 && col < recipeWidth && row < recipeHeight)
                 {
-                    if (par4)
+                    if (flag)
                     {
-                        var9 = this.recipeItems[this.recipeWidth - var7 - 1 + var8 * this.recipeWidth];
+                        result = recipeItems[this.recipeWidth - col - 1 + row * recipeWidth];
                     }
                     else
                     {
-                        var9 = this.recipeItems[var7 + var8 * this.recipeWidth];
+                        result = recipeItems[col + row * recipeWidth];
                     }
                 }
 
-                ItemStack var10 = par1InventoryCrafting.getStackInRowAndColumn(var5, var6);
+                ItemStack existing = craftingInventory.getStackInRowAndColumn(j, k);
 
-                if (var10 != null || var9 != null)
+                if (existing != null || result != null)
                 {
-                    if (var10 == null && var9 != null || var10 != null && var9 == null)
+                    if (existing == null && result != null || existing != null && result == null)
                     {
                         return false;
                     }
 
-                    if (var9 != var10)
+                    if (result != existing)
                     {
                         return false;
                     }
 
-                    if (var9.getItemDamage() != 32767 && var9.getItemDamage() != var10.getItemDamage())
+                    if (result.getItemDamage() != 32767 && result.getItemDamage() != existing.getItemDamage())
                     {
                         return false;
                     }
@@ -105,4 +107,3 @@ public class BShapedRecipe extends ShapedRecipes
         return true;
     }
 }
-
