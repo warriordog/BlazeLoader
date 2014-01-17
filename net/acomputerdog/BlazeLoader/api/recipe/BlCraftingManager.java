@@ -38,7 +38,7 @@ public class BlCraftingManager {
 	
 	/**
 	 * Returns a ManillaCraftingManager instance connected to a recipe list by the given id
-	 */
+	 * */
 	public static final BlCraftingManager getInstance(int id) {
 		return new BlCraftingManager(id);
 	}
