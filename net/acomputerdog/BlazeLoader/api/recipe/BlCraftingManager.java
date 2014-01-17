@@ -1,4 +1,4 @@
-package manilla.util.crafting;
+package net.acomputerdog.BlazeLoader.api.recipe;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
