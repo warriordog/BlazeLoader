@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.recipe;
+package manilla.util.crafting;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,9 +15,9 @@ public class BShapelessRecipe extends ShapelessRecipes {
 	private int craftingWidth = 3;
     private int craftingHeight = 3;
 	
-	public BShapelessRecipe(ItemStack par1ItemStack, List par2List) {
-        super(par1ItemStack, par2List);
-        recipeItems = par2List;
+	public BShapelessRecipe(ItemStack output, List input) {
+        super(output, input);
+        recipeItems = input;
     }
 	
 	public void setCraftingSize(int width, int height) {
@@ -25,34 +25,34 @@ public class BShapelessRecipe extends ShapelessRecipes {
     	craftingHeight = height;
     }
 	
-	public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World) {
-        ArrayList var3 = new ArrayList(recipeItems);
+	public boolean matches(InventoryCrafting craftingInventory, World w) {
+        ArrayList workingSet = new ArrayList(recipeItems);
 
-        for (int var4 = 0; var4 < craftingWidth; ++var4) {
-            for (int var5 = 0; var5 < craftingHeight; ++var5) {
-                ItemStack var6 = par1InventoryCrafting.getStackInRowAndColumn(var5, var4);
+        for (int col = 0; col < craftingWidth; ++col) {
+            for (int row = 0; row < craftingHeight; ++row) {
+                ItemStack stack = craftingInventory.getStackInRowAndColumn(row, col);
 
-                if (var6 != null) {
-                    boolean var7 = false;
-                    Iterator var8 = var3.iterator();
+                if (stack != null) {
+                    boolean result = false;
+                    Iterator iter = workingSet.iterator();
 
-                    while (var8.hasNext()) {
-                        ItemStack var9 = (ItemStack)var8.next();
+                    while (iter.hasNext()) {
+                        ItemStack next = (ItemStack)iter.next();
 
-                        if (var6 == var9 && (var9.getItemDamage() == 32767 || var6.getItemDamage() == var9.getItemDamage())) {
-                            var7 = true;
-                            var3.remove(var9);
+                        if (stack == next && (next.getItemDamage() == 32767 || stack.getItemDamage() == next.getItemDamage())) {
+                            result = true;
+                            workingSet.remove(next);
                             break;
                         }
                     }
 
-                    if (!var7) {
+                    if (!result) {
                         return false;
                     }
                 }
             }
         }
 
-        return var3.isEmpty();
+        return workingSet.isEmpty();
     }
 }
