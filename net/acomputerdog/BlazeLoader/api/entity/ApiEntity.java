@@ -91,15 +91,33 @@ public class ApiEntity {
         return EntityList.getIDFromString(type);
     }
 
+    /**
+     * Creates an Entity from it's entity ID
+     * @param id The ID of the entity
+     * @param world The world to spawn in
+     * @return Return the spawned entity.
+     */
     public static Entity createEntityByID(int id, World world) {
         return EntityList.createEntityByID(id, world);
     }
 
+    /**
+     * Creates an Entity from an NBT structure
+     * @param nbt The NBT to load from
+     * @param world The world to spawn in
+     * @return Return the spawned entity.
+     */
     public static Entity createEntityFromNBT(NBTTagCompound nbt, World world) {
         return EntityList.createEntityFromNBT(nbt, world);
     }
 
-    public static Entity createEntityByName(String name, World world) {
-        return EntityList.createEntityByName(name, world);
+    /**
+     * Creates an Entity from the specified type
+     * @param type The type of entity to spawn
+     * @param world The world to spawn in
+     * @return Return the spawned entity.
+     */
+    public static Entity createEntityByType(String type, World world) {
+        return EntityList.createEntityByName(type, world);
     }
 }
