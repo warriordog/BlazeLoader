@@ -1,4 +1,4 @@
-package manilla.util.crafting;
+package net.acomputerdog.BlazeLoader.api.recipe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
