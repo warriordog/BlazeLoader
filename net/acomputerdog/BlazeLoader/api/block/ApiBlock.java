@@ -110,6 +110,7 @@ public class ApiBlock {
 
     /**
      * Gets a block by it's name or ID
+     *
      * @param identifier A string representing the name or ID of the block.
      * @return The block defined by parameter identifier
      */
@@ -119,6 +120,7 @@ public class ApiBlock {
 
     /**
      * Gets a block by it's name
+     *
      * @param name The name of the block
      * @return Gets the block defined by param name.
      */
@@ -128,6 +130,7 @@ public class ApiBlock {
 
     /**
      * Gets a block by it's BlockId.
+     *
      * @param id The ID of the block.
      * @return Return the block defined by param id.
      */
@@ -137,6 +140,7 @@ public class ApiBlock {
 
     /**
      * Gets a block by it's item version.
+     *
      * @param item The item to get the block from.
      * @return Return the block associated with param item.
      */
@@ -146,16 +150,18 @@ public class ApiBlock {
 
     /**
      * Registers a block in the block registry.
+     *
      * @param block The block to add
-     * @param name The name to register the block as
-     * @param id The ID of the block.
+     * @param name  The name to register the block as
+     * @param id    The ID of the block.
      */
-    public static void registerBlock (Block block, String name, int id) {
+    public static void registerBlock(Block block, String name, int id) {
         Block.blockRegistry.addObject(id, name, block);
     }
 
     /**
      * Gets the icon of a block.
+     *
      * @param block The block to get the icon from
      * @return Return the icon belonging to param block
      */

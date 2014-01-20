@@ -84,7 +84,7 @@ public class ModList {
         }
         ApiBase.theProfiler.endSection();
     }
-    
+
     public static void start() {
         ApiBase.theProfiler.startSection("start_mods");
         Iterator<Mod> iterator = loadedMods.iterator();
@@ -285,7 +285,7 @@ public class ModList {
         return isAllowed;
     }
 
-    public static EntityFX spawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3){
+    public static EntityFX spawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
         EntityFX entity = null;
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;

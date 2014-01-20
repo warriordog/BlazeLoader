@@ -30,7 +30,7 @@ public class ApiTick {
      * @param tps The new tick rate.
      */
     public static void setTPS(float tps) {
-    	ApiBase.theMinecraft.timer.ticksPerSecond =  tps;
+        ApiBase.theMinecraft.timer.ticksPerSecond = tps;
     }
 
     /**

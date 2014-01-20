@@ -9,11 +9,11 @@ import java.util.Random;
  */
 public interface IChunkGenerator {
 
-	/**
-	 * @param world The world we are generating in.
-	 * @param random The chunk specific random.
-	 * @param chunkX The X coordinate of the chunk being generated.
-	 * @param chunkZ The Z coordinate of the chunk being generated.
-	 */
-	public void generateChunk(World world, Random random, int chunkX, int chunkZ);
+    /**
+     * @param world  The world we are generating in.
+     * @param random The chunk specific random.
+     * @param chunkX The X coordinate of the chunk being generated.
+     * @param chunkZ The Z coordinate of the chunk being generated.
+     */
+    public void generateChunk(World world, Random random, int chunkX, int chunkZ);
 }

@@ -27,7 +27,7 @@ public class ApiRecipe {
      * @param args   An object array of itemStacks to use
      */
     public static void addCraftingRecipeShapeless(ItemStack output, Object... args) {
-    	BLCraftingManager.addVanillaShapelessRecipe(output, args);
+        BLCraftingManager.addVanillaShapelessRecipe(output, args);
     }
 
     /**
@@ -44,7 +44,7 @@ public class ApiRecipe {
     /**
      * Registers a furnace recipe.
      *
-     * @param input   item to be smelted
+     * @param input  item to be smelted
      * @param output An itemStack with the recipe output
      * @param xp     Float value with the amount of xp received when cooking an item/block
      */
@@ -55,9 +55,9 @@ public class ApiRecipe {
     /**
      * Registers a furnace recipe.
      *
-     * @param input itemStack to be smelted
-     * @param output    An itemStack with the recipe output
-     * @param xp        Float value with the amount of xp received when cooking an item/block
+     * @param input  itemStack to be smelted
+     * @param output An itemStack with the recipe output
+     * @param xp     Float value with the amount of xp received when cooking an item/block
      */
     public static void addSmeltingRecipe(ItemStack input, ItemStack output, float xp) {
         FurnaceRecipes.smelting().func_151394_a(input, output, xp);

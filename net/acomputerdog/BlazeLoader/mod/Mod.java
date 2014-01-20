@@ -321,10 +321,7 @@ public abstract class Mod {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null) return false;
-        if (!(obj instanceof Mod)) return false;
-        return ((Mod) obj).getModId().equals(this.getModId());
+        return obj == this || obj != null && obj instanceof Mod && ((Mod) obj).getModId().equals(this.getModId());
     }
 
     /**
@@ -362,18 +359,19 @@ public abstract class Mod {
 
     /**
      * Spawns a particle into thw world.
-     * @param name The name of the particle to spawn.
-     * @param world The world to spawn in.
-     * @param x The x-location to spawn at.
-     * @param y The y-location to spawn at.
-     * @param z The z-location to spawn at.
-     * @param p1 Parameter 1
-     * @param p2 Parameter 1
-     * @param p3 Parameter 1
+     *
+     * @param name         The name of the particle to spawn.
+     * @param world        The world to spawn in.
+     * @param x            The x-location to spawn at.
+     * @param y            The y-location to spawn at.
+     * @param z            The z-location to spawn at.
+     * @param p1           Parameter 1
+     * @param p2           Parameter 1
+     * @param p3           Parameter 1
      * @param currParticle The particle that the previous mod generated.  Set to null if no mod has generated an particle
      * @return A generated particle, or param currParticle to disable behavior
      */
-    public EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3, EntityFX currParticle){
+    public EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3, EntityFX currParticle) {
         return currParticle;
     }
 }

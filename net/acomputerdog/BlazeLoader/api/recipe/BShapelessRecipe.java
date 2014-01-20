@@ -9,22 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BShapelessRecipe extends ShapelessRecipes {
-	private final List<ItemStack> recipeItems;
-	
-	private int craftingWidth = 3;
+    private final List<ItemStack> recipeItems;
+
+    private int craftingWidth = 3;
     private int craftingHeight = 3;
-	
-	public BShapelessRecipe(ItemStack output, List<ItemStack> input) {
+
+    public BShapelessRecipe(ItemStack output, List<ItemStack> input) {
         super(output, input);
         recipeItems = input;
     }
-	
-	public void setCraftingSize(int width, int height) {
-    	craftingWidth = width;
-    	craftingHeight = height;
+
+    public void setCraftingSize(int width, int height) {
+        craftingWidth = width;
+        craftingHeight = height;
     }
-	
-	public boolean matches(InventoryCrafting craftingInventory, World w) {
+
+    public boolean matches(InventoryCrafting craftingInventory, World w) {
         ArrayList<ItemStack> workingSet = new ArrayList<ItemStack>(recipeItems);
 
         for (int col = 0; col < craftingWidth; ++col) {

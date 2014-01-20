@@ -3,6 +3,7 @@ package net.acomputerdog.BlazeLoader.api.math;
 public class ApiMath {
     /**
      * Checks if a string represents a number.
+     *
      * @param str The string to test.
      * @return Return true if the string is an integer.
      */
