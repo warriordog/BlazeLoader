@@ -1,5 +1,12 @@
 package net.minecraft.world.gen;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import net.acomputerdog.BlazeLoader.api.world.ApiWorld;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -8,20 +15,22 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.LongHashMap;
 import net.minecraft.util.ReportedException;
-import net.minecraft.world.*;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.ChunkPosition;
+import net.minecraft.world.MinecraftException;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.util.*;
-
 public class ChunkProviderServer implements IChunkProvider
 {
-    private static final Logger field_147417_b = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * used by unload100OldestChunks to iterate the loadedChunkHashMap for unload (underlying assumption, first in,
@@ -180,7 +189,7 @@ public class ChunkProviderServer implements IChunkProvider
             }
             catch (Exception var4)
             {
-                field_147417_b.error("Couldn\'t load chunk", var4);
+                logger.error("Couldn\'t load chunk", var4);
                 return null;
             }
         }
@@ -199,7 +208,7 @@ public class ChunkProviderServer implements IChunkProvider
             }
             catch (Exception var3)
             {
-                field_147417_b.error("Couldn\'t save entities", var3);
+                logger.error("Couldn\'t save entities", var3);
             }
         }
     }
@@ -218,11 +227,11 @@ public class ChunkProviderServer implements IChunkProvider
             }
             catch (IOException var3)
             {
-                field_147417_b.error("Couldn\'t save chunk", var3);
+                logger.error("Couldn\'t save chunk", var3);
             }
             catch (MinecraftException var4)
             {
-                field_147417_b.error("Couldn\'t save chunk; already in use by another instance of Minecraft?", var4);
+                logger.error("Couldn\'t save chunk; already in use by another instance of Minecraft?", var4);
             }
         }
     }
@@ -297,7 +306,7 @@ public class ChunkProviderServer implements IChunkProvider
      */
     public boolean unloadQueuedChunks()
     {
-        if (!this.worldObj.canNotSave)
+        if (!this.worldObj.levelSaving)
         {
             for (int var1 = 0; var1 < 100; ++var1)
             {
@@ -328,7 +337,7 @@ public class ChunkProviderServer implements IChunkProvider
      */
     public boolean canSave()
     {
-        return !this.worldObj.canNotSave;
+        return !this.worldObj.levelSaving;
     }
 
     /**

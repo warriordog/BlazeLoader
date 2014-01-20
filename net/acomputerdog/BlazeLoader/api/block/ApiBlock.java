@@ -40,7 +40,7 @@ public class ApiBlock {
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
     public static void setBlockAt(World world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
-        world.func_147465_d(x, y, z, block, metadata, notifyFlag);
+        world.setBlock(x, y, z, block, metadata, notifyFlag);
     }
 
     /**
@@ -79,7 +79,7 @@ public class ApiBlock {
      * @return Return the block at the specified location.
      */
     public static Block getBlockAt(int world, int x, int y, int z) {
-        return getServerForDimension(world).func_147439_a(x, y, z);
+        return getServerForDimension(world).getBlock(x, y, z);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ApiBlock {
      * @return Return the block at the specified location.
      */
     public static Block getBlockAt(World world, int x, int y, int z) {
-        return world.func_147439_a(x, y, z);
+        return world.getBlock(x, y, z);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ApiBlock {
      * @return Gets the block defined by param name.
      */
     public static Block getBlockByName(String name) {
-        return Block.func_149684_b(name);
+        return Block.getBlockFromName(name);
     }
 
     /**
@@ -132,7 +132,7 @@ public class ApiBlock {
      * @return Return the block defined by param id.
      */
     public static Block getBlockById(int id) {
-        return Block.func_149729_e(id);
+        return Block.getBlockById(id);
     }
 
     /**
@@ -141,7 +141,7 @@ public class ApiBlock {
      * @return Return the block associated with param item.
      */
     public static Block getBlockByItem(Item item) {
-        return Block.func_149634_a(item);
+        return Block.getBlockFromItem(item);
     }
 
     /**
@@ -151,7 +151,7 @@ public class ApiBlock {
      * @param id The ID of the block.
      */
     public static void registerBlock (Block block, String name, int id) {
-        Block.field_149771_c.func_148756_a(id, name, block);
+        Block.blockRegistry.addObject(id, name, block);
     }
 
     /**
@@ -160,6 +160,6 @@ public class ApiBlock {
      * @return Return the icon belonging to param block
      */
     public static IIcon getBlockIcon(Block block) {
-        return block.field_149761_L;
+        return block.blockIcon;
     }
 }

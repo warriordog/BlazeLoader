@@ -1,8 +1,15 @@
 package net.acomputerdog.BlazeLoader.api.entity;
 
+import java.util.List;
+
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -31,7 +38,45 @@ public class ApiEntity {
     public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo) {
         EntityList.entityEggs.put(entityId, eggInfo);
     }
-
+    
+    /**
+     * Re-registers an entity to use a different class
+     * @param oldC	Original class
+     * @param newC	Replacement class
+     */
+    public static void swapEntityClass(Class oldC, Class newC) {
+    	EntityList.EntityRegistryEntry.getEntry(oldC).setEntityClass(newC);
+    	swapEntitySpawn(oldC, newC);
+    }
+    
+    /**
+     * Changes spawn lists to replace an entities class
+     * @param oldC	Original class
+     * @param newC	Replacement class
+     */
+    public static void swapEntitySpawn(Class oldC, Class newC) {
+    	for (EnumCreatureType i : EnumCreatureType.values()) {
+    		swapEntitySpawn(oldC, newC, i);
+    	}
+    }
+    
+    public static void swapEntitySpawn(Class o, Class c, EnumCreatureType e) {
+    	BiomeGenBase[] standardBiomes = BiomeGenBase.getBiomeGenArray();
+    	
+    	for (BiomeGenBase biome : standardBiomes) {
+    		if (biome != null) {
+    			List<SpawnListEntry> spawnableList = biome.getSpawnableList(e);
+    			if (spawnableList != null) {
+    				for (SpawnListEntry entry : spawnableList) {
+    					if (entry != null & entry.entityClass == o) {
+	    					entry.entityClass = c;
+	    				}
+    				}
+    			}
+    		}
+    	}
+    }
+    
     /**
      * Gets a free entity ID.
      *

@@ -1,17 +1,15 @@
 package net.minecraft.server.integrated;
 
 import com.mojang.authlib.GameProfile;
-import net.acomputerdog.BlazeLoader.mod.ModList;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.management.ServerConfigurationManager;
 
 import java.net.SocketAddress;
 
+import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.ServerConfigurationManager;
 
-/**
- * Manages players on the IntegratedServer.  Replaces IntegratedServerProxy.
- */
 public class IntegratedPlayerList extends ServerConfigurationManager
 {
     /**
@@ -40,18 +38,11 @@ public class IntegratedPlayerList extends ServerConfigurationManager
         super.writePlayerData(par1EntityPlayerMP);
     }
 
-    /**
-     * previously allowUserToConnect
-     * checks ban-lists, then white-lists, then space for the server. Returns null on success, or an error message
-     */
     public String func_148542_a(SocketAddress p_148542_1_, GameProfile p_148542_2_)
     {
         return p_148542_2_.getName().equalsIgnoreCase(this.getServerInstance().getServerOwner()) && this.getPlayerForUsername(p_148542_2_.getName()) != null ? "That name is already taken." : super.func_148542_a(p_148542_1_, p_148542_2_);
     }
 
-    /**
-     * get the associated Integrated Server
-     */
     public IntegratedServer getServerInstance()
     {
         return (IntegratedServer)super.getServerInstance();
@@ -64,6 +55,7 @@ public class IntegratedPlayerList extends ServerConfigurationManager
     {
         return this.hostPlayerData;
     }
+    
 
     /**
      * creates and returns a respawned player based on the provided PlayerEntity. Args are the PlayerEntityMP to
