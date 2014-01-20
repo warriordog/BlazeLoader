@@ -26,8 +26,8 @@ public class BLCommandManager extends CommandHandler {
         }
 
         ChatComponentTranslation var6 = new ChatComponentTranslation("chat.type.admin", par1ICommandSender.getCommandSenderName(), new ChatComponentTranslation(par3Str, par4ArrayOfObj));
-        var6.func_150255_a(new ChatStyle().func_150238_a(EnumChatFormatting.GRAY));
-        var6.func_150255_a(new ChatStyle().func_150238_a(EnumChatFormatting.ITALIC));
+        var6.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY));
+        var6.setChatStyle(new ChatStyle().setItalic(true));
 
         if (var5) {
 
@@ -35,17 +35,17 @@ public class BLCommandManager extends CommandHandler {
                 EntityPlayerMP var8 = (EntityPlayerMP) aPlayerEntityList;
 
                 if (var8 != par1ICommandSender && MinecraftServer.getServer().getConfigurationManager().isPlayerOpped(var8.getCommandSenderName())) {
-                    var8.func_145747_a(var6);
+                    var8.addChatComponentMessage(var6);
                 }
             }
         }
 
         if (par1ICommandSender != MinecraftServer.getServer()) {
-            MinecraftServer.getServer().func_145747_a(var6);
+            MinecraftServer.getServer().addChatMessage(var6);
         }
 
         if ((par2 & 1) != 1) {
-            par1ICommandSender.func_145747_a(new ChatComponentTranslation(par3Str, par4ArrayOfObj));
+            par1ICommandSender.addChatMessage(new ChatComponentTranslation(par3Str, par4ArrayOfObj));
         }
     }
 }
