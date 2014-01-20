@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 /**
  * API functions for GUI-related tasks.
  */
-public class ApiGui {
+public class ApiGUI {
 
     /**
      * Opens a GUI, triggering an eventDisplayGui in the process.
