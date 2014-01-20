@@ -10,7 +10,8 @@ public class ApiItem {
 
     /**
      * Registers an item in the game registry.
-     * @param id The item ID
+     *
+     * @param id   The item ID
      * @param name The item name
      * @param item The item itself
      */

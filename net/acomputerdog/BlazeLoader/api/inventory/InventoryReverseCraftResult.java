@@ -9,17 +9,17 @@ import net.minecraft.item.ItemStack;
  * and output a result to their crafting grid
  */
 public class InventoryReverseCraftResult extends InventoryCraftResult {
-	private Container eventHandler;
-	
-	public InventoryReverseCraftResult(Container container) {
-		eventHandler = container;
-	}
-	
-	public void setInventorySlotContentsSafe(int slotIndex, ItemStack contents) {
-		super.setInventorySlotContents(slotIndex, contents);
-	}
-	
-	public void setInventorySlotContents(int slotIndex, ItemStack contents) {
+    private Container eventHandler;
+
+    public InventoryReverseCraftResult(Container container) {
+        eventHandler = container;
+    }
+
+    public void setInventorySlotContentsSafe(int slotIndex, ItemStack contents) {
+        super.setInventorySlotContents(slotIndex, contents);
+    }
+
+    public void setInventorySlotContents(int slotIndex, ItemStack contents) {
         super.setInventorySlotContents(slotIndex, contents);
         this.eventHandler.onCraftMatrixChanged(this);
     }

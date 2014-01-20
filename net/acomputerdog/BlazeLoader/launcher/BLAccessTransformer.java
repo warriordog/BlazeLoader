@@ -279,13 +279,15 @@ public class BLAccessTransformer implements IClassTransformer {
             if (outJar != null) {
                 try {
                     outJar.close();
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
 
             if (inJar != null) {
                 try {
                     inJar.close();
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
         }
     }
