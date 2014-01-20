@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.tweaklauncher;
+package net.acomputerdog.BlazeLoader.launcher;
 
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
@@ -115,17 +115,17 @@ public class TweakLauncher implements ITweaker {
                         e.printStackTrace();
                     }
                 }
-                classLoader.registerTransformer("net.acomputerdog.BlazeLoader.tweaklauncher.BLTransformer");
+                if (Version.isGameObfuscated()) {
+                    classLoader.registerTransformer("net.acomputerdog.BlazeLoader.launcher.BLAccessTransformer");
+                    classLoader.registerTransformer("net.acomputerdog.BlazeLoader.launcher.BLClassTransformer");
+                } else {
+                    logger.logInfo("Deobfuscated game; BlazeLoader will not be injected.");
+                }
             } else {
                 logger.logFatal("tweakList is null!  Unable to inject secondary tweaks!");
             }
         } else {
             logger.logFatal("attempted to inject tweaks before scanning for other tweaks!");
-        }
-        if (Version.isGameObfuscated()) {
-            classLoader.registerTransformer("net.acomputerdog.BlazeLoader.asm.AccessTransformer");
-        } else {
-            logger.logInfo("Deobfuscated game; AccessTransformer disabled!");
         }
     }
 

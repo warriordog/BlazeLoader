@@ -15,6 +15,6 @@ public class ApiChat {
      * @param message The message to send.
      */
     public static void sendChat(ICommandSender user, String message) {
-        user.func_145747_a(new ChatComponentText(message));
+        user.addChatMessage(new ChatComponentText(message));
     }
 }

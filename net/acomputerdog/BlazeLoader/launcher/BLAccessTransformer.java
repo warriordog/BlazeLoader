@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.asm;
+package net.acomputerdog.BlazeLoader.launcher;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -19,14 +19,14 @@ import java.util.zip.ZipOutputStream;
 
 import static org.objectweb.asm.Opcodes.*;
 
-public class AccessTransformer implements IClassTransformer {
+public class BLAccessTransformer implements IClassTransformer {
     private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
 
-    protected AccessTransformer(String atFile) throws IOException {
+    protected BLAccessTransformer(String atFile) throws IOException {
         readRules(atFile);
     }
 
-    public AccessTransformer() throws IOException {
+    public BLAccessTransformer() throws IOException {
         this("bl_at.cfg");
     }
 
@@ -170,11 +170,11 @@ public class AccessTransformer implements IClassTransformer {
             }
 
             boolean hasTransformer = false;
-            AccessTransformer[] trans = new AccessTransformer[args.length - 1];
+            BLAccessTransformer[] trans = new BLAccessTransformer[args.length - 1];
 
             for (int x = 1; x < args.length; x++) {
                 try {
-                    trans[x - 1] = new AccessTransformer(args[x]);
+                    trans[x - 1] = new BLAccessTransformer(args[x]);
                     hasTransformer = true;
                 } catch (IOException e) {
                     System.out.println("Could not read Transformer Map: " + args[x]);
@@ -183,7 +183,7 @@ public class AccessTransformer implements IClassTransformer {
             }
 
             if (!hasTransformer) {
-                System.out.println("Culd not find a valid transformer to perform");
+                System.out.println("Could not find a valid transformer to perform");
                 System.exit(1);
             }
 
@@ -218,7 +218,7 @@ public class AccessTransformer implements IClassTransformer {
         }
     }
 
-    private static void processJar(File inFile, File outFile, AccessTransformer[] transformers) throws IOException {
+    private static void processJar(File inFile, File outFile, BLAccessTransformer[] transformers) throws IOException {
         ZipInputStream inJar = null;
         ZipOutputStream outJar = null;
 
@@ -266,7 +266,7 @@ public class AccessTransformer implements IClassTransformer {
                     rdr.accept(cls, 0);
                     String name = cls.name.replace('/', '.').replace('\\', '.');
 
-                    for (AccessTransformer trans : transformers) {
+                    for (BLAccessTransformer trans : transformers) {
                         entryData = trans.transform(name, name, entryData);
                     }
                 }

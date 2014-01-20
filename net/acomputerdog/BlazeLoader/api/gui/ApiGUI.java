@@ -13,14 +13,14 @@ public class ApiGui {
      * @param gui The GUI to display.
      */
     public static void openGUI(GuiScreen gui){
-        ApiBase.theMinecraft.func_147108_a(gui);
+        ApiBase.theMinecraft.displayGuiScreen(gui);
     }
 
     /**
      * Closes the currently open GUI, returning to the bottom layer.  (Usually either the main menu or the main game interface.)
      */
     public static void closeCurrentGUI(){
-        ApiBase.theMinecraft.func_147108_a(null);
+        ApiBase.theMinecraft.displayGuiScreen(null);
     }
 
     /**

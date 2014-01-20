@@ -1,21 +1,20 @@
 package net.acomputerdog.BlazeLoader.api.recipe;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BShapelessRecipe extends ShapelessRecipes {
-	private final List recipeItems;
+	private final List<ItemStack> recipeItems;
 	
 	private int craftingWidth = 3;
     private int craftingHeight = 3;
 	
-	public BShapelessRecipe(ItemStack output, List input) {
+	public BShapelessRecipe(ItemStack output, List<ItemStack> input) {
         super(output, input);
         recipeItems = input;
     }
@@ -26,7 +25,7 @@ public class BShapelessRecipe extends ShapelessRecipes {
     }
 	
 	public boolean matches(InventoryCrafting craftingInventory, World w) {
-        ArrayList workingSet = new ArrayList(recipeItems);
+        ArrayList<ItemStack> workingSet = new ArrayList<ItemStack>(recipeItems);
 
         for (int col = 0; col < craftingWidth; ++col) {
             for (int row = 0; row < craftingHeight; ++row) {
@@ -34,11 +33,8 @@ public class BShapelessRecipe extends ShapelessRecipes {
 
                 if (stack != null) {
                     boolean result = false;
-                    Iterator iter = workingSet.iterator();
 
-                    while (iter.hasNext()) {
-                        ItemStack next = (ItemStack)iter.next();
-
+                    for (ItemStack next : workingSet) {
                         if (stack == next && (next.getItemDamage() == 32767 || stack.getItemDamage() == next.getItemDamage())) {
                             result = true;
                             workingSet.remove(next);
