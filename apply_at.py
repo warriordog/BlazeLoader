@@ -30,7 +30,7 @@ libs = libs.replace(';', cp_sep)
 at = 'net/acomputerdog/BlazeLoader/launcher/BLAccessTransformer'.replace('/', os.sep)
 jar_target = '../jars/versions/"{mc_version}"/"{mc_version}".jar'.format(mc_version = mc_ver)
 
-compile_cmd = 'javac -cp' + ' ' + libs + ' ' + '-d bin ' + at + '.java'
+compile_cmd = 'javac -cp' + ' ' + libs + ' ' + '-d bin ' + 'source/core/' + at + '.java'
 run_cmd = 'java -cp bin;'.replace(';', cp_sep) + libs + ' ' + at.replace(os.sep, '.') + ' ' + jar_target + ' ' + 'bl_at.cfg'
 
 def check_install():
@@ -45,7 +45,7 @@ def check_install():
 		return False
 	
 	if not os.path.isfile(os.path.join(libraries_dir, 'org', 'ow2', 'asm', 'asm-debug-all', '4.1', 'asm-debug-all-4.1.jar')):
-		print '!!!! asm-debug-all-4.1?jar not found! get it at http://mvnrepository.com/artifact/org.ow2.asm/asm-debug-all/4.1'
+		print '!!!! asm-debug-all-4.1.jar not found! get it at http://mvnrepository.com/artifact/org.ow2.asm/asm-debug-all/4.1'
 		return False
 	
 	if not os.path.isfile(os.path.join(libraries_dir, 'net', 'minecraft', 'launchwrapper', '1.9', 'launchwrapper-1.9.jar')):
