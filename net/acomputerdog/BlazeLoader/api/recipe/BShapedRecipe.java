@@ -8,10 +8,10 @@ import net.minecraft.world.World;
 public class BShapedRecipe extends ShapedRecipes
 {
     /** How many horizontal slots this recipe uses. */
-    private int recipeWidth;
+    private final int recipeWidth;
 
     /** How many vertical slots this recipe uses. */
-    private int recipeHeight;
+    private final int recipeHeight;
     
     /** How many slots wide the grid is. */
     private int craftingWidth = 3;
@@ -20,7 +20,7 @@ public class BShapedRecipe extends ShapedRecipes
     private int craftingHeight = 3;
 
     /** Is a array of ItemStack that composes the recipe. */
-    protected ItemStack[] recipeItems;
+    protected final ItemStack[] recipeItems;
 
     public BShapedRecipe(int width, int height, ItemStack[] inputStacks, ItemStack output)
     {
@@ -86,7 +86,7 @@ public class BShapedRecipe extends ShapedRecipes
 
                 if (existing != null || result != null)
                 {
-                    if (existing == null && result != null || existing != null && result == null)
+                    if (existing == null || result == null)
                     {
                         return false;
                     }

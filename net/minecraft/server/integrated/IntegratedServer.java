@@ -1,6 +1,12 @@
 package net.minecraft.server.integrated;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.concurrent.Callable;
+
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ThreadLanServerPing;
@@ -11,22 +17,21 @@ import net.minecraft.profiler.PlayerUsageSnooper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.CryptManager;
 import net.minecraft.util.HttpUtil;
-import net.minecraft.world.*;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.WorldManager;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldServerMulti;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldType;
 import net.minecraft.world.demo.DemoWorldServer;
 import net.minecraft.world.storage.ISaveHandler;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-
-/**
- * The single-player server.  Replaces IntegratedServerProxy.
- */
 public class IntegratedServer extends MinecraftServer
 {
-    private static final Logger field_147148_h = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     /** The Minecraft instance. */
     private final Minecraft mc;
@@ -48,7 +53,7 @@ public class IntegratedServer extends MinecraftServer
         this.setConfigurationManager(new IntegratedPlayerList(this));
         this.mc = par1Minecraft;
         this.theWorldSettings = par4WorldSettings;
-		mergeCommandHandlers(BlazeLoader.commandHandler);
+        mergeCommandHandlers(BlazeLoader.commandHandler);
     }
 
     protected void loadAllWorlds(String par1Str, String par2Str, long par3, WorldType par5WorldType, String par6Str)
@@ -101,13 +106,13 @@ public class IntegratedServer extends MinecraftServer
      */
     protected boolean startServer() throws IOException
     {
-        field_147148_h.info("Starting integrated minecraft server version 1.7.2");
+        logger.info("Starting integrated minecraft server version 1.7.2");
         this.setOnlineMode(false);
         this.setCanSpawnAnimals(true);
         this.setCanSpawnNPCs(true);
         this.setAllowPvp(true);
         this.setAllowFlight(true);
-        field_147148_h.info("Generating keypair");
+        logger.info("Generating keypair");
         this.setKeyPair(CryptManager.createNewKeyPair());
         this.loadAllWorlds(this.getFolderName(), this.getWorldName(), this.theWorldSettings.getSeed(), this.theWorldSettings.getTerrainType(), this.theWorldSettings.func_82749_j());
         this.setMOTD(this.getServerOwner() + " - " + this.worldServers[0].getWorldInfo().getWorldName());
@@ -120,11 +125,11 @@ public class IntegratedServer extends MinecraftServer
     public void tick()
     {
         boolean var1 = this.isGamePaused;
-        this.isGamePaused = Minecraft.getMinecraft().func_147114_u() != null && Minecraft.getMinecraft().func_147113_T();
+        this.isGamePaused = Minecraft.getMinecraft().getNetHandler() != null && Minecraft.getMinecraft().func_147113_T();
 
         if (!var1 && this.isGamePaused)
         {
-            field_147148_h.info("Saving and pausing game...");
+            logger.info("Saving and pausing game...");
             this.getConfigurationManager().saveAllPlayerData();
             this.saveAllWorlds(false);
         }
@@ -145,9 +150,6 @@ public class IntegratedServer extends MinecraftServer
         return this.theWorldSettings.getGameType();
     }
 
-    /**
-     * Defaults to "1" (Easy) for the dedicated server, defaults to "2" (Normal) on the client.
-     */
     public EnumDifficulty func_147135_j()
     {
         return this.mc.gameSettings.difficulty;
@@ -185,10 +187,11 @@ public class IntegratedServer extends MinecraftServer
     public CrashReport addServerInfoToCrashReport(CrashReport par1CrashReport)
     {
         par1CrashReport = super.addServerInfoToCrashReport(par1CrashReport);
-        par1CrashReport.getCategory().addCrashSectionCallable("Type", new Callable() {
+        par1CrashReport.getCategory().addCrashSectionCallable("Type", new Callable()
+        {
             private static final String __OBFID = "CL_00001130";
-
-            public String call() {
+            public String call()
+            {
                 return "Integrated Server (map_client.txt)";
             }
         });
@@ -198,7 +201,7 @@ public class IntegratedServer extends MinecraftServer
             public String call()
             {
                 String var1 = ClientBrandRetriever.getClientModName();
-
+                                
                 if (!var1.equals("vanilla"))
                 {
                     return "Definitely; Client brand changed to \'" + var1 + "\'";
@@ -240,8 +243,9 @@ public class IntegratedServer extends MinecraftServer
             {
                 var3 = HttpUtil.func_76181_a();
             }
-            catch (IOException ignored)
+            catch (IOException var5)
             {
+                ;
             }
 
             if (var3 <= 0)
@@ -249,8 +253,8 @@ public class IntegratedServer extends MinecraftServer
                 var3 = 25564;
             }
 
-            this.func_147137_ag().func_151265_a(null, var3);
-            field_147148_h.info("Started on " + var3);
+            this.func_147137_ag().addLanEndpoint((InetAddress)null, var3);
+            logger.info("Started on " + var3);
             this.isPublic = true;
             this.lanServerPing = new ThreadLanServerPing(this.getMOTD(), var3 + "");
             this.lanServerPing.start();
@@ -320,6 +324,7 @@ public class IntegratedServer extends MinecraftServer
     {
         return 4;
     }
+    
 	public void mergeCommandHandlers(CommandHandler handlerToMerge){
         CommandHandler newManager = (CommandHandler)this.getCommandManager();
         for(Object command : handlerToMerge.getCommands().values()){

@@ -84,7 +84,7 @@ public class ModList {
         }
         ApiBase.theProfiler.endSection();
     }
-
+    
     public static void start() {
         ApiBase.theProfiler.startSection("start_mods");
         Iterator<Mod> iterator = loadedMods.iterator();

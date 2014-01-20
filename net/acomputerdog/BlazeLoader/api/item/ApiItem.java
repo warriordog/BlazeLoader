@@ -15,6 +15,6 @@ public class ApiItem {
      * @param item The item itself
      */
     public static void registerItem(int id, String name, Item item) {
-        Item.field_150901_e.func_148756_a(id, name, item);
+        Item.itemRegistry.addObject(id, name, item);
     }
 }

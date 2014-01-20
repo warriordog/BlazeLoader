@@ -1,13 +1,5 @@
 package net.acomputerdog.BlazeLoader.api.recipe;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -17,10 +9,15 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.world.World;
 
-public class BlCraftingManager {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BLCraftingManager {
 	public static final int VanillaCraftingManagerKey = 0;
 	
-	private static final Map<Integer, List<IRecipe>> recipeManagers = new HashMap();
+	private static final Map<Integer, List<IRecipe>> recipeManagers = new HashMap<Integer, List<IRecipe>>();
 	private static final CraftingManager instance = CraftingManager.getInstance();
 	
 	private final int key;
@@ -28,26 +25,26 @@ public class BlCraftingManager {
 	
 	public static int registerCraftingManager() {
 		int id = recipeManagers.size() + 1;
-		recipeManagers.put(id, new ArrayList());
+		recipeManagers.put(id, new ArrayList<IRecipe>());
 		return id;
 	}
 	
-	private BlCraftingManager(int id) {
+	private BLCraftingManager(int id) {
 		key = id;
 	}
 	
 	/**
-	 * Returns a ManillaCraftingManager instance connected to a recipe list by the given id
+	 * Returns a BLCraftingManager instance connected to a recipe list by the given id
 	 * */
-	public static final BlCraftingManager getInstance(int id) {
-		return new BlCraftingManager(id);
+	public static BLCraftingManager getInstance(int id) {
+		return new BLCraftingManager(id);
 	}
 	
 	/**
-	 * Creates and registers a new ManillaCraftingManager
+	 * Creates and registers a new BLCraftingManager
 	 * 
 	 */
-	public static final BlCraftingManager getNewInstance() {
+	public static BLCraftingManager getNewInstance() {
 		return getInstance(registerCraftingManager());
 	}
 	
@@ -55,77 +52,76 @@ public class BlCraftingManager {
 		return key;
 	}
 	
-	public final List getRecipeList() {
+	public final List<IRecipe> getRecipeList() {
 		if (recipeManagers.containsKey(key)) {
 			if (recipeManagers.get(key) == null) {
-				recipeManagers.put(key, new ArrayList());
+				recipeManagers.put(key, new ArrayList<IRecipe>());
 			}
 			return recipeManagers.get(key);
 		}
-		return instance.getRecipeList();
+		return (List<IRecipe>)instance.getRecipeList();
 	}
 	
 	/**
 	 * Adds a recipe to the normal crafting manager
-	 * @param stack
-	 * @param args
+	 * @param output The output item
+	 * @param input The item recipe
 	 * @return resulting recipe
 	 */
-	public static ShapedRecipes addVanillaRecipe(ItemStack stack, Object ... args) {
-		ShapedRecipes reci = BlCraftingManager.getInstance(VanillaCraftingManagerKey).makeRecipe(stack, 0, args);
-		instance.getRecipeList().add(reci);
-		return reci;
+	public static ShapedRecipes addVanillaRecipe(ItemStack output, Object ... input) {
+		ShapedRecipes recipe = BLCraftingManager.getInstance(VanillaCraftingManagerKey).makeRecipe(output, 0, input);
+        ((List<IRecipe>)instance.getRecipeList()).add(recipe);
+		return recipe;
 	}
 	
 	/**
 	 * Adds a recipe to this crafting manager
-	 * @param stack
-	 * @param args
+     * @param output The output item
+     * @param input The item recipe
 	 * @return resulting recipe
 	 */
-	public ShapedRecipes addRecipe(ItemStack stack, Object ... args) {
-		return addRecipe(0, stack, args);
+	public ShapedRecipes addRecipe(ItemStack output, Object ... input) {
+		return addRecipe(0, output, input);
 	}
 	
 	/**
 	 * Adds a recipe to this crafting manager that can be used both forward and in reverse
-	 * @param stack
-	 * @param args
+     * @param output The output item
+     * @param input The item recipe
 	 * @return resulting recipe
 	 */
-	public ShapedRecipes addReversableRecipe(ItemStack stack, Object ... args) {
-		return addRecipe(1, stack, args);
+	public ShapedRecipes addReversibleRecipe(ItemStack output, Object... input) {
+		return addRecipe(1, output, input);
 	}
 	
 	/**
 	 * Adds a recipe to this crafting manager that can only be used in reverse
-	 * @param stack
-	 * @param args
+     * @param output The output item
+     * @param input The item recipe
 	 * @return resulting recipe
 	 */
-	public ShapedRecipes addReverseRecipe(ItemStack stack, Object ... args) {
-		return addRecipe(2, stack, args);
+	public ShapedRecipes addReverseRecipe(ItemStack output, Object ... input) {
+		return addRecipe(2, output, input);
 	}
 			
-	private ShapedRecipes addRecipe(int reversable, ItemStack stack, Object ... args) {
-		ShapedRecipes reci = makeRecipe(stack, reversable, args);
-		getRecipeList().add(reci);
-		return reci;
+	private ShapedRecipes addRecipe(int reversible, ItemStack stack, Object ... args) {
+		ShapedRecipes recipe = makeRecipe(stack, reversible, args);
+		getRecipeList().add(recipe);
+		return recipe;
 	}
 	
-	private ShapedRecipes makeRecipe(ItemStack par1ItemStack, int reversable, Object ... inputObjects) {
+	private ShapedRecipes makeRecipe(ItemStack par1ItemStack, int reversible, Object ... inputObjects) {
 		String recipePattern = "";
 		int i = 0, len = 0, pointer = 0;
 
 		if (inputObjects[i] instanceof String[]) {
-			String[] inputStrings = (String[])((String[])inputObjects[i++]);
+			String[] inputStrings = (String[])inputObjects[i++];
 
-			for (int k = 0; k < inputStrings.length; ++k) {
-				String inputString = inputStrings[k];
-				++pointer;
-				len = inputString.length();
-				recipePattern += inputString;
-			}
+            for (String inputString : inputStrings) {
+                ++pointer;
+                len = inputString.length();
+                recipePattern += inputString;
+            }
 		} else {
 			while (inputObjects[i] instanceof String) {
 				String inputPatternString = (String)inputObjects[i++];
@@ -135,8 +131,8 @@ public class BlCraftingManager {
 			}
 		}
 
-		HashMap inputMapping;
-		for (inputMapping = new HashMap(); i < inputObjects.length; i += 2) {
+		HashMap<Character, ItemStack> inputMapping;
+		for (inputMapping = new HashMap<Character, ItemStack>(); i < inputObjects.length; i += 2) {
 			Character var13 = (Character)inputObjects[i];
 			ItemStack var14 = null;
 
@@ -157,15 +153,15 @@ public class BlCraftingManager {
 			char var10 = recipePattern.charAt(k);
 
 			if (inputMapping.containsKey(Character.valueOf(var10))) {
-				inputStacks[k] = ((ItemStack)inputMapping.get(Character.valueOf(var10))).copy();
+				inputStacks[k] = (inputMapping.get(Character.valueOf(var10))).copy();
 			} else {
 				inputStacks[k] = null;
 			}
 		}
 
-		if (reversable > 0) {
-			ReversableShapedRecipe result = new ReversableShapedRecipe(len, pointer, inputStacks, par1ItemStack);
-			if (reversable == 2) {
+		if (reversible > 0) {
+			ReversibleShapedRecipe result = new ReversibleShapedRecipe(len, pointer, inputStacks, par1ItemStack);
+			if (reversible == 2) {
 				result.setReverseOnly();
 			}
 			return result;
@@ -175,24 +171,24 @@ public class BlCraftingManager {
 	
 	/**
 	 * Adds a shapeless recipe to the normal crafting manager
-	 * @param stack
-	 * @param args
+     * @param output The output item
+     * @param input The item recipe
 	 */
-	public static void addVanillaShapelessRecipe(ItemStack stack, Object ... args) {
-		instance.getRecipeList().add(BlCraftingManager.getInstance(VanillaCraftingManagerKey).makeShapelessRecipe(stack, args));
+	public static void addVanillaShapelessRecipe(ItemStack output, Object ... input) {
+        ((List<IRecipe>)instance.getRecipeList()).add(BLCraftingManager.getInstance(VanillaCraftingManagerKey).makeShapelessRecipe(output, input));
 	}
 	
 	/**
 	 * Adds a shapeless recipe to this crafting manager
-	 * @param stack
-	 * @param args
+     * @param output The output item
+     * @param input The item recipe
 	 */
-	public void addShapelessRecipe(ItemStack stack, Object ... args) {
-		getRecipeList().add(makeShapelessRecipe(stack, args));
+	public void addShapelessRecipe(ItemStack output, Object ... input) {
+		getRecipeList().add(makeShapelessRecipe(output, input));
 	}
 
 	private BShapelessRecipe makeShapelessRecipe(ItemStack par1ItemStack, Object ... par2ArrayOfObj) {
-		ArrayList inputStacks = new ArrayList();
+		ArrayList<ItemStack> inputStacks = new ArrayList<ItemStack>();
 		
 		for (Object inputObj : par2ArrayOfObj) {
 			if (inputObj instanceof ItemStack) {
@@ -211,9 +207,9 @@ public class BlCraftingManager {
     
 	/**
 	 * Gets the result of the recipe that matches the crafting table input
-	 * @param craftingInventory
-	 * @param w
-	 * @return
+	 * @param craftingInventory The crafting inventory where this crafting is taking place.
+	 * @param w The world the inventory is located in
+	 * @return Return a matching recipe
 	 */
 	public ItemStack findMatchingRecipe(InventoryCrafting craftingInventory, World w) {
 		return findMatchingRecipe(craftingInventory, w, 3, 3);
@@ -221,11 +217,11 @@ public class BlCraftingManager {
     
 	/**
 	 * Gets the result of the recipe that matches the crafting table input 
-	 * @param craftingInventory
-	 * @param w
+     * @param craftingInventory The crafting inventory where this crafting is taking place.
+     * @param w The world the inventory is located in
 	 * @param width: table width
 	 * @param height: table height
-	 * @return
+	 * @return Return a matching recipe
 	 */
 	public ItemStack findMatchingRecipe(InventoryCrafting craftingInventory, World w, int width, int height) {
 		int i, pointer = 0;
@@ -248,8 +244,8 @@ public class BlCraftingManager {
 		if (pointer == 2 && one == two && one.stackSize == 1 && two.stackSize == 1 && one.getItem().isDamageable()) {
 			Item itemOne = one.getItem();
 			int damageRemainder = itemOne.getMaxDamage() - one.getItemDamageForDisplay();
-			int otherDanageRemainder = itemOne.getMaxDamage() - two.getItemDamageForDisplay();
-			int damageOff = damageRemainder + otherDanageRemainder + itemOne.getMaxDamage() * 5 / 100;
+			int otherDamageRemainder = itemOne.getMaxDamage() - two.getItemDamageForDisplay();
+			int damageOff = damageRemainder + otherDamageRemainder + itemOne.getMaxDamage() * 5 / 100;
 			int resultDamage = itemOne.getMaxDamage() - damageOff;
 	
 			if (resultDamage < 0) {
@@ -277,16 +273,16 @@ public class BlCraftingManager {
     
 	/**
 	 * Gets the input items for recipe that has the matching result
-	 * @param result
+	 * @param result The item being identified
 	 * @param width: table width
 	 * @param height: table height
-	 * @return
+	 * @return Return the input items for the specified recipe
 	 */
 	public ItemStack[] getRecipeInput(ItemStack result, int width, int height) {
 		List<IRecipe> recipes = getRecipeList();
 		for (IRecipe i : recipes) {
-			if (i instanceof ReversableShapedRecipe) {
-				ReversableShapedRecipe r = (ReversableShapedRecipe)i;
+			if (i instanceof ReversibleShapedRecipe) {
+				ReversibleShapedRecipe r = (ReversibleShapedRecipe)i;
 				r.setCraftingSize(width, height);
 				if (ItemStack.areItemStacksEqual(r.getRecipeOutput(), result)) {
 					return r.getRecipeInput();
@@ -299,8 +295,8 @@ public class BlCraftingManager {
     
 	/**
 	 * Removes a recipe from the regular crafting manager
-	 * @param resultItem
-	 * @param totalRemovals
+	 * @param resultItem The item to remove
+	 * @param totalRemovals The number of possible recipes to remove
 	 */
 	public static void RemoveVanillaRecipe(ItemStack resultItem, int totalRemovals) {
 		RemoveRecipe(resultItem, totalRemovals, VanillaCraftingManagerKey);
@@ -308,8 +304,8 @@ public class BlCraftingManager {
 	
 	/**
 	 * Removes a recipe from this crafting manager
-	 * @param resultItem
-	 * @param totalRemovals
+     * @param resultItem The item to remove
+     * @param totalRemovals The number of possible recipes to remove
 	 */
 	public void RemoveRecipe(ItemStack resultItem, int totalRemovals) {
 		RemoveRecipe(resultItem, totalRemovals, key);
@@ -322,9 +318,9 @@ public class BlCraftingManager {
 		List<IRecipe> recipes;
 		
 		if (recipeManagerId == VanillaCraftingManagerKey) {
-			recipes = instance.getRecipeList();
+			recipes = (List<IRecipe>)instance.getRecipeList();
 		} else {
-			recipes = BlCraftingManager.getInstance(recipeManagerId).getRecipeList();
+			recipes = BLCraftingManager.getInstance(recipeManagerId).getRecipeList();
 		}
 		int count = 0;
 
