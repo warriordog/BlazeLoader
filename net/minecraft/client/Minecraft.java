@@ -621,6 +621,7 @@ public class Minecraft implements IPlayerUsage
         }
 
         Display.setVSyncEnabled(this.gameSettings.enableVsync);
+        ModList.start();
     }
 
     public void refreshResources()
