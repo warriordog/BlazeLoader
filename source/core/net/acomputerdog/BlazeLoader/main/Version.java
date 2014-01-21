@@ -6,6 +6,7 @@ package net.acomputerdog.BlazeLoader.main;
  */
 public final class Version {
     private static final boolean isOBF = isGameOBF();
+    private static final boolean isForgeInstalled = hasForge();
 
     /**
      * Gets the global version of BlazeLoader.  A change here will RESET the status of the other two update counters.
@@ -35,7 +36,7 @@ public final class Version {
      * @return Return an int representing the version of BL's internal components.
      */
     public static int getInternalVersion() {
-        return 10;
+        return 11;
     }
 
     /**
@@ -60,12 +61,25 @@ public final class Version {
         return isOBF;
     }
 
+    public static boolean isForgeInstalled() {
+        return isForgeInstalled;
+    }
+
     private static boolean isGameOBF() {
         try {
             Class.forName("net.minecraft.client.Minecraft");
             return false;
         } catch (Exception ignored) {
             return true;
+        }
+    }
+
+    private static boolean hasForge() {
+        try {
+            Class.forName("net.minecraftforge.common.ForgeHooks");
+            return true;
+        } catch (Exception ignored) {
+            return false;
         }
     }
 }
