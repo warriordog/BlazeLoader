@@ -6,7 +6,6 @@ if not exist %cd%/BlazeLoader/instlflg (
         echo MCP setup canceled.
         exit /b -1
     ) else (
-        REM echo DEBUG: %cd%/temp/setup/bl_downloader.vbs
         if not exist %cd%/temp/setup mkdir %cd%\temp\setup\
         echo.
         echo Extracting downloader script...
