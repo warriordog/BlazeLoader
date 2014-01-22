@@ -1,6 +1,6 @@
 @echo off
 if not exist %cd%/BlazeLoader/instlflg (
-    echo BlazeLoader environment not found!  Do you want to download it?
+    echo This will download and set up MCP.  Do you want to continue?
     choice
     if errorlevel 2 (
         echo MCP setup canceled.
@@ -51,11 +51,16 @@ REM end embedded VBScript file
         )
         echo.
         echo Extracting BlazeLoader...
-        %cd%/temp/setup/7-zip/7z.exe x -bd -o%cd%/temp/setup/ -y %cd%/temp/setup/BlazeLoader_repo.zip
+        %cd%/temp/setup/7-zip/7z.exe x -bd -ba -o%cd%/temp/setup/ -y %cd%/temp/setup/BlazeLoader_repo.zip
         xcopy /I /Y /E /C /Q %cd%\temp\setup\BlazeLoader-master\* %cd%\BlazeLoader
         rmdir /S /Q %cd%\temp\setup\BlazeLoader-master
         echo Done.
-        set /p mcpver=<%cd%/BlazeLoader/mcp.ver
+        if exist %cd%/BlazeLoader/mcp.ver (
+            set /p mcpver=<%cd%/BlazeLoader/mcp.ver
+        ) else (
+            echo MCP version file could not be loaded!  Using version 903!
+            set /p mcpver=903
+        )
         if not exist %cd%/temp/setup/mcp%mcpver%.zip (
             echo.
             echo Downloading MCP...
@@ -66,7 +71,7 @@ REM end embedded VBScript file
         )
         echo.
         echo Extracting MCP...
-        %cd%/temp/setup/7-zip/7z.exe x -bd -o%cd% -y %cd%/temp/setup/mcp%mcpver%.zip
+        %cd%/temp/setup/7-zip/7z.exe x -bd -ba -o%cd% -y %cd%/temp/setup/mcp%mcpver%.zip
         if exist %cd%/decompile.bat (
             echo Done.
         ) else (
@@ -79,7 +84,7 @@ REM end embedded VBScript file
         echo Done.
         echo.
         echo Decompiling...
-        %cp%/runtime/bin/python/python_mcp.exe %cp%/runtime/decompile.py
+        %cd%/runtime/bin/python/python_mcp.exe %cd%/runtime/decompile.py
         echo Done.
         echo.
         echo %date%-%time%>%cd%/BlazeLoader/instlflg
