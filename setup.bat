@@ -7,7 +7,8 @@ if not exist %cd%/BlazeLoader/instlflg (
         exit /b -1
     ) else (
         REM echo DEBUG: %cd%/temp/setup/bl_downloader.vbs
-        mkdir %cd%\temp\setup\
+        if not exist %cd%/temp/setup mkdir %cd%\temp\setup\
+        echo.
         echo Extracting downloader script...
 REM begin embedded VBScript file
         echo strURL = WScript.Arguments.Item(0^)>%cd%/temp/setup/bl_downloader.vbs
@@ -30,12 +31,15 @@ REM end embedded VBScript file
             echo Unable to extract downloader script, aborting install!
             exit /b 3
         )
+        echo.
         echo Downloading BlazeLoader from "http://github.com/warriordog/BlazeLoader/archive/master.zip"...
-        cscript.exe %cd%/temp/setup/bl_downloader.vbs http://github.com/warriordog/BlazeLoader/archive/master.zip %cd%/temp/setup/BlazeLoader_repo.zip
+        cscript.exe //B %cd%/temp/setup/bl_downloader.vbs http://github.com/warriordog/BlazeLoader/archive/master.zip %cd%/temp/setup/BlazeLoader_repo.zip
         echo Done.
+        echo.
         echo Downloading 7-Zip from "http://www.acomputerdog.net/BL_STORE/7-zip_package.exe"...
-        cscript.exe %cd%/temp/setup/bl_downloader.vbs http://www.acomputerdog.net/BL_STORE/7-zip_package.exe %cd%/temp/setup/7-zip_package.exe
+        cscript.exe //B %cd%/temp/setup/bl_downloader.vbs http://www.acomputerdog.net/BL_STORE/7-zip_package.exe %cd%/temp/setup/7-zip_package.exe
         echo Done.
+        echo.
         echo Extracting 7-Zip...
         %cd%/temp/setup/7-zip_package.exe /q:a /t:%cd%\temp\setup\7-zip\ /c /r:n
         if exist %cd%/temp/setup/7-zip/7z.exe (
@@ -45,33 +49,45 @@ REM end embedded VBScript file
             echo Unable to extract BlazeLoader, aborting install!
             exit /b 1
         )
+        echo.
         echo Extracting BlazeLoader...
-        %cd%/temp/setup/7-zip/7z.exe x -o%cd%/temp/setup/ -y %cd%/temp/setup/BlazeLoader_repo.zip
+        %cd%/temp/setup/7-zip/7z.exe x -bd -o%cd%/temp/setup/ -y %cd%/temp/setup/BlazeLoader_repo.zip
         xcopy /I /Y /E /C /Q %cd%\temp\setup\BlazeLoader-master\* %cd%\BlazeLoader
         rmdir /S /Q %cd%\temp\setup\BlazeLoader-master
         echo Done.
-        echo Downloading MCP...
         set /p mcpver=<%cd%/BlazeLoader/mcp.ver
-        cscript.exe %cd%/temp/setup/bl_downloader.vbs http://mcp.ocean-labs.de/files/archive/mcp%mcpver%.zip %cd%/temp/setup/mcp%mcpver%.zip
-        echo Done.
+        if not exist %cd%/temp/setup/mcp%mcpver%.zip (
+            echo.
+            echo Downloading MCP...
+            cscript.exe //B %cd%/temp/setup/bl_downloader.vbs http://mcp.ocean-labs.de/files/archive/mcp%mcpver%.zip %cd%/temp/setup/mcp%mcpver%.zip
+            echo Done.
+        ) else (
+            echo MCP already downloaded; skipping download.
+        )
+        echo.
         echo Extracting MCP...
-        %cd%/temp/setup/7-zip/7z.exe x -o%cd% -y %cd%/temp/setup/mcp%mcpver%.zip
+        %cd%/temp/setup/7-zip/7z.exe x -bd -o%cd% -y %cd%/temp/setup/mcp%mcpver%.zip
         if exist %cd%/decompile.bat (
             echo Done.
         ) else (
             echo MCP version %mcpver% was not found, provide it manually to %cd%/temp/setup/mcp%mcpver%.zip!  Aborting install!
             exit /b 2
         )
+        echo.
         echo Applying AccessTransformer...
         %cd%/BlazeLoader/apply_at.bat
         echo Done.
+        echo.
         echo Decompiling...
-        decompile.bat
+        %cp%/runtime/bin/python/python_mcp.exe %cp%/runtime/decompile.py
         echo Done.
-        echo %date%:%time%>%cd%/BlazeLoader/instlflg
+        echo.
+        echo %date%-%time%>%cd%/BlazeLoader/instlflg
         echo MCP setup complete!
+        echo.
     )
 ) else (
     echo MCP has already been set up!
     exit /b -2
 )
+pause
