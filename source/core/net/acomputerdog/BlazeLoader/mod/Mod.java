@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;

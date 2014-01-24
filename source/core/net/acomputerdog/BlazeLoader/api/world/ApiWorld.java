@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.api.world;
 
-import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
