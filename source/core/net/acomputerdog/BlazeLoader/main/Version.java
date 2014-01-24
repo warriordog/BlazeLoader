@@ -73,6 +73,14 @@ public final class Version {
         return isForgeInstalled;
     }
 
+    /**
+     * Gets the build environment of this BlazeLoader build.
+     * @return Return the build environment of this BlazeLoader build.
+     */
+    public static EBuildType getBuildType() {
+        return EBuildType.DEV;
+    }
+
     private static boolean isGameOBF() {
         try {
             Class.forName("net.minecraft.client.Minecraft");
