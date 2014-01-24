@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.inventory;
+package net.acomputerdog.BlazeLoader.api.recipe;
 
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCraftResult;
