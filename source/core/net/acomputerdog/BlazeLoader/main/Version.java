@@ -57,10 +57,18 @@ public final class Version {
         return "1.7.2";
     }
 
+    /**
+     * Detects if the game is obfuscated.
+     * @return Return true if the game is obfuscated.
+     */
     public static boolean isGameObfuscated() {
         return isOBF;
     }
 
+    /**
+     * Detects if forge is installed.
+     * @return Return true if forge is installed
+     */
     public static boolean isForgeInstalled() {
         return isForgeInstalled;
     }
