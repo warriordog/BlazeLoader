@@ -168,4 +168,14 @@ public class ApiBlock {
     public static IIcon getBlockIcon(Block block) {
         return block.blockIcon;
     }
+
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+	public static String getBlockName(Block block) {
+		return Block.blockRegistry.getNameForObject(block);
+	}
 }
