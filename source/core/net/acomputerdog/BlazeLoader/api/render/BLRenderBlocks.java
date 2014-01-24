@@ -2,13 +2,14 @@ package net.acomputerdog.BlazeLoader.api.render;
 
 import org.lwjgl.opengl.GL11;
 
-import manilla.util.MCColor;
-import manilla.util.wrapper.Wrapper.CTMUtils;
+import net.acomputerdog.BlazeLoader.api.util.MCColor;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
@@ -24,6 +25,7 @@ public class BLRenderBlocks {
 			return ((IRenderSpecial)block).renderWorldBlock(render, x, y, z);
 		} else {
 	        int var5 = APIRenderBlocks.getColorMultiplier(block, render.blockAccess, x, y, z);
+	        
 	        float redComp = (float)(var5 >> 16 & 255) / 255.0F,
 	        	greenComp = (float)(var5 >> 8 & 255) / 255.0F,
 	        	blueComp = (float)(var5 & 255) / 255.0F;
@@ -44,56 +46,58 @@ public class BLRenderBlocks {
 		}
     }
 		
-	public void renderStandardBlockAsItem(Block block, int metadata, int renderColor, float mult) {
-		Tessellator var4 = Tessellator.instance;
-		boolean over = APIRenderBlocks.getRenderGrass(block, metadata, true);
-		boolean var5 = APIRenderBlocks.getRenderGrass(block, metadata, false) && !over;
+	public void renderStandardBlockAsItem(Block block, int metadata, float mult) {
+		Tessellator tess = Tessellator.instance;
+		boolean over = APIRenderBlocks.getRenderGrassInv(block, metadata);
+		boolean renderGrass = over || block == Blocks.grass;//APIRenderBlocks.getRenderGrassInv(block, metadata);
+		
+		int renderColor = block.getRenderColor(metadata);
 		
         if (render.useInventoryTint) {
-        	renderColor = var5 ? 16777215 : APIRenderBlocks.getRenderColor(block, metadata);
+        	renderColor = renderGrass ? 16777215 : APIRenderBlocks.getRenderColor(block, metadata);
         	setColorTint(renderColor, mult);
         }
         
-		if (renderColor == 16) metadata = 1;
+		if (block.getRenderType() == 16) metadata = 1;
 
         block.setBlockBoundsForItemRender();
         render.setRenderBoundsFromBlock(block);
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
         
-        drawItemSide(var4, 0F, -1F, 0F, block, metadata, 0);
+        drawItemSide(tess, 0F, -1F, 0F, block, metadata, 0);
         
-        if ((var5 && render.useInventoryTint) | over) {
+        if ((renderGrass && render.useInventoryTint) || over) {
     		renderColor = APIRenderBlocks.getRenderColor(block, metadata);
         	
     		setColorTint(renderColor, mult);
         	
         	if (over) {
-        		drawItemSideUniversal(var4, 0F, -1F, 0F, block, metadata, 0, true);
+        		drawItemSideUniversal(tess, 0F, -1F, 0F, block, metadata, 0, true);
         		
-        		if (!(var5 && render.useInventoryTint)) {
+        		if (!(renderGrass && render.useInventoryTint)) {
         			resetColorTint(mult);
         		}
         	}
         }
         
-        drawItemSide(var4, 0F, 1F, 0F, block, metadata, 1);
+        drawItemSide(tess, 0F, 1F, 0F, block, metadata, 1);
         
-        if (over) drawItemSideOverlay(var4, 0F, 1F, 0F, block, metadata, 1, mult, renderColor);
+        if (over) drawItemSideOverlay(tess, 0F, 1F, 0F, block, metadata, 1, mult, renderColor);
         
-        if (var5 && render.useInventoryTint) resetColorTint(mult);
+        if (renderGrass && render.useInventoryTint) resetColorTint(mult);
         
-        drawItemSide(var4, 0F, 0F, -1F, block, metadata, 2);
-        drawItemSide(var4, 0F, 0F, 1F, block, metadata, 3);
-        drawItemSide(var4, -1F, 0F, 0F, block, metadata, 4);
-        drawItemSide(var4, 1F, 0F, 0F, block, metadata, 5);
+        drawItemSide(tess, 0F, 0F, -1F, block, metadata, 2);
+        drawItemSide(tess, 0F, 0F, 1F, block, metadata, 3);
+        drawItemSide(tess, -1F, 0F, 0F, block, metadata, 4);
+        drawItemSide(tess, 1F, 0F, 0F, block, metadata, 5);
         
         if (over) {
         	setColorTint(renderColor, mult);
-        	drawItemSideUniversal(var4, 0F, 0F, -1F, block, metadata, 2, true);
-            drawItemSideUniversal(var4, 0F, 0F, 1F, block, metadata, 3, true);
-            drawItemSideUniversal(var4, -1F, 0F, 0F, block, metadata, 4, true);
-            drawItemSideUniversal(var4, 1F, 0F, 0F, block, metadata, 5, true);
+        	drawItemSideUniversal(tess, 0F, 0F, -1F, block, metadata, 2, true);
+            drawItemSideUniversal(tess, 0F, 0F, 1F, block, metadata, 3, true);
+            drawItemSideUniversal(tess, -1F, 0F, 0F, block, metadata, 4, true);
+            drawItemSideUniversal(tess, 1F, 0F, 0F, block, metadata, 5, true);
             resetColorTint(mult);
         }
         
@@ -108,12 +112,19 @@ public class BLRenderBlocks {
         
         boolean result = false,
         		renderGrass = APIRenderBlocks.getRenderGrass(render, block, x, y, z),
+        		renderWithColor = true,
         		canGrassX, canGrassZPos, canGrassZNeg;
         
         int originalBrightness = block.getBlockBrightness(render.blockAccess, x, y, z),
         		usedBrightness;
         
         Tessellator.instance.setBrightness(983055);
+        
+        if (render.getBlockIcon(block).getIconName().equals("grass_top")) {
+            renderWithColor = false;
+        } else if (render.hasOverrideBlockTexture()) {
+            renderWithColor = false;
+        }
         
         if (block.shouldSideBeRendered(render.blockAccess, x, y - 1, z, 0)) {
             if (render.renderMinY <= 0.0D) --y;
@@ -186,14 +197,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessYZNN, render.aoBrightnessXYPN, render.aoBrightnessXYZPNN, usedBrightness);
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessXYNN, render.aoBrightnessXYZNNN, render.aoBrightnessYZNN, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.5F, 0.5F, 0.5F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.5F, multG * 0.5F, multB * 0.5F);
+            } else {
+            	resetColors(0.5F, 0.5F, 0.5F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 0), 0);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 0);
             
             result = true;
@@ -270,14 +282,15 @@ public class BLRenderBlocks {
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessYZPN, render.aoBrightnessXYPP, render.aoBrightnessXYZPPN, usedBrightness);
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessXYNP, render.aoBrightnessXYZNPN, render.aoBrightnessYZPN, usedBrightness);
             
-            if (APIRenderBlocks.getRenderGrass(block, render.blockAccess.getBlockMetadata(x, y, z), true)) {
-            	resetColors(1F, 1F, 1F);
-            } else {
+            if (!renderGrass) {
             	resetColors(multR, multG, multB);
+            } else {
+            	resetColors(1F, 1F, 1F);
             }
             
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 1), 1);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 1);
             
             result = true;
@@ -368,14 +381,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.mixAoBrightness(var27, var26, var29, var28, render.renderMinY * (1.0D - render.renderMaxX), render.renderMinY * render.renderMaxX, (1.0D - render.renderMinY) * render.renderMaxX, (1.0D - render.renderMinY) * (1.0D - render.renderMaxX));
             render.brightnessTopRight = render.mixAoBrightness(var27, var26, var29, var28, render.renderMinY * (1.0D - render.renderMinX), render.renderMinY * render.renderMinX, (1.0D - render.renderMinY) * render.renderMinX, (1.0D - render.renderMinY) * (1.0D - render.renderMinX));
 
-            if (renderGrass) {
-            	resetColors(0.8F, 0.8F, 0.8F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.8F, multG * 0.8F, multB * 0.8F);
+            } else {
+            	resetColors(0.8F, 0.8F, 0.8F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 2), 2);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 2);
 
             result = true;
@@ -463,14 +477,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.mixAoBrightness(var27, var28, var29, var26, render.renderMinY * (1.0D - render.renderMaxX), (1.0D - render.renderMinY) * (1.0D - render.renderMaxX), (1.0D - render.renderMinY) * render.renderMaxX, render.renderMinY * render.renderMaxX);
             render.brightnessTopRight = render.mixAoBrightness(var27, var28, var29, var26, render.renderMaxY * (1.0D - render.renderMaxX), (1.0D - render.renderMaxY) * (1.0D - render.renderMaxX), (1.0D - render.renderMaxY) * render.renderMaxX, render.renderMaxY * render.renderMaxX);
 
-            if (renderGrass) {
-            	resetColors(0.8F, 0.8F, 0.8F);
-            } else  {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.8F, multG * 0.8F, multB * 0.8F);
+            } else  {
+            	resetColors(0.8F, 0.8F, 0.8F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 3), 3);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 3);
 
             result = true;
@@ -558,14 +573,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.mixAoBrightness(var26, var29, var28, var27, render.renderMinY * render.renderMinZ, render.renderMinY * (1.0D - render.renderMinZ), (1.0D - render.renderMinY) * (1.0D - render.renderMinZ), (1.0D - render.renderMinY) * render.renderMinZ);
             render.brightnessTopRight = render.mixAoBrightness(var26, var29, var28, var27, render.renderMinY * render.renderMaxZ, render.renderMinY * (1.0D - render.renderMaxZ), (1.0D - render.renderMinY) * (1.0D - render.renderMaxZ), (1.0D - render.renderMinY) * render.renderMaxZ);
 
-            if (renderGrass) {
-            	resetColors(0.6F, 0.6F, 0.6F);
-            } else  {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.6F, multG * 0.6F, multB * 0.6F);
+            } else  {
+            	resetColors(0.6F, 0.6F, 0.6F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 4), 4);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 4);
 
             result = true;
@@ -653,14 +669,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.mixAoBrightness(var27, var28, var29, var26, (1.0D - render.renderMaxY) * render.renderMinZ, (1.0D - render.renderMaxY) * (1.0D - render.renderMinZ), render.renderMaxY * (1.0D - render.renderMinZ), render.renderMaxY * render.renderMinZ);
             render.brightnessTopRight = render.mixAoBrightness(var27, var28, var29, var26, (1.0D - render.renderMaxY) * render.renderMaxZ, (1.0D - render.renderMaxY) * (1.0D - render.renderMaxZ), render.renderMaxY * (1.0D - render.renderMaxZ), render.renderMaxY * render.renderMaxZ);
 
-            if (renderGrass) {
-            	resetColors(0.6F, 0.6F, 0.6F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.6F, multG * 0.6F, multB * 0.6F);
+            } else {
+            	resetColors(0.6F, 0.6F, 0.6F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 5), 5);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 5);
 
             result = true;
@@ -678,13 +695,20 @@ public class BLRenderBlocks {
         
         boolean result = false,
         		renderGrass = APIRenderBlocks.getRenderGrass(render, block, x, y, z),
+        		renderWithColor = true,
         		canGrassX, canGrassZPos, canGrassZNeg;
         
         int originalBrightness = block.getBlockBrightness(render.blockAccess, x, y, z),
         		usedBrightness;
         
         Tessellator.instance.setBrightness(983055);
-
+        
+        if (render.getBlockIcon(block).getIconName().equals("grass_top")) {
+            renderWithColor = false;
+        } else if (render.hasOverrideBlockTexture()) {
+            renderWithColor = false;
+        }
+        
         if (block.shouldSideBeRendered(render.blockAccess, x, y - 1, z, 0)) {
             if (render.renderMinY <= 0.0D) --y;
 
@@ -756,14 +780,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessYZNN, render.aoBrightnessXYPN, render.aoBrightnessXYZPNN, usedBrightness);
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessXYNN, render.aoBrightnessXYZNNN, render.aoBrightnessYZNN, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.5F, 0.5F, 0.5F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.5F, multG * 0.5F, multB * 0.5F);
+            } else {
+            	resetColors(0.5F, 0.5F, 0.5F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 0), 0);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 0);
             
             result = true;
@@ -840,14 +865,15 @@ public class BLRenderBlocks {
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessYZPN, render.aoBrightnessXYPP, render.aoBrightnessXYZPPN, usedBrightness);
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessXYNP, render.aoBrightnessXYZNPN, render.aoBrightnessYZPN, usedBrightness);
             
-            if (APIRenderBlocks.getRenderGrass(block, render.blockAccess.getBlockMetadata(x, y, z), true)) {
-            	resetColors(1F, 1F, 1F);
-            } else {
+            if (!renderGrass) {
             	resetColors(multR, multG, multB);
+            } else {
+            	resetColors(1F, 1F, 1F);
             }
             
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 1), 1);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 1);
             
             result = true;
@@ -924,14 +950,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessYZNN, render.aoBrightnessXYZPNN, render.aoBrightnessXZPN, usedBrightness);
             render.brightnessTopRight = render.getAoBrightness(render.aoBrightnessXYZNNN, render.aoBrightnessXZNN, render.aoBrightnessYZNN, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.8F, 0.8F, 0.8F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.8F, multG * 0.8F, multB * 0.8F);
+            } else {
+            	resetColors(0.8F, 0.8F, 0.8F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 2), 2);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 2);
 
             result = true;
@@ -1008,14 +1035,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessYZNP, render.aoBrightnessXYZPNP, render.aoBrightnessXZPP, usedBrightness);
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessXYZNNP, render.aoBrightnessXZNP, render.aoBrightnessYZNP, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.8F, 0.8F, 0.8F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.8F, multG * 0.8F, multB * 0.8F);
+            } else {
+            	resetColors(0.8F, 0.8F, 0.8F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 3), 3);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 3);
 
             result = true;
@@ -1092,14 +1120,15 @@ public class BLRenderBlocks {
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessXZNN, render.aoBrightnessXYZNPN, render.aoBrightnessXYNP, usedBrightness);
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessXYZNNN, render.aoBrightnessXYNN, render.aoBrightnessXZNN, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.6F, 0.6F, 0.6F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.6F, multG * 0.6F, multB * 0.6F);
+            } else {
+            	resetColors(0.6F, 0.6F, 0.6F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 4), 4);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 4);
 
             result = true;
@@ -1176,14 +1205,15 @@ public class BLRenderBlocks {
             render.brightnessBottomRight = render.getAoBrightness(render.aoBrightnessXZPN, render.aoBrightnessXYZPPN, render.aoBrightnessXYPP, usedBrightness);
             render.brightnessBottomLeft = render.getAoBrightness(render.aoBrightnessXYZPNN, render.aoBrightnessXYPN, render.aoBrightnessXZPN, usedBrightness);
 
-            if (renderGrass) {
-            	resetColors(0.6F, 0.6F, 0.6F);
-            } else {
+            if (renderWithColor && !renderGrass) {
             	resetColors(multR * 0.6F, multG * 0.6F, multB * 0.6F);
+            } else {
+            	resetColors(0.6F, 0.6F, 0.6F);
             }
 
             multColorCorners(brightBottomLeft, brightBottomRight, brightTopLeft, brightTopRight);
             RenderFaceforSide(block, (double)x, (double)y, (double)z, render.getBlockIcon(block, render.blockAccess, x, y, z, 5), 5);
+            
             renderIconSideOverlay(renderGrass, block, multR, multG, multB, x, y, z, 5);
 
             result = true;
@@ -1195,13 +1225,13 @@ public class BLRenderBlocks {
 	
     private boolean renderStandardBlockWithColorMultiplier(Block block, int x, int y, int z, float multR, float multG, float multB) {
         render.enableAO = false;
-        boolean renderGrass = APIRenderBlocks.getRenderGrass(render, block, x, y, z);
+        boolean renderGrass = APIRenderBlocks.getRenderGrass(render, block, x, y, z) || block == Blocks.grass;
         
         float[][] colors = new float[4][3];
         float[] mult = MCColor.newRGBarray(multR, multG, multB);
 
         {
-	        if (!APIRenderBlocks.getRenderGrass(block, render.blockAccess.getBlockMetadata(x, y, z), true)) {
+	        if (!APIRenderBlocks.getRenderGrassInv(block, render.blockAccess.getBlockMetadata(x, y, z))) {
 	        	colors[1] = mult;
 	        } else {
 	        	colors[1] = MCColor.newRGBarray(1);
@@ -1241,13 +1271,22 @@ public class BLRenderBlocks {
             IIcon texture = render.getBlockIcon(par1Block, render.blockAccess, x, y, z, side);
             
             RenderFaceforSide(par1Block, x, y, z, texture, side);
-
-            if (renderGrass && !APIRenderBlocks.getHasSnow(render, par1Block, x, y, z)) {
-            	if ((texture = APIRenderBlocks.getIconSideOverlay(render, par1Block, x, y, z, side)) != null) {
+            
+            if (!render.hasOverrideBlockTexture()) {
+	            if (render.fancyGrass && side > 1 && texture != null && texture.getIconName().equals("grass_side")) {
 	                tessellator.setColorOpaque_F(rgb[0] * rgbMult[0], rgb[1] * rgbMult[1], rgb[2] * rgbMult[2]);
-	                RenderFaceforSide(par1Block, x, y, z, texture, side);
+	                RenderFaceforSide(par1Block, x, y, z, BlockGrass.func_149990_e(), side);
+	                return true;
             	}
+	            
+	            if (renderGrass && !APIRenderBlocks.getHasSnow(render, par1Block, x, y, z)) {
+	            	if ((texture = APIRenderBlocks.getIconSideOverlay(render, par1Block, x, y, z, side)) != null) {
+		                tessellator.setColorOpaque_F(rgb[0] * rgbMult[0], rgb[1] * rgbMult[1], rgb[2] * rgbMult[2]);
+		                RenderFaceforSide(par1Block, x, y, z, texture, side);
+	            	}
+	            }
             }
+            
             return true;
         }
     	return false;
@@ -1307,14 +1346,26 @@ public class BLRenderBlocks {
     }
     
 	public void renderIconSideOverlay(boolean renderGrass, Block block, float multR, float multG, float multB, int x, int y, int z, int side) {
-		if (render.fancyGrass && renderGrass && !APIRenderBlocks.getHasSnow(render, block, x, y, z)) {
-        	IIcon over = APIRenderBlocks.getIconSideOverlay(render, block, x, y, z, side);
-        	
-        	if (over != null) {
-        		multColors(multR, multG, multB);
-                RenderFaceforSide(block, (double)x, (double)y, (double)z, over, side);
-        	}
-        }
+		if (!render.hasOverrideBlockTexture()) {
+			if (side > 1 && render.fancyGrass) {
+				IIcon var22 = render.getBlockIcon(block, render.blockAccess, x, y, z, side);
+				
+		        if (var22.getIconName().equals("grass_side")) {
+		        	multColors(multR, multG, multB);
+		            RenderFaceforSide(block, (double)x, (double)y, (double)z, BlockGrass.func_149990_e(), side);
+		            return;
+		        }
+			}
+			
+			if (renderGrass && !APIRenderBlocks.getHasSnow(render, block, x, y, z)) {
+	        	IIcon over = APIRenderBlocks.getIconSideOverlay(render, block, x, y, z, side);
+	        	
+	        	if (over != null) {
+	        		multColors(multR, multG, multB);
+	                RenderFaceforSide(block, (double)x, (double)y, (double)z, over, side);
+	        	}
+	        }
+		}
 	}
     
     public void drawItemSideOverlay(Tessellator tess, float a, float b, float c, Block block, int data, int side, float par3, int renderColor) {
@@ -1326,7 +1377,6 @@ public class BLRenderBlocks {
     private void drawItemSideUniversal(Tessellator tess, float a, float b, float c, Block block, int data, int side, boolean inv) {
     	tess.startDrawingQuads();
         tess.setNormal(a, b, c);
-        CTMUtils.start();
         
         if (inv) {
         	IIcon over = APIRenderBlocks.getIconSideOverlay(render, block, data, 0, 0, 0, side);
@@ -1334,7 +1384,7 @@ public class BLRenderBlocks {
         		RenderFaceforSide(block, 0, 0, 0, over, side);
         	}
         } else {
-        	RenderFaceforSide(block, 0, 0, 0, CTMUtils.getTile(render, block, side, data, tess), side);
+        	RenderFaceforSide(block, 0, 0, 0, block.getIcon(side, data), side);
         }
         tess.draw();
     }

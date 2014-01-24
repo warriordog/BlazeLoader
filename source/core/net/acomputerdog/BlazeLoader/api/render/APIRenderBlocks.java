@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import manilla.util.ManillaUtil;
 import net.acomputerdog.BlazeLoader.api.block.ApiBlock;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.crash.CrashReport;
@@ -17,10 +17,8 @@ import net.minecraft.world.IBlockAccess;
 
 public class APIRenderBlocks {
 	
-	private static final BLRenderBlocks renderer = BLRenderBlocks.instance;
-	
 	private static List<Block> GrassTypeRenderBlocks = new ArrayList();
-		
+	
 	public static boolean registerGrassRender(Block block) {
 		if (!GrassTypeRenderBlocks.contains(block)) {
 			if (IsValidGrassBlock(block)) {
@@ -51,7 +49,11 @@ public class APIRenderBlocks {
 		if (GrassTypeRenderBlocks.contains(block)) {
 			return ((IGrassBlock)block).getIconSideOverlay(rb.blockAccess, metadata, x, y, z, side);
 		}
-		return block.getBlockTextureFromSide(3);
+		IIcon i = rb.getBlockIcon(block, rb.blockAccess, x, y, z, side);
+		if ("grass_side".equals(i.getIconName())) {
+			return BlockGrass.func_149990_e();
+		}
+		return null;
 	}
 	
 	public static boolean getRenderGrass(RenderBlocks rb, Block block, int x, int y, int z) {
@@ -85,7 +87,7 @@ public class APIRenderBlocks {
 		return false;
 	}
 	
-	public static boolean getRenderGrass(Block block, int Metadata, boolean inv) {
+	public static boolean getRenderGrassInv(Block block, int Metadata) {
 		if (GrassTypeRenderBlocks.contains(block)) {
 			return ((IGrassBlock)block).IsGrassBlockInv(Metadata);
 		}
@@ -112,16 +114,11 @@ public class APIRenderBlocks {
 	 * @param innerException
 	 */
     private static void throwException(String message, Throwable innerException) {
-    	if (!ManillaUtil.IsServer()) {
-    		Minecraft m = Minecraft.getMinecraft();
-            if (m != null) {
-            	m.displayCrashReport(CrashReport.makeCrashReport(innerException, message));
-            	return;
-            }
-    	} else {
-			ManillaUtil.getLogAgent().logWarningException(message, innerException);
-			return;
-    	}
+		Minecraft m = Minecraft.getMinecraft();
+        if (m != null) {
+        	m.displayCrashReport(CrashReport.makeCrashReport(innerException, message));
+        	return;
+        }
         throw new RuntimeException(innerException);
     }
 }

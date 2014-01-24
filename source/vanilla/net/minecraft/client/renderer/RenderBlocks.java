@@ -1,6 +1,5 @@
 package net.minecraft.client.renderer;
 
-import manilla.util.ManillaUtil;
 import net.acomputerdog.BlazeLoader.api.render.APIRenderBlocks;
 import net.acomputerdog.BlazeLoader.api.render.BLRenderBlocks;
 import net.acomputerdog.BlazeLoader.api.render.IRenderSpecial;
@@ -7714,11 +7713,10 @@ public class RenderBlocks
     	if (APIRenderBlocks.HasSpecialRender(block) && ((IRenderSpecial)block).overrideInventoryRender()) {
 			((IRenderSpecial)block).renderInventoryBlock(this, metadata);
 		} else {
-			renderBlocksBl.renderStandardBlockAsItem(block, metadata, block.getBlockColor(), 1);
+			renderStandardBlockAsItem(block, metadata, multiplier);
 		}
     }
     
-    @Deprecated
     public void renderStandardBlockAsItem(Block p_147800_1_, int p_147800_2_, float p_147800_3_)
     {
         Tessellator var4 = Tessellator.instance;
@@ -7752,7 +7750,7 @@ public class RenderBlocks
         var6 = p_147800_1_.getRenderType();
         this.setRenderBoundsFromBlock(p_147800_1_);
         int var14;
-
+        
         if (var6 != 0 && var6 != 31 && var6 != 39 && var6 != 16 && var6 != 26)
         {
             if (var6 == 1)
@@ -8177,7 +8175,9 @@ public class RenderBlocks
         }
         else
         {
-            if (var6 == 16)
+        	this.renderBlocksBl.renderStandardBlockAsItem(p_147800_1_, p_147800_2_, p_147800_3_);
+            
+        	/*if (var6 == 16)
             {
                 p_147800_2_ = 1;
             }
@@ -8226,7 +8226,7 @@ public class RenderBlocks
             var4.setNormal(1.0F, 0.0F, 0.0F);
             this.renderFaceXPos(p_147800_1_, 0.0D, 0.0D, 0.0D, this.getBlockIconFromSideAndMetadata(p_147800_1_, 5, p_147800_2_));
             var4.draw();
-            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+            GL11.glTranslatef(0.5F, 0.5F, 0.5F);*/
         }
     }
 
