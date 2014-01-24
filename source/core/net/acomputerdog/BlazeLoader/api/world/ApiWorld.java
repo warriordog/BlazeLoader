@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Beta(stable = false) //Needs Testing
 /**
  * ApiFunctions related to worlds
  */

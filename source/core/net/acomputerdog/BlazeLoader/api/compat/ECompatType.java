@@ -2,7 +2,6 @@ package net.acomputerdog.BlazeLoader.api.compat;
 
 import net.acomputerdog.BlazeLoader.annotation.Beta;
 
-@Beta(stable = true)
 /**
  * Categories of compatibility types.
  */

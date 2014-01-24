@@ -3,7 +3,6 @@ package net.acomputerdog.BlazeLoader.api.compat;
 import net.acomputerdog.BlazeLoader.annotation.Beta;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 
-@Beta(stable = true)
 /**
  * Interface to be implemented by mods wishing to use the compatibility API.
  */

@@ -232,7 +232,6 @@ public abstract class Mod {
     }
 
     //TODO rewrite to allow disabling vanilla
-    @Beta(stable = false)
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
      * @param server The server calling tickBlocksAndAmbiance
@@ -241,7 +240,6 @@ public abstract class Mod {
         this.eventTickBlocksAndAmbiance();
     }
 
-    @Beta(stable = false)
     /**
      * No-args version of eventTickBlocksAndAmbiance(WorldServer, boolean)
      */
