@@ -20,14 +20,10 @@ import java.util.zip.ZipFile;
  * A class transformer that injects BL classes into the game.
  */
 public class BLClassTransformer implements IClassTransformer {
-    public static final boolean isOBF = Version.isGameObfuscated();
     private static final List<String> overrideClasses = createOverrideList();
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (!isOBF) {
-            return bytes;
-        }
         if (overrideClasses.contains(name)) {
             return readClass(name, bytes);
         } else {
@@ -38,7 +34,7 @@ public class BLClassTransformer implements IClassTransformer {
     public byte[] readClass(String name, byte[] original) {
         TweakLauncher.logger.logDetail("Loading class: " + name);
         try {
-            InputStream in = getClass().getResourceAsStream((isOBF ? "/bl_classes_vanilla/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");
+            InputStream in = getClass().getResourceAsStream(("/bl_classes_vanilla/" + name) + ".class");
             if (in != null) {
                 BufferedInputStream bin = new BufferedInputStream(in);
                 byte[] bytes = new byte[bin.available()];
