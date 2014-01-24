@@ -34,7 +34,7 @@ public class BLClassTransformer implements IClassTransformer {
     public byte[] readClass(String name, byte[] original) {
         TweakLauncher.logger.logDetail("Loading class: " + name);
         try {
-            InputStream in = getClass().getResourceAsStream(("/bl_classes_vanilla/" + name) + ".class");
+            InputStream in = getClass().getResourceAsStream((Version.isForgeInstalled() ? "/bl_classes_forge/" : "/bl_classes_vanilla/" + name) + ".class");
             if (in != null) {
                 BufferedInputStream bin = new BufferedInputStream(in);
                 byte[] bytes = new byte[bin.available()];
@@ -66,7 +66,7 @@ public class BLClassTransformer implements IClassTransformer {
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
                     String name = entry.getName();
-                    if (name.startsWith("bl_classes_vanilla/") && name.endsWith(".class")) {
+                    if (name.startsWith(Version.isForgeInstalled() ? "bl_classes_forge/" : "bl_classes_vanilla/") && name.endsWith(".class")) {
                         ol.add(name.substring(18, name.length() - 6));
                     }
                 }
