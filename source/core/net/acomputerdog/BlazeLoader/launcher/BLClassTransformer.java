@@ -48,7 +48,7 @@ public class BLClassTransformer implements IClassTransformer {
                 return original;
             }
         } catch (Exception e) {
-            TweakLauncher.logger.logError("Could not load a class!");
+            TweakLauncher.logger.logError("Could not load a class: " + name);
             e.printStackTrace();
             return original;
         }
