@@ -38,7 +38,7 @@ public class BLClassTransformer implements IClassTransformer {
     public byte[] readClass(String name, byte[] original) {
         TweakLauncher.logger.logDetail("Loading class: " + name);
         try {
-            InputStream in = getClass().getResourceAsStream((isOBF ? "/net/minecraft/src/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");
+            InputStream in = getClass().getResourceAsStream((isOBF ? "/bl_classes_vanilla/" + name : name.replaceAll(Pattern.quote("."), "/")) + ".class");
             if (in != null) {
                 BufferedInputStream bin = new BufferedInputStream(in);
                 byte[] bytes = new byte[bin.available()];
@@ -70,7 +70,7 @@ public class BLClassTransformer implements IClassTransformer {
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
                     String name = entry.getName();
-                    if (name.startsWith("net/minecraft/src/") && name.endsWith(".class")) {
+                    if (name.startsWith("bl_classes_vanilla/") && name.endsWith(".class")) {
                         ol.add(name.substring(18, name.length() - 6));
                     }
                 }
