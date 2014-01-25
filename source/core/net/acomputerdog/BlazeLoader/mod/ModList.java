@@ -263,28 +263,6 @@ public class ModList {
         BlazeLoader.currActiveMod = null;
     }
 
-    //TODO implement
-    public static boolean eventPlayerBreakBlock(EntityPlayer player, int x, int y, int z, Block block, int data, boolean allowed) {
-        boolean isAllowed = allowed;
-        for (Mod mod : loadedMods) {
-            BlazeLoader.currActiveMod = mod;
-            isAllowed = mod.eventPlayerBreakBlock(player, x, y, z, block, data, allowed);
-        }
-        BlazeLoader.currActiveMod = null;
-        return isAllowed;
-    }
-
-    //TODO implement
-    public static boolean eventPlayerPlaceBlock(EntityPlayer player, int x, int y, int z, Block oldBlock, int oldData, Block newBlock, int newData, boolean allowed) {
-        boolean isAllowed = allowed;
-        for (Mod mod : loadedMods) {
-            BlazeLoader.currActiveMod = mod;
-            isAllowed = mod.eventPlayerPlaceBlock(player, x, y, z, oldBlock, oldData, newBlock, newData, allowed);
-        }
-        BlazeLoader.currActiveMod = null;
-        return isAllowed;
-    }
-
     public static EntityFX spawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
         EntityFX entity = null;
         for (Mod mod : loadedMods) {

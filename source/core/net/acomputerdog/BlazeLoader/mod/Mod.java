@@ -257,60 +257,6 @@ public abstract class Mod {
     }
 
     /**
-     * Called when a player attempts to break a block.  Also allows the mod to stop a block break.
-     *
-     * @param player  The player attempting to break the block
-     * @param x       The x-location of the block
-     * @param y       The y-location of the block
-     * @param z       The z-location of the block
-     * @param block   The block being broken
-     * @param data    The meta-data of the block
-     * @param allowed False if another mod or MC will not allow the block to be broken.
-     * @return Return true to allow the block to break, false to stop it.
-     */
-    public boolean eventPlayerBreakBlock(EntityPlayer player, int x, int y, int z, Block block, int data, boolean allowed) {
-        return eventPlayerBreakBlock(allowed);
-    }
-
-    /**
-     * No-args version of eventPlayerBreakBlock.
-     *
-     * @param allowed False if another mod or MC will not allow the block to be broken.
-     * @return Return true to allow the block to break, false to stop it.
-     */
-    public boolean eventPlayerBreakBlock(boolean allowed) {
-        return allowed;
-    }
-
-    /**
-     * Called when a player attempts to place a block.  Also allows the mod to stop a block place.
-     *
-     * @param player   The player attempting to break the block
-     * @param x        The x-location of the block
-     * @param y        The y-location of the block
-     * @param z        The z-location of the block
-     * @param oldBlock The existing block that will be removed (non-solid blocks like air, water, tall grass, fire, etc.)
-     * @param oldData  The data of the existing block
-     * @param newBlock The block to be placed
-     * @param newData  The data of the block to be placed.
-     * @param allowed  False if another mod or MC will not allow the block to be placed.
-     * @return Return true to allow the block to place, false to stop it.
-     */
-    public boolean eventPlayerPlaceBlock(EntityPlayer player, int x, int y, int z, Block oldBlock, int oldData, Block newBlock, int newData, boolean allowed) {
-        return eventPlayerPlaceBlock(allowed);
-    }
-
-    /**
-     * No-args version of eventPlayerPlaceBlock.
-     *
-     * @param allowed False if another mod or MC will not allow the block to be placed.
-     * @return Return true to allow the block to place, false to stop it.
-     */
-    public boolean eventPlayerPlaceBlock(boolean allowed) {
-        return allowed;
-    }
-
-    /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
      *
      * @param obj Object to compare to.
