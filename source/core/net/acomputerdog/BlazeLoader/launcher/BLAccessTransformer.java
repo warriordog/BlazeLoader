@@ -148,7 +148,7 @@ public class BLAccessTransformer implements IClassTransformer {
                 ret |= (t != ACC_PRIVATE && t != 0 && t != ACC_PROTECTED ? t : ACC_PUBLIC);
                 break;
             default:
-                throw new RuntimeException("That shouldn't of happend");
+                throw new RuntimeException("That shouldn't have happend");
         }
 
         if (target.changeFinal) {
