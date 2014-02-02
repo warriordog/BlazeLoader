@@ -1,18 +1,13 @@
 {
-  "id": "BL-1.7.2-dev",
-  "time": "2013-10-25T09:00:00-04:00",
-  "releaseTime": "2013-10-25T09:00:00-04:00",
-  "type": "release",
-  "minecraftArguments": "--username ${auth_player_name} --version ${version_name} --gameDir ${game_directory} --assetsDir ${game_assets} --uuid ${auth_uuid} --accessToken ${auth_access_token} --tweakClass net.acomputerdog.BlazeLoader.launcher.TweakLauncher",
   "libraries": [
-    {
-      "name": "net.acomputerdog:BlazeLoader:1.7.2_dev"
-    },
   	{
-      "name": "org.ow2.asm:asm-debug-all:4.1"
+      "name": "org.ow2.asm:asm-debug-all:4.1",
+      "autodownload": false,
+      "url": "http://repo1.maven.org/maven2/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar"
     },
     {
-      "name": "net.minecraft:launchwrapper:1.9"
+      "name": "net.minecraft:launchwrapper:1.9",
+      "autodownload": false
     },
     {
       "name": "java3d:vecmath:1.3.1"
@@ -125,8 +120,5 @@
         ]
       }
     }
-  ],
-  "mainClass": "net.minecraft.launchwrapper.Launch",
-  "minimumLauncherVersion": 9,
-  "synced": false
+  ]
 }
