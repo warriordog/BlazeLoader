@@ -26,7 +26,7 @@ public class ModLoader {
         loadMods(searchDir, ModList.getUnloadedMods());
     }
 
-    public static void loadMods(File searchDir, List<Class> modList) {
+    public static void loadMods(File searchDir, List<Class<? extends Mod>> modList) {
         ApiBase.theProfiler.startSection("load_mods");
         if (!searchDir.exists() || !searchDir.isDirectory()) {
             BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
@@ -75,7 +75,7 @@ public class ModLoader {
         }
     }
 
-    private static void loadClass(String className, ClassLoader loader, List<Class> modList) {
+    private static void loadClass(String className, ClassLoader loader, List<Class<? extends Mod>> modList) {
         try {
             Class modClass = loader.loadClass(className);
             if (Mod.class.isAssignableFrom(modClass)) {

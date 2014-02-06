@@ -2,13 +2,11 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.world.World;
@@ -23,13 +21,14 @@ import java.util.List;
  */
 public class ModList {
     private static final List<Mod> loadedMods = new ArrayList<Mod>();
-    private static final List<Class> unloadedMods = new ArrayList<Class>();
+    private static final List<Class<? extends Mod>> unloadedMods = new ArrayList<Class<? extends Mod>>();
     private static final List<ModData> modData = new ArrayList<ModData>();
 
     public static List<Mod> getLoadedMods() {
         return loadedMods;
     }
-    public static List<Class> getUnloadedMods() {
+
+    public static List<Class<? extends Mod>> getUnloadedMods() {
         return unloadedMods;
     }
     public static List<ModData> getModData() {
@@ -49,12 +48,12 @@ public class ModList {
 
     public static void load() {
         ApiBase.theProfiler.startSection("init_mods");
-        Iterator<Class> iterator = unloadedMods.iterator();
+        Iterator<Class<? extends Mod>> iterator = unloadedMods.iterator();
         while (iterator.hasNext()) {
-            Class cls = iterator.next();
+            Class<? extends Mod> cls = iterator.next();
             Mod mod = null;
             try {
-                mod = (Mod) cls.newInstance();
+                mod = cls.newInstance();
                 if (mod.isCompatibleWithBLVersion()) {
                     Mod sameMod = getCompatibleModFromList(mod);
                     boolean useNewMod = true;
