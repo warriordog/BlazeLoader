@@ -24,13 +24,16 @@ import java.util.List;
 public class ModList {
     private static final List<Mod> loadedMods = new ArrayList<Mod>();
     private static final List<Class> unloadedMods = new ArrayList<Class>();
+    private static final List<ModData> modData = new ArrayList<ModData>();
 
     public static List<Mod> getLoadedMods() {
         return loadedMods;
     }
-
     public static List<Class> getUnloadedMods() {
         return unloadedMods;
+    }
+    public static List<ModData> getModData() {
+        return modData;
     }
 
     private static Mod getCompatibleModFromList(Mod mod) {
@@ -67,6 +70,7 @@ public class ModList {
                     if (useNewMod) {
                         mod.load();
                         loadedMods.add(mod);
+                        modData.add(new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId()));
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {

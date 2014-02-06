@@ -8,9 +8,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -18,6 +16,12 @@ import java.util.zip.ZipFile;
  * Handles detecting and loading mods.
  */
 public class ModLoader {
+    private static Map<String, File> sourceMap = new HashMap<String, File>();
+
+    public static File getModSource(String clsName) {
+        return sourceMap.get(clsName);
+    }
+
     public static void loadModsToList(File searchDir) {
         loadMods(searchDir, ModList.getUnloadedMods());
     }
@@ -25,9 +29,7 @@ public class ModLoader {
     public static void loadMods(File searchDir, List<Class> modList) {
         ApiBase.theProfiler.startSection("load_mods");
         if (!searchDir.exists() || !searchDir.isDirectory()) {
-            ApiBase.theProfiler.startSection("create_dir");
             BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
-            ApiBase.theProfiler.endSection();
         } else {
             ApiBase.theProfiler.startSection("find_jars");
             File[] zips = searchDir.listFiles(new FilenameFilter() {
@@ -61,7 +63,9 @@ public class ModLoader {
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().endsWith(".class")) {
-                    modClassNames.add(entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6));
+                    String name = entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6);
+                    modClassNames.add(name);
+                    sourceMap.put(name, modZip);
                 }
             }
         } catch (IOException e) {
