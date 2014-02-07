@@ -2371,4 +2371,8 @@ public class Minecraft implements IPlayerUsage {
             }
         }
     }
+
+    public List<IResourcePack> getDefaultResourcePacks() {
+        return this.defaultResourcePacks;
+    }
 }

@@ -2,6 +2,7 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -69,7 +70,9 @@ public class ModList {
                     if (useNewMod) {
                         mod.load();
                         loadedMods.add(mod);
-                        modData.add(new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId()));
+                        ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
+                        modData.add(data);
+                        ModLoader.loadModAsResourcePack(data);
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {
