@@ -92,7 +92,7 @@ public final class Version {
 
     private static boolean hasForge() {
         try {
-            Class.forName("net.minecraftforge.common.ForgeHooks");
+            Class.forName("net.minecraftforge.oredict.ShapedOreRecipe");
             return true;
         } catch (Exception ignored) {
             return false;
