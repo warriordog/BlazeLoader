@@ -2,18 +2,11 @@ package net.acomputerdog.BlazeLoader.api.tick;
 
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.util.Timer;
 
 /**
  * Api for function related to the world tick.
  */
 public class ApiTick {
-
-    @Deprecated
-    /**
-     * The game's tick timer.
-     */
-    public static Timer gameTimer;
 
     /**
      * Gets the game's tick rate.  Uses reflection only on first run.

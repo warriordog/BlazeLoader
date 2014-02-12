@@ -162,19 +162,18 @@ public abstract class Mod {
         this.eventPlayerLogout();
     }
 
-    @Deprecated
     /**
      * Called when a non-local player respawns.  Only works for other players.
-     * @param oldPlayer The player that died.
-     * @param newPlayer The player being spawned.
-     * @param dimension The dimension to spawn in.
+     *
+     * @param oldPlayer     The player that died.
+     * @param newPlayer     The player being spawned.
+     * @param dimension     The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
     public void eventOtherPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath) {
         this.eventOtherPlayerRespawn();
     }
 
-    @Deprecated
     /**
      * Called when the client player dies.
      */
