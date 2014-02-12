@@ -696,7 +696,7 @@ public class Minecraft implements IPlayerUsage {
         GuiScreen old = this.currentScreen;
         GuiOpenEvent event = new GuiOpenEvent(p_147108_1_);
 
-        if (!ModList.onGui(old, p_147108_1_, MinecraftForge.EVENT_BUS.post(event))) return;
+        if (!ModList.onGui(old, p_147108_1_, !MinecraftForge.EVENT_BUS.post(event))) return;
 
         p_147108_1_ = event.gui;
 
