@@ -531,6 +531,7 @@ public class Minecraft implements IPlayerUsage {
 
         FMLClientHandler.instance().onInitializationComplete();
         Display.setVSyncEnabled(this.gameSettings.enableVsync);
+        ModList.start();
     }
 
     public void refreshResources() {
