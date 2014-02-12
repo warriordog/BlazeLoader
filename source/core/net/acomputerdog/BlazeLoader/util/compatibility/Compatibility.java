@@ -1,11 +1,11 @@
-package net.acomputerdog.BlazeLoader.api.compat;
+package net.acomputerdog.BlazeLoader.util.compatibility;
 
 import java.util.List;
 
 /**
  * Provides compatibility between mods that perform similar functions.
  */
-public class ApiCompat {
+public class Compatibility {
 
     /**
      * Registers a Compatibility Access.
@@ -19,7 +19,7 @@ public class ApiCompat {
     /**
      * Gets all registered compatibilities for a given compatibility type.
      *
-     * @param type Type of compat to get compatibilities for.
+     * @param type Type of compatibility to get compatibilities for.
      * @return Return a List of all registered compatibilities for type 'type'
      */
     public List<ICompatAccess> getCompats(ECompatType type) {

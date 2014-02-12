@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.compat;
+package net.acomputerdog.BlazeLoader.util.compatibility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
