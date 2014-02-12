@@ -23,7 +23,6 @@ import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -114,10 +113,9 @@ public class CrashReport {
                 List list = runtimemxbean.getInputArguments();
                 int i = 0;
                 StringBuilder stringbuilder = new StringBuilder();
-                Iterator iterator = list.iterator();
 
-                while (iterator.hasNext()) {
-                    String s = (String) iterator.next();
+                for (Object aList : list) {
+                    String s = (String) aList;
 
                     if (s.startsWith("-X")) {
                         if (i++ > 0) {
@@ -128,7 +126,7 @@ public class CrashReport {
                     }
                 }
 
-                return String.format("%d total; %s", new Object[]{Integer.valueOf(i), stringbuilder.toString()});
+                return String.format("%d total; %s", i, stringbuilder.toString());
             }
         });
         this.theReportCategory.addCrashSectionCallable("AABB Pool Size", new Callable() {
@@ -173,7 +171,7 @@ public class CrashReport {
      */
     public void getSectionsInStringBuilder(StringBuilder par1StringBuilder) {
         if ((this.stacktrace == null || this.stacktrace.length <= 0) && this.crashReportSections.size() > 0) {
-            this.stacktrace = (StackTraceElement[]) ArrayUtils.subarray(((CrashReportCategory) this.crashReportSections.get(0)).func_147152_a(), 0, 1);
+            this.stacktrace = ArrayUtils.subarray(((CrashReportCategory) this.crashReportSections.get(0)).func_147152_a(), 0, 1);
         }
 
         if (this.stacktrace != null && this.stacktrace.length > 0) {
@@ -182,8 +180,7 @@ public class CrashReport {
             StackTraceElement[] astacktraceelement = this.stacktrace;
             int i = astacktraceelement.length;
 
-            for (int j = 0; j < i; ++j) {
-                StackTraceElement stacktraceelement = astacktraceelement[j];
+            for (StackTraceElement stacktraceelement : astacktraceelement) {
                 par1StringBuilder.append("\t").append("at ").append(stacktraceelement.toString());
                 par1StringBuilder.append("\n");
             }
@@ -191,10 +188,8 @@ public class CrashReport {
             par1StringBuilder.append("\n");
         }
 
-        Iterator iterator = this.crashReportSections.iterator();
-
-        while (iterator.hasNext()) {
-            CrashReportCategory crashreportcategory = (CrashReportCategory) iterator.next();
+        for (Object crashReportSection : this.crashReportSections) {
+            CrashReportCategory crashreportcategory = (CrashReportCategory) crashReportSection;
             crashreportcategory.appendToStringBuilder(par1StringBuilder);
             par1StringBuilder.append("\n\n");
         }
@@ -222,7 +217,7 @@ public class CrashReport {
             ((Throwable) object).setStackTrace(this.cause.getStackTrace());
         }
 
-        String s = ((Throwable) object).toString();
+        String s = object.toString();
 
         try {
             stringwriter = new StringWriter();

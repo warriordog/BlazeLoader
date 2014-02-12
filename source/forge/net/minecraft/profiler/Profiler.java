@@ -53,7 +53,7 @@ public class Profiler {
 
             this.profilingSection = this.profilingSection + par1Str;
             this.sectionList.add(this.profilingSection);
-            this.timestampList.add(Long.valueOf(System.nanoTime()));
+            this.timestampList.add(System.nanoTime());
         }
     }
 
@@ -63,14 +63,14 @@ public class Profiler {
     public void endSection() {
         if (this.profilingEnabled) {
             long i = System.nanoTime();
-            long j = ((Long) this.timestampList.remove(this.timestampList.size() - 1)).longValue();
+            long j = (Long) this.timestampList.remove(this.timestampList.size() - 1);
             this.sectionList.remove(this.sectionList.size() - 1);
             long k = i - j;
 
             if (this.profilingMap.containsKey(this.profilingSection)) {
-                this.profilingMap.put(this.profilingSection, Long.valueOf(((Long) this.profilingMap.get(this.profilingSection)).longValue() + k));
+                this.profilingMap.put(this.profilingSection, ((Long) this.profilingMap.get(this.profilingSection)).longValue() + k);
             } else {
-                this.profilingMap.put(this.profilingSection, Long.valueOf(k));
+                this.profilingMap.put(this.profilingSection, k);
             }
 
             if (k > 100000000L) {
@@ -89,8 +89,8 @@ public class Profiler {
         if (!this.profilingEnabled) {
             return null;
         } else {
-            long i = this.profilingMap.containsKey("root") ? ((Long) this.profilingMap.get("root")).longValue() : 0L;
-            long j = this.profilingMap.containsKey(par1Str) ? ((Long) this.profilingMap.get(par1Str)).longValue() : -1L;
+            long i = this.profilingMap.containsKey("root") ? (Long) this.profilingMap.get("root") : 0L;
+            long j = this.profilingMap.containsKey(par1Str) ? (Long) this.profilingMap.get(par1Str) : -1L;
             ArrayList arraylist = new ArrayList();
 
             if (par1Str.length() > 0) {
@@ -98,13 +98,12 @@ public class Profiler {
             }
 
             long k = 0L;
-            Iterator iterator = this.profilingMap.keySet().iterator();
 
-            while (iterator.hasNext()) {
-                String s1 = (String) iterator.next();
+            for (Object o : this.profilingMap.keySet()) {
+                String s1 = (String) o;
 
                 if (s1.length() > par1Str.length() && s1.startsWith(par1Str) && s1.indexOf(".", par1Str.length() + 1) < 0) {
-                    k += ((Long) this.profilingMap.get(s1)).longValue();
+                    k += (Long) this.profilingMap.get(s1);
                 }
             }
 
@@ -125,7 +124,7 @@ public class Profiler {
                 s2 = (String) iterator1.next();
 
                 if (s2.length() > par1Str.length() && s2.startsWith(par1Str) && s2.indexOf(".", par1Str.length() + 1) < 0) {
-                    long l = ((Long) this.profilingMap.get(s2)).longValue();
+                    long l = (Long) this.profilingMap.get(s2);
                     double d0 = (double) l * 100.0D / (double) k;
                     double d1 = (double) l * 100.0D / (double) i;
                     String s3 = s2.substring(par1Str.length());
@@ -137,7 +136,7 @@ public class Profiler {
 
             while (iterator1.hasNext()) {
                 s2 = (String) iterator1.next();
-                this.profilingMap.put(s2, Long.valueOf(((Long) this.profilingMap.get(s2)).longValue() * 999L / 1000L));
+                this.profilingMap.put(s2, ((Long) this.profilingMap.get(s2)).longValue() * 999L / 1000L);
             }
 
             if ((float) k > f) {

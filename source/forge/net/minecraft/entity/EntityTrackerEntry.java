@@ -21,7 +21,10 @@ import net.minecraft.world.storage.MapData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class EntityTrackerEntry {
     private static final Logger logger = LogManager.getLogger();
@@ -77,7 +80,7 @@ public class EntityTrackerEntry {
     }
 
     public boolean equals(Object par1Obj) {
-        return par1Obj instanceof EntityTrackerEntry ? ((EntityTrackerEntry) par1Obj).myEntity.getEntityId() == this.myEntity.getEntityId() : false;
+        return par1Obj instanceof EntityTrackerEntry && ((EntityTrackerEntry) par1Obj).myEntity.getEntityId() == this.myEntity.getEntityId();
     }
 
     public int hashCode() {
@@ -110,10 +113,9 @@ public class EntityTrackerEntry {
 
             if (itemstack != null && itemstack.getItem() instanceof ItemMap) {
                 MapData mapdata = Items.filled_map.getMapData(itemstack, this.myEntity.worldObj);
-                Iterator iterator = par1List.iterator();
 
-                while (iterator.hasNext()) {
-                    EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+                for (Object aPar1List : par1List) {
+                    EntityPlayer entityplayer = (EntityPlayer) aPar1List;
                     EntityPlayerMP entityplayermp = (EntityPlayerMP) entityplayer;
                     mapdata.updateVisiblePlayers(entityplayermp, itemstack);
                     Packet packet = Items.filled_map.func_150911_c(itemstack, this.myEntity.worldObj, entityplayermp);
@@ -251,10 +253,9 @@ public class EntityTrackerEntry {
     }
 
     public void func_151259_a(Packet p_151259_1_) {
-        Iterator iterator = this.trackingPlayers.iterator();
 
-        while (iterator.hasNext()) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) iterator.next();
+        for (Object trackingPlayer : this.trackingPlayers) {
+            EntityPlayerMP entityplayermp = (EntityPlayerMP) trackingPlayer;
             entityplayermp.playerNetServerHandler.sendPacket(p_151259_1_);
         }
     }
@@ -268,17 +269,16 @@ public class EntityTrackerEntry {
     }
 
     public void informAllAssociatedPlayersOfItemDestruction() {
-        Iterator iterator = this.trackingPlayers.iterator();
 
-        while (iterator.hasNext()) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) iterator.next();
-            entityplayermp.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.getEntityId()));
+        for (Object trackingPlayer : this.trackingPlayers) {
+            EntityPlayerMP entityplayermp = (EntityPlayerMP) trackingPlayer;
+            entityplayermp.destroyedItemsNetCache.add(this.myEntity.getEntityId());
         }
     }
 
     public void removeFromWatchingList(EntityPlayerMP par1EntityPlayerMP) {
         if (this.trackingPlayers.contains(par1EntityPlayerMP)) {
-            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.getEntityId()));
+            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.getEntityId());
             this.trackingPlayers.remove(par1EntityPlayerMP);
         }
     }
@@ -353,17 +353,16 @@ public class EntityTrackerEntry {
 
                     if (this.myEntity instanceof EntityLivingBase) {
                         EntityLivingBase entitylivingbase = (EntityLivingBase) this.myEntity;
-                        Iterator iterator = entitylivingbase.getActivePotionEffects().iterator();
 
-                        while (iterator.hasNext()) {
-                            PotionEffect potioneffect = (PotionEffect) iterator.next();
+                        for (Object o : entitylivingbase.getActivePotionEffects()) {
+                            PotionEffect potioneffect = (PotionEffect) o;
                             par1EntityPlayerMP.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(this.myEntity.getEntityId(), potioneffect));
                         }
                     }
                 }
             } else if (this.trackingPlayers.contains(par1EntityPlayerMP)) {
                 this.trackingPlayers.remove(par1EntityPlayerMP);
-                par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.getEntityId()));
+                par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.getEntityId());
             }
         }
     }
@@ -373,8 +372,8 @@ public class EntityTrackerEntry {
     }
 
     public void sendEventsToPlayers(List par1List) {
-        for (int i = 0; i < par1List.size(); ++i) {
-            this.tryStartWachingThis((EntityPlayerMP) par1List.get(i));
+        for (Object aPar1List : par1List) {
+            this.tryStartWachingThis((EntityPlayerMP) aPar1List);
         }
     }
 
@@ -485,7 +484,7 @@ public class EntityTrackerEntry {
     public void removePlayerFromTracker(EntityPlayerMP par1EntityPlayerMP) {
         if (this.trackingPlayers.contains(par1EntityPlayerMP)) {
             this.trackingPlayers.remove(par1EntityPlayerMP);
-            par1EntityPlayerMP.destroyedItemsNetCache.add(Integer.valueOf(this.myEntity.getEntityId()));
+            par1EntityPlayerMP.destroyedItemsNetCache.add(this.myEntity.getEntityId());
         }
     }
 }

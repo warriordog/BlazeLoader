@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -54,10 +53,9 @@ public class EntityTracker {
         if (par1Entity instanceof EntityPlayerMP) {
             this.addEntityToTracker(par1Entity, 512, 2);
             EntityPlayerMP entityplayermp = (EntityPlayerMP) par1Entity;
-            Iterator iterator = this.trackedEntities.iterator();
 
-            while (iterator.hasNext()) {
-                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) iterator.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) trackedEntity;
 
                 if (entitytrackerentry.myEntity != entityplayermp) {
                     entitytrackerentry.tryStartWachingThis(entityplayermp);
@@ -166,10 +164,9 @@ public class EntityTracker {
     public void removeEntityFromAllTrackingPlayers(Entity par1Entity) {
         if (par1Entity instanceof EntityPlayerMP) {
             EntityPlayerMP entityplayermp = (EntityPlayerMP) par1Entity;
-            Iterator iterator = this.trackedEntities.iterator();
 
-            while (iterator.hasNext()) {
-                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) iterator.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) trackedEntity;
                 entitytrackerentry.removeFromWatchingList(entityplayermp);
             }
         }
@@ -184,23 +181,21 @@ public class EntityTracker {
 
     public void updateTrackedEntities() {
         ArrayList arraylist = new ArrayList();
-        Iterator iterator = this.trackedEntities.iterator();
 
-        while (iterator.hasNext()) {
-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) iterator.next();
+        for (Object trackedEntity1 : this.trackedEntities) {
+            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) trackedEntity1;
             entitytrackerentry.sendLocationToAllClients(this.theWorld.playerEntities);
 
             if (entitytrackerentry.playerEntitiesUpdated && entitytrackerentry.myEntity instanceof EntityPlayerMP) {
-                arraylist.add((EntityPlayerMP) entitytrackerentry.myEntity);
+                arraylist.add(entitytrackerentry.myEntity);
             }
         }
 
-        for (int i = 0; i < arraylist.size(); ++i) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) arraylist.get(i);
-            Iterator iterator1 = this.trackedEntities.iterator();
+        for (Object anArraylist : arraylist) {
+            EntityPlayerMP entityplayermp = (EntityPlayerMP) anArraylist;
 
-            while (iterator1.hasNext()) {
-                EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry) iterator1.next();
+            for (Object trackedEntity : this.trackedEntities) {
+                EntityTrackerEntry entitytrackerentry1 = (EntityTrackerEntry) trackedEntity;
 
                 if (entitytrackerentry1.myEntity != entityplayermp) {
                     entitytrackerentry1.tryStartWachingThis(entityplayermp);
@@ -226,19 +221,17 @@ public class EntityTracker {
     }
 
     public void removePlayerFromTrackers(EntityPlayerMP par1EntityPlayerMP) {
-        Iterator iterator = this.trackedEntities.iterator();
 
-        while (iterator.hasNext()) {
-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) iterator.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) trackedEntity;
             entitytrackerentry.removePlayerFromTracker(par1EntityPlayerMP);
         }
     }
 
     public void func_85172_a(EntityPlayerMP par1EntityPlayerMP, Chunk par2Chunk) {
-        Iterator iterator = this.trackedEntities.iterator();
 
-        while (iterator.hasNext()) {
-            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) iterator.next();
+        for (Object trackedEntity : this.trackedEntities) {
+            EntityTrackerEntry entitytrackerentry = (EntityTrackerEntry) trackedEntity;
 
             if (entitytrackerentry.myEntity != par1EntityPlayerMP && entitytrackerentry.myEntity.chunkCoordX == par2Chunk.xPosition && entitytrackerentry.myEntity.chunkCoordZ == par2Chunk.zPosition) {
                 entitytrackerentry.tryStartWachingThis(par1EntityPlayerMP);

@@ -405,8 +405,8 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 List list = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(this.mc.renderViewEntity, this.mc.renderViewEntity.boundingBox.addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand((double) f1, (double) f1, (double) f1));
                 double d2 = d1;
 
-                for (int i = 0; i < list.size(); ++i) {
-                    Entity entity = (Entity) list.get(i);
+                for (Object aList : list) {
+                    Entity entity = (Entity) aList;
 
                     if (entity.canBeCollidedWith()) {
                         float f2 = entity.getCollisionBorderSize();
@@ -478,7 +478,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
         if (this.debugViewDirection > 0) {
             return 90.0F;
         } else {
-            EntityLivingBase entityplayer = (EntityLivingBase) this.mc.renderViewEntity;
+            EntityLivingBase entityplayer = this.mc.renderViewEntity;
             float f1 = 70.0F;
 
             if (par2) {
@@ -1055,14 +1055,14 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                         private static final String __OBFID = "CL_00000950";
 
                         public String call() {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", new Object[]{Integer.valueOf(k), Integer.valueOf(i1), Integer.valueOf(Mouse.getX()), Integer.valueOf(Mouse.getY())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d)", k, i1, Mouse.getX(), Mouse.getY());
                         }
                     });
                     crashreportcategory.addCrashSectionCallable("Screen size", new Callable() {
                         private static final String __OBFID = "CL_00000951";
 
                         public String call() {
-                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", new Object[]{Integer.valueOf(scaledresolution.getScaledWidth()), Integer.valueOf(scaledresolution.getScaledHeight()), Integer.valueOf(EntityRenderer.this.mc.displayWidth), Integer.valueOf(EntityRenderer.this.mc.displayHeight), Integer.valueOf(scaledresolution.getScaleFactor())});
+                            return String.format("Scaled: (%d, %d). Absolute: (%d, %d). Scale factor of %d", scaledresolution.getScaledWidth(), scaledresolution.getScaledHeight(), EntityRenderer.this.mc.displayWidth, EntityRenderer.this.mc.displayHeight, scaledresolution.getScaleFactor());
                         }
                     });
                     throw new ReportedException(crashreport);

@@ -20,7 +20,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ChunkProviderServer implements IChunkProvider {
     private static final Logger logger = LogManager.getLogger();
@@ -67,10 +70,10 @@ public class ChunkProviderServer implements IChunkProvider {
             short short1 = 128;
 
             if (k < -short1 || k > short1 || l < -short1 || l > short1) {
-                this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(par1, par2)));
+                this.chunksToUnload.add(ChunkCoordIntPair.chunkXZ2Int(par1, par2));
             }
         } else {
-            this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(par1, par2)));
+            this.chunksToUnload.add(ChunkCoordIntPair.chunkXZ2Int(par1, par2));
         }
     }
 
@@ -78,10 +81,9 @@ public class ChunkProviderServer implements IChunkProvider {
      * marks all chunks for unload, ignoring those near the spawn
      */
     public void unloadAllChunks() {
-        Iterator iterator = this.loadedChunks.iterator();
 
-        while (iterator.hasNext()) {
-            Chunk chunk = (Chunk) iterator.next();
+        for (Object loadedChunk : this.loadedChunks) {
+            Chunk chunk = (Chunk) loadedChunk;
             this.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
         }
     }
@@ -109,8 +111,8 @@ public class ChunkProviderServer implements IChunkProvider {
                     } catch (Throwable throwable) {
                         CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception generating new chunk");
                         CrashReportCategory crashreportcategory = crashreport.makeCategory("Chunk to be generated");
-                        crashreportcategory.addCrashSection("Location", String.format("%d,%d", new Object[]{Integer.valueOf(par1), Integer.valueOf(par2)}));
-                        crashreportcategory.addCrashSection("Position hash", Long.valueOf(k));
+                        crashreportcategory.addCrashSection("Location", String.format("%d,%d", par1, par2));
+                        crashreportcategory.addCrashSection("Position hash", k);
                         crashreportcategory.addCrashSection("Generator", this.currentChunkProvider.makeString());
                         throw new ReportedException(crashreport);
                     }
@@ -215,8 +217,8 @@ public class ChunkProviderServer implements IChunkProvider {
     public boolean saveChunks(boolean par1, IProgressUpdate par2IProgressUpdate) {
         int i = 0;
 
-        for (int j = 0; j < this.loadedChunks.size(); ++j) {
-            Chunk chunk = (Chunk) this.loadedChunks.get(j);
+        for (Object loadedChunk : this.loadedChunks) {
+            Chunk chunk = (Chunk) loadedChunk;
 
             if (par1) {
                 this.safeSaveExtraChunkData(chunk);
@@ -258,12 +260,12 @@ public class ChunkProviderServer implements IChunkProvider {
             for (int i = 0; i < 100; ++i) {
                 if (!this.chunksToUnload.isEmpty()) {
                     Long olong = (Long) this.chunksToUnload.iterator().next();
-                    Chunk chunk = (Chunk) this.loadedChunkHashMap.getValueByKey(olong.longValue());
+                    Chunk chunk = (Chunk) this.loadedChunkHashMap.getValueByKey(olong);
                     chunk.onChunkUnload();
                     this.safeSaveChunk(chunk);
                     this.safeSaveExtraChunkData(chunk);
                     this.chunksToUnload.remove(olong);
-                    this.loadedChunkHashMap.remove(olong.longValue());
+                    this.loadedChunkHashMap.remove(olong);
                     this.loadedChunks.remove(chunk);
                     ForgeChunkManager.putDormantChunk(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
                     if (loadedChunks.size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)) {

@@ -252,10 +252,10 @@ public class RenderGlobal implements IWorldAccess {
         for (j = -b2 * i; j <= b2 * i; j += b2) {
             for (k = -b2 * i; k <= b2 * i; k += b2) {
                 tessellator.startDrawingQuads();
-                tessellator.addVertex((double) (j + 0), (double) f, (double) (k + 0));
-                tessellator.addVertex((double) (j + b2), (double) f, (double) (k + 0));
+                tessellator.addVertex((double) (j), (double) f, (double) (k));
+                tessellator.addVertex((double) (j + b2), (double) f, (double) (k));
                 tessellator.addVertex((double) (j + b2), (double) f, (double) (k + b2));
-                tessellator.addVertex((double) (j + 0), (double) f, (double) (k + b2));
+                tessellator.addVertex((double) (j), (double) f, (double) (k + b2));
                 tessellator.draw();
             }
         }
@@ -268,9 +268,9 @@ public class RenderGlobal implements IWorldAccess {
 
         for (j = -b2 * i; j <= b2 * i; j += b2) {
             for (k = -b2 * i; k <= b2 * i; k += b2) {
-                tessellator.addVertex((double) (j + b2), (double) f, (double) (k + 0));
-                tessellator.addVertex((double) (j + 0), (double) f, (double) (k + 0));
-                tessellator.addVertex((double) (j + 0), (double) f, (double) (k + b2));
+                tessellator.addVertex((double) (j + b2), (double) f, (double) (k));
+                tessellator.addVertex((double) (j), (double) f, (double) (k));
+                tessellator.addVertex((double) (j), (double) f, (double) (k + b2));
                 tessellator.addVertex((double) (j + b2), (double) f, (double) (k + b2));
             }
         }
@@ -554,8 +554,8 @@ public class RenderGlobal implements IWorldAccess {
         List list = this.theWorld.getLoadedEntityList();
         this.displayListEntitiesDirty = false;
 
-        for (int i = 0; i < list.size(); ++i) {
-            Entity entity = (Entity) list.get(i);
+        for (Object aList : list) {
+            Entity entity = (Entity) aList;
 
             if (RenderManager.instance.getEntityRenderObject(entity).isStaticEntity()) {
                 this.displayListEntitiesDirty = this.displayListEntitiesDirty || !RenderManager.instance.renderEntityStatic(entity, 0.0F, true);
@@ -910,8 +910,8 @@ public class RenderGlobal implements IWorldAccess {
     public void renderAllRenderLists(int par1, double par2) {
         this.mc.entityRenderer.enableLightmap(par2);
 
-        for (int j = 0; j < this.allRenderLists.length; ++j) {
-            this.allRenderLists[j].callLists();
+        for (RenderList allRenderList : this.allRenderLists) {
+            allRenderList.callLists();
         }
 
         this.mc.entityRenderer.disableLightmap(par2);
@@ -1086,8 +1086,8 @@ public class RenderGlobal implements IWorldAccess {
             int k = this.theWorld.getMoonPhase();
             int i1 = k % 4;
             int l = k / 4 % 2;
-            float f14 = (float) (i1 + 0) / 4.0F;
-            float f15 = (float) (l + 0) / 2.0F;
+            float f14 = (float) (i1) / 4.0F;
+            float f15 = (float) (l) / 2.0F;
             float f16 = (float) (i1 + 1) / 4.0F;
             float f17 = (float) (l + 1) / 2.0F;
             tessellator1.startDrawingQuads();
@@ -1210,10 +1210,10 @@ public class RenderGlobal implements IWorldAccess {
 
                 for (int l = -b0 * i; l < b0 * i; l += b0) {
                     for (int i1 = -b0 * i; i1 < b0 * i; i1 += b0) {
-                        tessellator.addVertexWithUV((double) (l + 0), (double) f8, (double) (i1 + b0), (double) ((float) (l + 0) * f5 + f9), (double) ((float) (i1 + b0) * f5 + f10));
+                        tessellator.addVertexWithUV((double) (l), (double) f8, (double) (i1 + b0), (double) ((float) (l) * f5 + f9), (double) ((float) (i1 + b0) * f5 + f10));
                         tessellator.addVertexWithUV((double) (l + b0), (double) f8, (double) (i1 + b0), (double) ((float) (l + b0) * f5 + f9), (double) ((float) (i1 + b0) * f5 + f10));
-                        tessellator.addVertexWithUV((double) (l + b0), (double) f8, (double) (i1 + 0), (double) ((float) (l + b0) * f5 + f9), (double) ((float) (i1 + 0) * f5 + f10));
-                        tessellator.addVertexWithUV((double) (l + 0), (double) f8, (double) (i1 + 0), (double) ((float) (l + 0) * f5 + f9), (double) ((float) (i1 + 0) * f5 + f10));
+                        tessellator.addVertexWithUV((double) (l + b0), (double) f8, (double) (i1), (double) ((float) (l + b0) * f5 + f9), (double) ((float) (i1) * f5 + f10));
+                        tessellator.addVertexWithUV((double) (l), (double) f8, (double) (i1), (double) ((float) (l) * f5 + f9), (double) ((float) (i1) * f5 + f10));
                     }
                 }
 
@@ -1403,7 +1403,6 @@ public class RenderGlobal implements IWorldAccess {
                 if (!par2) {
                     if (worldrenderer.distanceToEntitySquared(par1EntityLivingBase) > 272.0F) {
                         for (l = 0; l < b0 && (aworldrenderer[l] == null || rendersorter.compare(aworldrenderer[l], worldrenderer) <= 0); ++l) {
-                            ;
                         }
 
                         --l;
@@ -1435,7 +1434,7 @@ public class RenderGlobal implements IWorldAccess {
 
                 ++j;
                 arraylist.add(worldrenderer);
-                this.worldRenderersToUpdate.set(k, (Object) null);
+                this.worldRenderersToUpdate.set(k, null);
             }
         }
 
@@ -1808,7 +1807,7 @@ public class RenderGlobal implements IWorldAccess {
             }
 
             if (entityfx != null) {
-                return (EntityFX) entityfx;
+                return entityfx;
             } else {
                 double d9 = 16.0D;
 
@@ -1829,17 +1828,17 @@ public class RenderGlobal implements IWorldAccess {
                         entityfx = new EntityCritFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                     } else if (par1Str.equals("magicCrit")) {
                         entityfx = new EntityCritFX(this.theWorld, par2, par4, par6, par8, par10, par12);
-                        ((EntityFX) entityfx).setRBGColorF(((EntityFX) entityfx).getRedColorF() * 0.3F, ((EntityFX) entityfx).getGreenColorF() * 0.8F, ((EntityFX) entityfx).getBlueColorF());
-                        ((EntityFX) entityfx).nextTextureIndexX();
+                        entityfx.setRBGColorF(entityfx.getRedColorF() * 0.3F, entityfx.getGreenColorF() * 0.8F, entityfx.getBlueColorF());
+                        entityfx.nextTextureIndexX();
                     } else if (par1Str.equals("smoke")) {
                         entityfx = new EntitySmokeFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                     } else if (par1Str.equals("mobSpell")) {
                         entityfx = new EntitySpellParticleFX(this.theWorld, par2, par4, par6, 0.0D, 0.0D, 0.0D);
-                        ((EntityFX) entityfx).setRBGColorF((float) par8, (float) par10, (float) par12);
+                        entityfx.setRBGColorF((float) par8, (float) par10, (float) par12);
                     } else if (par1Str.equals("mobSpellAmbient")) {
                         entityfx = new EntitySpellParticleFX(this.theWorld, par2, par4, par6, 0.0D, 0.0D, 0.0D);
-                        ((EntityFX) entityfx).setAlphaF(0.15F);
-                        ((EntityFX) entityfx).setRBGColorF((float) par8, (float) par10, (float) par12);
+                        entityfx.setAlphaF(0.15F);
+                        entityfx.setRBGColorF((float) par8, (float) par10, (float) par12);
                     } else if (par1Str.equals("spell")) {
                         entityfx = new EntitySpellParticleFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                     } else if (par1Str.equals("instantSpell")) {
@@ -1849,7 +1848,7 @@ public class RenderGlobal implements IWorldAccess {
                         entityfx = new EntitySpellParticleFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                         ((EntitySpellParticleFX) entityfx).setBaseSpellTextureIndex(144);
                         float f = this.theWorld.rand.nextFloat() * 0.5F + 0.35F;
-                        ((EntityFX) entityfx).setRBGColorF(1.0F * f, 0.0F * f, 1.0F * f);
+                        entityfx.setRBGColorF(1.0F * f, 0.0F * f, 1.0F * f);
                     } else if (par1Str.equals("note")) {
                         entityfx = new EntityNoteFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                     } else if (par1Str.equals("portal")) {
@@ -1888,12 +1887,12 @@ public class RenderGlobal implements IWorldAccess {
                         entityfx = new EntityHeartFX(this.theWorld, par2, par4, par6, par8, par10, par12);
                     } else if (par1Str.equals("angryVillager")) {
                         entityfx = new EntityHeartFX(this.theWorld, par2, par4 + 0.5D, par6, par8, par10, par12);
-                        ((EntityFX) entityfx).setParticleTextureIndex(81);
-                        ((EntityFX) entityfx).setRBGColorF(1.0F, 1.0F, 1.0F);
+                        entityfx.setParticleTextureIndex(81);
+                        entityfx.setRBGColorF(1.0F, 1.0F, 1.0F);
                     } else if (par1Str.equals("happyVillager")) {
                         entityfx = new EntityAuraFX(this.theWorld, par2, par4, par6, par8, par10, par12);
-                        ((EntityFX) entityfx).setParticleTextureIndex(82);
-                        ((EntityFX) entityfx).setRBGColorF(1.0F, 1.0F, 1.0F);
+                        entityfx.setParticleTextureIndex(82);
+                        entityfx.setRBGColorF(1.0F, 1.0F, 1.0F);
                     } else {
                         int k;
                         String[] astring;
@@ -1930,10 +1929,10 @@ public class RenderGlobal implements IWorldAccess {
                     }
 
                     if (entityfx != null) {
-                        this.mc.effectRenderer.addEffect((EntityFX) entityfx);
+                        this.mc.effectRenderer.addEffect(entityfx);
                     }
 
-                    return (EntityFX) entityfx;
+                    return entityfx;
                 }
             }
         } else {
@@ -2036,7 +2035,7 @@ public class RenderGlobal implements IWorldAccess {
                 if (Item.getItemById(par6) instanceof ItemRecord) {
                     this.theWorld.playRecord("records." + ((ItemRecord) Item.getItemById(par6)).recordName, par3, par4, par5);
                 } else {
-                    this.theWorld.playRecord((String) null, par3, par4, par5);
+                    this.theWorld.playRecord(null, par3, par4, par5);
                 }
 
                 break;
@@ -2120,7 +2119,7 @@ public class RenderGlobal implements IWorldAccess {
                 k1 = Items.potionitem.getColorFromDamage(par6);
                 float f = (float) (k1 >> 16 & 255) / 255.0F;
                 float f1 = (float) (k1 >> 8 & 255) / 255.0F;
-                float f2 = (float) (k1 >> 0 & 255) / 255.0F;
+                float f2 = (float) (k1 & 255) / 255.0F;
                 String s1 = "spell";
 
                 if (Items.potionitem.isEffectInstant(par6)) {
@@ -2203,17 +2202,17 @@ public class RenderGlobal implements IWorldAccess {
      */
     public void destroyBlockPartially(int p_147587_1_, int p_147587_2_, int p_147587_3_, int p_147587_4_, int p_147587_5_) {
         if (p_147587_5_ >= 0 && p_147587_5_ < 10) {
-            DestroyBlockProgress destroyblockprogress = (DestroyBlockProgress) this.damagedBlocks.get(Integer.valueOf(p_147587_1_));
+            DestroyBlockProgress destroyblockprogress = (DestroyBlockProgress) this.damagedBlocks.get(p_147587_1_);
 
             if (destroyblockprogress == null || destroyblockprogress.getPartialBlockX() != p_147587_2_ || destroyblockprogress.getPartialBlockY() != p_147587_3_ || destroyblockprogress.getPartialBlockZ() != p_147587_4_) {
                 destroyblockprogress = new DestroyBlockProgress(p_147587_1_, p_147587_2_, p_147587_3_, p_147587_4_);
-                this.damagedBlocks.put(Integer.valueOf(p_147587_1_), destroyblockprogress);
+                this.damagedBlocks.put(p_147587_1_, destroyblockprogress);
             }
 
             destroyblockprogress.setPartialBlockDamage(p_147587_5_);
             destroyblockprogress.setCloudUpdateTick(this.cloudTickCounter);
         } else {
-            this.damagedBlocks.remove(Integer.valueOf(p_147587_1_));
+            this.damagedBlocks.remove(p_147587_1_);
         }
     }
 

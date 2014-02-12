@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.concurrent.Callable;
 
 @SideOnly(Side.CLIENT)
@@ -198,15 +197,14 @@ public class IntegratedServer extends MinecraftServer {
 
             try {
                 i = HttpUtil.func_76181_a();
-            } catch (IOException ioexception) {
-                ;
+            } catch (IOException ignored) {
             }
 
             if (i <= 0) {
                 i = 25564;
             }
 
-            this.func_147137_ag().addLanEndpoint((InetAddress) null, i);
+            this.func_147137_ag().addLanEndpoint(null, i);
             logger.info("Started on " + i);
             this.isPublic = true;
             this.lanServerPing = new ThreadLanServerPing(this.getMOTD(), i + "");

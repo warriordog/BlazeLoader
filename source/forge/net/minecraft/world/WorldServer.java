@@ -201,10 +201,9 @@ public class WorldServer extends World {
      */
     public void updateAllPlayersSleepingFlag() {
         this.allPlayersSleeping = !this.playerEntities.isEmpty();
-        Iterator iterator = this.playerEntities.iterator();
 
-        while (iterator.hasNext()) {
-            EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer entityplayer = (EntityPlayer) playerEntity;
 
             if (!entityplayer.isPlayerSleeping()) {
                 this.allPlayersSleeping = false;
@@ -215,10 +214,9 @@ public class WorldServer extends World {
 
     protected void wakeAllPlayers() {
         this.allPlayersSleeping = false;
-        Iterator iterator = this.playerEntities.iterator();
 
-        while (iterator.hasNext()) {
-            EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer entityplayer = (EntityPlayer) playerEntity;
 
             if (entityplayer.isPlayerSleeping()) {
                 entityplayer.wakeUpPlayer(false, false, true);
@@ -770,8 +768,8 @@ public class WorldServer extends World {
         Entity[] aentity = par1Entity.getParts();
 
         if (aentity != null) {
-            for (int i = 0; i < aentity.length; ++i) {
-                this.entityIdMap.addKey(aentity[i].getEntityId(), aentity[i]);
+            for (Entity anAentity : aentity) {
+                this.entityIdMap.addKey(anAentity.getEntityId(), anAentity);
             }
         }
     }
@@ -782,8 +780,8 @@ public class WorldServer extends World {
         Entity[] aentity = par1Entity.getParts();
 
         if (aentity != null) {
-            for (int i = 0; i < aentity.length; ++i) {
-                this.entityIdMap.removeObject(aentity[i].getEntityId());
+            for (Entity anAentity : aentity) {
+                this.entityIdMap.removeObject(anAentity.getEntityId());
             }
         }
     }
@@ -828,10 +826,8 @@ public class WorldServer extends World {
             explosion.affectedBlockPositions.clear();
         }
 
-        Iterator iterator = this.playerEntities.iterator();
-
-        while (iterator.hasNext()) {
-            EntityPlayer entityplayer = (EntityPlayer) iterator.next();
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayer entityplayer = (EntityPlayer) playerEntity;
 
             if (entityplayer.getDistanceSq(par2, par4, par6) < 4096.0D) {
                 ((EntityPlayerMP) entityplayer).playerNetServerHandler.sendPacket(new S27PacketExplosion(par2, par4, par6, par8, explosion.affectedBlockPositions, (Vec3) explosion.func_77277_b().get(entityplayer)));
@@ -865,10 +861,9 @@ public class WorldServer extends World {
         while (!this.field_147490_S[this.blockEventCacheIndex].isEmpty()) {
             int i = this.blockEventCacheIndex;
             this.blockEventCacheIndex ^= 1;
-            Iterator iterator = this.field_147490_S[i].iterator();
 
-            while (iterator.hasNext()) {
-                BlockEventData blockeventdata = (BlockEventData) iterator.next();
+            for (Object o : this.field_147490_S[i]) {
+                BlockEventData blockeventdata = (BlockEventData) o;
 
                 if (this.func_147485_a(blockeventdata)) {
                     this.mcServer.getConfigurationManager().sendToAllNear((double) blockeventdata.func_151340_a(), (double) blockeventdata.func_151342_b(), (double) blockeventdata.func_151341_c(), 64.0D, this.provider.dimensionId, new S24PacketBlockAction(blockeventdata.func_151340_a(), blockeventdata.func_151342_b(), blockeventdata.func_151341_c(), blockeventdata.getBlock(), blockeventdata.getEventID(), blockeventdata.getEventParameter()));
@@ -881,7 +876,7 @@ public class WorldServer extends World {
 
     private boolean func_147485_a(BlockEventData p_147485_1_) {
         Block block = this.getBlock(p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c());
-        return block == p_147485_1_.getBlock() ? block.onBlockEventReceived(this, p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c(), p_147485_1_.getEventID(), p_147485_1_.getEventParameter()) : false;
+        return block == p_147485_1_.getBlock() && block.onBlockEventReceived(this, p_147485_1_.func_151340_a(), p_147485_1_.func_151342_b(), p_147485_1_.func_151341_c(), p_147485_1_.getEventID(), p_147485_1_.getEventParameter());
     }
 
     /**
@@ -940,8 +935,8 @@ public class WorldServer extends World {
     public void func_147487_a(String p_147487_1_, double p_147487_2_, double p_147487_4_, double p_147487_6_, int p_147487_8_, double p_147487_9_, double p_147487_11_, double p_147487_13_, double p_147487_15_) {
         S2APacketParticles s2apacketparticles = new S2APacketParticles(p_147487_1_, (float) p_147487_2_, (float) p_147487_4_, (float) p_147487_6_, (float) p_147487_9_, (float) p_147487_11_, (float) p_147487_13_, (float) p_147487_15_, p_147487_8_);
 
-        for (int j = 0; j < this.playerEntities.size(); ++j) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP) this.playerEntities.get(j);
+        for (Object playerEntity : this.playerEntities) {
+            EntityPlayerMP entityplayermp = (EntityPlayerMP) playerEntity;
             ChunkCoordinates chunkcoordinates = entityplayermp.getPlayerCoordinates();
             double d7 = p_147487_2_ - (double) chunkcoordinates.posX;
             double d8 = p_147487_4_ - (double) chunkcoordinates.posY;

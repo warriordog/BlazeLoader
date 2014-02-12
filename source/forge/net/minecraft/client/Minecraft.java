@@ -5,7 +5,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
@@ -107,7 +106,7 @@ public class Minecraft implements IPlayerUsage {
      * A 10MiB preallocation to ensure the heap is reasonably sized.
      */
     public static byte[] memoryReserve = new byte[10485760];
-    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode[]{new DisplayMode(2560, 1600), new DisplayMode(2880, 1800)});
+    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
     private final File fileResourcepacks;
     private ServerData currentServerData;
     /**
@@ -297,11 +296,10 @@ public class Minecraft implements IPlayerUsage {
 
     private static boolean isJvm64bit() {
         String[] astring = new String[]{"sun.arch.data.model", "com.ibm.vm.bitmode", "os.arch"};
-        String[] astring1 = astring;
         int i = astring.length;
 
         for (int j = 0; j < i; ++j) {
-            String s = astring1[j];
+            String s = astring[j];
             String s1 = System.getProperty(s);
 
             if (s1 != null && s1.contains("64")) {
@@ -322,8 +320,7 @@ public class Minecraft implements IPlayerUsage {
                 field.setAccessible(true);
                 field.set(toolkit, p_147105_0_);
             }
-        } catch (Exception exception) {
-            ;
+        } catch (Exception ignored) {
         }
     }
 
@@ -339,8 +336,7 @@ public class Minecraft implements IPlayerUsage {
                 while (Minecraft.this.running) {
                     try {
                         Thread.sleep(2147483647L);
-                    } catch (InterruptedException interruptedexception) {
-                        ;
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }
@@ -430,8 +426,7 @@ public class Minecraft implements IPlayerUsage {
 
             try {
                 Thread.sleep(1000L);
-            } catch (InterruptedException interruptedexception) {
-                ;
+            } catch (InterruptedException ignored) {
             }
 
             if (this.fullscreen) {
@@ -485,7 +480,7 @@ public class Minecraft implements IPlayerUsage {
              */
             public String formatString(String par1Str) {
                 try {
-                    return String.format(par1Str, new Object[]{GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode())});
+                    return String.format(par1Str, GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode()));
                 } catch (Exception exception) {
                     return "Error: " + exception.getLocalizedMessage();
                 }
@@ -536,10 +531,9 @@ public class Minecraft implements IPlayerUsage {
 
     public void refreshResources() {
         ArrayList arraylist = Lists.newArrayList(this.defaultResourcePacks);
-        Iterator iterator = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        while (iterator.hasNext()) {
-            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) iterator.next();
+        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
+            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) o;
             arraylist.add(entry.getResourcePack());
         }
 
@@ -561,13 +555,12 @@ public class Minecraft implements IPlayerUsage {
 
     private ByteBuffer readImage(File par1File) throws IOException {
         BufferedImage bufferedimage = ImageIO.read(par1File);
-        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[]) null, 0, bufferedimage.getWidth());
+        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), null, 0, bufferedimage.getWidth());
         ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
-        int[] aint1 = aint;
         int i = aint.length;
 
         for (int j = 0; j < i; ++j) {
-            int k = aint1[j];
+            int k = aint[j];
             bytebuffer.putInt(k << 8 | k >> 24 & 255);
         }
 
@@ -581,10 +574,9 @@ public class Minecraft implements IPlayerUsage {
         DisplayMode displaymode = Display.getDesktopDisplayMode();
 
         if (!hashset.contains(displaymode) && Util.getOSType() == Util.EnumOS.MACOS) {
-            Iterator iterator = macDisplayModes.iterator();
 
-            while (iterator.hasNext()) {
-                DisplayMode displaymode1 = (DisplayMode) iterator.next();
+            for (Object macDisplayMode : macDisplayModes) {
+                DisplayMode displaymode1 = (DisplayMode) macDisplayMode;
                 boolean flag = true;
                 Iterator iterator1 = hashset.iterator();
                 DisplayMode displaymode2;
@@ -670,10 +662,10 @@ public class Minecraft implements IPlayerUsage {
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double) (par1 + 0), (double) (par2 + par6), 0.0D, (double) ((float) (par3 + 0) * f), (double) ((float) (par4 + par6) * f1));
+        tessellator.addVertexWithUV((double) (par1), (double) (par2 + par6), 0.0D, (double) ((float) (par3) * f), (double) ((float) (par4 + par6) * f1));
         tessellator.addVertexWithUV((double) (par1 + par5), (double) (par2 + par6), 0.0D, (double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1));
-        tessellator.addVertexWithUV((double) (par1 + par5), (double) (par2 + 0), 0.0D, (double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1));
-        tessellator.addVertexWithUV((double) (par1 + 0), (double) (par2 + 0), 0.0D, (double) ((float) (par3 + 0) * f), (double) ((float) (par4 + 0) * f1));
+        tessellator.addVertexWithUV((double) (par1 + par5), (double) (par2), 0.0D, (double) ((float) (par3 + par5) * f), (double) ((float) (par4) * f1));
+        tessellator.addVertexWithUV((double) (par1), (double) (par2), 0.0D, (double) ((float) (par3) * f), (double) ((float) (par4) * f1));
         tessellator.draw();
     }
 
@@ -710,14 +702,14 @@ public class Minecraft implements IPlayerUsage {
             this.ingameGUI.getChatGUI().clearChatMessages();
         }
 
-        this.currentScreen = (GuiScreen) p_147108_1_;
+        this.currentScreen = p_147108_1_;
 
         if (p_147108_1_ != null) {
             this.setIngameNotInFocus();
             ScaledResolution scaledresolution = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
             int i = scaledresolution.getScaledWidth();
             int j = scaledresolution.getScaledHeight();
-            ((GuiScreen) p_147108_1_).setWorldAndResolution(this, i, j);
+            p_147108_1_.setWorldAndResolution(this, i, j);
             this.skipRenderWorld = false;
         } else {
             this.mcSoundHandler.resumeSounds();
@@ -748,15 +740,13 @@ public class Minecraft implements IPlayerUsage {
             logger.info("Stopping!");
 
             try {
-                this.loadWorld((WorldClient) null);
-            } catch (Throwable throwable1) {
-                ;
+                this.loadWorld(null);
+            } catch (Throwable ignored) {
             }
 
             try {
                 GLAllocation.deleteTexturesAndDisplayLists();
-            } catch (Throwable throwable) {
-                ;
+            } catch (Throwable ignored) {
             }
 
             this.mcSoundHandler.unloadSounds();
@@ -803,8 +793,7 @@ public class Minecraft implements IPlayerUsage {
                     this.displayCrashReport(this.crashReporter);
                     return;
                 }
-            } catch (MinecraftError minecrafterror) {
-                ;
+            } catch (MinecraftError ignored) {
             } catch (ReportedException reportedexception) {
                 this.addGraphicsAndWorldToCrashReport(reportedexception.getCrashReport());
                 this.freeMemory();
@@ -975,23 +964,20 @@ public class Minecraft implements IPlayerUsage {
         try {
             memoryReserve = new byte[0];
             this.renderGlobal.deleteAllDisplayLists();
-        } catch (Throwable throwable2) {
-            ;
+        } catch (Throwable ignored) {
         }
 
         try {
             System.gc();
             AxisAlignedBB.getAABBPool().clearPool();
             this.theWorld.getWorldVec3Pool().clearAndFreeCache();
-        } catch (Throwable throwable1) {
-            ;
+        } catch (Throwable ignored) {
         }
 
         try {
             System.gc();
-            this.loadWorld((WorldClient) null);
-        } catch (Throwable throwable) {
-            ;
+            this.loadWorld(null);
+        } catch (Throwable ignored) {
         }
 
         System.gc();
@@ -1072,8 +1058,8 @@ public class Minecraft implements IPlayerUsage {
             double d0 = 0.0D;
             int i1;
 
-            for (int l = 0; l < list.size(); ++l) {
-                Profiler.Result result1 = (Profiler.Result) list.get(l);
+            for (Object aList : list) {
+                Profiler.Result result1 = (Profiler.Result) aList;
                 i1 = MathHelper.floor_double(result1.field_76332_a / 4.0D) + 1;
                 tessellator.startDrawing(6);
                 tessellator.setColorOpaque_I(result1.func_76329_a());
@@ -1161,7 +1147,7 @@ public class Minecraft implements IPlayerUsage {
             if (!this.inGameHasFocus) {
                 this.inGameHasFocus = true;
                 this.mouseHelper.grabMouseCursor();
-                this.displayGuiScreen((GuiScreen) null);
+                this.displayGuiScreen(null);
                 this.leftClickCounter = 10000;
             }
         }
@@ -1407,12 +1393,12 @@ public class Minecraft implements IPlayerUsage {
 
         if (this.currentScreen == null && this.thePlayer != null) {
             if (this.thePlayer.getHealth() <= 0.0F) {
-                this.displayGuiScreen((GuiScreen) null);
+                this.displayGuiScreen(null);
             } else if (this.thePlayer.isPlayerSleeping() && this.theWorld != null) {
                 this.displayGuiScreen(new GuiSleepMP());
             }
         } else if (this.currentScreen != null && this.currentScreen instanceof GuiSleepMP && !this.thePlayer.isPlayerSleeping()) {
-            this.displayGuiScreen((GuiScreen) null);
+            this.displayGuiScreen(null);
         }
 
         if (this.currentScreen != null) {
@@ -1656,7 +1642,6 @@ public class Minecraft implements IPlayerUsage {
                 while (true) {
                     if (!this.gameSettings.keyBindAttack.isPressed()) {
                         while (this.gameSettings.keyBindUseItem.isPressed()) {
-                            ;
                         }
 
                         while (true) {
@@ -1775,7 +1760,7 @@ public class Minecraft implements IPlayerUsage {
      */
     public void launchIntegratedServer(String par1Str, String par2Str, WorldSettings par3WorldSettings) {
         FMLClientHandler.instance().startIntegratedServer(par1Str, par2Str, par3WorldSettings);
-        this.loadWorld((WorldClient) null);
+        this.loadWorld(null);
         System.gc();
         ISaveHandler isavehandler = this.saveLoader.getSaveLoader(par1Str, false);
         WorldInfo worldinfo = isavehandler.loadWorldInfo();
@@ -1801,30 +1786,29 @@ public class Minecraft implements IPlayerUsage {
             throw new ReportedException(crashreport);
         }
 
-        this.loadingScreen.displayProgressMessage(I18n.format("menu.loadingLevel", new Object[0]));
+        this.loadingScreen.displayProgressMessage(I18n.format("menu.loadingLevel"));
 
         while (!this.theIntegratedServer.serverIsInRunLoop()) {
             String s2 = this.theIntegratedServer.getUserMessage();
 
             if (s2 != null) {
-                this.loadingScreen.resetProgresAndWorkingMessage(I18n.format(s2, new Object[0]));
+                this.loadingScreen.resetProgresAndWorkingMessage(I18n.format(s2));
             } else {
                 this.loadingScreen.resetProgresAndWorkingMessage("");
             }
 
             try {
                 Thread.sleep(200L);
-            } catch (InterruptedException interruptedexception) {
-                ;
+            } catch (InterruptedException ignored) {
             }
         }
 
-        this.displayGuiScreen((GuiScreen) null);
+        this.displayGuiScreen(null);
         SocketAddress socketaddress = this.theIntegratedServer.func_147137_ag().addLocalEndpoint();
         NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
-        networkmanager.setNetHandler(new NetHandlerLoginClient(networkmanager, this, (GuiScreen) null));
-        networkmanager.scheduleOutboundPacket(new C00Handshake(4, socketaddress.toString(), 0, EnumConnectionState.LOGIN), new GenericFutureListener[0]);
-        networkmanager.scheduleOutboundPacket(new C00PacketLoginStart(this.getSession().func_148256_e()), new GenericFutureListener[0]);
+        networkmanager.setNetHandler(new NetHandlerLoginClient(networkmanager, this, null));
+        networkmanager.scheduleOutboundPacket(new C00Handshake(4, socketaddress.toString(), 0, EnumConnectionState.LOGIN));
+        networkmanager.scheduleOutboundPacket(new C00PacketLoginStart(this.getSession().func_148256_e()));
         this.myNetworkManager = networkmanager;
     }
 
@@ -1858,7 +1842,7 @@ public class Minecraft implements IPlayerUsage {
                 while (!theIntegratedServer.isServerStopped()) {
                     try {
                         Thread.sleep(10);
-                    } catch (InterruptedException ie) {
+                    } catch (InterruptedException ignored) {
                     }
                 }
             }
@@ -1882,7 +1866,7 @@ public class Minecraft implements IPlayerUsage {
             }
 
             this.mcResourcePackRepository.func_148529_f();
-            this.setServerData((ServerData) null);
+            this.setServerData(null);
             this.integratedServerIsRunning = false;
             FMLClientHandler.instance().handleClientWorldClosing(this.theWorld);
         }
@@ -1971,7 +1955,7 @@ public class Minecraft implements IPlayerUsage {
         this.playerController.setPlayerCapabilities(this.thePlayer);
 
         if (this.currentScreen instanceof GuiGameOver) {
-            this.displayGuiScreen((GuiScreen) null);
+            this.displayGuiScreen(null);
         }
     }
 
@@ -2122,17 +2106,16 @@ public class Minecraft implements IPlayerUsage {
     }
 
     public void addServerStatsToSnooper(PlayerUsageSnooper par1PlayerUsageSnooper) {
-        par1PlayerUsageSnooper.addData("fps", Integer.valueOf(debugFPS));
-        par1PlayerUsageSnooper.addData("vsync_enabled", Boolean.valueOf(this.gameSettings.enableVsync));
-        par1PlayerUsageSnooper.addData("display_frequency", Integer.valueOf(Display.getDisplayMode().getFrequency()));
+        par1PlayerUsageSnooper.addData("fps", debugFPS);
+        par1PlayerUsageSnooper.addData("vsync_enabled", this.gameSettings.enableVsync);
+        par1PlayerUsageSnooper.addData("display_frequency", Display.getDisplayMode().getFrequency());
         par1PlayerUsageSnooper.addData("display_type", this.fullscreen ? "fullscreen" : "windowed");
-        par1PlayerUsageSnooper.addData("run_time", Long.valueOf((MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.getMinecraftStartTimeMillis()) / 60L * 1000L));
-        par1PlayerUsageSnooper.addData("resource_packs", Integer.valueOf(this.mcResourcePackRepository.getRepositoryEntries().size()));
+        par1PlayerUsageSnooper.addData("run_time", (MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.getMinecraftStartTimeMillis()) / 60L * 1000L);
+        par1PlayerUsageSnooper.addData("resource_packs", this.mcResourcePackRepository.getRepositoryEntries().size());
         int i = 0;
-        Iterator iterator = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        while (iterator.hasNext()) {
-            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) iterator.next();
+        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
+            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) o;
             par1PlayerUsageSnooper.addData("resource_pack[" + i++ + "]", entry.getResourcePackName());
         }
 
@@ -2147,24 +2130,24 @@ public class Minecraft implements IPlayerUsage {
         par1PlayerUsageSnooper.addData("client_brand", ClientBrandRetriever.getClientModName());
         par1PlayerUsageSnooper.addData("launched_version", this.launchedVersion);
         ContextCapabilities contextcapabilities = GLContext.getCapabilities();
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", Boolean.valueOf(contextcapabilities.GL_ARB_multitexture));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", Boolean.valueOf(contextcapabilities.GL_ARB_multisample));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", Boolean.valueOf(contextcapabilities.GL_ARB_texture_cube_map));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_blend));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", Boolean.valueOf(contextcapabilities.GL_ARB_matrix_palette));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_program));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_shader));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", Boolean.valueOf(contextcapabilities.GL_ARB_fragment_program));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", Boolean.valueOf(contextcapabilities.GL_ARB_fragment_shader));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", Boolean.valueOf(contextcapabilities.GL_ARB_shader_objects));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_framebuffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_pixel_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_uniform_buffer_object));
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", Boolean.valueOf(contextcapabilities.GL_ARB_texture_non_power_of_two));
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS)));
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)));
-        par1PlayerUsageSnooper.addData("gl_max_texture_size", Integer.valueOf(getGLMaximumTextureSize()));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", contextcapabilities.GL_ARB_multitexture);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", contextcapabilities.GL_ARB_multisample);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", contextcapabilities.GL_ARB_texture_cube_map);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", contextcapabilities.GL_ARB_vertex_blend);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", contextcapabilities.GL_ARB_matrix_palette);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", contextcapabilities.GL_ARB_vertex_program);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", contextcapabilities.GL_ARB_vertex_shader);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", contextcapabilities.GL_ARB_fragment_program);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", contextcapabilities.GL_ARB_fragment_shader);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", contextcapabilities.GL_ARB_shader_objects);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", contextcapabilities.GL_ARB_vertex_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", contextcapabilities.GL_ARB_framebuffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", contextcapabilities.GL_ARB_pixel_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", contextcapabilities.GL_ARB_uniform_buffer_object);
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", contextcapabilities.GL_ARB_texture_non_power_of_two);
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS));
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS));
+        par1PlayerUsageSnooper.addData("gl_max_texture_size", getGLMaximumTextureSize());
     }
 
     //Forge: Adds a optimization to the getGLMaximumTextureSize, only calculate it once.
@@ -2315,14 +2298,12 @@ public class Minecraft implements IPlayerUsage {
         static {
             try {
                 field_151437_a[MovingObjectPosition.MovingObjectType.ENTITY.ordinal()] = 1;
-            } catch (NoSuchFieldError var2) {
-                ;
+            } catch (NoSuchFieldError ignored) {
             }
 
             try {
                 field_151437_a[MovingObjectPosition.MovingObjectType.BLOCK.ordinal()] = 2;
-            } catch (NoSuchFieldError var1) {
-                ;
+            } catch (NoSuchFieldError ignored) {
             }
         }
     }

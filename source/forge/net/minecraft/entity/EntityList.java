@@ -52,9 +52,9 @@ public class EntityList {
     public static void addMapping(Class par0Class, String par1Str, int par2) {
         stringToClassMapping.put(par1Str, par0Class);
         classToStringMapping.put(par0Class, par1Str);
-        IDtoClassMapping.put(Integer.valueOf(par2), par0Class);
-        classToIDMapping.put(par0Class, Integer.valueOf(par2));
-        stringToIDMapping.put(par1Str, Integer.valueOf(par2));
+        IDtoClassMapping.put(par2, par0Class);
+        classToIDMapping.put(par0Class, par2);
+        stringToIDMapping.put(par1Str, par2);
     }
 
     /**
@@ -62,7 +62,7 @@ public class EntityList {
      */
     public static void addMapping(Class par0Class, String par1Str, int par2, int par3, int par4) {
         addMapping(par0Class, par1Str, par2);
-        entityEggs.put(Integer.valueOf(par2), new EntityList.EntityEggInfo(par2, par3, par4));
+        entityEggs.put(par2, new EntityList.EntityEggInfo(par2, par3, par4));
     }
 
     /**
@@ -72,10 +72,10 @@ public class EntityList {
         Entity entity = null;
 
         try {
-            Class oclass = (Class) stringToClassMapping.get(par0Str);
+            Class oclass = stringToClassMapping.get(par0Str);
 
             if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{par1World});
+                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(par1World);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -107,10 +107,10 @@ public class EntityList {
 
         Class oclass = null;
         try {
-            oclass = (Class) stringToClassMapping.get(par0NBTTagCompound.getString("id"));
+            oclass = stringToClassMapping.get(par0NBTTagCompound.getString("id"));
 
             if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{par1World});
+                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(par1World);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -142,7 +142,7 @@ public class EntityList {
             Class oclass = getClassFromID(par0);
 
             if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{par1World});
+                entity = (Entity) oclass.getConstructor(new Class[]{World.class}).newInstance(par1World);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -160,21 +160,21 @@ public class EntityList {
      */
     public static int getEntityID(Entity par0Entity) {
         Class oclass = par0Entity.getClass();
-        return classToIDMapping.containsKey(oclass) ? ((Integer) classToIDMapping.get(oclass)).intValue() : 0;
+        return classToIDMapping.containsKey(oclass) ? classToIDMapping.get(oclass) : 0;
     }
 
     /**
      * Return the class assigned to this entity ID.
      */
     public static Class getClassFromID(int par0) {
-        return (Class) IDtoClassMapping.get(Integer.valueOf(par0));
+        return IDtoClassMapping.get(par0);
     }
 
     /**
      * Gets the string representation of a specific entity.
      */
     public static String getEntityString(Entity par0Entity) {
-        return (String) classToStringMapping.get(par0Entity.getClass());
+        return classToStringMapping.get(par0Entity.getClass());
     }
 
     /**
@@ -182,7 +182,7 @@ public class EntityList {
      */
     public static String getStringFromID(int par0) {
         Class oclass = getClassFromID(par0);
-        return oclass != null ? (String) classToStringMapping.get(oclass) : null;
+        return oclass != null ? classToStringMapping.get(oclass) : null;
     }
 
     public static void func_151514_a() {
