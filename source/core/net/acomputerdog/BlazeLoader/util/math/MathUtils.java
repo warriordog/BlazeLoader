@@ -1,6 +1,6 @@
-package net.acomputerdog.BlazeLoader.api.math;
+package net.acomputerdog.BlazeLoader.util.math;
 
-public class ApiMath {
+public class MathUtils {
     /**
      * Checks if a string represents a number.
      *

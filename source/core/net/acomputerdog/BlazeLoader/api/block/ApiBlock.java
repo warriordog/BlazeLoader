@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
-import net.acomputerdog.BlazeLoader.api.math.ApiMath;
+import net.acomputerdog.BlazeLoader.util.math.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
@@ -115,7 +115,7 @@ public class ApiBlock {
      * @return The block defined by parameter identifier
      */
     public static Block getBlockByNameOrId(String identifier) {
-        return ApiMath.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
+        return MathUtils.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
     }
 
     /**
