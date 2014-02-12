@@ -1,11 +1,11 @@
-package net.acomputerdog.BlazeLoader.api.reflect;
+package net.acomputerdog.BlazeLoader.util.reflect;
 
 import java.lang.reflect.Method;
 
 /**
  * Api functions to simplify reflective tasks.
  */
-public class ApiReflect {
+public class ReflectionUtils {
 
     /**
      * Dynamically invokes a method, even if it is inaccessible.
@@ -31,7 +31,7 @@ public class ApiReflect {
      * Invokes a method named in a string, even if it is inaccessible.
      *
      * @param method The full name of the method to invoke.  Should be in the form of [fully_qualified_class_name].[method_name] OR [method_name] if object is not null.
-     *               Example: "net.acomputerdog.BlazeLoader.api.reflect.ApiReflect.invokeMethod".
+     *               Example: "net.acomputerdog.BlazeLoader.util.reflect.ApiReflect.invokeMethod".
      *               Can NOT be null!
      * @param object The object to invoke on, or null if method is static.  Can be null if method is static and full name is given.
      * @param args   Arguments to pass to the method.

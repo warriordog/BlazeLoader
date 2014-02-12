@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.reflect;
+package net.acomputerdog.BlazeLoader.util.reflect;
 
 import java.lang.reflect.Constructor;
 
