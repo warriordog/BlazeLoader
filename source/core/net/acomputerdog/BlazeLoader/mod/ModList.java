@@ -2,7 +2,6 @@ package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -32,6 +31,7 @@ public class ModList {
     public static List<Class<? extends Mod>> getUnloadedMods() {
         return unloadedMods;
     }
+
     public static List<ModData> getModData() {
         return modData;
     }
@@ -139,18 +139,13 @@ public class ModList {
         ApiBase.theProfiler.endSection();
     }
 
-    public static GuiScreen onGui(GuiScreen gui) {
-        GuiScreen newGui = gui;
+    public static boolean onGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
-            if (newGui == gui) {
-                newGui = mod.eventDisplayGui(gui, false);
-            } else {
-                newGui = mod.eventDisplayGui(gui, true);
-            }
+            allowed = mod.eventDisplayGui(oldGui, newGui, allowed);
         }
         BlazeLoader.currActiveMod = null;
-        return newGui;
+        return allowed;
     }
 
     public static void startSection(String name) {

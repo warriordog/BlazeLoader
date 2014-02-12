@@ -92,9 +92,9 @@ public class ModLoader {
 
     public static void loadModAsResourcePack(ModData mod)
     {
-        List<IResourcePack> defaultResoucePacks = Minecraft.getMinecraft().getDefaultResourcePacks();
+        List<IResourcePack> defaultResourcePacks = Minecraft.getMinecraft().getDefaultResourcePacks();
         BLModResourcePack pack = new BLModResourcePack(mod);
-        if (!defaultResoucePacks.contains(pack))
-            defaultResoucePacks.add(pack);
+        if (!defaultResourcePacks.contains(pack))
+            defaultResourcePacks.add(pack);
     }
 }

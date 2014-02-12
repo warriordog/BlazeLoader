@@ -1,12 +1,10 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.world.World;
@@ -102,16 +100,16 @@ public abstract class Mod {
     }
 
     /**
-     * Called when a GUI is about to be displayed.  Mods should return param gui unless they wish to override the GUI displayed.
-     * Mods can return null to block a GUI from loading.
+     * Called when a GUI is about to be displayed.
      *
-     * @param gui   The gui that is being displayed
-     * @param isSet Has the display GUI been set by another mod.
-     * @return Return the GUI to actually display
+     * @param oldGui  The current GUI.
+     * @param newGui  The GUI being displayed.
+     * @param allowed Set to true if the GUI will be displayed, false if another mod has disabled it.
+     * @return Return true to allow the GUI, false to block it.
      */
-    public GuiScreen eventDisplayGui(GuiScreen gui, boolean isSet) {
+    public boolean eventDisplayGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {
         this.eventDisplayGui();
-        return gui;
+        return allowed;
     }
 
     /**
@@ -231,8 +229,10 @@ public abstract class Mod {
     }
 
     //TODO rewrite to allow disabling vanilla
+
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
+     *
      * @param server The server calling tickBlocksAndAmbiance
      */
     public void eventTickBlocksAndAmbiance(WorldServer server) {

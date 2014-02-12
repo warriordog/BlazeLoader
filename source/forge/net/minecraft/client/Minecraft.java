@@ -1,11 +1,15 @@
 package net.minecraft.client;
 
 import com.google.common.collect.Lists;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.util.config.ConfigList;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.audio.SoundHandler;
@@ -13,7 +17,6 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.achievement.GuiAchievement;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -32,19 +35,10 @@ import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.BossStatus;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityPainting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Bootstrap;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.NetworkManager;
@@ -70,6 +64,14 @@ import net.minecraft.world.chunk.storage.AnvilSaveConverter;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.world.WorldEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
@@ -95,25 +97,23 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@SideOnly(Side.CLIENT)
 public class Minecraft implements IPlayerUsage {
     private static final Logger logger = LogManager.getLogger();
     protected boolean hasFiredLocalDeath = false;
     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.MACOS;
-
     /**
      * A 10MiB preallocation to ensure the heap is reasonably sized.
      */
     public static byte[] memoryReserve = new byte[10485760];
-    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode(2560, 1600), new DisplayMode(2880, 1800));
+    private static final List macDisplayModes = Lists.newArrayList(new DisplayMode[]{new DisplayMode(2560, 1600), new DisplayMode(2880, 1800)});
     private final File fileResourcepacks;
     private ServerData currentServerData;
-
     /**
      * The RenderEngine instance used by Minecraft
      */
-    private TextureManager renderEngine;
-
+    public TextureManager renderEngine;
     /**
      * Set to 'this' in Minecraft constructor; used by some settings get methods
      */
@@ -121,7 +121,6 @@ public class Minecraft implements IPlayerUsage {
     public PlayerControllerMP playerController;
     private boolean fullscreen;
     private boolean hasCrashed;
-
     /**
      * Instance of CrashReport.
      */
@@ -129,7 +128,6 @@ public class Minecraft implements IPlayerUsage {
     public int displayWidth;
     public int displayHeight;
     public Timer timer = new Timer(20.0F);
-
     /**
      * Instance of PlayerUsageSnooper.
      */
@@ -137,7 +135,6 @@ public class Minecraft implements IPlayerUsage {
     public WorldClient theWorld;
     public RenderGlobal renderGlobal;
     public EntityClientPlayerMP thePlayer;
-
     /**
      * The Entity from which the renderer determines the render viewpoint. Currently is always the parent Minecraft
      * class's 'thePlayer' instance. Modification of its location, rotation, or other settings at render time will
@@ -149,61 +146,50 @@ public class Minecraft implements IPlayerUsage {
     public EffectRenderer effectRenderer;
     private final Session session;
     private boolean isGamePaused;
-
     /**
      * The font renderer used for displaying and measuring text.
      */
     public FontRenderer fontRenderer;
     public FontRenderer standardGalacticFontRenderer;
-
     /**
      * The GuiScreen that's being displayed at the moment.
      */
     public GuiScreen currentScreen;
     public LoadingScreenRenderer loadingScreen;
     public EntityRenderer entityRenderer;
-
     /**
      * Mouse left click counter
      */
     private int leftClickCounter;
-
     /**
      * Display width
      */
     private int tempDisplayWidth;
-
     /**
      * Display height
      */
     private int tempDisplayHeight;
-
     /**
      * Instance of IntegratedServer.
      */
     private IntegratedServer theIntegratedServer;
-
     /**
      * Gui achievement
      */
     public GuiAchievement guiAchievement;
     public GuiIngame ingameGUI;
-
     /**
      * Skip render world
      */
     public boolean skipRenderWorld;
-
     /**
      * The ray trace hit that the mouse is over.
      */
     public MovingObjectPosition objectMouseOver;
-
     /**
      * The game settings that currently hold effect.
      */
     public GameSettings gameSettings;
-
     /**
      * Mouse helper instance.
      */
@@ -213,36 +199,30 @@ public class Minecraft implements IPlayerUsage {
     private final String launchedVersion;
     private final Proxy proxy;
     private ISaveFormat saveLoader;
-
     /**
      * This is set to fpsCounter every debug screen update, and is shown on the debug screen. It's also sent as part of
      * the usage snooping.
      */
     private static int debugFPS;
-
     /**
      * When you place a block, it's set to 6, decremented once per tick, when it's 0, you can place another block.
      */
     private int rightClickDelayTimer;
-
     /**
      * Checked in Minecraft's while(running) loop, if true it's set to false and the textures refreshed.
      */
     private boolean refreshTexturePacksScheduled;
     private String serverName;
     private int serverPort;
-
     /**
      * Makes sure it doesn't keep taking screenshots when both buttons are down.
      */
     boolean isTakingScreenshot;
-
     /**
      * Does the actual gameplay have focus. If so then mouse and keys will effect the player instead of menus.
      */
     public boolean inGameHasFocus;
     long systemTime = getSystemTime();
-
     /**
      * Join player counter
      */
@@ -251,7 +231,6 @@ public class Minecraft implements IPlayerUsage {
     private final boolean isDemo;
     private NetworkManager myNetworkManager;
     private boolean integratedServerIsRunning;
-
     /**
      * The profiler instance
      */
@@ -259,36 +238,31 @@ public class Minecraft implements IPlayerUsage {
     private long field_83002_am = -1L;
     private IReloadableResourceManager mcResourceManager;
     private final IMetadataSerializer metadataSerializer_ = new IMetadataSerializer();
-    private List<IResourcePack> defaultResourcePacks = Lists.newArrayList();
+    private List defaultResourcePacks = Lists.newArrayList();
     private DefaultResourcePack mcDefaultResourcePack;
     private ResourcePackRepository mcResourcePackRepository;
     private LanguageManager mcLanguageManager;
-    private Framebuffer mcFramebuffer;
+    private Framebuffer framebufferMc;
     private TextureMap textureMapBlocks;
     private SoundHandler mcSoundHandler;
     private MusicTicker mcMusicTicker;
-
     /**
      * Set to true to keep the game loop running. Set to false by shutdown() to allow the game loop to exit cleanly.
      */
     volatile boolean running = true;
-
     /**
      * String that shows the debug information
      */
     public String debug = "";
-
     /**
      * Approximate time (in ms) of last update to debug string
      */
     long debugUpdateTime = getSystemTime();
-
     /**
      * holds the current fps
      */
     int fpsCounter;
     long prevFrameTime = -1L;
-
     /**
      * Profiler currently displayed in the debug screen pie chart
      */
@@ -307,7 +281,7 @@ public class Minecraft implements IPlayerUsage {
         this.startTimerHackThread();
         this.session = par1Session;
         logger.info("Setting user: " + par1Session.getUsername());
-        logger.info("(Session ID is " + par1Session.getSessionID() + ")");
+        //logger.info("(Session ID is " + par1Session.getSessionID() + ")"); //don't print the session to the console.. that's stupid...
         this.isDemo = par5;
         this.displayWidth = par2;
         this.displayHeight = par3;
@@ -322,12 +296,15 @@ public class Minecraft implements IPlayerUsage {
     }
 
     private static boolean isJvm64bit() {
-        String[] var0 = new String[]{"sun.arch.data.model", "com.ibm.vm.bitmode", "os.arch"};
+        String[] astring = new String[]{"sun.arch.data.model", "com.ibm.vm.bitmode", "os.arch"};
+        String[] astring1 = astring;
+        int i = astring.length;
 
-        for (String var4 : var0) {
-            String var5 = System.getProperty(var4);
+        for (int j = 0; j < i; ++j) {
+            String s = astring1[j];
+            String s1 = System.getProperty(s);
 
-            if (var5 != null && var5.contains("64")) {
+            if (s1 != null && s1.contains("64")) {
                 return true;
             }
         }
@@ -337,37 +314,39 @@ public class Minecraft implements IPlayerUsage {
 
     public static void func_147105_a(String p_147105_0_) {
         try {
-            Toolkit var1 = Toolkit.getDefaultToolkit();
-            Class var2 = var1.getClass();
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Class oclass = toolkit.getClass();
 
-            if (var2.getName().equals("sun.awt.X11.XToolkit")) {
-                Field var3 = var2.getDeclaredField("awtAppClassName");
-                var3.setAccessible(true);
-                var3.set(var1, p_147105_0_);
+            if (oclass.getName().equals("sun.awt.X11.XToolkit")) {
+                Field field = oclass.getDeclaredField("awtAppClassName");
+                field.setAccessible(true);
+                field.set(toolkit, p_147105_0_);
             }
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            ;
         }
     }
 
     public Framebuffer getFramebuffer() {
-        return this.mcFramebuffer;
+        return this.framebufferMc;
     }
 
     private void startTimerHackThread() {
-        Thread var1 = new Thread("Timer hack thread") {
+        Thread thread = new Thread("Timer hack thread") {
             private static final String __OBFID = "CL_00000632";
 
             public void run() {
                 while (Minecraft.this.running) {
                     try {
                         Thread.sleep(2147483647L);
-                    } catch (InterruptedException ignored) {
+                    } catch (InterruptedException interruptedexception) {
+                        ;
                     }
                 }
             }
         };
-        var1.setDaemon(true);
-        var1.start();
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void crashed(CrashReport par1CrashReport) {
@@ -379,15 +358,15 @@ public class Minecraft implements IPlayerUsage {
      * Wrapper around displayCrashReportInternal
      */
     public void displayCrashReport(CrashReport par1CrashReport) {
-        File var2 = new File(getMinecraft().mcDataDir, "crash-reports");
-        File var3 = new File(var2, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-client.txt");
+        File file1 = new File(getMinecraft().mcDataDir, "crash-reports");
+        File file2 = new File(file1, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-client.txt");
         System.out.println(par1CrashReport.getCompleteReport());
 
         if (par1CrashReport.getFile() != null) {
             System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + par1CrashReport.getFile());
             System.exit(-1);
-        } else if (par1CrashReport.saveToFile(var3)) {
-            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + var3.getAbsolutePath());
+        } else if (par1CrashReport.saveToFile(file2)) {
+            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + file2.getAbsolutePath());
             System.exit(-1);
         } else {
             System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
@@ -430,28 +409,29 @@ public class Minecraft implements IPlayerUsage {
         Display.setResizable(true);
         Display.setTitle("Minecraft 1.7.2");
         logger.info("LWJGL Version: " + Sys.getVersion());
-        Util.EnumOS var1 = Util.getOSType();
+        Util.EnumOS enumos = Util.getOSType();
 
-        if (var1 != Util.EnumOS.MACOS) {
+        if (enumos != Util.EnumOS.MACOS) {
             try {
                 Display.setIcon(new ByteBuffer[]{this.readImage(new File(this.fileAssets, "/icons/icon_16x16.png")), this.readImage(new File(this.fileAssets, "/icons/icon_32x32.png"))});
-            } catch (IOException var6) {
-                logger.error("Couldn\'t set icon", var6);
+            } catch (IOException ioexception) {
+                logger.error("Couldn\'t set icon", ioexception);
             }
 
-            if (var1 != Util.EnumOS.WINDOWS) {
+            if (enumos != Util.EnumOS.WINDOWS) {
                 func_147105_a("Minecraft");
             }
         }
 
         try {
-            Display.create((new PixelFormat()).withDepthBits(24));
-        } catch (LWJGLException var5) {
-            logger.error("Couldn\'t set pixel format", var5);
+            ForgeHooksClient.createDisplay();
+        } catch (LWJGLException lwjglexception) {
+            logger.error("Couldn\'t set pixel format", lwjglexception);
 
             try {
                 Thread.sleep(1000L);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException interruptedexception) {
+                ;
             }
 
             if (this.fullscreen) {
@@ -462,8 +442,8 @@ public class Minecraft implements IPlayerUsage {
         }
 
         OpenGlHelper.initializeTextures();
-        this.mcFramebuffer = new Framebuffer(this.displayWidth, this.displayHeight, true);
-        this.mcFramebuffer.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
+        this.framebufferMc = new Framebuffer(this.displayWidth, this.displayHeight, true);
+        this.framebufferMc.setFramebufferColor(0.0F, 0.0F, 0.0F, 0.0F);
         this.guiAchievement = new GuiAchievement(this);
         this.metadataSerializer_.registerMetadataSectionType(new TextureMetadataSectionSerializer(), TextureMetadataSection.class);
         this.metadataSerializer_.registerMetadataSectionType(new FontMetadataSectionSerializer(), FontMetadataSection.class);
@@ -475,7 +455,7 @@ public class Minecraft implements IPlayerUsage {
         this.mcResourceManager = new SimpleReloadableResourceManager(this.metadataSerializer_);
         this.mcLanguageManager = new LanguageManager(this.metadataSerializer_, this.gameSettings.language);
         this.mcResourceManager.registerReloadListener(this.mcLanguageManager);
-        this.refreshResources();
+        FMLClientHandler.instance().beginMinecraftLoading(this, this.defaultResourcePacks, this.mcResourceManager);
         this.renderEngine = new TextureManager(this.mcResourceManager);
         this.mcResourceManager.registerReloadListener(this.renderEngine);
         this.mcSoundHandler = new SoundHandler(this.mcResourceManager, this.gameSettings);
@@ -500,11 +480,14 @@ public class Minecraft implements IPlayerUsage {
         AchievementList.openInventory.setStatStringFormatter(new IStatStringFormat() {
             private static final String __OBFID = "CL_00000639";
 
+            /**
+             * Formats the strings based on 'IStatStringFormat' interface.
+             */
             public String formatString(String par1Str) {
                 try {
-                    return String.format(par1Str, GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode()));
-                } catch (Exception var3) {
-                    return "Error: " + var3.getLocalizedMessage();
+                    return String.format(par1Str, new Object[]{GameSettings.getKeyDisplayString(Minecraft.this.gameSettings.keyBindInventory.getKeyCode())});
+                } catch (Exception exception) {
+                    return "Error: " + exception.getLocalizedMessage();
                 }
             }
         });
@@ -524,17 +507,18 @@ public class Minecraft implements IPlayerUsage {
         this.checkGLError("Startup");
         this.renderGlobal = new RenderGlobal(this);
         this.textureMapBlocks = new TextureMap(0, "textures/blocks");
-        this.textureMapBlocks.func_147632_b(this.gameSettings.anisotropicFiltering);
-        this.textureMapBlocks.func_147633_a(this.gameSettings.mipmapLevels);
+        this.textureMapBlocks.setAnisotropicFiltering(this.gameSettings.anisotropicFiltering);
+        this.textureMapBlocks.setMipmapLevels(this.gameSettings.mipmapLevels);
         this.renderEngine.loadTextureMap(TextureMap.locationBlocksTexture, this.textureMapBlocks);
         this.renderEngine.loadTextureMap(TextureMap.locationItemsTexture, new TextureMap(1, "textures/items"));
         GL11.glViewport(0, 0, this.displayWidth, this.displayHeight);
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
+        FMLClientHandler.instance().finishMinecraftLoading();
         this.checkGLError("Post startup");
-        this.ingameGUI = new GuiIngame(this);
+        this.ingameGUI = new GuiIngameForge(this);
 
         if (this.serverName != null) {
-            this.displayGuiScreen(new GuiConnecting(new GuiMainMenu(), this, this.serverName, this.serverPort));
+            FMLClientHandler.instance().connectToServerAtStartup(this.serverName, this.serverPort);
         } else {
             this.displayGuiScreen(new GuiMainMenu());
         }
@@ -545,24 +529,25 @@ public class Minecraft implements IPlayerUsage {
             this.toggleFullscreen();
         }
 
+        FMLClientHandler.instance().onInitializationComplete();
         Display.setVSyncEnabled(this.gameSettings.enableVsync);
-        ModList.start();
     }
 
     public void refreshResources() {
-        ArrayList<IResourcePack> var1 = Lists.newArrayList(this.defaultResourcePacks);
+        ArrayList arraylist = Lists.newArrayList(this.defaultResourcePacks);
+        Iterator iterator = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
-            ResourcePackRepository.Entry var3 = (ResourcePackRepository.Entry) o;
-            var1.add(var3.getResourcePack());
+        while (iterator.hasNext()) {
+            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) iterator.next();
+            arraylist.add(entry.getResourcePack());
         }
 
         if (this.mcResourcePackRepository.func_148530_e() != null) {
-            var1.add(this.mcResourcePackRepository.func_148530_e());
+            arraylist.add(this.mcResourcePackRepository.func_148530_e());
         }
 
-        this.mcLanguageManager.parseLanguageMetadata(var1);
-        this.mcResourceManager.reloadResources(var1);
+        this.mcLanguageManager.parseLanguageMetadata(arraylist);
+        this.mcResourceManager.reloadResources(arraylist);
 
         if (this.renderGlobal != null) {
             this.renderGlobal.loadRenderers();
@@ -574,48 +559,52 @@ public class Minecraft implements IPlayerUsage {
     }
 
     private ByteBuffer readImage(File par1File) throws IOException {
-        BufferedImage var2 = ImageIO.read(par1File);
-        int[] var3 = var2.getRGB(0, 0, var2.getWidth(), var2.getHeight(), null, 0, var2.getWidth());
-        ByteBuffer var4 = ByteBuffer.allocate(4 * var3.length);
+        BufferedImage bufferedimage = ImageIO.read(par1File);
+        int[] aint = bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), (int[]) null, 0, bufferedimage.getWidth());
+        ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
+        int[] aint1 = aint;
+        int i = aint.length;
 
-        for (int var8 : var3) {
-            var4.putInt(var8 << 8 | var8 >> 24 & 255);
+        for (int j = 0; j < i; ++j) {
+            int k = aint1[j];
+            bytebuffer.putInt(k << 8 | k >> 24 & 255);
         }
 
-        var4.flip();
-        return var4;
+        bytebuffer.flip();
+        return bytebuffer;
     }
 
     private void updateDisplayMode() throws LWJGLException {
-        HashSet var1 = new HashSet();
-        Collections.addAll(var1, Display.getAvailableDisplayModes());
-        DisplayMode var2 = Display.getDesktopDisplayMode();
+        HashSet hashset = new HashSet();
+        Collections.addAll(hashset, Display.getAvailableDisplayModes());
+        DisplayMode displaymode = Display.getDesktopDisplayMode();
 
-        if (!var1.contains(var2) && Util.getOSType() == Util.EnumOS.MACOS) {
+        if (!hashset.contains(displaymode) && Util.getOSType() == Util.EnumOS.MACOS) {
+            Iterator iterator = macDisplayModes.iterator();
 
-            for (Object macDisplayMode : macDisplayModes) {
-                DisplayMode var4 = (DisplayMode) macDisplayMode;
-                boolean var5 = true;
-                Iterator var6 = var1.iterator();
-                DisplayMode var7;
+            while (iterator.hasNext()) {
+                DisplayMode displaymode1 = (DisplayMode) iterator.next();
+                boolean flag = true;
+                Iterator iterator1 = hashset.iterator();
+                DisplayMode displaymode2;
 
-                while (var6.hasNext()) {
-                    var7 = (DisplayMode) var6.next();
+                while (iterator1.hasNext()) {
+                    displaymode2 = (DisplayMode) iterator1.next();
 
-                    if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() && var7.getHeight() == var4.getHeight()) {
-                        var5 = false;
+                    if (displaymode2.getBitsPerPixel() == 32 && displaymode2.getWidth() == displaymode1.getWidth() && displaymode2.getHeight() == displaymode1.getHeight()) {
+                        flag = false;
                         break;
                     }
                 }
 
-                if (!var5) {
-                    var6 = var1.iterator();
+                if (!flag) {
+                    iterator1 = hashset.iterator();
 
-                    while (var6.hasNext()) {
-                        var7 = (DisplayMode) var6.next();
+                    while (iterator1.hasNext()) {
+                        displaymode2 = (DisplayMode) iterator1.next();
 
-                        if (var7.getBitsPerPixel() == 32 && var7.getWidth() == var4.getWidth() / 2 && var7.getHeight() == var4.getHeight() / 2) {
-                            var2 = var7;
+                        if (displaymode2.getBitsPerPixel() == 32 && displaymode2.getWidth() == displaymode1.getWidth() / 2 && displaymode2.getHeight() == displaymode1.getHeight() / 2) {
+                            displaymode = displaymode2;
                             break;
                         }
                     }
@@ -623,9 +612,9 @@ public class Minecraft implements IPlayerUsage {
             }
         }
 
-        Display.setDisplayMode(var2);
-        this.displayWidth = var2.getWidth();
-        this.displayHeight = var2.getHeight();
+        Display.setDisplayMode(displaymode);
+        this.displayWidth = displaymode.getWidth();
+        this.displayHeight = displaymode.getHeight();
     }
 
     /**
@@ -634,13 +623,13 @@ public class Minecraft implements IPlayerUsage {
     private void loadScreen() throws LWJGLException {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         this.renderEngine.bindTexture(locationMojangPng);
-        ScaledResolution var1 = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
-        int var2 = var1.getScaleFactor();
-        Framebuffer var3 = new Framebuffer(var1.getScaledWidth() * var2, var1.getScaledHeight() * var2, true);
-        var3.bindFramebuffer(false);
+        ScaledResolution scaledresolution = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
+        int i = scaledresolution.getScaleFactor();
+        Framebuffer framebuffer = new Framebuffer(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i, true);
+        framebuffer.bindFramebuffer(false);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glOrtho(0.0D, (double) var1.getScaledWidth(), (double) var1.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+        GL11.glOrtho(0.0D, (double) scaledresolution.getScaledWidth(), (double) scaledresolution.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
@@ -649,23 +638,23 @@ public class Minecraft implements IPlayerUsage {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         this.renderEngine.bindTexture(locationMojangPng);
-        Tessellator var4 = Tessellator.instance;
-        var4.startDrawingQuads();
-        var4.setColorOpaque_I(16777215);
-        var4.addVertexWithUV(0.0D, (double) this.displayHeight, 0.0D, 0.0D, 0.0D);
-        var4.addVertexWithUV((double) this.displayWidth, (double) this.displayHeight, 0.0D, 0.0D, 0.0D);
-        var4.addVertexWithUV((double) this.displayWidth, 0.0D, 0.0D, 0.0D, 0.0D);
-        var4.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
-        var4.draw();
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque_I(16777215);
+        tessellator.addVertexWithUV(0.0D, (double) this.displayHeight, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV((double) this.displayWidth, (double) this.displayHeight, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV((double) this.displayWidth, 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+        tessellator.draw();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        var4.setColorOpaque_I(16777215);
-        short var5 = 256;
-        short var6 = 256;
-        this.scaledTessellator((var1.getScaledWidth() - var5) / 2, (var1.getScaledHeight() - var6) / 2, 0, 0, var5, var6);
+        tessellator.setColorOpaque_I(16777215);
+        short short1 = 256;
+        short short2 = 256;
+        this.scaledTessellator((scaledresolution.getScaledWidth() - short1) / 2, (scaledresolution.getScaledHeight() - short2) / 2, 0, 0, short1, short2);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_FOG);
-        var3.unbindFramebuffer();
-        var3.framebufferRender(var1.getScaledWidth() * var2, var1.getScaledHeight() * var2);
+        framebuffer.unbindFramebuffer();
+        framebuffer.framebufferRender(scaledresolution.getScaledWidth() * i, scaledresolution.getScaledHeight() * i);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
         GL11.glFlush();
@@ -676,15 +665,15 @@ public class Minecraft implements IPlayerUsage {
      * Loads Tessellator with a scaled resolution
      */
     public void scaledTessellator(int par1, int par2, int par3, int par4, int par5, int par6) {
-        float var7 = 0.00390625F;
-        float var8 = 0.00390625F;
-        Tessellator var9 = Tessellator.instance;
-        var9.startDrawingQuads();
-        var9.addVertexWithUV((double) (par1), (double) (par2 + par6), 0.0D, (double) ((float) (par3) * var7), (double) ((float) (par4 + par6) * var8));
-        var9.addVertexWithUV((double) (par1 + par5), (double) (par2 + par6), 0.0D, (double) ((float) (par3 + par5) * var7), (double) ((float) (par4 + par6) * var8));
-        var9.addVertexWithUV((double) (par1 + par5), (double) (par2), 0.0D, (double) ((float) (par3 + par5) * var7), (double) ((float) (par4) * var8));
-        var9.addVertexWithUV((double) (par1), (double) (par2), 0.0D, (double) ((float) (par3) * var7), (double) ((float) (par4) * var8));
-        var9.draw();
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV((double) (par1 + 0), (double) (par2 + par6), 0.0D, (double) ((float) (par3 + 0) * f), (double) ((float) (par4 + par6) * f1));
+        tessellator.addVertexWithUV((double) (par1 + par5), (double) (par2 + par6), 0.0D, (double) ((float) (par3 + par5) * f), (double) ((float) (par4 + par6) * f1));
+        tessellator.addVertexWithUV((double) (par1 + par5), (double) (par2 + 0), 0.0D, (double) ((float) (par3 + par5) * f), (double) ((float) (par4 + 0) * f1));
+        tessellator.addVertexWithUV((double) (par1 + 0), (double) (par2 + 0), 0.0D, (double) ((float) (par3 + 0) * f), (double) ((float) (par4 + 0) * f1));
+        tessellator.draw();
     }
 
     /**
@@ -705,9 +694,11 @@ public class Minecraft implements IPlayerUsage {
         }
 
         GuiScreen old = this.currentScreen;
+        GuiOpenEvent event = new GuiOpenEvent(p_147108_1_);
 
-        if (!ModList.onGui(this.currentScreen, p_147108_1_, true)) return;
+        if (!ModList.onGui(old, p_147108_1_, MinecraftForge.EVENT_BUS.post(event))) return;
 
+        p_147108_1_ = event.gui;
 
         if (old != null && p_147108_1_ != old) {
             old.onGuiClosed();
@@ -715,20 +706,20 @@ public class Minecraft implements IPlayerUsage {
 
         if (p_147108_1_ instanceof GuiMainMenu) {
             this.gameSettings.showDebugInfo = false;
-            this.ingameGUI.getChatGUI().func_146231_a();
+            this.ingameGUI.getChatGUI().clearChatMessages();
         }
 
-        this.currentScreen = p_147108_1_;
+        this.currentScreen = (GuiScreen) p_147108_1_;
 
         if (p_147108_1_ != null) {
             this.setIngameNotInFocus();
-            ScaledResolution var2 = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
-            int var3 = var2.getScaledWidth();
-            int var4 = var2.getScaledHeight();
-            (p_147108_1_).setWorldAndResolution(this, var3, var4);
+            ScaledResolution scaledresolution = new ScaledResolution(this.gameSettings, this.displayWidth, this.displayHeight);
+            int i = scaledresolution.getScaledWidth();
+            int j = scaledresolution.getScaledHeight();
+            ((GuiScreen) p_147108_1_).setWorldAndResolution(this, i, j);
             this.skipRenderWorld = false;
         } else {
-            this.mcSoundHandler.func_147687_e();
+            this.mcSoundHandler.resumeSounds();
             this.setIngameFocus();
         }
     }
@@ -737,13 +728,13 @@ public class Minecraft implements IPlayerUsage {
      * Checks for an OpenGL error. If there is one, prints the error ID and error string.
      */
     private void checkGLError(String par1Str) {
-        int var2 = GL11.glGetError();
+        int i = GL11.glGetError();
 
-        if (var2 != 0) {
-            String var3 = GLU.gluErrorString(var2);
+        if (i != 0) {
+            String s1 = GLU.gluErrorString(i);
             logger.error("########## GL ERROR ##########");
             logger.error("@ " + par1Str);
-            logger.error(var2 + ": " + var3);
+            logger.error(i + ": " + s1);
         }
     }
 
@@ -756,16 +747,18 @@ public class Minecraft implements IPlayerUsage {
             logger.info("Stopping!");
 
             try {
-                this.loadWorld(null);
-            } catch (Throwable ignored) {
+                this.loadWorld((WorldClient) null);
+            } catch (Throwable throwable1) {
+                ;
             }
 
             try {
                 GLAllocation.deleteTexturesAndDisplayLists();
-            } catch (Throwable ignored) {
+            } catch (Throwable throwable) {
+                ;
             }
 
-            this.mcSoundHandler.func_147685_d();
+            this.mcSoundHandler.unloadSounds();
         } finally {
             Display.destroy();
 
@@ -780,14 +773,14 @@ public class Minecraft implements IPlayerUsage {
     public void run() {
         BlazeLoader.init(new File(System.getProperty("user.dir")));
         this.running = true;
-        CrashReport var2;
+        CrashReport crashreport;
 
         try {
             this.startGame();
-        } catch (Throwable var11) {
-            var2 = CrashReport.makeCrashReport(var11, "Initializing game");
-            var2.makeCategory("Initialization");
-            this.displayCrashReport(this.addGraphicsAndWorldToCrashReport(var2));
+        } catch (Throwable throwable) {
+            crashreport = CrashReport.makeCrashReport(throwable, "Initializing game");
+            crashreport.makeCategory("Initialization");
+            this.displayCrashReport(this.addGraphicsAndWorldToCrashReport(crashreport));
             return;
         }
 
@@ -797,7 +790,7 @@ public class Minecraft implements IPlayerUsage {
                     if (!this.hasCrashed || this.crashReporter == null) {
                         try {
                             this.runGameLoop();
-                        } catch (OutOfMemoryError var10) {
+                        } catch (OutOfMemoryError outofmemoryerror) {
                             this.freeMemory();
                             this.displayGuiScreen(new GuiMemoryErrorScreen());
                             System.gc();
@@ -809,17 +802,18 @@ public class Minecraft implements IPlayerUsage {
                     this.displayCrashReport(this.crashReporter);
                     return;
                 }
-            } catch (MinecraftError ignored) {
-            } catch (ReportedException var13) {
-                this.addGraphicsAndWorldToCrashReport(var13.getCrashReport());
+            } catch (MinecraftError minecrafterror) {
+                ;
+            } catch (ReportedException reportedexception) {
+                this.addGraphicsAndWorldToCrashReport(reportedexception.getCrashReport());
                 this.freeMemory();
-                logger.fatal("Reported exception thrown!", var13);
-                this.displayCrashReport(var13.getCrashReport());
-            } catch (Throwable var14) {
-                var2 = this.addGraphicsAndWorldToCrashReport(new CrashReport("Unexpected error", var14));
+                logger.fatal("Reported exception thrown!", reportedexception);
+                this.displayCrashReport(reportedexception.getCrashReport());
+            } catch (Throwable throwable1) {
+                crashreport = this.addGraphicsAndWorldToCrashReport(new CrashReport("Unexpected error", throwable1));
                 this.freeMemory();
-                logger.fatal("Unreported exception thrown!", var14);
-                this.displayCrashReport(var2);
+                logger.fatal("Unreported exception thrown!", throwable1);
+                this.displayCrashReport(crashreport);
             } finally {
                 this.shutdownMinecraftApplet();
             }
@@ -845,9 +839,9 @@ public class Minecraft implements IPlayerUsage {
         }
 
         if (this.isGamePaused && this.theWorld != null) {
-            float var1 = this.timer.renderPartialTicks;
+            float f = this.timer.renderPartialTicks;
             this.timer.updateTimer();
-            this.timer.renderPartialTicks = var1;
+            this.timer.renderPartialTicks = f;
         } else {
             this.timer.updateTimer();
         }
@@ -857,24 +851,24 @@ public class Minecraft implements IPlayerUsage {
             this.refreshResources();
         }
 
-        long var5 = System.nanoTime();
+        long j = System.nanoTime();
         this.mcProfiler.startSection("tick");
 
-        for (int var3 = 0; var3 < this.timer.elapsedTicks; ++var3) {
+        for (int i = 0; i < this.timer.elapsedTicks; ++i) {
             this.runTick();
         }
 
         this.mcProfiler.endStartSection("preRenderErrors");
-        long var6 = System.nanoTime() - var5;
+        long k = System.nanoTime() - j;
         this.checkGLError("Pre render");
         RenderBlocks.fancyGrass = this.gameSettings.fancyGraphics;
         this.mcProfiler.endStartSection("sound");
-        this.mcSoundHandler.func_147691_a(this.thePlayer, this.timer.renderPartialTicks);
+        this.mcSoundHandler.setListener(this.thePlayer, this.timer.renderPartialTicks);
         this.mcProfiler.endSection();
         this.mcProfiler.startSection("render");
         GL11.glPushMatrix();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        this.mcFramebuffer.bindFramebuffer(true);
+        this.framebufferMc.bindFramebuffer(true);
         this.mcProfiler.startSection("display");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
@@ -885,9 +879,11 @@ public class Minecraft implements IPlayerUsage {
         this.mcProfiler.endSection();
 
         if (!this.skipRenderWorld) {
+            FMLCommonHandler.instance().onRenderTickStart(this.timer.renderPartialTicks);
             this.mcProfiler.endStartSection("gameRenderer");
             this.entityRenderer.updateCameraAndRender(this.timer.renderPartialTicks);
             this.mcProfiler.endSection();
+            FMLCommonHandler.instance().onRenderTickEnd(this.timer.renderPartialTicks);
         }
 
         GL11.glFlush();
@@ -903,17 +899,17 @@ public class Minecraft implements IPlayerUsage {
             }
 
             this.mcProfiler.profilingEnabled = true;
-            this.displayDebugInfo(var6);
+            this.displayDebugInfo(k);
         } else {
             this.mcProfiler.profilingEnabled = false;
             this.prevFrameTime = System.nanoTime();
         }
 
         this.guiAchievement.func_146254_a();
-        this.mcFramebuffer.unbindFramebuffer();
+        this.framebufferMc.unbindFramebuffer();
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        this.mcFramebuffer.framebufferRender(this.displayWidth, this.displayHeight);
+        this.framebufferMc.framebufferRender(this.displayWidth, this.displayHeight);
         GL11.glPopMatrix();
         this.mcProfiler.startSection("root");
         this.func_147120_f();
@@ -947,12 +943,12 @@ public class Minecraft implements IPlayerUsage {
         Display.update();
 
         if (!this.fullscreen && Display.wasResized()) {
-            int var1 = this.displayWidth;
-            int var2 = this.displayHeight;
+            int i = this.displayWidth;
+            int j = this.displayHeight;
             this.displayWidth = Display.getWidth();
             this.displayHeight = Display.getHeight();
 
-            if (this.displayWidth != var1 || this.displayHeight != var2) {
+            if (this.displayWidth != i || this.displayHeight != j) {
                 if (this.displayWidth <= 0) {
                     this.displayWidth = 1;
                 }
@@ -978,20 +974,23 @@ public class Minecraft implements IPlayerUsage {
         try {
             memoryReserve = new byte[0];
             this.renderGlobal.deleteAllDisplayLists();
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable2) {
+            ;
         }
 
         try {
             System.gc();
             AxisAlignedBB.getAABBPool().clearPool();
             this.theWorld.getWorldVec3Pool().clearAndFreeCache();
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable1) {
+            ;
         }
 
         try {
             System.gc();
-            this.loadWorld(null);
-        } catch (Throwable ignored) {
+            this.loadWorld((WorldClient) null);
+        } catch (Throwable throwable) {
+            ;
         }
 
         System.gc();
@@ -1004,7 +1003,7 @@ public class Minecraft implements IPlayerUsage {
         if (this.gameSettings.keyBindScreenshot.isPressed()) {
             if (!this.isTakingScreenshot) {
                 this.isTakingScreenshot = true;
-                this.ingameGUI.getChatGUI().func_146227_a(ScreenShotHelper.saveScreenshot(this.mcDataDir, this.displayWidth, this.displayHeight, this.mcFramebuffer));
+                this.ingameGUI.getChatGUI().printChatMessage(ScreenShotHelper.saveScreenshot(this.mcDataDir, this.displayWidth, this.displayHeight, this.framebufferMc));
             }
         } else {
             this.isTakingScreenshot = false;
@@ -1015,28 +1014,28 @@ public class Minecraft implements IPlayerUsage {
      * Update debugProfilerName in response to number keys in debug screen
      */
     private void updateDebugProfilerName(int par1) {
-        List var2 = this.mcProfiler.getProfilingData(this.debugProfilerName);
+        List list = this.mcProfiler.getProfilingData(this.debugProfilerName);
 
-        if (var2 != null && !var2.isEmpty()) {
-            Profiler.Result var3 = (Profiler.Result) var2.remove(0);
+        if (list != null && !list.isEmpty()) {
+            Profiler.Result result = (Profiler.Result) list.remove(0);
 
             if (par1 == 0) {
-                if (var3.field_76331_c.length() > 0) {
-                    int var4 = this.debugProfilerName.lastIndexOf(".");
+                if (result.field_76331_c.length() > 0) {
+                    int j = this.debugProfilerName.lastIndexOf(".");
 
-                    if (var4 >= 0) {
-                        this.debugProfilerName = this.debugProfilerName.substring(0, var4);
+                    if (j >= 0) {
+                        this.debugProfilerName = this.debugProfilerName.substring(0, j);
                     }
                 }
             } else {
                 --par1;
 
-                if (par1 < var2.size() && !((Profiler.Result) var2.get(par1)).field_76331_c.equals("unspecified")) {
+                if (par1 < list.size() && !((Profiler.Result) list.get(par1)).field_76331_c.equals("unspecified")) {
                     if (this.debugProfilerName.length() > 0) {
                         this.debugProfilerName = this.debugProfilerName + ".";
                     }
 
-                    this.debugProfilerName = this.debugProfilerName + ((Profiler.Result) var2.get(par1)).field_76331_c;
+                    this.debugProfilerName = this.debugProfilerName + ((Profiler.Result) list.get(par1)).field_76331_c;
                 }
             }
         }
@@ -1044,8 +1043,8 @@ public class Minecraft implements IPlayerUsage {
 
     private void displayDebugInfo(long par1) {
         if (this.mcProfiler.profilingEnabled) {
-            List var3 = this.mcProfiler.getProfilingData(this.debugProfilerName);
-            Profiler.Result var4 = (Profiler.Result) var3.remove(0);
+            List list = this.mcProfiler.getProfilingData(this.debugProfilerName);
+            Profiler.Result result = (Profiler.Result) list.remove(0);
             GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glMatrixMode(GL11.GL_PROJECTION);
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
@@ -1056,88 +1055,88 @@ public class Minecraft implements IPlayerUsage {
             GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
             GL11.glLineWidth(1.0F);
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            Tessellator var5 = Tessellator.instance;
-            short var6 = 160;
-            int var7 = this.displayWidth - var6 - 10;
-            int var8 = this.displayHeight - var6 * 2;
+            Tessellator tessellator = Tessellator.instance;
+            short short1 = 160;
+            int j = this.displayWidth - short1 - 10;
+            int k = this.displayHeight - short1 * 2;
             GL11.glEnable(GL11.GL_BLEND);
-            var5.startDrawingQuads();
-            var5.setColorRGBA_I(0, 200);
-            var5.addVertex((double) ((float) var7 - (float) var6 * 1.1F), (double) ((float) var8 - (float) var6 * 0.6F - 16.0F), 0.0D);
-            var5.addVertex((double) ((float) var7 - (float) var6 * 1.1F), (double) (var8 + var6 * 2), 0.0D);
-            var5.addVertex((double) ((float) var7 + (float) var6 * 1.1F), (double) (var8 + var6 * 2), 0.0D);
-            var5.addVertex((double) ((float) var7 + (float) var6 * 1.1F), (double) ((float) var8 - (float) var6 * 0.6F - 16.0F), 0.0D);
-            var5.draw();
+            tessellator.startDrawingQuads();
+            tessellator.setColorRGBA_I(0, 200);
+            tessellator.addVertex((double) ((float) j - (float) short1 * 1.1F), (double) ((float) k - (float) short1 * 0.6F - 16.0F), 0.0D);
+            tessellator.addVertex((double) ((float) j - (float) short1 * 1.1F), (double) (k + short1 * 2), 0.0D);
+            tessellator.addVertex((double) ((float) j + (float) short1 * 1.1F), (double) (k + short1 * 2), 0.0D);
+            tessellator.addVertex((double) ((float) j + (float) short1 * 1.1F), (double) ((float) k - (float) short1 * 0.6F - 16.0F), 0.0D);
+            tessellator.draw();
             GL11.glDisable(GL11.GL_BLEND);
-            double var9 = 0.0D;
-            int var13;
+            double d0 = 0.0D;
+            int i1;
 
-            for (Object aVar3 : var3) {
-                Profiler.Result var12 = (Profiler.Result) aVar3;
-                var13 = MathHelper.floor_double(var12.field_76332_a / 4.0D) + 1;
-                var5.startDrawing(6);
-                var5.setColorOpaque_I(var12.func_76329_a());
-                var5.addVertex((double) var7, (double) var8, 0.0D);
-                int var14;
-                float var15;
-                float var17;
-                float var16;
+            for (int l = 0; l < list.size(); ++l) {
+                Profiler.Result result1 = (Profiler.Result) list.get(l);
+                i1 = MathHelper.floor_double(result1.field_76332_a / 4.0D) + 1;
+                tessellator.startDrawing(6);
+                tessellator.setColorOpaque_I(result1.func_76329_a());
+                tessellator.addVertex((double) j, (double) k, 0.0D);
+                int j1;
+                float f;
+                float f2;
+                float f1;
 
-                for (var14 = var13; var14 >= 0; --var14) {
-                    var15 = (float) ((var9 + var12.field_76332_a * (double) var14 / (double) var13) * Math.PI * 2.0D / 100.0D);
-                    var16 = MathHelper.sin(var15) * (float) var6;
-                    var17 = MathHelper.cos(var15) * (float) var6 * 0.5F;
-                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17), 0.0D);
+                for (j1 = i1; j1 >= 0; --j1) {
+                    f = (float) ((d0 + result1.field_76332_a * (double) j1 / (double) i1) * Math.PI * 2.0D / 100.0D);
+                    f1 = MathHelper.sin(f) * (float) short1;
+                    f2 = MathHelper.cos(f) * (float) short1 * 0.5F;
+                    tessellator.addVertex((double) ((float) j + f1), (double) ((float) k - f2), 0.0D);
                 }
 
-                var5.draw();
-                var5.startDrawing(5);
-                var5.setColorOpaque_I((var12.func_76329_a() & 16711422) >> 1);
+                tessellator.draw();
+                tessellator.startDrawing(5);
+                tessellator.setColorOpaque_I((result1.func_76329_a() & 16711422) >> 1);
 
-                for (var14 = var13; var14 >= 0; --var14) {
-                    var15 = (float) ((var9 + var12.field_76332_a * (double) var14 / (double) var13) * Math.PI * 2.0D / 100.0D);
-                    var16 = MathHelper.sin(var15) * (float) var6;
-                    var17 = MathHelper.cos(var15) * (float) var6 * 0.5F;
-                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17), 0.0D);
-                    var5.addVertex((double) ((float) var7 + var16), (double) ((float) var8 - var17 + 10.0F), 0.0D);
+                for (j1 = i1; j1 >= 0; --j1) {
+                    f = (float) ((d0 + result1.field_76332_a * (double) j1 / (double) i1) * Math.PI * 2.0D / 100.0D);
+                    f1 = MathHelper.sin(f) * (float) short1;
+                    f2 = MathHelper.cos(f) * (float) short1 * 0.5F;
+                    tessellator.addVertex((double) ((float) j + f1), (double) ((float) k - f2), 0.0D);
+                    tessellator.addVertex((double) ((float) j + f1), (double) ((float) k - f2 + 10.0F), 0.0D);
                 }
 
-                var5.draw();
-                var9 += var12.field_76332_a;
+                tessellator.draw();
+                d0 += result1.field_76332_a;
             }
 
-            DecimalFormat var19 = new DecimalFormat("##0.00");
+            DecimalFormat decimalformat = new DecimalFormat("##0.00");
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            String var18 = "";
+            String s = "";
 
-            if (!var4.field_76331_c.equals("unspecified")) {
-                var18 = var18 + "[0] ";
+            if (!result.field_76331_c.equals("unspecified")) {
+                s = s + "[0] ";
             }
 
-            if (var4.field_76331_c.length() == 0) {
-                var18 = var18 + "ROOT ";
+            if (result.field_76331_c.length() == 0) {
+                s = s + "ROOT ";
             } else {
-                var18 = var18 + var4.field_76331_c + " ";
+                s = s + result.field_76331_c + " ";
             }
 
-            var13 = 16777215;
-            this.fontRenderer.drawStringWithShadow(var18, var7 - var6, var8 - var6 / 2 - 16, var13);
-            this.fontRenderer.drawStringWithShadow(var18 = var19.format(var4.field_76330_b) + "%", var7 + var6 - this.fontRenderer.getStringWidth(var18), var8 - var6 / 2 - 16, var13);
+            i1 = 16777215;
+            this.fontRenderer.drawStringWithShadow(s, j - short1, k - short1 / 2 - 16, i1);
+            this.fontRenderer.drawStringWithShadow(s = decimalformat.format(result.field_76330_b) + "%", j + short1 - this.fontRenderer.getStringWidth(s), k - short1 / 2 - 16, i1);
 
-            for (int var21 = 0; var21 < var3.size(); ++var21) {
-                Profiler.Result var20 = (Profiler.Result) var3.get(var21);
-                String var22 = "";
+            for (int k1 = 0; k1 < list.size(); ++k1) {
+                Profiler.Result result2 = (Profiler.Result) list.get(k1);
+                String s1 = "";
 
-                if (var20.field_76331_c.equals("unspecified")) {
-                    var22 = var22 + "[?] ";
+                if (result2.field_76331_c.equals("unspecified")) {
+                    s1 = s1 + "[?] ";
                 } else {
-                    var22 = var22 + "[" + (var21 + 1) + "] ";
+                    s1 = s1 + "[" + (k1 + 1) + "] ";
                 }
 
-                var22 = var22 + var20.field_76331_c;
-                this.fontRenderer.drawStringWithShadow(var22, var7 - var6, var8 + var6 / 2 + var21 * 8 + 20, var20.func_76329_a());
-                this.fontRenderer.drawStringWithShadow(var22 = var19.format(var20.field_76332_a) + "%", var7 + var6 - 50 - this.fontRenderer.getStringWidth(var22), var8 + var6 / 2 + var21 * 8 + 20, var20.func_76329_a());
-                this.fontRenderer.drawStringWithShadow(var22 = var19.format(var20.field_76330_b) + "%", var7 + var6 - this.fontRenderer.getStringWidth(var22), var8 + var6 / 2 + var21 * 8 + 20, var20.func_76329_a());
+                s1 = s1 + result2.field_76331_c;
+                this.fontRenderer.drawStringWithShadow(s1, j - short1, k + short1 / 2 + k1 * 8 + 20, result2.func_76329_a());
+                this.fontRenderer.drawStringWithShadow(s1 = decimalformat.format(result2.field_76332_a) + "%", j + short1 - 50 - this.fontRenderer.getStringWidth(s1), k + short1 / 2 + k1 * 8 + 20, result2.func_76329_a());
+                this.fontRenderer.drawStringWithShadow(s1 = decimalformat.format(result2.field_76330_b) + "%", j + short1 - this.fontRenderer.getStringWidth(s1), k + short1 / 2 + k1 * 8 + 20, result2.func_76329_a());
             }
         }
     }
@@ -1161,7 +1160,7 @@ public class Minecraft implements IPlayerUsage {
             if (!this.inGameHasFocus) {
                 this.inGameHasFocus = true;
                 this.mouseHelper.grabMouseCursor();
-                this.displayGuiScreen(null);
+                this.displayGuiScreen((GuiScreen) null);
                 this.leftClickCounter = 10000;
             }
         }
@@ -1186,7 +1185,7 @@ public class Minecraft implements IPlayerUsage {
             this.displayGuiScreen(new GuiIngameMenu());
 
             if (this.isSingleplayer() && !this.theIntegratedServer.getPublic()) {
-                this.mcSoundHandler.func_147689_b();
+                this.mcSoundHandler.pauseSounds();
             }
         }
     }
@@ -1198,15 +1197,15 @@ public class Minecraft implements IPlayerUsage {
 
         if (this.leftClickCounter <= 0) {
             if (p_147115_1_ && this.objectMouseOver != null && this.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int var2 = this.objectMouseOver.blockX;
-                int var3 = this.objectMouseOver.blockY;
-                int var4 = this.objectMouseOver.blockZ;
+                int i = this.objectMouseOver.blockX;
+                int j = this.objectMouseOver.blockY;
+                int k = this.objectMouseOver.blockZ;
 
-                if (this.theWorld.getBlock(var2, var3, var4).getMaterial() != Material.air) {
-                    this.playerController.onPlayerDamageBlock(var2, var3, var4, this.objectMouseOver.sideHit);
+                if (this.theWorld.getBlock(i, j, k).getMaterial() != Material.air) {
+                    this.playerController.onPlayerDamageBlock(i, j, k, this.objectMouseOver.sideHit);
 
-                    if (this.thePlayer.isCurrentToolAdventureModeExempt(var2, var3, var4)) {
-                        this.effectRenderer.addBlockHitEffects(var2, var3, var4, this.objectMouseOver.sideHit);
+                    if (this.thePlayer.isCurrentToolAdventureModeExempt(i, j, k)) {
+                        this.effectRenderer.addBlockHitEffects(i, j, k, this.objectMouseOver);
                         this.thePlayer.swingItem();
                     }
                 }
@@ -1231,18 +1230,17 @@ public class Minecraft implements IPlayerUsage {
                     case 1:
                         this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
                         break;
-
                     case 2:
-                        int var1 = this.objectMouseOver.blockX;
-                        int var2 = this.objectMouseOver.blockY;
-                        int var3 = this.objectMouseOver.blockZ;
+                        int i = this.objectMouseOver.blockX;
+                        int j = this.objectMouseOver.blockY;
+                        int k = this.objectMouseOver.blockZ;
 
-                        if (this.theWorld.getBlock(var1, var2, var3).getMaterial() == Material.air) {
+                        if (this.theWorld.getBlock(i, j, k).getMaterial() == Material.air) {
                             if (this.playerController.isNotCreative()) {
                                 this.leftClickCounter = 10;
                             }
                         } else {
-                            this.playerController.clickBlock(var1, var2, var3, this.objectMouseOver.sideHit);
+                            this.playerController.clickBlock(i, j, k, this.objectMouseOver.sideHit);
                         }
                 }
             }
@@ -1251,8 +1249,8 @@ public class Minecraft implements IPlayerUsage {
 
     private void func_147121_ag() {
         this.rightClickDelayTimer = 4;
-        boolean var1 = true;
-        ItemStack var2 = this.thePlayer.inventory.getCurrentItem();
+        boolean flag = true;
+        ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
 
         if (this.objectMouseOver == null) {
             logger.warn("Null returned as \'hitResult\', this shouldn\'t happen!");
@@ -1260,41 +1258,42 @@ public class Minecraft implements IPlayerUsage {
             switch (Minecraft.SwitchMovingObjectType.field_151437_a[this.objectMouseOver.typeOfHit.ordinal()]) {
                 case 1:
                     if (this.playerController.interactWithEntitySendPacket(this.thePlayer, this.objectMouseOver.entityHit)) {
-                        var1 = false;
+                        flag = false;
                     }
 
                     break;
-
                 case 2:
-                    int var3 = this.objectMouseOver.blockX;
-                    int var4 = this.objectMouseOver.blockY;
-                    int var5 = this.objectMouseOver.blockZ;
+                    int i = this.objectMouseOver.blockX;
+                    int j = this.objectMouseOver.blockY;
+                    int k = this.objectMouseOver.blockZ;
 
-                    if (this.theWorld.getBlock(var3, var4, var5).getMaterial() != Material.air) {
-                        int var6 = var2 != null ? var2.stackSize : 0;
+                    if (!this.theWorld.getBlock(i, j, k).isAir(theWorld, i, j, k)) {
+                        int l = itemstack != null ? itemstack.stackSize : 0;
 
-                        if (this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, var2, var3, var4, var5, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec)) {
-                            var1 = false;
+                        boolean result = !ForgeEventFactory.onPlayerInteract(thePlayer, Action.RIGHT_CLICK_BLOCK, i, j, k, this.objectMouseOver.sideHit).isCanceled();
+                        if (result && this.playerController.onPlayerRightClick(this.thePlayer, this.theWorld, itemstack, i, j, k, this.objectMouseOver.sideHit, this.objectMouseOver.hitVec)) {
+                            flag = false;
                             this.thePlayer.swingItem();
                         }
 
-                        if (var2 == null) {
+                        if (itemstack == null) {
                             return;
                         }
 
-                        if (var2.stackSize == 0) {
+                        if (itemstack.stackSize == 0) {
                             this.thePlayer.inventory.mainInventory[this.thePlayer.inventory.currentItem] = null;
-                        } else if (var2.stackSize != var6 || this.playerController.isInCreativeMode()) {
+                        } else if (itemstack.stackSize != l || this.playerController.isInCreativeMode()) {
                             this.entityRenderer.itemRenderer.resetEquippedProgress();
                         }
                     }
             }
         }
 
-        if (var1) {
-            ItemStack var7 = this.thePlayer.inventory.getCurrentItem();
+        if (flag) {
+            ItemStack itemstack1 = this.thePlayer.inventory.getCurrentItem();
 
-            if (var7 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, var7)) {
+            boolean result = !ForgeEventFactory.onPlayerInteract(thePlayer, Action.RIGHT_CLICK_AIR, 0, 0, 0, -1).isCanceled();
+            if (result && itemstack1 != null && this.playerController.sendUseItem(this.thePlayer, this.theWorld, itemstack1)) {
                 this.entityRenderer.itemRenderer.resetEquippedProgress2();
             }
         }
@@ -1342,8 +1341,8 @@ public class Minecraft implements IPlayerUsage {
             Display.setFullscreen(this.fullscreen);
             Display.setVSyncEnabled(this.gameSettings.enableVsync);
             this.func_147120_f();
-        } catch (Exception var2) {
-            logger.error("Couldn\'t toggle fullscreen", var2);
+        } catch (Exception exception) {
+            logger.error("Couldn\'t toggle fullscreen", exception);
         }
     }
 
@@ -1355,10 +1354,10 @@ public class Minecraft implements IPlayerUsage {
         this.displayHeight = par2 <= 0 ? 1 : par2;
 
         if (this.currentScreen != null) {
-            ScaledResolution var3 = new ScaledResolution(this.gameSettings, par1, par2);
-            int var4 = var3.getScaledWidth();
-            int var5 = var3.getScaledHeight();
-            this.currentScreen.setWorldAndResolution(this, var4, var5);
+            ScaledResolution scaledresolution = new ScaledResolution(this.gameSettings, par1, par2);
+            int k = scaledresolution.getScaledWidth();
+            int l = scaledresolution.getScaledHeight();
+            this.currentScreen.setWorldAndResolution(this, k, l);
         }
 
         this.loadingScreen = new LoadingScreenRenderer(this);
@@ -1366,7 +1365,7 @@ public class Minecraft implements IPlayerUsage {
     }
 
     private void updateFramebufferSize() {
-        this.mcFramebuffer.createBindFramebuffer(this.displayWidth, this.displayHeight);
+        this.framebufferMc.createBindFramebuffer(this.displayWidth, this.displayHeight);
 
         if (this.entityRenderer != null) {
             this.entityRenderer.updateShaderGroupSize(this.displayWidth, this.displayHeight);
@@ -1382,6 +1381,8 @@ public class Minecraft implements IPlayerUsage {
         if (this.rightClickDelayTimer > 0) {
             --this.rightClickDelayTimer;
         }
+
+        FMLCommonHandler.instance().onPreClientTick();
 
         this.mcProfiler.startSection("gui");
 
@@ -1405,90 +1406,92 @@ public class Minecraft implements IPlayerUsage {
 
         if (this.currentScreen == null && this.thePlayer != null) {
             if (this.thePlayer.getHealth() <= 0.0F) {
-                this.displayGuiScreen(null);
+                this.displayGuiScreen((GuiScreen) null);
             } else if (this.thePlayer.isPlayerSleeping() && this.theWorld != null) {
                 this.displayGuiScreen(new GuiSleepMP());
             }
         } else if (this.currentScreen != null && this.currentScreen instanceof GuiSleepMP && !this.thePlayer.isPlayerSleeping()) {
-            this.displayGuiScreen(null);
+            this.displayGuiScreen((GuiScreen) null);
         }
 
         if (this.currentScreen != null) {
             this.leftClickCounter = 10000;
         }
 
-        CrashReport var2;
-        CrashReportCategory var3;
+        CrashReport crashreport;
+        CrashReportCategory crashreportcategory;
 
         if (this.currentScreen != null) {
             try {
                 this.currentScreen.handleInput();
-            } catch (Throwable var6) {
-                var2 = CrashReport.makeCrashReport(var6, "Updating screen events");
-                var3 = var2.makeCategory("Affected screen");
-                var3.addCrashSectionCallable("Screen name", new Callable() {
+            } catch (Throwable throwable1) {
+                crashreport = CrashReport.makeCrashReport(throwable1, "Updating screen events");
+                crashreportcategory = crashreport.makeCategory("Affected screen");
+                crashreportcategory.addCrashSectionCallable("Screen name", new Callable() {
                     private static final String __OBFID = "CL_00000640";
 
                     public String call() {
                         return Minecraft.this.currentScreen.getClass().getCanonicalName();
                     }
                 });
-                throw new ReportedException(var2);
+                throw new ReportedException(crashreport);
             }
 
             if (this.currentScreen != null) {
                 try {
                     this.currentScreen.updateScreen();
-                } catch (Throwable var5) {
-                    var2 = CrashReport.makeCrashReport(var5, "Ticking screen");
-                    var3 = var2.makeCategory("Affected screen");
-                    var3.addCrashSectionCallable("Screen name", new Callable() {
+                } catch (Throwable throwable) {
+                    crashreport = CrashReport.makeCrashReport(throwable, "Ticking screen");
+                    crashreportcategory = crashreport.makeCategory("Affected screen");
+                    crashreportcategory.addCrashSectionCallable("Screen name", new Callable() {
                         private static final String __OBFID = "CL_00000642";
 
                         public String call() {
                             return Minecraft.this.currentScreen.getClass().getCanonicalName();
                         }
                     });
-                    throw new ReportedException(var2);
+                    throw new ReportedException(crashreport);
                 }
             }
         }
 
-        if (this.currentScreen == null || this.currentScreen.field_146291_p) {
+        if (this.currentScreen == null || this.currentScreen.allowUserInput) {
             this.mcProfiler.endStartSection("mouse");
-            int var1;
+            int i;
 
             while (Mouse.next()) {
-                var1 = Mouse.getEventButton();
+                if (ForgeHooksClient.postMouseEvent()) continue;
 
-                if (isRunningOnMac && var1 == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157))) {
-                    var1 = 1;
+                i = Mouse.getEventButton();
+
+                if (isRunningOnMac && i == 0 && (Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157))) {
+                    i = 1;
                 }
 
-                KeyBinding.setKeyBindState(var1 - 100, Mouse.getEventButtonState());
+                KeyBinding.setKeyBindState(i - 100, Mouse.getEventButtonState());
 
                 if (Mouse.getEventButtonState()) {
-                    KeyBinding.onTick(var1 - 100);
+                    KeyBinding.onTick(i - 100);
                 }
 
-                long var9 = getSystemTime() - this.systemTime;
+                long k = getSystemTime() - this.systemTime;
 
-                if (var9 <= 200L) {
-                    int var4 = Mouse.getEventDWheel();
+                if (k <= 200L) {
+                    int j = Mouse.getEventDWheel();
 
-                    if (var4 != 0) {
-                        this.thePlayer.inventory.changeCurrentItem(var4);
+                    if (j != 0) {
+                        this.thePlayer.inventory.changeCurrentItem(j);
 
                         if (this.gameSettings.noclip) {
-                            if (var4 > 0) {
-                                var4 = 1;
+                            if (j > 0) {
+                                j = 1;
                             }
 
-                            if (var4 < 0) {
-                                var4 = -1;
+                            if (j < 0) {
+                                j = -1;
                             }
 
-                            this.gameSettings.noclipRate += (float) var4 * 0.25F;
+                            this.gameSettings.noclipRate += (float) j * 0.25F;
                         }
                     }
 
@@ -1500,6 +1503,7 @@ public class Minecraft implements IPlayerUsage {
                         this.currentScreen.handleMouseInput();
                     }
                 }
+                FMLCommonHandler.instance().fireMouseInput();
             }
 
             if (this.leftClickCounter > 0) {
@@ -1507,7 +1511,7 @@ public class Minecraft implements IPlayerUsage {
             }
 
             this.mcProfiler.endStartSection("keyboard");
-            boolean var8;
+            boolean flag;
 
             while (Keyboard.next()) {
                 KeyBinding.setKeyBindState(Keyboard.getEventKey(), Keyboard.getEventKeyState());
@@ -1552,8 +1556,8 @@ public class Minecraft implements IPlayerUsage {
                             }
 
                             if (Keyboard.getEventKey() == 33 && Keyboard.isKeyDown(61)) {
-                                var8 = Keyboard.isKeyDown(42) | Keyboard.isKeyDown(54);
-                                this.gameSettings.setOptionValue(GameSettings.Options.RENDER_DISTANCE, var8 ? -1 : 1);
+                                flag = Keyboard.isKeyDown(42) | Keyboard.isKeyDown(54);
+                                this.gameSettings.setOptionValue(GameSettings.Options.RENDER_DISTANCE, flag ? -1 : 1);
                             }
 
                             if (Keyboard.getEventKey() == 30 && Keyboard.isKeyDown(61)) {
@@ -1566,7 +1570,7 @@ public class Minecraft implements IPlayerUsage {
                             }
 
                             if (Keyboard.getEventKey() == 48 && Keyboard.isKeyDown(61)) {
-                                RenderManager.field_85095_o = !RenderManager.field_85095_o;
+                                RenderManager.debugBoundingBox = !RenderManager.debugBoundingBox;
                             }
 
                             if (Keyboard.getEventKey() == 25 && Keyboard.isKeyDown(61)) {
@@ -1601,23 +1605,24 @@ public class Minecraft implements IPlayerUsage {
                                 this.updateDebugProfilerName(0);
                             }
 
-                            for (var1 = 0; var1 < 9; ++var1) {
-                                if (Keyboard.getEventKey() == 2 + var1) {
-                                    this.updateDebugProfilerName(var1 + 1);
+                            for (i = 0; i < 9; ++i) {
+                                if (Keyboard.getEventKey() == 2 + i) {
+                                    this.updateDebugProfilerName(i + 1);
                                 }
                             }
                         }
                     }
+                    FMLCommonHandler.instance().fireKeyInput();
                 }
             }
 
-            for (var1 = 0; var1 < 9; ++var1) {
-                if (this.gameSettings.keyBindsHotbar[var1].isPressed()) {
-                    this.thePlayer.inventory.currentItem = var1;
+            for (i = 0; i < 9; ++i) {
+                if (this.gameSettings.keyBindsHotbar[i].isPressed()) {
+                    this.thePlayer.inventory.currentItem = i;
                 }
             }
 
-            var8 = this.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN;
+            flag = this.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN;
 
             while (this.gameSettings.keyBindInventory.isPressed()) {
                 if (this.playerController.func_110738_j()) {
@@ -1632,11 +1637,11 @@ public class Minecraft implements IPlayerUsage {
                 this.thePlayer.dropOneItem(GuiScreen.isCtrlKeyDown());
             }
 
-            while (this.gameSettings.keyBindChat.isPressed() && var8) {
+            while (this.gameSettings.keyBindChat.isPressed() && flag) {
                 this.displayGuiScreen(new GuiChat());
             }
 
-            if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && var8) {
+            if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && flag) {
                 this.displayGuiScreen(new GuiChat("/"));
             }
 
@@ -1650,6 +1655,7 @@ public class Minecraft implements IPlayerUsage {
                 while (true) {
                     if (!this.gameSettings.keyBindAttack.isPressed()) {
                         while (this.gameSettings.keyBindUseItem.isPressed()) {
+                            ;
                         }
 
                         while (true) {
@@ -1726,17 +1732,17 @@ public class Minecraft implements IPlayerUsage {
 
                 try {
                     this.theWorld.tick();
-                } catch (Throwable var7) {
-                    var2 = CrashReport.makeCrashReport(var7, "Exception in world tick");
+                } catch (Throwable throwable2) {
+                    crashreport = CrashReport.makeCrashReport(throwable2, "Exception in world tick");
 
                     if (this.theWorld == null) {
-                        var3 = var2.makeCategory("Affected level");
-                        var3.addCrashSection("Problem", "Level is null!");
+                        crashreportcategory = crashreport.makeCategory("Affected level");
+                        crashreportcategory.addCrashSection("Problem", "Level is null!");
                     } else {
-                        this.theWorld.addWorldInfoToCrashReport(var2);
+                        this.theWorld.addWorldInfoToCrashReport(crashreport);
                     }
 
-                    throw new ReportedException(var2);
+                    throw new ReportedException(crashreport);
                 }
             }
 
@@ -1756,64 +1762,69 @@ public class Minecraft implements IPlayerUsage {
             this.myNetworkManager.processReceivedPackets();
         }
 
+        FMLCommonHandler.instance().onPostClientTick();
+
         this.mcProfiler.endSection();
         this.systemTime = getSystemTime();
+        BlazeLoader.isInTick = false;
     }
 
     /**
      * Arguments: World foldername,  World ingame name, WorldSettings
      */
     public void launchIntegratedServer(String par1Str, String par2Str, WorldSettings par3WorldSettings) {
-        this.loadWorld(null);
+        FMLClientHandler.instance().startIntegratedServer(par1Str, par2Str, par3WorldSettings);
+        this.loadWorld((WorldClient) null);
         System.gc();
-        ISaveHandler var4 = this.saveLoader.getSaveLoader(par1Str, false);
-        WorldInfo var5 = var4.loadWorldInfo();
+        ISaveHandler isavehandler = this.saveLoader.getSaveLoader(par1Str, false);
+        WorldInfo worldinfo = isavehandler.loadWorldInfo();
 
-        if (var5 == null && par3WorldSettings != null) {
-            var5 = new WorldInfo(par3WorldSettings, par1Str);
-            var4.saveWorldInfo(var5);
+        if (worldinfo == null && par3WorldSettings != null) {
+            worldinfo = new WorldInfo(par3WorldSettings, par1Str);
+            isavehandler.saveWorldInfo(worldinfo);
         }
 
         if (par3WorldSettings == null) {
-            par3WorldSettings = new WorldSettings(var5);
+            par3WorldSettings = new WorldSettings(worldinfo);
         }
 
         try {
             this.theIntegratedServer = new IntegratedServer(this, par1Str, par2Str, par3WorldSettings);
             this.theIntegratedServer.startServerThread();
             this.integratedServerIsRunning = true;
-        } catch (Throwable var10) {
-            CrashReport var7 = CrashReport.makeCrashReport(var10, "Starting integrated server");
-            CrashReportCategory var8 = var7.makeCategory("Starting integrated server");
-            var8.addCrashSection("Level ID", par1Str);
-            var8.addCrashSection("Level Name", par2Str);
-            throw new ReportedException(var7);
+        } catch (Throwable throwable) {
+            CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Starting integrated server");
+            CrashReportCategory crashreportcategory = crashreport.makeCategory("Starting integrated server");
+            crashreportcategory.addCrashSection("Level ID", par1Str);
+            crashreportcategory.addCrashSection("Level Name", par2Str);
+            throw new ReportedException(crashreport);
         }
 
-        this.loadingScreen.displayProgressMessage(I18n.format("menu.loadingLevel"));
+        this.loadingScreen.displayProgressMessage(I18n.format("menu.loadingLevel", new Object[0]));
 
         while (!this.theIntegratedServer.serverIsInRunLoop()) {
-            String var6 = this.theIntegratedServer.getUserMessage();
+            String s2 = this.theIntegratedServer.getUserMessage();
 
-            if (var6 != null) {
-                this.loadingScreen.resetProgresAndWorkingMessage(I18n.format(var6));
+            if (s2 != null) {
+                this.loadingScreen.resetProgresAndWorkingMessage(I18n.format(s2, new Object[0]));
             } else {
                 this.loadingScreen.resetProgresAndWorkingMessage("");
             }
 
             try {
                 Thread.sleep(200L);
-            } catch (InterruptedException ignored) {
+            } catch (InterruptedException interruptedexception) {
+                ;
             }
         }
 
-        this.displayGuiScreen(null);
-        SocketAddress var11 = this.theIntegratedServer.func_147137_ag().addLocalEndpoint();
-        NetworkManager var12 = NetworkManager.provideLocalClient(var11);
-        var12.setNetHandler(new NetHandlerLoginClient(var12, this, null));
-        var12.scheduleOutboundPacket(new C00Handshake(4, var11.toString(), 0, EnumConnectionState.LOGIN));
-        var12.scheduleOutboundPacket(new C00PacketLoginStart(this.getSession().func_148256_e()));
-        this.myNetworkManager = var12;
+        this.displayGuiScreen((GuiScreen) null);
+        SocketAddress socketaddress = this.theIntegratedServer.func_147137_ag().addLocalEndpoint();
+        NetworkManager networkmanager = NetworkManager.provideLocalClient(socketaddress);
+        networkmanager.setNetHandler(new NetHandlerLoginClient(networkmanager, this, (GuiScreen) null));
+        networkmanager.scheduleOutboundPacket(new C00Handshake(4, socketaddress.toString(), 0, EnumConnectionState.LOGIN), new GenericFutureListener[0]);
+        networkmanager.scheduleOutboundPacket(new C00PacketLoginStart(this.getSession().func_148256_e()), new GenericFutureListener[0]);
+        this.myNetworkManager = networkmanager;
     }
 
     /**
@@ -1827,15 +1838,28 @@ public class Minecraft implements IPlayerUsage {
      * par2Str is displayed on the loading screen to the user unloads the current world first
      */
     public void loadWorld(WorldClient par1WorldClient, String par2Str) {
-        if (par1WorldClient == null) {
-            NetHandlerPlayClient var3 = this.getNetHandler();
+        if (theWorld != null) {
+            MinecraftForge.EVENT_BUS.post(new WorldEvent.Unload(theWorld));
+        }
 
-            if (var3 != null) {
-                var3.cleanup();
+        if (par1WorldClient == null) {
+            NetHandlerPlayClient nethandlerplayclient = this.getNetHandler();
+
+            if (nethandlerplayclient != null) {
+                nethandlerplayclient.cleanup();
             }
 
             if (this.theIntegratedServer != null) {
                 this.theIntegratedServer.initiateShutdown();
+                if (loadingScreen != null) {
+                    this.loadingScreen.resetProgresAndWorkingMessage("Shutting down internal server...");
+                }
+                while (!theIntegratedServer.isServerStopped()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ie) {
+                    }
+                }
             }
 
             this.theIntegratedServer = null;
@@ -1857,11 +1881,12 @@ public class Minecraft implements IPlayerUsage {
             }
 
             this.mcResourcePackRepository.func_148529_f();
-            this.setServerData(null);
+            this.setServerData((ServerData) null);
             this.integratedServerIsRunning = false;
+            FMLClientHandler.instance().handleClientWorldClosing(this.theWorld);
         }
 
-        this.mcSoundHandler.func_147690_c();
+        this.mcSoundHandler.stopSounds();
         this.theWorld = par1WorldClient;
 
         if (par1WorldClient != null) {
@@ -1890,13 +1915,6 @@ public class Minecraft implements IPlayerUsage {
 
         System.gc();
         this.systemTime = 0L;
-
-        ApiBase.localPlayer = this.thePlayer;
-        if (par1WorldClient == null) {
-            ModList.unloadWorld();
-        } else {
-            ModList.loadWorld(par1WorldClient, par2Str);
-        }
     }
 
     /**
@@ -1930,29 +1948,29 @@ public class Minecraft implements IPlayerUsage {
     public void setDimensionAndSpawnPlayer(int par1) {
         this.theWorld.setSpawnLocation();
         this.theWorld.removeAllEntities();
-        int var2 = 0;
-        String var3 = null;
+        int j = 0;
+        String s = null;
 
         if (this.thePlayer != null) {
-            var2 = this.thePlayer.getEntityId();
+            j = this.thePlayer.getEntityId();
             this.theWorld.removeEntity(this.thePlayer);
-            var3 = this.thePlayer.func_142021_k();
+            s = this.thePlayer.func_142021_k();
         }
 
         this.renderViewEntity = null;
-        this.thePlayer = this.playerController.func_147493_a(this.theWorld, this.thePlayer == null ? new StatFileWriter() : this.thePlayer.func_146107_m());
+        this.thePlayer = this.playerController.func_147493_a(this.theWorld, this.thePlayer == null ? new StatFileWriter() : this.thePlayer.getStatFileWriter());
         this.thePlayer.dimension = par1;
         this.renderViewEntity = this.thePlayer;
         this.thePlayer.preparePlayerToSpawn();
-        this.thePlayer.func_142020_c(var3);
+        this.thePlayer.func_142020_c(s);
         this.theWorld.spawnEntityInWorld(this.thePlayer);
         this.playerController.flipPlayer(this.thePlayer);
         this.thePlayer.movementInput = new MovementInputFromOptions(this.gameSettings);
-        this.thePlayer.setEntityId(var2);
+        this.thePlayer.setEntityId(j);
         this.playerController.setPlayerCapabilities(this.thePlayer);
 
         if (this.currentScreen instanceof GuiGameOver) {
-            this.displayGuiScreen(null);
+            this.displayGuiScreen((GuiScreen) null);
         }
     }
 
@@ -1968,6 +1986,9 @@ public class Minecraft implements IPlayerUsage {
     }
 
     public static boolean isGuiEnabled() {
+        /**
+         * Set to 'this' in Minecraft constructor; used by some settings get methods
+         */
         return theMinecraft == null || !theMinecraft.gameSettings.hideGUI;
     }
 
@@ -1984,85 +2005,14 @@ public class Minecraft implements IPlayerUsage {
 
     private void func_147112_ai() {
         if (this.objectMouseOver != null) {
-            boolean var1 = this.thePlayer.capabilities.isCreativeMode;
-            int var3 = 0;
-            boolean var4 = false;
-            Item var2;
-            int var5;
+            boolean flag = this.thePlayer.capabilities.isCreativeMode;
+            int j;
 
-            if (this.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                var5 = this.objectMouseOver.blockX;
-                int var6 = this.objectMouseOver.blockY;
-                int var7 = this.objectMouseOver.blockZ;
-                Block var8 = this.theWorld.getBlock(var5, var6, var7);
-
-                if (var8.getMaterial() == Material.air) {
-                    return;
-                }
-
-                var2 = var8.getItem(this.theWorld, var5, var6, var7);
-
-                if (var2 == null) {
-                    return;
-                }
-
-                var4 = var2.getHasSubtypes();
-                Block var9 = var2 instanceof ItemBlock && !var8.isFlowerPot() ? Block.getBlockFromItem(var2) : var8;
-                var3 = var9.getDamageValue(this.theWorld, var5, var6, var7);
-            } else {
-                if (this.objectMouseOver.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || this.objectMouseOver.entityHit == null || !var1) {
-                    return;
-                }
-
-                if (this.objectMouseOver.entityHit instanceof EntityPainting) {
-                    var2 = Items.painting;
-                } else if (this.objectMouseOver.entityHit instanceof EntityLeashKnot) {
-                    var2 = Items.lead;
-                } else if (this.objectMouseOver.entityHit instanceof EntityItemFrame) {
-                    EntityItemFrame var10 = (EntityItemFrame) this.objectMouseOver.entityHit;
-                    ItemStack var12 = var10.getDisplayedItem();
-
-                    if (var12 == null) {
-                        var2 = Items.item_frame;
-                    } else {
-                        var2 = var12.getItem();
-                        var3 = var12.getItemDamage();
-                        var4 = true;
-                    }
-                } else if (this.objectMouseOver.entityHit instanceof EntityMinecart) {
-                    EntityMinecart var11 = (EntityMinecart) this.objectMouseOver.entityHit;
-
-                    if (var11.getMinecartType() == 2) {
-                        var2 = Items.furnace_minecart;
-                    } else if (var11.getMinecartType() == 1) {
-                        var2 = Items.chest_minecart;
-                    } else if (var11.getMinecartType() == 3) {
-                        var2 = Items.tnt_minecart;
-                    } else if (var11.getMinecartType() == 5) {
-                        var2 = Items.hopper_minecart;
-                    } else if (var11.getMinecartType() == 6) {
-                        var2 = Items.command_block_minecart;
-                    } else {
-                        var2 = Items.minecart;
-                    }
-                } else if (this.objectMouseOver.entityHit instanceof EntityBoat) {
-                    var2 = Items.boat;
-                } else {
-                    var2 = Items.spawn_egg;
-                    var3 = EntityList.getEntityID(this.objectMouseOver.entityHit);
-                    var4 = true;
-
-                    if (var3 <= 0 || !EntityList.entityEggs.containsKey(Integer.valueOf(var3))) {
-                        return;
-                    }
-                }
-            }
-
-            this.thePlayer.inventory.func_146030_a(var2, var3, var4, var1);
-
-            if (var1) {
-                var5 = this.thePlayer.inventoryContainer.inventorySlots.size() - 9 + this.thePlayer.inventory.currentItem;
-                this.playerController.sendSlotPacket(this.thePlayer.inventory.getStackInSlot(this.thePlayer.inventory.currentItem), var5);
+            if (!ForgeHooks.onPickBlock(this.objectMouseOver, this.thePlayer, this.theWorld)) return;
+            // We delete this code wholly instead of commenting it out, to make sure we detect changes in it between MC versions
+            if (flag) {
+                j = this.thePlayer.inventoryContainer.inventorySlots.size() - 9 + this.thePlayer.inventory.currentItem;
+                this.playerController.sendSlotPacket(this.thePlayer.inventory.getStackInSlot(this.thePlayer.inventory.currentItem), j);
             }
         }
     }
@@ -2096,8 +2046,8 @@ public class Minecraft implements IPlayerUsage {
             private static final String __OBFID = "CL_00000646";
 
             public String call() {
-                String var1 = ClientBrandRetriever.getClientModName();
-                return !var1.equals("vanilla") ? "Definitely; Client brand changed to \'" + var1 + "\'" : (Minecraft.class.getSigners() == null ? "Very likely; Jar signature invalidated" : "Probably not. Jar signature remains and client brand is untouched.");
+                String s = ClientBrandRetriever.getClientModName();
+                return !s.equals("vanilla") ? "Definitely; Client brand changed to \'" + s + "\'" : (Minecraft.class.getSigners() == null ? "Very likely; Jar signature invalidated" : "Probably not. Jar signature remains and client brand is untouched.");
             }
         });
         par1CrashReport.getCategory().addCrashSectionCallable("Type", new Callable() {
@@ -2132,13 +2082,13 @@ public class Minecraft implements IPlayerUsage {
             private static final String __OBFID = "CL_00000636";
 
             public String call() {
-                int var1 = Minecraft.this.theWorld.getWorldVec3Pool().getPoolSize();
-                int var2 = 56 * var1;
-                int var3 = var2 / 1024 / 1024;
-                int var4 = Minecraft.this.theWorld.getWorldVec3Pool().getNextFreeSpace();
-                int var5 = 56 * var4;
-                int var6 = var5 / 1024 / 1024;
-                return var1 + " (" + var2 + " bytes; " + var3 + " MB) allocated, " + var4 + " (" + var5 + " bytes; " + var6 + " MB) used";
+                int i = Minecraft.this.theWorld.getWorldVec3Pool().getPoolSize();
+                int j = 56 * i;
+                int k = j / 1024 / 1024;
+                int l = Minecraft.this.theWorld.getWorldVec3Pool().getNextFreeSpace();
+                int i1 = 56 * l;
+                int j1 = i1 / 1024 / 1024;
+                return i + " (" + j + " bytes; " + k + " MB) allocated, " + l + " (" + i1 + " bytes; " + j1 + " MB) used";
             }
         });
         par1CrashReport.getCategory().addCrashSectionCallable("Anisotropic Filtering", new Callable() {
@@ -2160,6 +2110,9 @@ public class Minecraft implements IPlayerUsage {
      * Return the singleton Minecraft instance for the game
      */
     public static Minecraft getMinecraft() {
+        /**
+         * Set to 'this' in Minecraft constructor; used by some settings get methods
+         */
         return theMinecraft;
     }
 
@@ -2168,17 +2121,18 @@ public class Minecraft implements IPlayerUsage {
     }
 
     public void addServerStatsToSnooper(PlayerUsageSnooper par1PlayerUsageSnooper) {
-        par1PlayerUsageSnooper.addData("fps", debugFPS);
-        par1PlayerUsageSnooper.addData("vsync_enabled", this.gameSettings.enableVsync);
-        par1PlayerUsageSnooper.addData("display_frequency", Display.getDisplayMode().getFrequency());
+        par1PlayerUsageSnooper.addData("fps", Integer.valueOf(debugFPS));
+        par1PlayerUsageSnooper.addData("vsync_enabled", Boolean.valueOf(this.gameSettings.enableVsync));
+        par1PlayerUsageSnooper.addData("display_frequency", Integer.valueOf(Display.getDisplayMode().getFrequency()));
         par1PlayerUsageSnooper.addData("display_type", this.fullscreen ? "fullscreen" : "windowed");
-        par1PlayerUsageSnooper.addData("run_time", (MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.getMinecraftStartTimeMillis()) / 60L * 1000L);
-        par1PlayerUsageSnooper.addData("resource_packs", this.mcResourcePackRepository.getRepositoryEntries().size());
-        int var2 = 0;
+        par1PlayerUsageSnooper.addData("run_time", Long.valueOf((MinecraftServer.getSystemTimeMillis() - par1PlayerUsageSnooper.getMinecraftStartTimeMillis()) / 60L * 1000L));
+        par1PlayerUsageSnooper.addData("resource_packs", Integer.valueOf(this.mcResourcePackRepository.getRepositoryEntries().size()));
+        int i = 0;
+        Iterator iterator = this.mcResourcePackRepository.getRepositoryEntries().iterator();
 
-        for (Object o : this.mcResourcePackRepository.getRepositoryEntries()) {
-            ResourcePackRepository.Entry var4 = (ResourcePackRepository.Entry) o;
-            par1PlayerUsageSnooper.addData("resource_pack[" + var2++ + "]", var4.getResourcePackName());
+        while (iterator.hasNext()) {
+            ResourcePackRepository.Entry entry = (ResourcePackRepository.Entry) iterator.next();
+            par1PlayerUsageSnooper.addData("resource_pack[" + i++ + "]", entry.getResourcePackName());
         }
 
         if (this.theIntegratedServer != null && this.theIntegratedServer.getPlayerUsageSnooper() != null) {
@@ -2191,37 +2145,45 @@ public class Minecraft implements IPlayerUsage {
         par1PlayerUsageSnooper.addData("opengl_vendor", GL11.glGetString(GL11.GL_VENDOR));
         par1PlayerUsageSnooper.addData("client_brand", ClientBrandRetriever.getClientModName());
         par1PlayerUsageSnooper.addData("launched_version", this.launchedVersion);
-        ContextCapabilities var2 = GLContext.getCapabilities();
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", var2.GL_ARB_multitexture);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", var2.GL_ARB_multisample);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", var2.GL_ARB_texture_cube_map);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", var2.GL_ARB_vertex_blend);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", var2.GL_ARB_matrix_palette);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", var2.GL_ARB_vertex_program);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", var2.GL_ARB_vertex_shader);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", var2.GL_ARB_fragment_program);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", var2.GL_ARB_fragment_shader);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", var2.GL_ARB_shader_objects);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", var2.GL_ARB_vertex_buffer_object);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", var2.GL_ARB_framebuffer_object);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", var2.GL_ARB_pixel_buffer_object);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", var2.GL_ARB_uniform_buffer_object);
-        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", var2.GL_ARB_texture_non_power_of_two);
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS));
-        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS));
-        par1PlayerUsageSnooper.addData("gl_max_texture_size", getGLMaximumTextureSize());
+        ContextCapabilities contextcapabilities = GLContext.getCapabilities();
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multitexture]", Boolean.valueOf(contextcapabilities.GL_ARB_multitexture));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_multisample]", Boolean.valueOf(contextcapabilities.GL_ARB_multisample));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_cube_map]", Boolean.valueOf(contextcapabilities.GL_ARB_texture_cube_map));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_blend]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_blend));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_matrix_palette]", Boolean.valueOf(contextcapabilities.GL_ARB_matrix_palette));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_program]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_program));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_shader]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_shader));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_program]", Boolean.valueOf(contextcapabilities.GL_ARB_fragment_program));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_fragment_shader]", Boolean.valueOf(contextcapabilities.GL_ARB_fragment_shader));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_shader_objects]", Boolean.valueOf(contextcapabilities.GL_ARB_shader_objects));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_vertex_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_vertex_buffer_object));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_framebuffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_framebuffer_object));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_pixel_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_pixel_buffer_object));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_uniform_buffer_object]", Boolean.valueOf(contextcapabilities.GL_ARB_uniform_buffer_object));
+        par1PlayerUsageSnooper.addData("gl_caps[ARB_texture_non_power_of_two]", Boolean.valueOf(contextcapabilities.GL_ARB_texture_non_power_of_two));
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_vertex_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_VERTEX_UNIFORM_COMPONENTS)));
+        par1PlayerUsageSnooper.addData("gl_caps[gl_max_fragment_uniforms]", Integer.valueOf(GL11.glGetInteger(GL20.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)));
+        par1PlayerUsageSnooper.addData("gl_max_texture_size", Integer.valueOf(getGLMaximumTextureSize()));
     }
+
+    //Forge: Adds a optimization to the getGLMaximumTextureSize, only calculate it once.
+    private static int max_texture_size = -1;
 
     /**
      * Used in the usage snooper.
      */
     public static int getGLMaximumTextureSize() {
-        for (int var0 = 16384; var0 > 0; var0 >>= 1) {
-            GL11.glTexImage2D(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_RGBA, var0, var0, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-            int var1 = GL11.glGetTexLevelParameteri(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+        if (max_texture_size != -1) {
+            return max_texture_size;
+        }
 
-            if (var1 != 0) {
-                return var0;
+        for (int i = 16384; i > 0; i >>= 1) {
+            GL11.glTexImage2D(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_RGBA, i, i, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
+            int j = GL11.glGetTexLevelParameteri(GL11.GL_PROXY_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+
+            if (j != 0) {
+                max_texture_size = i;
+                return i;
             }
         }
 
@@ -2266,10 +2228,10 @@ public class Minecraft implements IPlayerUsage {
 
     public static void stopIntegratedServer() {
         if (theMinecraft != null) {
-            IntegratedServer var0 = theMinecraft.getIntegratedServer();
+            IntegratedServer integratedserver = theMinecraft.getIntegratedServer();
 
-            if (var0 != null) {
-                var0.stopServer();
+            if (integratedserver != null) {
+                integratedserver.stopServer();
             }
         }
     }
@@ -2327,7 +2289,7 @@ public class Minecraft implements IPlayerUsage {
         return this.jvm64bit;
     }
 
-    public boolean func_147113_T() {
+    public boolean isGamePaused() {
         return this.isGamePaused;
     }
 
@@ -2339,6 +2301,12 @@ public class Minecraft implements IPlayerUsage {
         return this.currentScreen instanceof GuiWinGame ? MusicTicker.MusicType.CREDITS : (this.thePlayer != null ? (this.thePlayer.worldObj.provider instanceof WorldProviderHell ? MusicTicker.MusicType.NETHER : (this.thePlayer.worldObj.provider instanceof WorldProviderEnd ? (BossStatus.bossName != null && BossStatus.statusBarTime > 0 ? MusicTicker.MusicType.END_BOSS : MusicTicker.MusicType.END) : (this.thePlayer.capabilities.isCreativeMode && this.thePlayer.capabilities.allowFlying ? MusicTicker.MusicType.CREATIVE : MusicTicker.MusicType.GAME))) : MusicTicker.MusicType.MENU);
     }
 
+    public List<IResourcePack> getDefaultResourcePacks() {
+        return this.defaultResourcePacks;
+    }
+
+    @SideOnly(Side.CLIENT)
+
     static final class SwitchMovingObjectType {
         static final int[] field_151437_a = new int[MovingObjectPosition.MovingObjectType.values().length];
         private static final String __OBFID = "CL_00000638";
@@ -2346,17 +2314,15 @@ public class Minecraft implements IPlayerUsage {
         static {
             try {
                 field_151437_a[MovingObjectPosition.MovingObjectType.ENTITY.ordinal()] = 1;
-            } catch (NoSuchFieldError ignored) {
+            } catch (NoSuchFieldError var2) {
+                ;
             }
 
             try {
                 field_151437_a[MovingObjectPosition.MovingObjectType.BLOCK.ordinal()] = 2;
-            } catch (NoSuchFieldError ignored) {
+            } catch (NoSuchFieldError var1) {
+                ;
             }
         }
-    }
-
-    public List<IResourcePack> getDefaultResourcePacks() {
-        return this.defaultResourcePacks;
     }
 }
