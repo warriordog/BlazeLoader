@@ -41,7 +41,7 @@ public class BLModContainer implements ModContainer {
         meta.name = getName();
         meta.description = "The BlazeLoader mod API.  BlazeLoader allows the creation of advanced and game-changing mods with minimal code changes.  It also provides forge compatibility for other mods, saving developers the trouble of porting their mods.";
         meta.url = "http://www.minecraftforum.net/topic/2007563-172-blazeloader-mod-loader-and-api-for-game-changing-mods/";
-        //TODO: add logo, screenshots, and upateURL (maybe)
+        meta.logoFile = "/BlazeLoader/res/BLLogo.png";
         return meta;
     }
 
