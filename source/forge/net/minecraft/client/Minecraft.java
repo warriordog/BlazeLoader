@@ -2,12 +2,15 @@ package net.minecraft.client;
 
 import com.google.common.collect.Lists;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.acomputerdog.BlazeLoader.api.base.ApiBase;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.util.BLModContainer;
 import net.acomputerdog.BlazeLoader.util.config.ConfigList;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -99,7 +102,6 @@ import java.util.concurrent.Callable;
 @SideOnly(Side.CLIENT)
 public class Minecraft implements IPlayerUsage {
     private static final Logger logger = LogManager.getLogger();
-    protected boolean hasFiredLocalDeath = false;
     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
     public static final boolean isRunningOnMac = Util.getOSType() == Util.EnumOS.MACOS;
     /**
@@ -695,6 +697,17 @@ public class Minecraft implements IPlayerUsage {
 
         if (old != null && p_147108_1_ != old) {
             old.onGuiClosed();
+        }
+
+        if (p_147108_1_ instanceof GuiModList) {
+            try {
+                Field modField = GuiModList.class.getDeclaredField("mods");
+                modField.setAccessible(true);
+                List<ModContainer> mods = (List) modField.get(p_147108_1_);
+                mods.add(BLModContainer.instance);
+            } catch (Exception e) {
+                BlazeLoader.getLogger().logWarning("Could not inject into FML mod list!");
+            }
         }
 
         if (p_147108_1_ instanceof GuiMainMenu) {
