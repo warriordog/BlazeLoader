@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.util.math.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -66,7 +66,7 @@ public class ApiBlock {
      * @return The WorldServer for the specified index.
      */
     public static WorldServer getServerForDimension(int dimension) {
-        return ApiBase.theMinecraft.getIntegratedServer().worldServers[dimension];
+        return ApiGeneral.theMinecraft.getIntegratedServer().worldServers[dimension];
     }
 
     /**

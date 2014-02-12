@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.resource.BLModResourcePack;
 import net.minecraft.client.Minecraft;
@@ -30,32 +30,32 @@ public class ModLoader {
     }
 
     public static void loadMods(File searchDir, List<Class<? extends Mod>> modList) {
-        ApiBase.theProfiler.startSection("load_mods");
+        ApiGeneral.theProfiler.startSection("load_mods");
         if (!searchDir.exists() || !searchDir.isDirectory()) {
             BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
         } else {
-            ApiBase.theProfiler.startSection("find_jars");
+            ApiGeneral.theProfiler.startSection("find_jars");
             File[] zips = searchDir.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip");
                 }
             });
-            ApiBase.theProfiler.endStartSection("scan_jars");
+            ApiGeneral.theProfiler.endStartSection("scan_jars");
             List<URL> loaderURLs = new ArrayList<URL>();
             List<String> modClassNames = new ArrayList<String>();
             for (File modZip : zips) {
-                ApiBase.theProfiler.startSection("jar_" + modZip.getName());
+                ApiGeneral.theProfiler.startSection("jar_" + modZip.getName());
                 loadZip(modZip, modClassNames, loaderURLs);
-                ApiBase.theProfiler.endSection();
+                ApiGeneral.theProfiler.endSection();
             }
             ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
             for (String modClassName : modClassNames) {
                 loadClass(modClassName, loader, modList);
             }
-            ApiBase.theProfiler.endSection();
+            ApiGeneral.theProfiler.endSection();
         }
-        ApiBase.theProfiler.endSection();
+        ApiGeneral.theProfiler.endSection();
     }
 
     private static void loadZip(File modZip, List<String> modClassNames, List<URL> loaderURLs) {
@@ -90,8 +90,7 @@ public class ModLoader {
         }
     }
 
-    public static void loadModAsResourcePack(ModData mod)
-    {
+    public static void loadModAsResourcePack(ModData mod) {
         List<IResourcePack> defaultResourcePacks = Minecraft.getMinecraft().getDefaultResourcePacks();
         BLModResourcePack pack = new BLModResourcePack(mod);
         if (!defaultResourcePacks.contains(pack))

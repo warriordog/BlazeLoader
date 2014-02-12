@@ -1,7 +1,7 @@
 package net.minecraft.client;
 
 import com.google.common.collect.Lists;
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.util.config.ConfigList;
@@ -317,8 +317,8 @@ public class Minecraft implements IPlayerUsage {
         this.jvm64bit = isJvm64bit();
         ImageIO.setUseCache(false);
         Bootstrap.func_151354_b();
-        ApiBase.theProfiler = mcProfiler;
-        ApiBase.theMinecraft = this;
+        ApiGeneral.theProfiler = mcProfiler;
+        ApiGeneral.theMinecraft = this;
     }
 
     private static boolean isJvm64bit() {
@@ -1891,7 +1891,7 @@ public class Minecraft implements IPlayerUsage {
         System.gc();
         this.systemTime = 0L;
 
-        ApiBase.localPlayer = this.thePlayer;
+        ApiGeneral.localPlayer = this.thePlayer;
         if (par1WorldClient == null) {
             ModList.unloadWorld();
         } else {

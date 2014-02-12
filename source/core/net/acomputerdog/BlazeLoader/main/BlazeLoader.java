@@ -3,7 +3,7 @@ package net.acomputerdog.BlazeLoader.main;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
 import net.acomputerdog.BlazeLoader.main.command.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.Mod;
@@ -43,17 +43,17 @@ public final class BlazeLoader {
     public static Mod currActiveMod = null;
 
     public static void init(File mainDir) {
-        ApiBase.theProfiler.startSection("BL_Init");
+        ApiGeneral.theProfiler.startSection("BL_Init");
         if (hasInit) {
             throw new IllegalStateException("Attempted to load twice!");
         } else {
             hasInit = true;
         }
         try {
-            ApiBase.theProfiler.startSection("SettingsAndFiles");
+            ApiGeneral.theProfiler.startSection("SettingsAndFiles");
             logger.logInfo("BlazeLoader version " + Version.getMinecraftVersion() + "/" + Version.getStringVersion() + " is starting...");
 
-            ApiBase.mainDir = mainDir;
+            ApiGeneral.mainDir = mainDir;
             File apiDir = new File(mainDir, "/BL/");
             if (!apiDir.exists() && !apiDir.mkdir()) {
                 logger.logError("Could not create main API directory!");
@@ -75,20 +75,20 @@ public final class BlazeLoader {
                 Settings.modDir = "/versions/" + Version.getMinecraftVersion() + "/mods/";
                 Settings.configDir = "/versions/" + Version.getMinecraftVersion() + "/config/";
             }
-            ApiBase.modDir = new File(mainDir, Settings.modDir);
-            if (!ApiBase.modDir.exists() || !ApiBase.modDir.isDirectory()) {
+            ApiGeneral.modDir = new File(mainDir, Settings.modDir);
+            if (!ApiGeneral.modDir.exists() || !ApiGeneral.modDir.isDirectory()) {
                 logger.logWarning("Mods folder not found!  Creating new folder...");
-                logger.logDetail(ApiBase.modDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                logger.logDetail(ApiGeneral.modDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
-            ApiBase.configDir = new File(mainDir, Settings.configDir);
-            if (!ApiBase.configDir.exists() || !ApiBase.configDir.isDirectory()) {
+            ApiGeneral.configDir = new File(mainDir, Settings.configDir);
+            if (!ApiGeneral.configDir.exists() || !ApiGeneral.configDir.isDirectory()) {
                 logger.logWarning("Config folder not found!  Creating new folder...");
-                logger.logDetail(ApiBase.configDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
+                logger.logDetail(ApiGeneral.configDir.mkdirs() ? "Creating folder succeeded!" : "Creating folder failed! Check file permissions!");
             }
 
             new CommandBL();
 
-            ApiBase.theProfiler.endStartSection("Mod Loading");
+            ApiGeneral.theProfiler.endStartSection("Mod Loading");
             ApiTick.gameTimer = getTimer();
             try {
                 logger.logInfo("Loading mods...");
@@ -103,18 +103,18 @@ public final class BlazeLoader {
                 logger.logError("Caught exception loading mods!");
                 e.printStackTrace();
             }
-            ApiBase.theProfiler.endSection();
+            ApiGeneral.theProfiler.endSection();
         } catch (Exception e) {
             logger.logFatal("Exception occurred while starting BlazeLoader!");
             e.printStackTrace();
             shutdown(1);
         }
-        ApiBase.theProfiler.endSection();
+        ApiGeneral.theProfiler.endSection();
     }
 
     private static void loadMods() {
-        logger.logDetail("Loading mods from: " + ApiBase.modDir.getAbsolutePath());
-        ModLoader.loadModsToList(ApiBase.modDir);
+        logger.logDetail("Loading mods from: " + ApiGeneral.modDir.getAbsolutePath());
+        ModLoader.loadModsToList(ApiGeneral.modDir);
         logger.logInfo("Mod loading complete.");
     }
 
@@ -161,7 +161,7 @@ public final class BlazeLoader {
     }
 
     private static Timer getTimer() {
-        return ApiBase.theMinecraft.timer;
+        return ApiGeneral.theMinecraft.timer;
     }
 
     public static void shutdown(int code) {

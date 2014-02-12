@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.util.config;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public abstract class ModConfig {
             throw new IllegalArgumentException("fileName cannot be null!");
         }
         this.owner = owner;
-        this.configFile = new File(ApiBase.configDir, fileName);
+        this.configFile = new File(ApiGeneral.configDir, fileName);
         if (!configFile.exists()) {
             try {
                 if (!(new File(configFile.getParent()).mkdirs() || new File(configFile.getName()).createNewFile())) {

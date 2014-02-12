@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -48,7 +48,7 @@ public class ModList {
     }
 
     public static void load() {
-        ApiBase.theProfiler.startSection("init_mods");
+        ApiGeneral.theProfiler.startSection("init_mods");
         Iterator<Class<? extends Mod>> iterator = unloadedMods.iterator();
         while (iterator.hasNext()) {
             Class<? extends Mod> cls = iterator.next();
@@ -88,26 +88,26 @@ public class ModList {
                 iterator.remove();
             }
         }
-        ApiBase.theProfiler.endSection();
+        ApiGeneral.theProfiler.endSection();
     }
 
     public static void start() {
-        ApiBase.theProfiler.startSection("start_mods");
+        ApiGeneral.theProfiler.startSection("start_mods");
         Iterator<Mod> iterator = loadedMods.iterator();
         while (iterator.hasNext()) {
             Mod mod = iterator.next();
             BlazeLoader.currActiveMod = mod;
-            ApiBase.theProfiler.startSection("mod_" + mod.getModId());
+            ApiGeneral.theProfiler.startSection("mod_" + mod.getModId());
             try {
                 mod.start();
             } catch (Exception e) {
                 iterator.remove();
                 e.printStackTrace();
             }
-            ApiBase.theProfiler.endSection();
+            ApiGeneral.theProfiler.endSection();
         }
         BlazeLoader.currActiveMod = null;
-        ApiBase.theProfiler.endSection();
+        ApiGeneral.theProfiler.endSection();
     }
 
     public static void stop() {
@@ -128,15 +128,15 @@ public class ModList {
     }
 
     public static void tick() {
-        ApiBase.theProfiler.startSection("tick_mods");
+        ApiGeneral.theProfiler.startSection("tick_mods");
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
-            ApiBase.theProfiler.startSection("mod_" + mod.getModId());
+            ApiGeneral.theProfiler.startSection("mod_" + mod.getModId());
             mod.eventTick();
-            ApiBase.theProfiler.endSection();
+            ApiGeneral.theProfiler.endSection();
         }
         BlazeLoader.currActiveMod = null;
-        ApiBase.theProfiler.endSection();
+        ApiGeneral.theProfiler.endSection();
     }
 
     public static boolean onGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {

@@ -7,7 +7,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.util.BLModContainer;
@@ -292,8 +292,8 @@ public class Minecraft implements IPlayerUsage {
         this.jvm64bit = isJvm64bit();
         ImageIO.setUseCache(false);
         Bootstrap.func_151354_b();
-        ApiBase.theProfiler = mcProfiler;
-        ApiBase.theMinecraft = this;
+        ApiGeneral.theProfiler = mcProfiler;
+        ApiGeneral.theMinecraft = this;
     }
 
     private static boolean isJvm64bit() {

@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.render;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
@@ -39,7 +39,7 @@ public class ApiRender {
      * @param centered Center the text around the coordinates specified.
      */
     public static void drawString(String string, int x, int y, int color, boolean shadow, boolean centered) {
-        FontRenderer render = ApiBase.theMinecraft.fontRenderer;
+        FontRenderer render = ApiGeneral.theMinecraft.fontRenderer;
         if (centered) {
             x -= render.getStringWidth(string) / 2;
         }

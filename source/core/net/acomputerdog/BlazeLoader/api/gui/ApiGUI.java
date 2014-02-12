@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.gui;
 
-import net.acomputerdog.BlazeLoader.api.base.ApiBase;
+import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.minecraft.client.gui.GuiScreen;
 
 /**
@@ -14,14 +14,14 @@ public class ApiGUI {
      * @param gui The GUI to display.
      */
     public static void openGUI(GuiScreen gui) {
-        ApiBase.theMinecraft.displayGuiScreen(gui);
+        ApiGeneral.theMinecraft.displayGuiScreen(gui);
     }
 
     /**
      * Closes the currently open GUI, returning to the bottom layer.  (Usually either the main menu or the main game interface.)
      */
     public static void closeCurrentGUI() {
-        ApiBase.theMinecraft.displayGuiScreen(null);
+        ApiGeneral.theMinecraft.displayGuiScreen(null);
     }
 
     /**
@@ -30,6 +30,6 @@ public class ApiGUI {
      * @return Returns the currently open GUI.
      */
     public static GuiScreen getOpenGUI() {
-        return ApiBase.theMinecraft.currentScreen;
+        return ApiGeneral.theMinecraft.currentScreen;
     }
 }
