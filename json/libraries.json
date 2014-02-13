@@ -1,22 +1,12 @@
 {
   "libraries": [
-	{
-      "name": "org.scala-lang:scala-library:2.10.2",
-      "autodownload": false,
-      "url": "http://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.10.2/scala-library-2.10.2.jar"
-    },
-	{
-      "name": "org.scala-lang:scala-compiler:2.10.2",
-      "autodownload": false,
-      "url": "http://repo.maven.apache.org/maven2/org/scala-lang/scala-compiler/2.10.2/scala-compiler-2.10.2.jar"
-    },
   	{
       "name": "org.ow2.asm:asm-debug-all:4.1",
       "autodownload": false,
       "url": "http://repo1.maven.org/maven2/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar"
     },
     {
-      "name": "net.minecraft:launchwrapper:1.8",
+      "name": "net.minecraft:launchwrapper:1.9",
       "autodownload": false
     },
     {
