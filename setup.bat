@@ -1,10 +1,11 @@
-REM BL-MCP version 1.1
-REM @author acomputerdog 1-25-14
+@echo off
+REM BL-MCP version 1.3
+REM @author acomputerdog 2-14-14
 REM TODO:
 REM * get blazeloader sources that are not the newest dev version.
 REM * get libraries without hardcoding them
-@echo off
 if not exist "%cd%/BlazeLoader/instlflg" (
+    setlocal EnableDelayedExpansion
     echo --- MCP and BL setup script ---
     echo Please select an install type:
     echo 1 - Cancel install
@@ -22,6 +23,7 @@ if not exist "%cd%/BlazeLoader/instlflg" (
         set setupmode=bl
     ) else (
         echo MCP setup canceled.
+        pause
         exit /b -1
     )
     if not exist "%cd%/temp/setup" mkdir "%cd%\temp\setup\"
@@ -46,6 +48,7 @@ REM end embedded VBScript file
         echo Done.
     ) else (
         echo Unable to extract downloader script, aborting install!
+        pause
         exit /b 3
     )
     echo.
@@ -64,6 +67,7 @@ REM end embedded VBScript file
     ) else (
         echo 7-zip was not extracted! (you may need to disable your antivirus if the self-extracting archive was blocked^)
         echo Unable to extract BlazeLoader, aborting install!
+        pause
         exit /b 1
     )
     echo.
@@ -72,35 +76,24 @@ REM end embedded VBScript file
     "%cd%/temp/setup/7-zip/7z.exe" x -o"%cd%/temp/setup/" -y "%cd%/temp/setup/BlazeLoader_repo.zip"
     xcopy /I /Y /E /C /Q "%cd%\temp\setup\BlazeLoader-master\*" "%cd%\BlazeLoader"
     rmdir /S /Q "%cd%\temp\setup\BlazeLoader-master"
-    timeout /t 2 >nul
     echo Done.
-    if exist "%cd%/BlazeLoader/mcp.ver" (
-        set /p mcpver=<"%cd%/BlazeLoader/mcp.ver"
-        if [%mcpver%] == [] (
-            echo.
-            echo Unable to detect MCP version, defaulting to MCP version 903.
-            set mcpver=903
-        )
-    ) else (
-        echo.
-        echo Unable to detect MCP version, defaulting to MCP version 903.
-        set mcpver=903
-    )
-    if not exist "%cd%/temp/setup/mcp%mcpver%.zip" (
+    set /p mcpver=<"%cd%/BlazeLoader/mcp.ver"
+    if not exist "%cd%/temp/setup/mcp!mcpver!.zip" (
         echo.
         echo Downloading MCP...
-        cscript.exe //B "%cd%/temp/setup/bl_downloader.vbs" http://mcp.ocean-labs.de/files/archive/mcp%mcpver%.zip "%cd%/temp/setup/mcp%mcpver%.zip"
+        cscript.exe //B "%cd%/temp/setup/bl_downloader.vbs" http://mcp.ocean-labs.de/files/archive/mcp%mcpver%.zip "%cd%/temp/setup/mcp!mcpver!.zip"
         echo Done.
     ) else (
         echo MCP already downloaded; skipping download.
     )
     echo.
     echo Extracting MCP...
-    "%cd%/temp/setup/7-zip/7z.exe" x -bd -ba -o"%cd%" -y "%cd%/temp/setup/mcp%mcpver%.zip"
+    "%cd%/temp/setup/7-zip/7z.exe" x -bd -ba -o"%cd%" -y "%cd%/temp/setup/mcp!mcpver!.zip"
     if exist "%cd%/decompile.bat" (
         echo Done.
     ) else (
-        echo MCP version %mcpver% was not found, provide it manually to %cd%/temp/setup/mcp%mcpver%.zip!  Aborting install!
+        echo MCP version !mcpver! was not found, provide it manually to %cd%/temp/setup/mcp!mcpver!.zip!  Aborting install!
+        pause
         exit /b 2
     )
     echo.
@@ -138,8 +131,9 @@ REM end embedded VBScript file
     echo %date%-%time%>"%cd%/BlazeLoader/instlflg"
     echo MCP setup complete!
     echo.
+	pause
 ) else (
     echo MCP has already been set up!
+    pause
     exit /b -2
 )
-pause
