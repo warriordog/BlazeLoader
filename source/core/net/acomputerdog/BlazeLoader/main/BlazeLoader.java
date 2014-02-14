@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
-import net.acomputerdog.BlazeLoader.api.tick.ApiTick;
 import net.acomputerdog.BlazeLoader.main.command.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
@@ -89,7 +88,6 @@ public final class BlazeLoader {
             new CommandBL();
 
             ApiGeneral.theProfiler.endStartSection("Mod Loading");
-            ApiTick.gameTimer = getTimer();
             try {
                 logger.logInfo("Loading mods...");
                 if (Settings.enableMods) {
