@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.command.CommandHandler;
-import net.minecraft.util.Timer;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -156,10 +155,6 @@ public final class BlazeLoader {
                 writer.close();
             }
         }
-    }
-
-    private static Timer getTimer() {
-        return ApiGeneral.theMinecraft.timer;
     }
 
     public static void shutdown(int code) {
