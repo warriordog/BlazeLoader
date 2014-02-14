@@ -1,9 +1,9 @@
+@echo off
 REM BL-MCP version 1.1
 REM @author acomputerdog 1-25-14
 REM TODO:
 REM * get blazeloader sources that are not the newest dev version.
 REM * get libraries without hardcoding them
-@echo off
 if not exist "%cd%/BlazeLoader/instlflg" (
     echo --- MCP and BL setup script ---
     echo Please select an install type:
