@@ -75,7 +75,7 @@ REM end embedded VBScript file
     "%cd%/temp/setup/7-zip/7z.exe" x -o"%cd%/temp/setup/" -y "%cd%/temp/setup/BlazeLoader_repo.zip"
     xcopy /I /Y /E /C /Q "%cd%\temp\setup\BlazeLoader-master\*" "%cd%\BlazeLoader"
     rmdir /S /Q "%cd%\temp\setup\BlazeLoader-master"
-    timeout /t 2 >nul
+    timeout /t 3 >nul
     echo Done.
     if exist "%cd%/BlazeLoader/mcp.ver" (
         set /p mcpver=<"%cd%/BlazeLoader/mcp.ver"
