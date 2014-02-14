@@ -1,5 +1,5 @@
 @echo off
-REM BL-MCP version 1.2
+REM BL-MCP version 1.2.1
 REM @author acomputerdog 1-25-14
 REM TODO:
 REM * get blazeloader sources that are not the newest dev version.
@@ -104,6 +104,7 @@ REM end embedded VBScript file
         echo Done.
     ) else (
         echo MCP version %mcpver% was not found, provide it manually to %cd%/temp/setup/mcp%mcpver%.zip!  Aborting install!
+        pause
         exit /b 2
     )
     echo.
