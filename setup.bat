@@ -1,5 +1,5 @@
 @echo off
-REM BL-MCP version 1.1
+REM BL-MCP version 1.2
 REM @author acomputerdog 1-25-14
 REM TODO:
 REM * get blazeloader sources that are not the newest dev version.
@@ -22,6 +22,7 @@ if not exist "%cd%/BlazeLoader/instlflg" (
         set setupmode=bl
     ) else (
         echo MCP setup canceled.
+        pause
         exit /b -1
     )
     if not exist "%cd%/temp/setup" mkdir "%cd%\temp\setup\"
@@ -46,6 +47,7 @@ REM end embedded VBScript file
         echo Done.
     ) else (
         echo Unable to extract downloader script, aborting install!
+        pause
         exit /b 3
     )
     echo.
@@ -64,6 +66,7 @@ REM end embedded VBScript file
     ) else (
         echo 7-zip was not extracted! (you may need to disable your antivirus if the self-extracting archive was blocked^)
         echo Unable to extract BlazeLoader, aborting install!
+        pause
         exit /b 1
     )
     echo.
@@ -140,6 +143,7 @@ REM end embedded VBScript file
     echo.
 ) else (
     echo MCP has already been set up!
+    pause
     exit /b -2
 )
 pause
