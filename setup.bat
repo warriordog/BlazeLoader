@@ -1,5 +1,5 @@
 @echo off
-REM BL-MCP version 1.3
+REM BL-MCP version 1.3.1
 REM @author acomputerdog 2-14-14
 REM TODO:
 REM * get blazeloader sources that are not the newest dev version.
@@ -119,7 +119,7 @@ REM end embedded VBScript file
     xcopy /I /Y /E /C /Q "%cd%\BlazeLoader\source\vanilla\*" "%cd%\src\minecraft\"
     echo Done.
     echo.
-    if "%setupmode%" == "bl" (
+    if "!setupmode!" == "bl" (
         echo Recompiling...
         "%cd%/runtime/bin/python/python_mcp.exe" "%cd%/runtime/recompile.py"
     ) else (
