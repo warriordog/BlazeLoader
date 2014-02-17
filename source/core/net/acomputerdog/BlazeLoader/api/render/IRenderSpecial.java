@@ -7,12 +7,12 @@ public interface IRenderSpecial {
 	/**
      * Renders the block at the given coordinates
      */
-	public boolean renderWorldBlock(RenderBlocks blRenderBlocks, int x, int y, int z);
+	public boolean renderWorldBlock(BLRenderBlocks blRenderBlocks, int x, int y, int z);
 	
 	/**
      * Renders the block as an item in the inventory
      */
-	public void renderInventoryBlock(RenderBlocks renderer, int metadata);
+	public void renderInventoryBlock(BLRenderBlocks renderer, int metadata);
 	
 	/**
 	 * Returns true if the contents of renderInventoryBlock must be used in place of the standard procedure

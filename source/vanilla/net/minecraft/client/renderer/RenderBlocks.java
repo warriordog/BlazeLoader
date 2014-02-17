@@ -4264,7 +4264,11 @@ public class RenderBlocks
      */
     public boolean renderStandardBlock(Block p_147784_1_, int p_147784_2_, int p_147784_3_, int p_147784_4_)
     {
-    	return renderBlocksBl.renderStandardBlock(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_);
+    	if (APIRenderBlocks.HasSpecialRender(p_147784_1_)) {
+			return ((IRenderSpecial)p_147784_1_).renderWorldBlock(renderBlocksBl, p_147784_2_, p_147784_3_, p_147784_4_);
+		}
+                
+        return renderBlocksBl.renderStandardBlock(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_);
         /*int var5 = p_147784_1_.colorMultiplier(blockAccess, p_147784_2_, p_147784_3_, p_147784_4_);
         float var6 = (float)(var5 >> 16 & 255) / 255.0F;
         float var7 = (float)(var5 >> 8 & 255) / 255.0F;
@@ -7711,7 +7715,7 @@ public class RenderBlocks
 
     public void renderBlockAsItem(Block block, int metadata, float multiplier) {
     	if (APIRenderBlocks.HasSpecialRender(block) && ((IRenderSpecial)block).overrideInventoryRender()) {
-			((IRenderSpecial)block).renderInventoryBlock(this, metadata);
+			((IRenderSpecial)block).renderInventoryBlock(renderBlocksBl, metadata);
 		} else {
 			renderStandardBlockAsItem(block, metadata, multiplier);
 		}
