@@ -77,7 +77,7 @@ REM end embedded VBScript file
     xcopy /I /Y /E /C /Q "%cd%\temp\setup\BlazeLoader-master\*" "%cd%\BlazeLoader"
     rmdir /S /Q "%cd%\temp\setup\BlazeLoader-master"
     echo Done.
-    set /p mcpver=<"%cd%/BlazeLoader/mcp.ver"
+    set /p mcpver=<"%cd%/BlazeLoader/version/mcp.ver"
     if not exist "%cd%/temp/setup/mcp!mcpver!.zip" (
         echo.
         echo Downloading MCP...
