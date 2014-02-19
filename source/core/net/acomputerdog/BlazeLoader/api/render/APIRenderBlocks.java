@@ -91,7 +91,7 @@ public class APIRenderBlocks {
 	
 	/**
 	 * Gets the overlay icon for a block
-	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param rb	Instance of BLRenderBlocks doing the rendering
 	 * @param block	The Block
 	 * @param x		X coordinate
 	 * @param y		Y coordinate
@@ -99,13 +99,13 @@ public class APIRenderBlocks {
 	 * @param side	Side of block being rendered
 	 * @return	IICon for the given side of the block at the given coordinates 
 	 */
-	public static IIcon getIconSideOverlay(RenderBlocks rb, Block block, int x, int y, int z, int side) {
-		return getIconSideOverlay(rb, block, rb.blockAccess.getBlockMetadata(x, y, z), x, y, z, side);
+	public static IIcon getIconSideOverlay(BLRenderBlocks rb, Block block, int x, int y, int z, int side) {
+		return getIconSideOverlay(rb, block, rb.getBlockAccess().getBlockMetadata(x, y, z), x, y, z, side);
 	}
 	
 	/**
 	 * Gets the overlay icon for a block
-	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param rb	Instance of BLRenderBlocks doing the rendering
 	 * @param block	The Block
 	 * @param metadata	Metadata value of the given block
 	 * @param x		X coordinate
@@ -114,11 +114,11 @@ public class APIRenderBlocks {
 	 * @param side	Side of block being rendered
 	 * @return	IICon for the given side of the block at the given coordinates 
 	 */
-	public static IIcon getIconSideOverlay(RenderBlocks rb, Block block, int metadata, int x, int y, int z, int side) {
+	public static IIcon getIconSideOverlay(BLRenderBlocks rb, Block block, int metadata, int x, int y, int z, int side) {
 		if (HasGrassRender(block)) {
-			return ((IGrassBlock)block).getIconSideOverlay(rb.blockAccess, metadata, x, y, z, side);
+			return ((IGrassBlock)block).getIconSideOverlay(rb.getBlockAccess(), metadata, x, y, z, side);
 		}
-		IIcon i = rb.getBlockIcon(block, rb.blockAccess, x, y, z, side);
+		IIcon i = rb.getBlockIcon(block, rb.getBlockAccess(), x, y, z, side);
 		if ("grass_side".equals(i.getIconName())) {
 			return BlockGrass.func_149990_e();
 		}
@@ -127,28 +127,28 @@ public class APIRenderBlocks {
 	
 	/**
 	 * Returns whether a given block must render with grass overlays
-	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param rb	Instance of BLRenderBlocks doing the rendering
 	 * @param block	The Block
 	 * @param x		X coordinate
 	 * @param y		Y coordinate
 	 * @param z		Z coordinate
 	 * @return boolean whether this block must be rendered with overlays
 	 */
-	public static boolean getRenderGrass(RenderBlocks rb, Block block, int x, int y, int z) {
-		return HasGrassRender(block) ? ((IGrassBlock)block).IsGrassBlock(rb.blockAccess.getBlockMetadata(x, y, z)) : false;
+	public static boolean getRenderGrass(BLRenderBlocks rb, Block block, int x, int y, int z) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).IsGrassBlock(rb.getBlockAccess().getBlockMetadata(x, y, z)) : false;
 	}
 	
 	/**
 	 * Returns whether a given block must render with snow
-	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param rb	Instance of BLRenderBlocks doing the rendering
 	 * @param block	The Block
 	 * @param x		X coordinate
 	 * @param y		Y coordinate
 	 * @param z		Z coordinate
 	 * @return boolean whether this block must be rendered with overlays
 	 */
-	public static boolean getHasSnow(RenderBlocks rb, Block block, int x, int y, int z) {
-		return HasGrassRender(block) ? ((IGrassBlock)block).HasSnow(rb.blockAccess, x, y, z) : false;
+	public static boolean getHasSnow(BLRenderBlocks rb, Block block, int x, int y, int z) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).HasSnow(rb.getBlockAccess(), x, y, z) : false;
 	}
 	
 	/**

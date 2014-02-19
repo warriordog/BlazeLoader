@@ -196,7 +196,7 @@ public class BLRenderBlocks {
 				aoLight;
         
         boolean result = false,
-        		renderGrass = APIRenderBlocks.getRenderGrass(renderBlocks, block, x, y, z),
+        		renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z),
         		renderWithColor = true,
         		canGrassX, canGrassZPos, canGrassZNeg;
         
@@ -779,7 +779,7 @@ public class BLRenderBlocks {
         	aoLight;
         
         boolean result = false,
-        		renderGrass = APIRenderBlocks.getRenderGrass(renderBlocks, block, x, y, z),
+        		renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z),
         		renderWithColor = true,
         		canGrassX, canGrassZPos, canGrassZNeg;
         
@@ -1310,7 +1310,7 @@ public class BLRenderBlocks {
 	
     private boolean renderStandardBlockWithColorMultiplier(Block block, int x, int y, int z, float multR, float multG, float multB) {
         renderBlocks.enableAO = false;
-        boolean renderGrass = APIRenderBlocks.getRenderGrass(renderBlocks, block, x, y, z) || block == Blocks.grass;
+        boolean renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z) || block == Blocks.grass;
         
         float[][] colors = new float[4][3];
         float[] mult = MCColor.newRGBarray(multR, multG, multB);
@@ -1364,8 +1364,8 @@ public class BLRenderBlocks {
 	                return true;
             	}
 	            
-	            if (renderGrass && !APIRenderBlocks.getHasSnow(renderBlocks, par1Block, x, y, z)) {
-	            	if ((texture = APIRenderBlocks.getIconSideOverlay(renderBlocks, par1Block, x, y, z, side)) != null) {
+	            if (renderGrass && !APIRenderBlocks.getHasSnow(this, par1Block, x, y, z)) {
+	            	if ((texture = APIRenderBlocks.getIconSideOverlay(this, par1Block, x, y, z, side)) != null) {
 		                tessellator.setColorOpaque_F(rgb[0] * rgbMult[0], rgb[1] * rgbMult[1], rgb[2] * rgbMult[2]);
 		                RenderFaceforSide(par1Block, x, y, z, texture, side);
 	            	}
@@ -1465,8 +1465,8 @@ public class BLRenderBlocks {
 		        }
 			}
 			
-			if (renderGrass && !APIRenderBlocks.getHasSnow(renderBlocks, block, x, y, z)) {
-	        	IIcon over = APIRenderBlocks.getIconSideOverlay(renderBlocks, block, x, y, z, side);
+			if (renderGrass && !APIRenderBlocks.getHasSnow(this, block, x, y, z)) {
+	        	IIcon over = APIRenderBlocks.getIconSideOverlay(this, block, x, y, z, side);
 	        	
 	        	if (over != null) {
 	        		multColors(multR, multG, multB);
@@ -1490,7 +1490,7 @@ public class BLRenderBlocks {
         tess.setNormal(a, b, c);
         
         if (inv) {
-        	IIcon over = APIRenderBlocks.getIconSideOverlay(renderBlocks, block, data, 0, 0, 0, side);
+        	IIcon over = APIRenderBlocks.getIconSideOverlay(this, block, data, 0, 0, 0, side);
         	if (over != null) {
         		RenderFaceforSide(block, 0, 0, 0, over, side);
         	}
