@@ -29,7 +29,12 @@ public class APIRenderBlocks {
 	 * Returns true if the given block implements the IRenderSpecial interface
 	 */
 	public static boolean HasSpecialRender(Block block) {
-		if (BlockRenderMapping.containsKey(block)) return getHasSpecialRender(block);
+		if (BlockRenderMapping.containsKey(block)) {
+			Boolean result = getHasSpecialRender(block);
+			if (result != null) {
+				return result;
+			}
+		}
 		for (Class i : block.getClass().getInterfaces()) {
 			if (IRenderSpecial.class.isAssignableFrom(i)) return setHasSpecialRender(block, true);
 		}
@@ -40,7 +45,12 @@ public class APIRenderBlocks {
 	 * Returns true if the given block implements the IGrassBlock interface
 	 */
 	public static boolean HasGrassRender(Block block) {
-		if (BlockRenderMapping.containsKey(block)) return getHasGrassRender(block);
+		if (BlockRenderMapping.containsKey(block)) {
+			Boolean result = getHasGrassRender(block);
+			if (result != null) {
+				return result;
+			}
+		}
 		for (Class i : block.getClass().getInterfaces()) {
 			if (IGrassBlock.class.isAssignableFrom(i)) return setHasGrassRender(block, true);
 		}
