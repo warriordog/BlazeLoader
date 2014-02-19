@@ -116,12 +116,8 @@ public final class BlazeLoader {
         try {
             Enumeration<URL> roots = BlazeLoader.class.getClassLoader().getResources("");
             while (roots.hasMoreElements()) {
-                File path = new File(roots.nextElement().getPath());
-                if (path.isDirectory()) {
-                    ModLoader.loadModsToList(path);
-                } else if (path.getName().toLowerCase().endsWith(".zip") || path.getName().toLowerCase().endsWith(".jar")) {
-                    ModLoader.load
-                }
+                File path = new File(roots.nextElement().toURI());
+                ModLoader.loadModsToList(path);
             }
         } catch (Exception e) {
             logger.logError("Exception loading mods in jar!");
