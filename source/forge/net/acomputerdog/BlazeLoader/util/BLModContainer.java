@@ -36,7 +36,7 @@ public class BLModContainer implements ModContainer {
         ModMetadata meta = new ModMetadata();
         meta.version = Version.getStringVersion();
         meta.authorList.add("acomputerdog");
-        meta.credits = "Big thanks to mumfrey, BigXplosion, and all who contribute on github!";
+        meta.credits = "Big thanks to mumfrey, big_Xplosion, and all who contribute on github!";
         meta.modId = getModId();
         meta.name = getName();
         meta.description = "The BlazeLoader mod API.  BlazeLoader allows the creation of advanced and game-changing mods with minimal code changes.  It also provides forge compatibility for other mods, saving developers the trouble of porting their mods.";
