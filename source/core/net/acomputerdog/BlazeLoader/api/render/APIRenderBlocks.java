@@ -1,7 +1,9 @@
 package net.acomputerdog.BlazeLoader.api.render;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -15,38 +17,95 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * Provides methods to access the IRenderSpecial and IGrassBlock methods
+ * on any block object 
+ * @author Sollace
+ */
 public class APIRenderBlocks {
+	private static Map<Block, Boolean[]> BlockRenderMapping = new HashMap<Block, Boolean[]>();
 	
-	private static List<Block> GrassTypeRenderBlocks = new ArrayList();
-	
-	public static boolean registerGrassRender(Block block) {
-		if (!GrassTypeRenderBlocks.contains(block)) {
-			if (IsValidGrassBlock(block)) {
-				GrassTypeRenderBlocks.add(block);
-				return true;
-			} else {
-				throwException(block.getClass().getCanonicalName() + " Does not implement IGrassBlock", new IllegalArgumentException(block.getClass().getCanonicalName()));
-			}
-			return false;
+	/**
+	 * Returns true if the given block implements the IRenderSpecial interface
+	 */
+	public static boolean HasSpecialRender(Block block) {
+		if (BlockRenderMapping.containsKey(block)) return getHasSpecialRender(block);
+		for (Class i : block.getClass().getInterfaces()) {
+			if (IRenderSpecial.class.isAssignableFrom(i)) return setHasSpecialRender(block, true);
 		}
-		throwException("block register duplication when adding " + block.getUnlocalizedName() + " : " + ApiBlock.getBlockName(block) + " to grass register", new IllegalArgumentException(block.getClass().getCanonicalName()));
-		return false;
+		return setHasSpecialRender(block, false);
 	}
 	
-	public static boolean unregisterGrassRender(Block block) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			GrassTypeRenderBlocks.remove(block);
-			return true;
+	/**
+	 * Returns true if the given block implements the IGrassBlock interface
+	 */
+	public static boolean HasGrassRender(Block block) {
+		if (BlockRenderMapping.containsKey(block)) return getHasGrassRender(block);
+		for (Class i : block.getClass().getInterfaces()) {
+			if (IGrassBlock.class.isAssignableFrom(i)) return setHasGrassRender(block, true);
 		}
-		return false;
+		return setHasGrassRender(block, false);
 	}
-		
+	
+	private static Boolean getHasGrassRender(Block block) {
+		if (BlockRenderMapping.containsKey(block)) {
+			return BlockRenderMapping.get(block)[0];
+		}
+		return null;
+	}
+	
+	private static boolean setHasGrassRender(Block block, boolean val) {
+		if (!BlockRenderMapping.containsKey(block)) {
+			BlockRenderMapping.get(block)[0] = val;
+		} else {
+			BlockRenderMapping.put(block, new Boolean[] { val, null });
+		}
+		return val;
+	}
+	
+	private static Boolean getHasSpecialRender(Block block) {
+		if (BlockRenderMapping.containsKey(block)) {
+			return BlockRenderMapping.get(block)[1];
+		}
+		return null;
+	}
+	
+	private static boolean setHasSpecialRender(Block block, boolean val) {
+		if (BlockRenderMapping.containsKey(block)) {
+			BlockRenderMapping.get(block)[1] = val;
+		} else {
+			BlockRenderMapping.put(block, new Boolean[] { null, val });
+		}
+		return val;
+	}
+	
+	/**
+	 * Gets the overlay icon for a block
+	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param block	The Block
+	 * @param x		X coordinate
+	 * @param y		Y coordinate
+	 * @param z		Z coordinate
+	 * @param side	Side of block being rendered
+	 * @return	IICon for the given side of the block at the given coordinates 
+	 */
 	public static IIcon getIconSideOverlay(RenderBlocks rb, Block block, int x, int y, int z, int side) {
 		return getIconSideOverlay(rb, block, rb.blockAccess.getBlockMetadata(x, y, z), x, y, z, side);
 	}
 	
+	/**
+	 * Gets the overlay icon for a block
+	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param block	The Block
+	 * @param metadata	Metadata value of the given block
+	 * @param x		X coordinate
+	 * @param y		Y coordinate
+	 * @param z		Z coordinate
+	 * @param side	Side of block being rendered
+	 * @return	IICon for the given side of the block at the given coordinates 
+	 */
 	public static IIcon getIconSideOverlay(RenderBlocks rb, Block block, int metadata, int x, int y, int z, int side) {
-		if (GrassTypeRenderBlocks.contains(block)) {
+		if (HasGrassRender(block)) {
 			return ((IGrassBlock)block).getIconSideOverlay(rb.blockAccess, metadata, x, y, z, side);
 		}
 		IIcon i = rb.getBlockIcon(block, rb.blockAccess, x, y, z, side);
@@ -56,69 +115,54 @@ public class APIRenderBlocks {
 		return null;
 	}
 	
+	/**
+	 * Returns whether a given block must render with grass overlays
+	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param block	The Block
+	 * @param x		X coordinate
+	 * @param y		Y coordinate
+	 * @param z		Z coordinate
+	 * @return boolean whether this block must be rendered with overlays
+	 */
 	public static boolean getRenderGrass(RenderBlocks rb, Block block, int x, int y, int z) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			return ((IGrassBlock)block).IsGrassBlock(rb.blockAccess.getBlockMetadata(x, y, z));
-		}
-		return false;
-	}
-	
-	public static boolean getHasSnow(RenderBlocks rb, Block block, int x, int y, int z) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			return ((IGrassBlock)block).HasSnow(rb.blockAccess, x, y, z);
-		}
-		return false;
-	}
-	
-	private static boolean IsValidGrassBlock(Block block) {
-		for (Class i : block.getClass().getInterfaces()) {
-			if (IGrassBlock.class.isAssignableFrom(i)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	public static boolean HasSpecialRender(Block block) {
-		for (Class i : block.getClass().getInterfaces()) {
-			if (IRenderSpecial.class.isAssignableFrom(i)) return true;
-		}
-		return false;
-	}
-	
-	public static boolean getRenderGrassInv(Block block, int Metadata) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			return ((IGrassBlock)block).IsGrassBlockInv(Metadata);
-		}
-		return false;
-	}
-	
-	public static int getColorMultiplier(Block block, IBlockAccess access, int x, int y, int z) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			return ((IGrassBlock)block).colorMultiplier2(access, x, y, z);
-		}
-		return block.colorMultiplier(access, x, y, z);
-	}
-	
-	public static int getRenderColor(Block block, int metadata) {
-		if (GrassTypeRenderBlocks.contains(block)) {
-			return ((IGrassBlock)block).getRenderColor2(metadata);
-		}
-		return block.getRenderColor(metadata);
+		return HasGrassRender(block) ? ((IGrassBlock)block).IsGrassBlock(rb.blockAccess.getBlockMetadata(x, y, z)) : false;
 	}
 	
 	/**
-	 * Temporary
-	 * @param message
-	 * @param innerException
+	 * Returns whether a given block must render with snow
+	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param block	The Block
+	 * @param x		X coordinate
+	 * @param y		Y coordinate
+	 * @param z		Z coordinate
+	 * @return boolean whether this block must be rendered with overlays
 	 */
-    private static void throwException(String message, Throwable innerException) {
-		Minecraft m = Minecraft.getMinecraft();
-        if (m != null) {
-        	m.displayCrashReport(CrashReport.makeCrashReport(innerException, message));
-        	return;
-        }
-        throw new RuntimeException(innerException);
-    }
+	public static boolean getHasSnow(RenderBlocks rb, Block block, int x, int y, int z) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).HasSnow(rb.blockAccess, x, y, z) : false;
+	}
+	
+	/**
+	 * Returns whether a given block must render with grass overlays when in the inventory
+	 * @param rb	Instance of RenderBlocks doing the rendering
+	 * @param block	The Block
+	 * @param metadat
+	 * @return boolean whether this block must be rendered with overlays in the inventory
+	 */
+	public static boolean getRenderGrassInv(Block block, int Metadata) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).IsGrassBlockInv(Metadata) : false;
+	}
+	
+	/**
+	 * Gets the color tint applied to the block when rendering in the world
+	 */
+	public static int getWorldRenderColor(Block block, IBlockAccess access, int x, int y, int z) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).getWorldRenderColor(access, x, y, z) : block.colorMultiplier(access, x, y, z);
+	}
+	
+	/**
+	 * Gets the color tint applied to the block when rendering in the inventory
+	 */
+	public static int getInventoryRenderColor(Block block, int metadata) {
+		return HasGrassRender(block) ? ((IGrassBlock)block).getInventoryRenderColor(metadata) : block.getRenderColor(metadata);
+	}
 }

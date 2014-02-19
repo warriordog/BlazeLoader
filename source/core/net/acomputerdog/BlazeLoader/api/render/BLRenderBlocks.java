@@ -13,7 +13,18 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * Wrapper around vanilla RenderBlocks providing additional functionality
+ * and managed access to vanilla rendering methods
+ * @author Sollace
+ *
+ */
 public class BLRenderBlocks {
+	
+	/**
+	 * Vanilla RenderBlocks instance
+	 * Warning: Use with caution
+	 */
 	public final RenderBlocks renderBlocks;
 	
 	public BLRenderBlocks(RenderBlocks rb) { 
@@ -91,9 +102,12 @@ public class BLRenderBlocks {
 	
 	
 	
-	
+	/**
+	 * Renders a block in the minecraft world
+	 * @return true if blocks have been rendered
+	 */
     public boolean renderStandardBlock(Block block, int x, int y, int z) {
-        int var5 = APIRenderBlocks.getColorMultiplier(block, renderBlocks.blockAccess, x, y, z);
+        int var5 = APIRenderBlocks.getWorldRenderColor(block, renderBlocks.blockAccess, x, y, z);
         
         float redComp = (float)(var5 >> 16 & 255) / 255.0F,
         	greenComp = (float)(var5 >> 8 & 255) / 255.0F,
@@ -113,7 +127,10 @@ public class BLRenderBlocks {
         }
     	return renderStandardBlockWithColorMultiplier(block, x, y, z, redComp, greenComp, blueComp);
     }
-		
+	
+    /**
+     * Renders a block in the inventory
+     */
 	public void renderStandardBlockAsItem(Block block, int metadata, float mult) {
 		Tessellator tess = Tessellator.instance;
 		boolean over = APIRenderBlocks.getRenderGrassInv(block, metadata);
@@ -122,7 +139,7 @@ public class BLRenderBlocks {
 		int renderColor = block.getRenderColor(metadata);
 		
         if (renderBlocks.useInventoryTint) {
-        	renderColor = renderGrass ? 16777215 : APIRenderBlocks.getRenderColor(block, metadata);
+        	renderColor = renderGrass ? 16777215 : APIRenderBlocks.getInventoryRenderColor(block, metadata);
         	setColorTint(renderColor, mult);
         }
         
@@ -136,7 +153,7 @@ public class BLRenderBlocks {
         drawItemSide(tess, 0F, -1F, 0F, block, metadata, 0);
         
         if ((renderGrass && renderBlocks.useInventoryTint) || over) {
-    		renderColor = APIRenderBlocks.getRenderColor(block, metadata);
+    		renderColor = APIRenderBlocks.getInventoryRenderColor(block, metadata);
         	
     		setColorTint(renderColor, mult);
         	
@@ -1371,7 +1388,10 @@ public class BLRenderBlocks {
     	}
     	return false;
     }
-        	
+        
+    /**
+     * Renders a face of a block in the minecraft world
+     */
     public void RenderFaceforSide(Block block, double x, double y, double z, IIcon icon, int side) {
     	switch(side) {
 	    	case 0: renderBlocks.renderFaceYNeg(block, x, y, z, icon); //bottom
@@ -1389,34 +1409,50 @@ public class BLRenderBlocks {
     	}
     }
     
+    /**
+     * As the name suggests.
+     * Used by tallgrass 
+     */
     public void drawCrossedSquares(IIcon icon, double x, double y, double z, float height) {
     	renderBlocks.drawCrossedSquares(icon, x, y, z, height);
     }
     
-    public void drawStandardItemSides(Tessellator tess, Block block, int data) {
-    	drawItemSide(tess, 0F, -1F, 0F, block, data, 0);
-        drawItemSide(tess, 0F, 1F, 0F, block, data, 1);
-        drawItemSide(tess, 0F, 0F, -1F, block, data, 2);
-        drawItemSide(tess, 0F, 0F, 1F, block, data, 3);
-        drawItemSide(tess, -1F, 0F, 0F, block, data, 4);
-        drawItemSide(tess, 1F, 0F, 0F, block, data, 5);
+    /**
+     * Draws all the sides of a block in the inventory
+     */
+    public void drawStandardItemSides(Tessellator tess, Block block, int metadata) {
+    	drawItemSide(tess, 0F, -1F, 0F, block, metadata, 0);
+        drawItemSide(tess, 0F, 1F, 0F, block, metadata, 1);
+        drawItemSide(tess, 0F, 0F, -1F, block, metadata, 2);
+        drawItemSide(tess, 0F, 0F, 1F, block, metadata, 3);
+        drawItemSide(tess, -1F, 0F, 0F, block, metadata, 4);
+        drawItemSide(tess, 1F, 0F, 0F, block, metadata, 5);
     }
     
-    public void drawStandardItemSidesOverlay(Tessellator tess, Block block, int data, float par3) {
-    	setColorTint(APIRenderBlocks.getRenderColor(block, data), par3);
-        drawItemSideUniversal(tess, 0F, -1F, 0F, block, data, 0, true);
-        drawItemSideUniversal(tess, 0F, 1F, 0F, block, data, 1, true);
-        drawItemSideUniversal(tess, 0F, 0F, -1F, block, data, 2, true);
-        drawItemSideUniversal(tess, 0F, 0F, 1F, block, data, 3, true);
-        drawItemSideUniversal(tess, -1F, 0F, 0F, block, data, 4, true);
-        drawItemSideUniversal(tess, 1F, 0F, 0F, block, data, 5, true);
-        resetColorTint(par3);
+    /**
+     * Draws the overlay texture on a block in the inventory
+     */
+    public void drawStandardItemSidesOverlay(Tessellator tess, Block block, int metadata, float baseColor) {
+    	setColorTint(APIRenderBlocks.getInventoryRenderColor(block, metadata), baseColor);
+        drawItemSideUniversal(tess, 0F, -1F, 0F, block, metadata, 0, true);
+        drawItemSideUniversal(tess, 0F, 1F, 0F, block, metadata, 1, true);
+        drawItemSideUniversal(tess, 0F, 0F, -1F, block, metadata, 2, true);
+        drawItemSideUniversal(tess, 0F, 0F, 1F, block, metadata, 3, true);
+        drawItemSideUniversal(tess, -1F, 0F, 0F, block, metadata, 4, true);
+        drawItemSideUniversal(tess, 1F, 0F, 0F, block, metadata, 5, true);
+        resetColorTint(baseColor);
     }
     
-    public void drawItemSide(Tessellator tess, float a, float b, float c, Block block, int data, int side) {
-    	drawItemSideUniversal(tess, a, b, c, block, data, side, false);
+    /**
+     * Draws one side of a block in the inventory
+     */
+    public void drawItemSide(Tessellator tess, float a, float b, float c, Block block, int metadata, int side) {
+    	drawItemSideUniversal(tess, a, b, c, block, metadata, side, false);
     }
     
+    /**
+     * Renders the overlay texture on one side of a block in the minecraft world
+     */
 	public void renderIconSideOverlay(boolean renderGrass, Block block, float multR, float multG, float multB, int x, int y, int z, int side) {
 		if (!renderBlocks.hasOverrideBlockTexture()) {
 			if (side > 1 && renderBlocks.fancyGrass) {
@@ -1440,10 +1476,13 @@ public class BLRenderBlocks {
 		}
 	}
     
-    public void drawItemSideOverlay(Tessellator tess, float a, float b, float c, Block block, int data, int side, float par3, int renderColor) {
-    	setColorTint(renderColor, par3);
+	/**
+	 * Draws the overlay texture on one side of a block in the inventory
+	 */
+    public void drawItemSideOverlay(Tessellator tess, float a, float b, float c, Block block, int data, int side, float baseColor, int tintColor) {
+    	setColorTint(tintColor, baseColor);
     	drawItemSideUniversal(tess, a, b, c, block, data, side, true);
-    	resetColorTint(par3);
+    	resetColorTint(baseColor);
     }
     
     private void drawItemSideUniversal(Tessellator tess, float a, float b, float c, Block block, int data, int side, boolean inv) {
@@ -1461,8 +1500,11 @@ public class BLRenderBlocks {
         tess.draw();
     }
     
-    public void setColorTint(int renderColor, float multi) {
-        GL11.glColor4f(MCColor.r(renderColor) * multi, MCColor.g(renderColor) * multi, MCColor.b(renderColor) * multi, 1.0F);
+    /**
+     * Sets the render tint
+     */
+    public void setColorTint(int tintColor, float baseColor) {
+        GL11.glColor4f(MCColor.r(tintColor) * baseColor, MCColor.g(tintColor) * baseColor, MCColor.b(tintColor) * baseColor, 1.0F);
     }
     
     public void resetColorTint(float original) {
@@ -1508,19 +1550,28 @@ public class BLRenderBlocks {
 		renderBlocks.colorBlueBottomRight *= BotRight;
 	}
     
+	/**
+	 * Renders a block as an item in the minecraft world with the thickness along the X-axis
+	 */
 	public void renderThickX(Block block, float thickness, float x, float y, float z, int diag) {
 		renderWithThickness(block, thickness, x, y, z, 0, diag);
 	}
 	
+	/**
+	 * Renders a block as an item in the minecraft world with the thickness along the Y-axis
+	 */
 	public void renderThickY(Block block, float thickness, float x, float y, float z, int diag) {
 		renderWithThickness(block, thickness, x, y, z, 1, diag);
 	}
 	
+	/**
+	 * Renders a block as an item in the minecraft world with the thickness along the Z-axis
+	 */
 	public void renderThickZ(Block block, float thickness, float x, float y, float z, int diag) {
 		renderWithThickness(block, thickness, x, y, z, 5, diag);
 	}
 	
-	public void renderWithThickness(Block block, float thickness, float x, float y, float z, int swap, int diagonal) {
+	private void renderWithThickness(Block block, float thickness, float x, float y, float z, int swap, int diagonal) {
 		IIcon par2Icon = block.getIcon(0, renderBlocks.blockAccess.getBlockMetadata((int)x, (int)y, (int)z));
 				
         float minU,maxU,minV,maxV;

@@ -2,7 +2,10 @@ package net.acomputerdog.BlazeLoader.api.render;
 
 import net.minecraft.client.renderer.RenderBlocks;
 
-
+/**
+ * Used to allow a block to have better control over its own rendering
+ * @author Sollace
+ */
 public interface IRenderSpecial {
 	/**
      * Renders the block at the given coordinates

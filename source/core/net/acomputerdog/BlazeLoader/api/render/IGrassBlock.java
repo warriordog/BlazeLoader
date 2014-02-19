@@ -3,6 +3,11 @@ package net.acomputerdog.BlazeLoader.api.render;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * Used allow blocks to render as a grass block
+ * or with other kinds of overlays/tints
+ * @author Sollace
+ */
 public interface IGrassBlock {
 	/**
      * Indicates that this block must be rendered as with snow on top.
@@ -20,15 +25,15 @@ public interface IGrassBlock {
     public boolean IsGrassBlockInv(int metadata);
     
     /**
-     * Returns the color this block should be rendered.
+     * Returns the color overlay that should be used for this block when rendered
+     * in the inventory
      */
-    public int getRenderColor2(int metadata);
+    public int getInventoryRenderColor(int metadata);
     
     /**
-     * Returns a integer with hex for 0xrrggbb with this color multiplied against the blocks color. Note only called
-     * when first determining what to render.
+     * Returns the color overlay used when rendering this block in the world.
      */
-    public int colorMultiplier2(IBlockAccess access, int x, int y, int z);
+    public int getWorldRenderColor(IBlockAccess access, int x, int y, int z);
     
     /**
      * Retrieve the side overlay texture for this block
