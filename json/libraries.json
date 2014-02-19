@@ -1,5 +1,15 @@
 {
   "libraries": [
+	{
+      "name": "org.scala-lang:scala-library:2.10.2",
+      "autodownload": false,
+      "url": "http://repo.maven.apache.org/maven2/org/scala-lang/scala-library/2.10.2/scala-library-2.10.2.jar"
+    },
+	{
+      "name": "org.scala-lang:scala-compiler:2.10.2",
+      "autodownload": false,
+      "url": "http://repo.maven.apache.org/maven2/org/scala-lang/scala-compiler/2.10.2/scala-compiler-2.10.2.jar"
+    },
   	{
       "name": "org.ow2.asm:asm-debug-all:4.1",
       "autodownload": false,
