@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -30,35 +29,41 @@ public class ModLoader {
     }
 
     public static void loadMods(File searchDir, List<Class<? extends Mod>> modList) {
+        System.out.println("a");
         ApiGeneral.theProfiler.startSection("load_mods");
         if (!searchDir.exists() || !searchDir.isDirectory()) {
             BlazeLoader.getLogger().logError("Invalid mod search directory: " + searchDir.getAbsolutePath());
         } else {
-            ApiGeneral.theProfiler.startSection("find_jars");
-            File[] zips = searchDir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip");
+            File[] contents = searchDir.listFiles();
+            if (contents != null) {
+                System.out.println("b");
+                for (File f : contents) {
+                    System.out.println("c");
+                    if (f.isDirectory()) {
+                        System.out.println("d1");
+                        loadMods(f, modList);
+                    } else {
+                        System.out.println("d2");
+                        String name = f.getName();
+                        if (name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip")) {
+                            System.out.println("e");
+                            List<URL> loaderURLs = new ArrayList<URL>();
+                            List<String> modClassNames = new ArrayList<String>();
+                            loadZip(f, modClassNames, loaderURLs);
+                            ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
+                            for (String modClassName : modClassNames) {
+                                System.out.println("f");
+                                loadClass(modClassName, loader, modList);
+                            }
+                        }
+                    }
                 }
-            });
-            ApiGeneral.theProfiler.endStartSection("scan_jars");
-            List<URL> loaderURLs = new ArrayList<URL>();
-            List<String> modClassNames = new ArrayList<String>();
-            for (File modZip : zips) {
-                ApiGeneral.theProfiler.startSection("jar_" + modZip.getName());
-                loadZip(modZip, modClassNames, loaderURLs);
-                ApiGeneral.theProfiler.endSection();
             }
-            ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
-            for (String modClassName : modClassNames) {
-                loadClass(modClassName, loader, modList);
-            }
-            ApiGeneral.theProfiler.endSection();
         }
         ApiGeneral.theProfiler.endSection();
     }
 
-    private static void loadZip(File modZip, List<String> modClassNames, List<URL> loaderURLs) {
+    public static void loadZip(File modZip, List<String> modClassNames, List<URL> loaderURLs) {
         try {
             loaderURLs.add(modZip.toURI().toURL());
             ZipFile zipFile = new ZipFile(modZip);
@@ -81,7 +86,7 @@ public class ModLoader {
     private static void loadClass(String className, ClassLoader loader, List<Class<? extends Mod>> modList) {
         try {
             Class modClass = loader.loadClass(className);
-            if (Mod.class.isAssignableFrom(modClass)) {
+            if (Mod.class.isAssignableFrom(modClass) && !Mod.class.equals(modClass)) {
                 modList.add(modClass);
                 BlazeLoader.getLogger().logDetail("Loaded mod: " + modClass.getName() + ".");
             }

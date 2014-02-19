@@ -18,6 +18,8 @@ import net.minecraft.command.CommandHandler;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,6 +112,21 @@ public final class BlazeLoader {
     }
 
     private static void loadMods() {
+        logger.logDetail("Loading mods from: classpath");
+        try {
+            Enumeration<URL> roots = BlazeLoader.class.getClassLoader().getResources("");
+            while (roots.hasMoreElements()) {
+                File path = new File(roots.nextElement().getPath());
+                if (path.isDirectory()) {
+                    ModLoader.loadModsToList(path);
+                } else if (path.getName().toLowerCase().endsWith(".zip") || path.getName().toLowerCase().endsWith(".jar")) {
+                    ModLoader.load
+                }
+            }
+        } catch (Exception e) {
+            logger.logError("Exception loading mods in jar!");
+            e.printStackTrace();
+        }
         logger.logDetail("Loading mods from: " + ApiGeneral.modDir.getAbsolutePath());
         ModLoader.loadModsToList(ApiGeneral.modDir);
         logger.logInfo("Mod loading complete.");
