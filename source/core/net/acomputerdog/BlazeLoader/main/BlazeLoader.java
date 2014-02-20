@@ -117,14 +117,14 @@ public final class BlazeLoader {
             Enumeration<URL> roots = BlazeLoader.class.getClassLoader().getResources("");
             while (roots.hasMoreElements()) {
                 File path = new File(roots.nextElement().toURI());
-                ModLoader.loadModsToList(path);
+                ModLoader.loadMods(path, path);
             }
         } catch (Exception e) {
             logger.logError("Exception loading mods in jar!");
             e.printStackTrace();
         }
         logger.logDetail("Loading mods from: " + ApiGeneral.modDir.getAbsolutePath());
-        ModLoader.loadModsToList(ApiGeneral.modDir);
+        ModLoader.loadMods(ApiGeneral.modDir, ApiGeneral.modDir);
         logger.logInfo("Mod loading complete.");
     }
 

@@ -18,49 +18,50 @@ import java.util.zip.ZipFile;
  */
 public class ModLoader {
     private static Map<String, File> sourceMap = new HashMap<String, File>();
+    private static final File workingDir = new File(System.getProperty("user.dir"));
 
     public static File getModSource(String clsName) {
         return sourceMap.get(clsName);
     }
 
-    public static void loadModsToList(File searchDir) {
-        loadMods(searchDir, ModList.getUnloadedMods());
-    }
-
-    public static void loadMods(File searchDir, List<Class<? extends Mod>> modList) {
-        if (!searchDir.exists() || !searchDir.isDirectory()) {
-            BlazeLoader.getLogger().logWarning("Invalid mod search directory: " + searchDir.getAbsolutePath());
+    public static void loadMods(File searchFile, File parentFile) {
+        if (!searchFile.exists() || !searchFile.isDirectory()) {
+            BlazeLoader.getLogger().logWarning("Invalid mod search directory: " + searchFile.getAbsolutePath());
         } else {
-            File[] contents = searchDir.listFiles();
+            File[] contents = searchFile.listFiles();
             if (contents != null) {
                 for (File f : contents) {
                     if (f.isDirectory()) {
-                        loadMods(f, modList);
+                        loadMods(f, parentFile);
                     } else {
-                        String name = f.getName();
-                        if (name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip")) {
-                            List<URL> loaderURLs = new ArrayList<URL>();
-                            List<String> modClassNames = new ArrayList<String>();
-                            loadZip(f, modClassNames, loaderURLs);
-                            ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
-                            for (String modClassName : modClassNames) {
-                                loadClass(modClassName, loader, modList);
-                            }
-                        }
+                        loadClasses(f, parentFile);
                     }
                 }
             } else {
-                String name = searchDir.getName();
-                if (name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".zip")) {
-                    List<URL> loaderURLs = new ArrayList<URL>();
-                    List<String> modClassNames = new ArrayList<String>();
-                    loadZip(searchDir, modClassNames, loaderURLs);
-                    ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
-                    for (String modClassName : modClassNames) {
-                        loadClass(modClassName, loader, modList);
-                    }
-                }
+                loadClasses(searchFile, parentFile);
             }
+        }
+    }
+
+    private static void loadClasses(File clsFile, File parentFile) {
+        List<Class<? extends Mod>> modList = ModList.getUnloadedMods();
+        List<URL> loaderURLs = new ArrayList<URL>();
+        List<String> modClassNames = new ArrayList<String>();
+        String path = clsFile.getPath();
+        if (path.toLowerCase().endsWith(".jar") || path.toLowerCase().endsWith(".zip")) {
+            loadZip(clsFile, modClassNames, loaderURLs);
+        } else if (path.toLowerCase().endsWith(".class")) {
+            path = new File(parentFile.toURI().relativize(clsFile.toURI())).getPath();
+            System.out.println(path);
+            String className = path.replaceAll("/", ".").substring(0, path.length() - 6);
+            modClassNames.add(className);
+            sourceMap.put(className, clsFile);
+        } else {
+            return;
+        }
+        ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
+        for (String modClassName : modClassNames) {
+            loadClass(modClassName, loader, modList);
         }
     }
 
@@ -92,7 +93,9 @@ public class ModLoader {
                 BlazeLoader.getLogger().logDetail("Loaded mod: " + modClass.getName() + ".");
             }
         } catch (Exception e) {
-            BlazeLoader.getLogger().logWarning("Skipping corrupt mod.");
+            if (!(e instanceof ClassNotFoundException)) {
+                BlazeLoader.getLogger().logWarning("Skipping corrupt mod.");
+            }
         }
     }
 
