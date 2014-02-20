@@ -60,6 +60,12 @@ public class ApiEntity {
         }
     }
 
+    /**
+     * Replaces the class used when spawning an entity in a world.
+     * @param o Original class
+     * @param c Replacement class
+     * @param e CreatureType
+     */
     public static void swapEntitySpawn(Class o, Class c, EnumCreatureType e) {
         BiomeGenBase[] standardBiomes = BiomeGenBase.getBiomeGenArray();
 
@@ -75,6 +81,28 @@ public class ApiEntity {
                 }
             }
         }
+    }
+
+    /**
+     * Registers an Entity spawn in certain biomes.
+     * Registers for all biomes if none specified
+     * @param c
+     * @param weight
+     * @param minGroup
+     * @param maxGroup
+     * @param type
+     * @param biomes
+     */
+    public static void RegisterSpawn(Class c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase...biomes) {
+    	if (biomes.length == 0) {
+    		biomes = BiomeGenBase.getBiomeGenArray();
+    	}
+    	
+    	for (BiomeGenBase biome : biomes) {
+    		if (biome != null) {
+    			biome.getSpawnableList(type).add(new SpawnListEntry(c, weight, minGroup, maxGroup));
+    		}
+    	}
     }
 
     /**
