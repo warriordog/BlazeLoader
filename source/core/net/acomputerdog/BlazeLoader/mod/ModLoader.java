@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -51,9 +52,14 @@ public class ModLoader {
         if (path.toLowerCase().endsWith(".jar") || path.toLowerCase().endsWith(".zip")) {
             loadZip(clsFile, modClassNames, loaderURLs);
         } else if (path.toLowerCase().endsWith(".class")) {
-            path = new File(parentFile.toURI().relativize(clsFile.toURI())).getPath();
-            System.out.println(path);
-            String className = path.replaceAll("/", ".").substring(0, path.length() - 6);
+            try {
+                path = getRelativePath(parentFile, clsFile);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not get relative path!", e);
+            }
+            //path = clsFile.toURI().relativize(parentFile.toURI()).getPath();
+            String className = path.replaceAll(Pattern.quote(System.getProperty("file.separator")), ".").substring(0, path.length() - 6);
+            System.out.println(path + " : " + className);
             modClassNames.add(className);
             sourceMap.put(className, clsFile);
         } else {
@@ -62,6 +68,23 @@ public class ModLoader {
         ClassLoader loader = new URLClassLoader(loaderURLs.toArray(new URL[loaderURLs.size()]), ModLoader.class.getClassLoader());
         for (String modClassName : modClassNames) {
             loadClass(modClassName, loader, modList);
+        }
+    }
+
+    private static String getRelativePath(File base, File name) throws IOException {
+        File parent = base.getParentFile();
+
+        if (parent == null) {
+            throw new IOException("No common directory");
+        }
+
+        String bpath = base.getCanonicalPath();
+        String fpath = name.getCanonicalPath();
+
+        if (fpath.startsWith(bpath)) {
+            return fpath.substring(bpath.length() + 1);
+        } else {
+            return (".." + File.separator + getRelativePath(parent, name));
         }
     }
 
