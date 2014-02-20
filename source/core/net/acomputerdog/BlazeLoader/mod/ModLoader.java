@@ -57,9 +57,7 @@ public class ModLoader {
             } catch (IOException e) {
                 throw new RuntimeException("Could not get relative path!", e);
             }
-            //path = clsFile.toURI().relativize(parentFile.toURI()).getPath();
             String className = path.replaceAll(Pattern.quote(System.getProperty("file.separator")), ".").substring(0, path.length() - 6);
-            System.out.println(path + " : " + className);
             modClassNames.add(className);
             sourceMap.put(className, clsFile);
         } else {
