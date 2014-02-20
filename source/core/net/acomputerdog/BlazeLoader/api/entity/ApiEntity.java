@@ -104,8 +104,7 @@ public class ApiEntity {
     			List<SpawnListEntry> spawnableList = biome.getSpawnableList(type);
     			Iterator<SpawnListEntry> iter = spawnableList.iterator();
     			while (iter.hasNext()) {
-    				SpawnListEntry i = iter.next();
-    				if (i.entityClass == c) iter.remove();  //Ensure there are no duplications
+    				if (iter.next().entityClass == c) iter.remove();  //Ensure there are no duplications
     			}
     			spawnableList.add(new SpawnListEntry(c, weight, minGroup, maxGroup));
     		}
