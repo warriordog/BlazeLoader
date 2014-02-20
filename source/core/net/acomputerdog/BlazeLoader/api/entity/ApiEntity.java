@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -86,12 +87,12 @@ public class ApiEntity {
     /**
      * Registers an Entity spawn in certain biomes.
      * Registers for all biomes if none specified
-     * @param c
-     * @param weight
-     * @param minGroup
-     * @param maxGroup
-     * @param type
-     * @param biomes
+     * @param c			Entity class
+     * @param weight	How often this entity is spawned in the world
+     * @param minGroup	Minimum group size
+     * @param maxGroup	Maximum group size
+     * @param type		Type of spwning to be used by this entity
+     * @param biomes	Biomes this entity mus spawn in
      */
     public static void RegisterSpawn(Class c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase...biomes) {
     	if (biomes.length == 0) {
@@ -100,7 +101,13 @@ public class ApiEntity {
     	
     	for (BiomeGenBase biome : biomes) {
     		if (biome != null) {
-    			biome.getSpawnableList(type).add(new SpawnListEntry(c, weight, minGroup, maxGroup));
+    			List<SpawnListEntry> spawnableList = biome.getSpawnableList(type);
+    			Iterator<SpawnListEntry> iter = spawnableList.iterator();
+    			while (iter.hasNext()) {
+    				SpawnListEntry i = iter.next();
+    				if (i.entityClass == c) iter.remove();  //Ensure there are no duplications
+    			}
+    			spawnableList.add(new SpawnListEntry(c, weight, minGroup, maxGroup));
     		}
     	}
     }
