@@ -54,6 +54,13 @@ public class Profiler {
             this.profilingSection = this.profilingSection + par1Str;
             this.sectionList.add(this.profilingSection);
             this.timestampList.add(System.nanoTime());
+        } else {
+            if (this.profilingSection.length() > 0) {
+                this.profilingSection = this.profilingSection + ".";
+            }
+
+            this.profilingSection = this.profilingSection + par1Str;
+            this.sectionList.add(this.profilingSection);
         }
     }
 
@@ -77,6 +84,9 @@ public class Profiler {
                 logger.warn("Something\'s taking too long! \'" + this.profilingSection + "\' took aprox " + (double) k / 1000000.0D + " ms");
             }
 
+            this.profilingSection = !this.sectionList.isEmpty() ? (String) this.sectionList.get(this.sectionList.size() - 1) : "";
+        } else {
+            this.sectionList.remove(this.sectionList.size() - 1);
             this.profilingSection = !this.sectionList.isEmpty() ? (String) this.sectionList.get(this.sectionList.size() - 1) : "";
         }
         ModList.endSection(getNameOfLastSection());
