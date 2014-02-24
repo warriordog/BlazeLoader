@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.world;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -41,4 +42,43 @@ public class ApiWorld {
         }
 
     }
+    
+    /**
+     * Gets all entities in the world within a certain radius from a given point
+     * @param w		World
+     * @param x		XCoordinate
+     * @param y		YCoordinate
+     * @param z		ZCoordinate
+     * @param rad	Maximum Radius
+     * @return	List of matching Entities
+     */
+	public static List<Entity>getEntitiesNear(World w, int x, int y, int z, int rad) {
+		return getEntitiesOfTypeNear(w, null, x, y, z, rad);
+	}
+	
+    /**
+     * Gets entities of type in the world within a certain radius from a given point
+     * Acts like getEntitiesNear() when Entity Type is null
+     * @param w		World
+     * @param c		Entity Type
+     * @param x		XCoordinate
+     * @param y		YCoordinate
+     * @param z		ZCoordinate
+     * @param rad	Maximum Radius
+     * @return	List of matching Entities
+     */
+	public static List<Entity> getEntitiesOfTypeNear(World w, Class<? extends Entity> c, int x, int y, int z, int rad) {
+		List<Entity> result = new ArrayList<Entity>();
+		for (Entity i : ((List<Entity>)w.loadedEntityList)) {
+			if (c == null ? true : i.getClass() == c) {
+				if (i.posX >= x - rad && i.posX <= x + rad) {
+					if (i.posY >= y - rad && i.posY <= y + rad) {
+						if (i.posZ >= z - rad && i.posZ <= z + rad) result.add(i);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
 }

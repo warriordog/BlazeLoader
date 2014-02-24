@@ -24,7 +24,7 @@ public class ApiEntity {
      * @param entityName  The name of the entity to register.
      * @param entityId    The entityId that is used to represent the entity over the network and in saves.
      */
-    public static void registerEntityType(Class entityClass, String entityName, int entityId) {
+    public static void registerEntityType(Class<? extends Entity> entityClass, String entityName, int entityId) {
         EntityList.addMapping(entityClass, entityName, entityId);
     }
 
@@ -44,7 +44,7 @@ public class ApiEntity {
      * @param oldC Original class
      * @param newC Replacement class
      */
-    public static void swapEntityClass(Class oldC, Class newC) {
+    public static void swapEntityClass(Class<? extends Entity> oldC, Class<? extends Entity> newC) {
         EntityList.EntityRegistryEntry.getEntry(oldC).setEntityClass(newC);
         swapEntitySpawn(oldC, newC);
     }
@@ -55,7 +55,7 @@ public class ApiEntity {
      * @param oldC Original class
      * @param newC Replacement class
      */
-    public static void swapEntitySpawn(Class oldC, Class newC) {
+    public static void swapEntitySpawn(Class<? extends Entity> oldC, Class<? extends Entity> newC) {
         for (EnumCreatureType i : EnumCreatureType.values()) {
             swapEntitySpawn(oldC, newC, i);
         }
@@ -67,7 +67,7 @@ public class ApiEntity {
      * @param c Replacement class
      * @param e CreatureType
      */
-    public static void swapEntitySpawn(Class o, Class c, EnumCreatureType e) {
+    public static void swapEntitySpawn(Class<? extends Entity> o, Class<? extends Entity> c, EnumCreatureType e) {
         BiomeGenBase[] standardBiomes = BiomeGenBase.getBiomeGenArray();
 
         for (BiomeGenBase biome : standardBiomes) {
@@ -94,7 +94,7 @@ public class ApiEntity {
      * @param type		Type of spwning to be used by this entity
      * @param biomes	Biomes this entity mus spawn in
      */
-    public static void RegisterSpawn(Class c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase...biomes) {
+    public static void RegisterSpawn(Class<? extends Entity> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase...biomes) {
     	if (biomes.length == 0) {
     		biomes = BiomeGenBase.getBiomeGenArray();
     	}
@@ -141,7 +141,7 @@ public class ApiEntity {
      * @param id The ID of the entity.
      * @return Return the class of the passed entity.
      */
-    public static Class getEntityClassFromID(int id) {
+    public static Class<? extends Entity> getEntityClassFromID(int id) {
         return EntityList.getClassFromID(id);
     }
 
