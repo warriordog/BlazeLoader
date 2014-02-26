@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 /**
  * Class to bind a Field to a containing Object.
  */
-public class FieldInstance {
+public class FieldInstance<I> {
     protected Field boundField;
     protected Object boundObject;
 
@@ -19,8 +19,11 @@ public class FieldInstance {
         if (field == null) {
             throw new IllegalArgumentException("The bound field cannot be null!");
         }
-        this.boundField = field;
-        this.boundObject = object;
+        boundField = field;
+        if (!boundField.isAccessible()) {
+        	boundField.setAccessible(true);
+        }
+        boundObject = object;
     }
 
     /**
@@ -39,5 +42,26 @@ public class FieldInstance {
      */
     public Object getObject() {
         return boundObject;
+    }
+    
+    public I get() {
+    	try {
+			return (I)boundField.get(boundObject);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    public void set(I value) {
+    	try {
+			boundField.set(boundObject, value);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
     }
 }

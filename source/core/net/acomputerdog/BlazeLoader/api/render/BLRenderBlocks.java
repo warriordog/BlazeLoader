@@ -1571,7 +1571,7 @@ public class BLRenderBlocks {
 		renderWithThickness(block, thickness, x, y, z, 5, diag);
 	}
 	
-	private void renderWithThickness(Block block, float thickness, float x, float y, float z, int swap, int diagonal) {
+	public void renderWithThickness(Block block, float thickness, float x, float y, float z, int swap, int diagonal) {
 		IIcon par2Icon = block.getIcon(0, renderBlocks.blockAccess.getBlockMetadata((int)x, (int)y, (int)z));
 				
         float minU,maxU,minV,maxV;

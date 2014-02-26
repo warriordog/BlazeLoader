@@ -1,7 +1,10 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
+import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -9,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -146,6 +150,24 @@ public class ModList {
         }
         BlazeLoader.currActiveMod = null;
         return allowed;
+    }
+    
+    public static void onContainerOpen(EntityClientPlayerMP player, S2DPacketOpenWindow packet) {
+    	String clazzName = packet.func_148902_e().split(":?:")[0];
+    	
+    	Class c;
+    	try {
+    		c = Class.forName(clazzName);
+    	} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return;
+		}
+    	
+    	ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(packet);
+    	for (Mod mod : loadedMods) {
+    		BlazeLoader.currActiveMod = mod;
+			if (mod.eventContainerOpen(player, c, args)) break;
+    	}
     }
 
     public static void startSection(String name) {
