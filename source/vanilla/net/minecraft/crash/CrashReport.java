@@ -182,7 +182,6 @@ public class CrashReport {
             par1StringBuilder.append("-- Head --\n");
             par1StringBuilder.append("Stacktrace:\n");
             StackTraceElement[] var2 = this.stacktrace;
-            int var3 = var2.length;
 
             for (StackTraceElement var5 : var2) {
                 par1StringBuilder.append("\t").append("at ").append(var5.toString());

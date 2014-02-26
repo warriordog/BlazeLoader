@@ -76,11 +76,11 @@ public class BLLogger {
     }
 
     public void log(ELogLevel level, String message) {
-    	if (canLog(level)) {
-    		log(" [" + level.name() + "] " + message);
-    	}
+        if (canLog(level)) {
+            log(" [" + level.name() + "] " + message);
+        }
     }
-    
+
     /**
      * Prints out a message in the format [{name}]{message}/n.
      *
@@ -165,9 +165,9 @@ public class BLLogger {
      * Prints out a message in the format [{name}][ERROR] {message}/n.
      *
      * @param message The message to print.
-     * @param e	      Optional parameter. Exception that has occured
+     * @param e       Optional parameter. Exception that has occured
      */
-    public void logError(String message, Exception...e) {
+    public void logError(String message, Exception... e) {
         log(ELogLevel.ERROR, message);
         logException(e);
     }
@@ -176,17 +176,29 @@ public class BLLogger {
      * Prints out a message in the format [{name}][FATAL] {message}/n.
      *
      * @param message The message to print.
-     * @param e	      Optional parameter. Exception that has occured
+     * @param e       Optional parameter. Exception that has occured
      */
-    public void logFatal(String message, Exception...e) {
+    public void logFatal(String message, Exception... e) {
         log(ELogLevel.FATAL, message);
         logException(e);
     }
-    
-    private void logException(Exception...e) {
-    	for (Exception i : e) {
-    		log(i.getMessage() + "\n" + i.getStackTrace());
-    	}
+
+    private void logException(Exception... e) {
+        for (Exception i : e) {
+            log(i.getMessage() + "\n" + formatStackTrace(i.getStackTrace()));
+        }
+    }
+
+    private String formatStackTrace(StackTraceElement[] stack) {
+        StringBuilder builder = new StringBuilder();
+        for (int index = 0; index < stack.length; index++) {
+            StackTraceElement element = stack[index];
+            builder.append(element.toString());
+            if (index < stack.length - 1) {
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
     }
 
     private static boolean canLog(ELogLevel level) {

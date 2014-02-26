@@ -407,7 +407,6 @@ public class EntityTrackerEntry {
 
                 if (this.myEntity instanceof EntityFireball) {
                     EntityFireball var6 = (EntityFireball) this.myEntity;
-                    var2 = null;
                     byte var3 = 63;
 
                     if (this.myEntity instanceof EntitySmallFireball) {

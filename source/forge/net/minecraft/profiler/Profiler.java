@@ -75,7 +75,7 @@ public class Profiler {
             long k = i - j;
 
             if (this.profilingMap.containsKey(this.profilingSection)) {
-                this.profilingMap.put(this.profilingSection, ((Long) this.profilingMap.get(this.profilingSection)).longValue() + k);
+                this.profilingMap.put(this.profilingSection, (Long) this.profilingMap.get(this.profilingSection) + k);
             } else {
                 this.profilingMap.put(this.profilingSection, k);
             }
@@ -146,7 +146,7 @@ public class Profiler {
 
             while (iterator1.hasNext()) {
                 s2 = (String) iterator1.next();
-                this.profilingMap.put(s2, ((Long) this.profilingMap.get(s2)).longValue() * 999L / 1000L);
+                this.profilingMap.put(s2, (Long) this.profilingMap.get(s2) * 999L / 1000L);
             }
 
             if ((float) k > f) {

@@ -300,8 +300,7 @@ public class Minecraft implements IPlayerUsage {
         String[] astring = new String[]{"sun.arch.data.model", "com.ibm.vm.bitmode", "os.arch"};
         int i = astring.length;
 
-        for (int j = 0; j < i; ++j) {
-            String s = astring[j];
+        for (String s : astring) {
             String s1 = System.getProperty(s);
 
             if (s1 != null && s1.contains("64")) {
@@ -561,8 +560,7 @@ public class Minecraft implements IPlayerUsage {
         ByteBuffer bytebuffer = ByteBuffer.allocate(4 * aint.length);
         int i = aint.length;
 
-        for (int j = 0; j < i; ++j) {
-            int k = aint[j];
+        for (int k : aint) {
             bytebuffer.putInt(k << 8 | k >> 24 & 255);
         }
 

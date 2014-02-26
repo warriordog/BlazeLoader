@@ -1443,7 +1443,6 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 var16 = 10;
             }
 
-            boolean var17 = false;
             byte var18 = -1;
             float var19 = (float) this.rendererUpdateCount + par1;
 
@@ -1452,7 +1451,6 @@ public class EntityRenderer implements IResourceManagerReloadListener {
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            var17 = false;
 
             for (int var20 = var45 - var16; var20 <= var45 + var16; ++var20) {
                 for (int var21 = var43 - var16; var21 <= var43 + var16; ++var21) {

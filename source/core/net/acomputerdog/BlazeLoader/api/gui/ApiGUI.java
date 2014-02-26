@@ -4,7 +4,6 @@ import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 
 /**
@@ -36,19 +35,20 @@ public class ApiGUI {
     public static GuiScreen getOpenGUI() {
         return ApiGeneral.theMinecraft.currentScreen;
     }
-    
+
     /**
      * Untested
      * Opens a mod added container
-     * @param player
-     * @param c
+     *
+     * @param player the player to open the container for
+     * @param c      The container to open
      */
     public static void accessContainer(EntityPlayerMP player, Container c) {
-    	if (!player.worldObj.isClient) {
-	        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(-1, 1, c.getClass().getName(), 9, true));
-	        player.openContainer = c;
-	        player.openContainer.windowId = -1;
-	        player.openContainer.addCraftingToCrafters(player);
-    	}
+        if (!player.worldObj.isClient) {
+            player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(-1, 1, c.getClass().getName(), 9, true));
+            player.openContainer = c;
+            player.openContainer.windowId = -1;
+            player.openContainer.addCraftingToCrafters(player);
+        }
     }
 }
