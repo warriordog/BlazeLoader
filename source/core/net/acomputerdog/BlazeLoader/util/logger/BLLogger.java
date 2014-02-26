@@ -75,13 +75,19 @@ public class BLLogger {
         this.includeTime = includeTime;
     }
 
+    public void log(ELogLevel level, String message) {
+    	if (canLog(level)) {
+    		log(" [" + level.name() + "] " + message);
+    	}
+    }
+    
     /**
      * Prints out a message in the format [{name}]{message}/n.
      *
      * @param message The message to print.
      */
     protected void log(String message) {
-        System.out.println(getDate() + getTime() + "[" + name + "]" + message);
+        System.out.println(getDate() + getTime() + "[" + name + "] " + message);
     }
 
     /**
@@ -116,7 +122,7 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logRaw(String message) {
-        log(" " + message);
+        log(message);
     }
 
     /**
@@ -125,9 +131,7 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logDebug(String message) {
-        if (canLog(ELogLevel.DEBUG)) {
-            log("[DEBUG] " + message);
-        }
+        log(ELogLevel.DEBUG, message);
     }
 
     /**
@@ -136,9 +140,7 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logDetail(String message) {
-        if (canLog(ELogLevel.DETAIL)) {
-            log("[DETAIL] " + message);
-        }
+        log(ELogLevel.DETAIL, message);
     }
 
     /**
@@ -147,9 +149,7 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logInfo(String message) {
-        if (canLog(ELogLevel.INFO)) {
-            log("[INFO] " + message);
-        }
+        log(ELogLevel.INFO, message);
     }
 
     /**
@@ -158,31 +158,35 @@ public class BLLogger {
      * @param message The message to print.
      */
     public void logWarning(String message) {
-        if (canLog(ELogLevel.WARNING)) {
-            log("[WARNING] " + message);
-        }
+        log(ELogLevel.WARNING, message);
     }
 
     /**
      * Prints out a message in the format [{name}][ERROR] {message}/n.
      *
      * @param message The message to print.
+     * @param e	      Optional parameter. Exception that has occured
      */
-    public void logError(String message) {
-        if (canLog(ELogLevel.ERROR)) {
-            log("[ERROR] " + message);
-        }
+    public void logError(String message, Exception...e) {
+        log(ELogLevel.ERROR, message);
+        logException(e);
     }
 
     /**
      * Prints out a message in the format [{name}][FATAL] {message}/n.
      *
      * @param message The message to print.
+     * @param e	      Optional parameter. Exception that has occured
      */
-    public void logFatal(String message) {
-        if (canLog(ELogLevel.FATAL)) {
-            log("[FATAL] " + message);
-        }
+    public void logFatal(String message, Exception...e) {
+        log(ELogLevel.FATAL, message);
+        logException(e);
+    }
+    
+    private void logException(Exception...e) {
+    	for (Exception i : e) {
+    		log(i.getMessage() + "\n" + i.getStackTrace());
+    	}
     }
 
     private static boolean canLog(ELogLevel level) {

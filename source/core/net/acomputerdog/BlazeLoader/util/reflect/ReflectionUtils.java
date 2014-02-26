@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.util.reflect;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -67,5 +68,9 @@ public class ReflectionUtils {
                 throw new RuntimeException("Could not invoke method: " + methodName, e);
             }
         }
+    }
+    
+    public static <I> FieldInstance<I> getField(Class declaringClass, Object instance, int index) {
+    	return new FieldInstance<I>(declaringClass.getDeclaredFields()[index], instance);
     }
 }

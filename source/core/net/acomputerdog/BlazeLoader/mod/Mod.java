@@ -1,5 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -7,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -254,6 +257,18 @@ public abstract class Mod {
     public boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
         return isAllowed;
     }
+    
+    /**
+     * ~WIP~
+     * Called to allow a mod to display a gui for a custom container
+     *
+     * @param player  The player accessing the container
+     * @param containerClass Class of container being accessed
+     * @return Return true if container has been handled
+     */
+	public boolean eventContainerOpen(EntityClientPlayerMP player, Class containerClass, ContainerOpenedEventArgs e) {
+		return false;
+	}
 
     /**
      * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
