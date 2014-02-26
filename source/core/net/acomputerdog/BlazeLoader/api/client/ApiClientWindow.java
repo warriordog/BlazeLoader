@@ -17,9 +17,9 @@ public class ApiClientWindow {
 	 * Sets the window icon from a mod resource pack
 	 * 
 	 * icons are loaded from the following location:
-	 * asses/ {resource_pack_name} /icon/icon_16x16.png
-	 * asses/ {resource_pack_name} /icon/icon_32x32.png
-	 * 
+     * assets/ {resource_pack_name} /icon/icon_16x16.png
+     * assets/ {resource_pack_name} /icon/icon_32x32.png
+     *
 	 * at least one of these images must be present
 	 * 
 	 * @param resourcePack Name of resource pack
