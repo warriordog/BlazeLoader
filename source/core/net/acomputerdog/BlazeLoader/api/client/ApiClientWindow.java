@@ -1,18 +1,14 @@
 package net.acomputerdog.BlazeLoader.api.client;
+
+import net.acomputerdog.BlazeLoader.util.javaUtils.ClassPath;
+import org.lwjgl.opengl.Display;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-
-import net.acomputerdog.BlazeLoader.util.javaUtils.ClassPath;
-
-import org.lwjgl.opengl.Display;
-
-import manilla.Manilla;
-
 
 public class ApiClientWindow {
 	private static ArrayList<String> brands = new ArrayList<String>();
