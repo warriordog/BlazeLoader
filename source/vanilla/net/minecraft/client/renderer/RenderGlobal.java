@@ -149,12 +149,12 @@ public class RenderGlobal implements IWorldAccess {
     /**
      * Count entities total
      */
-    private int countEntitiesTotal;
+    public int countEntitiesTotal;
 
     /**
      * Count entities rendered
      */
-    private int countEntitiesRendered;
+    public int countEntitiesRendered;
 
     /**
      * Count entities hidden
