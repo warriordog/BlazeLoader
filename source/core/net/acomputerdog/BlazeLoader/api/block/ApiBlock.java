@@ -109,6 +109,19 @@ public class ApiBlock {
     }
 
     /**
+     * Gets the Block Metadata of a location.
+     *
+     * @param world The world to get the Metadata from.
+     * @param x     The X-coordinate to get.
+     * @param y     The Y-coordinate to get.
+     * @param z     The Z-coordinate to get.
+     * @return Return the block Metadata at the specified location.
+     */
+    public static int getBlockMetadataAt(World world, int x, int y, int z) {
+        return world.getBlockMetadata(x, y, z);
+    }
+
+    /**
      * Gets a block by it's name or ID
      *
      * @param identifier A string representing the name or ID of the block.
