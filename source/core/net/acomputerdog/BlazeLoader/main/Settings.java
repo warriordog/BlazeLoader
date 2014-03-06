@@ -32,4 +32,9 @@ public class Settings {
      */
     public static transient ELogLevel minimumLogLevel = ELogLevel.DEBUG;
     protected static String minimumLogLevelName = "debug";
+
+    /**
+     * If disabled, BlazeLoader will not load mods from the classpath.
+     */
+    public static boolean loadModsFromClasspath = true;
 }
