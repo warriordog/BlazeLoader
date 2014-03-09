@@ -164,11 +164,11 @@ public class ApiBlock {
     /**
      * Registers a block in the block registry.
      *
-     * @param block The block to add
-     * @param name  The name to register the block as
      * @param id    The ID of the block.
+     * @param name  The name to register the block as
+     * @param block The block to add
      */
-    public static void registerBlock(Block block, String name, int id) {
+    public static void registerBlock(int id, String name, Block block) {
         Block.blockRegistry.addObject(id, name, block);
     }
 
