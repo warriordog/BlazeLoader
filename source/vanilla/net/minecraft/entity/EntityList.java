@@ -302,14 +302,17 @@ public class EntityList {
 
         public void setName(String name) {
             classToStringMapping.put(entityClass, name);
-
-
-            if (stringToClassMapping.containsKey(entityName)) stringToClassMapping.remove(entityName);
+            
+            if (stringToClassMapping.containsKey(entityName)) {
+            	stringToClassMapping.remove(entityName);
+            }
             stringToClassMapping.put(name, entityClass);
-
-            if (stringToIDMapping.containsKey(entityName)) stringToIDMapping.remove(entityName);
+            
+            if (stringToIDMapping.containsKey(entityName)) {
+            	stringToIDMapping.remove(entityName);
+            }
             stringToIDMapping.put(name, entityId);
-
+            
             entityName = name;
         }
 
@@ -317,30 +320,34 @@ public class EntityList {
             return entityId;
         }
 
-    	/*public void setID(int id) {
+    	public void setID(int id) {
     		stringToIDMapping.put(entityName, id);
-    		
     		classToIDMapping.put(entityClass, id);
     		
-    		if (IDtoClassMapping.containsKey(entityId)) IDtoClassMapping.remove(entityId);
+    		if (IDtoClassMapping.containsKey(entityId)) {
+    			IDtoClassMapping.remove(entityId);
+    		}
     		IDtoClassMapping.put(id, entityClass);
     		
     		entityId = id;
-    	}*/
+    	}
 
         public Class getEntityClass() {
             return entityClass;
         }
 
         public void setEntityClass(Class c) {
-            stringToClassMapping.put(entityName, entityClass);
-
-            IDtoClassMapping.put(entityId, entityClass);
-
-            if (classToStringMapping.containsKey(entityClass)) classToStringMapping.remove(entityClass);
+            stringToClassMapping.put(entityName, c);
+            IDtoClassMapping.put(entityId, c);
+            
+            if (classToStringMapping.containsKey(entityClass)) {
+            	classToStringMapping.remove(entityClass);
+            }
             classToStringMapping.put(c, entityName);
-
-            if (classToIDMapping.containsKey(entityClass)) classToIDMapping.remove(entityClass);
+            
+            if (classToIDMapping.containsKey(entityClass)) {
+            	classToIDMapping.remove(entityClass);
+            }
             classToIDMapping.put(c, entityId);
 
             entityClass = c;

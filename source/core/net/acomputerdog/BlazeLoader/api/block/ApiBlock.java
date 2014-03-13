@@ -1,9 +1,15 @@
 package net.acomputerdog.BlazeLoader.api.block;
 
+import java.util.Map;
+
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
+import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.util.math.MathUtils;
+import net.acomputerdog.BlazeLoader.util.reflect.FieldInstance;
+import net.acomputerdog.BlazeLoader.util.reflect.ReflectionUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -170,6 +176,20 @@ public class ApiBlock {
      */
     public static void registerBlock(int id, String name, Block block) {
         Block.blockRegistry.addObject(id, name, block);
+    }
+    
+    /**
+     * Registers or replaces a TileEntity
+     * @param clazz		Tile entity class
+     * @param name		Entity name. Used as its id.
+     */
+    public static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
+    	if (TileEntity.nameToClassMap.containsKey(clazz)) {
+            BlazeLoader.getLogger().logDetail("Registering duplicate id: " + name);
+        }
+    	
+    	TileEntity.classToNameMap.put(clazz, name);
+    	TileEntity.nameToClassMap.put(name, clazz);
     }
 
     /**
