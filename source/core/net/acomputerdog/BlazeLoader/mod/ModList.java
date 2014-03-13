@@ -78,8 +78,8 @@ public class ModList {
                         ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
                         modData.add(data);
                         ModLoader.loadModAsResourcePack(data);
-                        Blocks.InitBlocks();
-                        Items.InitItems();
+                        //Blocks.InitBlocks();
+                        //Items.InitItems();
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {
