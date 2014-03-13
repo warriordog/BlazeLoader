@@ -26,7 +26,7 @@ public final class Version {
      * @return Get the version of the API features of BlazeLoader
      */
     public static int getApiVersion() {
-        return 4;
+        return 5;
     }
 
     /**
