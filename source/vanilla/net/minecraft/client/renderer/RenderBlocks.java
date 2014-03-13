@@ -244,6 +244,14 @@ public class RenderBlocks
         {
             p_147805_1_.setBlockBoundsBasedOnState(this.blockAccess, p_147805_2_, p_147805_3_, p_147805_4_);
             this.setRenderBoundsFromBlock(p_147805_1_);
+            
+            if (!renderBlocksBLWrapFlag && APIRenderBlocks.HasSpecialRender(p_147805_1_)) {
+        		renderBlocksBLWrapFlag = true;
+        		boolean result = ((IRenderSpecial)p_147805_1_).renderWorldBlock(renderBlocksBl, p_147805_2_, p_147805_3_, p_147805_4_);
+        		renderBlocksBLWrapFlag = false;
+    			return result;
+    		}
+            
             return var5 == 0 ? this.renderStandardBlock(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 4 ? this.renderBlockFluids(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 31 ? this.renderBlockLog(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 1 ? this.renderCrossedSquares(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 40 ? this.renderBlockDoublePlant((BlockDoublePlant) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 2 ? this.renderBlockTorch(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 20 ? this.renderBlockVine(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 11 ? this.renderBlockFence((BlockFence) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 39 ? this.renderBlockQuartz(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 5 ? this.renderBlockRedstoneWire(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 13 ? this.renderBlockCactus(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 9 ? this.renderBlockMinecartTrack((BlockRailBase) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 19 ? this.renderBlockStem(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 23 ? this.renderBlockLilyPad(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 6 ? this.renderBlockCrops(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 3 ? this.renderBlockFire((BlockFire) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 8 ? this.renderBlockLadder(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 7 ? this.renderBlockDoor(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 10 ? this.renderBlockStairs((BlockStairs) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 27 ? this.renderBlockDragonEgg((BlockDragonEgg) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 32 ? this.renderBlockWall((BlockWall) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 12 ? this.renderBlockLever(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 29 ? this.renderBlockTripWireSource(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 30 ? this.renderBlockTripWire(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 14 ? this.renderBlockBed(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 15 ? this.renderBlockRepeater((BlockRedstoneRepeater) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 36 ? this.renderBlockRedstoneDiode((BlockRedstoneDiode) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 37 ? this.renderBlockRedstoneComparator((BlockRedstoneComparator) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 16 ? this.renderPistonBase(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_, false) : (var5 == 17 ? this.renderPistonExtension(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_, true) : (var5 == 18 ? this.renderBlockPane((BlockPane) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 41 ? this.renderBlockStainedGlassPane(p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 21 ? this.renderBlockFenceGate((BlockFenceGate) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 24 ? this.renderBlockCauldron((BlockCauldron) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 33 ? this.renderBlockFlowerpot((BlockFlowerPot) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 35 ? this.renderBlockAnvil((BlockAnvil) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 25 ? this.renderBlockBrewingStand((BlockBrewingStand) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 26 ? this.renderBlockEndPortalFrame((BlockEndPortalFrame) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 28 ? this.renderBlockCocoa((BlockCocoa) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 34 ? this.renderBlockBeacon((BlockBeacon) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_) : (var5 == 38 && this.renderBlockHopper((BlockHopper) p_147805_1_, p_147805_2_, p_147805_3_, p_147805_4_)))))))))))))))))))))))))))))))))))))))));
         }
     }
@@ -4215,10 +4223,6 @@ public class RenderBlocks
      */
     public boolean renderStandardBlock(Block p_147784_1_, int p_147784_2_, int p_147784_3_, int p_147784_4_)
     {
-    	if (APIRenderBlocks.HasSpecialRender(p_147784_1_)) {
-			return ((IRenderSpecial)p_147784_1_).renderWorldBlock(renderBlocksBl, p_147784_2_, p_147784_3_, p_147784_4_);
-		}
-                
         return renderBlocksBl.renderStandardBlock(p_147784_1_, p_147784_2_, p_147784_3_, p_147784_4_);
         /*int var5 = p_147784_1_.colorMultiplier(blockAccess, p_147784_2_, p_147784_3_, p_147784_4_);
         float var6 = (float)(var5 >> 16 & 255) / 255.0F;
@@ -7665,8 +7669,10 @@ public class RenderBlocks
     }
 
     public void renderBlockAsItem(Block block, int metadata, float multiplier) {
-    	if (APIRenderBlocks.HasSpecialRender(block) && ((IRenderSpecial)block).overrideInventoryRender()) {
+    	if (!renderBlocksBLWrapFlag && APIRenderBlocks.HasSpecialRender(block) && ((IRenderSpecial)block).overrideInventoryRender()) {
+    		renderBlocksBLWrapFlag = true;
 			((IRenderSpecial)block).renderInventoryBlock(renderBlocksBl, metadata);
+			renderBlocksBLWrapFlag = false;
 		} else {
 			renderStandardBlockAsItem(block, metadata, multiplier);
 		}
@@ -8223,4 +8229,5 @@ public class RenderBlocks
     //Added fields
     
     public BLRenderBlocks renderBlocksBl = new BLRenderBlocks(this);
+    private boolean renderBlocksBLWrapFlag = false;
 }

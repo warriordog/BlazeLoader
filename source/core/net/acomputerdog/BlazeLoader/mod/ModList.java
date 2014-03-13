@@ -10,6 +10,8 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
@@ -76,6 +78,8 @@ public class ModList {
                         ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
                         modData.add(data);
                         ModLoader.loadModAsResourcePack(data);
+                        //Blocks.InitBlocks();
+                        //Items.InitItems();
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {
@@ -162,7 +166,7 @@ public class ModList {
             return;
         }
 
-        ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(packet);
+        ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(player, packet);
         for (Mod mod : loadedMods) {
             BlazeLoader.currActiveMod = mod;
             if (mod.eventContainerOpen(player, c, args)) break;

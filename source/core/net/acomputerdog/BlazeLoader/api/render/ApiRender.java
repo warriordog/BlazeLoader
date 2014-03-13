@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 
 /**
  * Contains functions related to game rendering.
@@ -78,6 +79,7 @@ public class ApiRender {
      * @param renderer The render to register.
      */
     public static void registerEntityRenderer(Class entity, Render renderer) {
+    	renderer.setRenderManager(RenderManager.instance);
         BlazeLoader.getEntityRenderMap().put(entity, renderer);
     }
 }
