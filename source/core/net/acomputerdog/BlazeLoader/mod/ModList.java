@@ -1,7 +1,9 @@
 package net.acomputerdog.BlazeLoader.mod;
 
+import net.acomputerdog.BlazeLoader.api.block.ApiBlock;
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
+import net.acomputerdog.BlazeLoader.api.item.ApiItem;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -78,8 +80,8 @@ public class ModList {
                         ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
                         modData.add(data);
                         ModLoader.loadModAsResourcePack(data);
-                        //Blocks.InitBlocks();
-                        //Items.InitItems();
+                        ApiBlock.InitBlocks();
+                        ApiItem.InitItems();
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {

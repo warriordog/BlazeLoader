@@ -117,7 +117,7 @@ public class ApiEntity {
      * @return return a free entity ID.
      */
     public static int getFreeEntityId() {
-        while (EntityList.getClassFromID(BlazeLoader.currFreeEntityId) == null) {
+        while (EntityList.getClassFromID(BlazeLoader.currFreeEntityId) != null) {
             BlazeLoader.currFreeEntityId++;
         }
         int currId = BlazeLoader.currFreeEntityId;
