@@ -1,9 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.api.block.ApiBlock;
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
-import net.acomputerdog.BlazeLoader.api.item.ApiItem;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,8 +10,6 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
@@ -80,8 +76,6 @@ public class ModList {
                         ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
                         modData.add(data);
                         ModLoader.loadModAsResourcePack(data);
-                        ApiBlock.InitBlocks();
-                        ApiItem.InitItems();
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
                     }
                 } else {
@@ -299,5 +293,4 @@ public class ModList {
         }
         return entity;
     }
-
 }
