@@ -167,7 +167,7 @@ public class BLLogger {
      * @param message The message to print.
      * @param e       Optional parameter. Exception that has occured
      */
-    public void logError(String message, Exception... e) {
+    public void logError(String message, Throwable... e) {
         log(ELogLevel.ERROR, message);
         logException(e);
     }
@@ -178,13 +178,13 @@ public class BLLogger {
      * @param message The message to print.
      * @param e       Optional parameter. Exception that has occured
      */
-    public void logFatal(String message, Exception... e) {
+    public void logFatal(String message, Throwable... e) {
         log(ELogLevel.FATAL, message);
         logException(e);
     }
 
-    private void logException(Exception... e) {
-        for (Exception i : e) {
+    private void logException(Throwable... e) {
+        for (Throwable i : e) {
             log(i.getMessage() + "\n" + formatStackTrace(i.getStackTrace()));
         }
     }
