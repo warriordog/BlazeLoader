@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BLCraftingManager {
     public static final int VanillaCraftingManagerKey = 0;
@@ -59,6 +60,13 @@ public class BLCraftingManager {
             return recipeManagers.get(key);
         }
         return (List<IRecipe>) instance.getRecipeList();
+    }
+    
+    /**
+     * Returns a set of keys for the various registered crafting managers 
+     */
+    public static Set<Integer> getRecipeKeys(){
+    	return recipeManagers.keySet();
     }
 
     /**
