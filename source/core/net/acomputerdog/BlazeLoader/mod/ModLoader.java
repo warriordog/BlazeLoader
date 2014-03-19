@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -18,12 +20,6 @@ import java.util.zip.ZipFile;
  * Handles detecting and loading mods.
  */
 public class ModLoader {
-    private static Map<String, File> sourceMap = new HashMap<String, File>();
-    private static final File workingDir = new File(System.getProperty("user.dir"));
-
-    public static File getModSource(String clsName) {
-        return sourceMap.get(clsName);
-    }
 
     public static void loadMods(File searchFile, File parentFile) {
         if (!searchFile.exists() || !searchFile.isDirectory()) {
@@ -59,7 +55,6 @@ public class ModLoader {
             }
             String className = path.replaceAll(Pattern.quote(System.getProperty("file.separator")), ".").substring(0, path.length() - 6);
             modClassNames.add(className);
-            sourceMap.put(className, clsFile);
         } else {
             return;
         }
@@ -96,7 +91,6 @@ public class ModLoader {
                 if (entry.getName().endsWith(".class")) {
                     String name = entry.getName().replaceAll("/", ".").substring(0, entry.getName().length() - 6);
                     modClassNames.add(name);
-                    sourceMap.put(name, modZip);
                 }
             }
         } catch (IOException e) {

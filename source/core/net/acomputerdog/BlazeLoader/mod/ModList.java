@@ -15,6 +15,7 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -73,7 +74,7 @@ public class ModList {
                     if (useNewMod) {
                         mod.load();
                         loadedMods.add(mod);
-                        ModData data = new ModData(mod, cls, ModLoader.getModSource(cls.getName()), mod.getModId());
+                        ModData data = new ModData(mod, cls, new File(cls.getProtectionDomain().getCodeSource().getLocation().toURI()), mod.getModId());
                         modData.add(data);
                         ModLoader.loadModAsResourcePack(data);
                         BlazeLoader.getLogger().logDetail("Initialized mod: [" + mod.getModName() + "] version: [" + mod.getStringModVersion() + "].");
