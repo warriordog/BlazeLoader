@@ -20,11 +20,17 @@ public interface WorldEventHandler {
      */
     public void eventUnloadWorld();
 
-
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
      *
      * @param server The server calling tickBlocksAndAmbiance
      */
     public void eventTickBlocksAndAmbiance(WorldServer server);
+
+    /**
+     * Called when a server-side world is ticked.
+     *
+     * @param world The world being ticked.
+     */
+    public void eventTickServerWorld(WorldServer world);
 }
