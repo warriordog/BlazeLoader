@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 
 import java.io.File;
@@ -60,6 +61,7 @@ public class ModList {
                         }
                     }
                     if (useNewMod) {
+                        EventHandler.addMod(mod);
                         mod.load();
                         loadedMods.add(mod);
                         ModData data = new ModData(mod, cls, new File(cls.getProtectionDomain().getCodeSource().getLocation().toURI()), mod.getModId());
