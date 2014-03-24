@@ -2,7 +2,7 @@ package net.minecraft.profiler;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class Profiler {
      * Start section
      */
     public void startSection(String par1Str) {
-        ModList.startSection(par1Str);
+        EventHandler.eventStartSection(par1Str);
         if (this.profilingEnabled) {
             if (this.profilingSection.length() > 0) {
                 this.profilingSection = this.profilingSection + ".";
@@ -89,7 +89,7 @@ public class Profiler {
             this.sectionList.remove(this.sectionList.size() - 1);
             this.profilingSection = !this.sectionList.isEmpty() ? (String) this.sectionList.get(this.sectionList.size() - 1) : "";
         }
-        ModList.endSection(getNameOfLastSection());
+        EventHandler.eventEndSection(getNameOfLastSection());
     }
 
     /**

@@ -1,5 +1,7 @@
 package net.acomputerdog.BlazeLoader.event;
 
+import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
@@ -45,4 +47,15 @@ public interface OverrideEventHandler {
      * @return A generated particle, or param currParticle to disable behavior
      */
     public EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3, EntityFX currParticle);
+
+
+    /**
+     * ~WIP~
+     * Called to allow a mod to display a gui for a custom container
+     *
+     * @param player         The player accessing the container
+     * @param containerClass Class of container being accessed
+     * @return Return true if container has been handled
+     */
+    public boolean eventContainerOpen(EntityClientPlayerMP player, Class containerClass, ContainerOpenedEventArgs e);
 }

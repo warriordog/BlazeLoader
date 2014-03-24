@@ -2,6 +2,7 @@ package net.minecraft.client;
 
 import com.google.common.collect.Lists;
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.util.config.ConfigList;
@@ -706,7 +707,7 @@ public class Minecraft implements IPlayerUsage {
 
         GuiScreen old = this.currentScreen;
 
-        if (!ModList.onGui(this.currentScreen, p_147108_1_, true)) return;
+        if (!EventHandler.eventOnGui(this.currentScreen, p_147108_1_, true)) return;
 
 
         if (old != null && p_147108_1_ != old) {
@@ -1893,9 +1894,9 @@ public class Minecraft implements IPlayerUsage {
 
         ApiGeneral.localPlayer = this.thePlayer;
         if (par1WorldClient == null) {
-            ModList.unloadWorld();
+            EventHandler.eventUnloadWorld();
         } else {
-            ModList.loadWorld(par1WorldClient, par2Str);
+            EventHandler.eventLoadWorld(par1WorldClient, par2Str);
         }
     }
 

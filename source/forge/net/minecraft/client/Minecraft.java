@@ -8,6 +8,7 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.util.BLModContainer;
@@ -689,7 +690,7 @@ public class Minecraft implements IPlayerUsage {
         GuiScreen old = this.currentScreen;
         GuiOpenEvent event = new GuiOpenEvent(p_147108_1_);
 
-        if (!ModList.onGui(old, p_147108_1_, !MinecraftForge.EVENT_BUS.post(event))) return;
+        if (!EventHandler.eventOnGui(old, p_147108_1_, !MinecraftForge.EVENT_BUS.post(event))) return;
 
         p_147108_1_ = event.gui;
 

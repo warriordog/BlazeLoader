@@ -2,7 +2,7 @@ package net.minecraft.world;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEventData;
 import net.minecraft.block.material.Material;
@@ -131,7 +131,7 @@ public class WorldServer extends World {
      * Runs a single tick for the world
      */
     public void tick() {
-        ModList.eventTickServerWorld(this);
+        EventHandler.eventTickServerWorld(this);
         super.tick();
 
         if (this.getWorldInfo().isHardcoreModeEnabled() && this.difficultySetting != EnumDifficulty.HARD) {
@@ -278,7 +278,7 @@ public class WorldServer extends World {
     }
 
     protected void func_147456_g() {
-        ModList.eventTickBlocksAndAmbiance(this);
+        EventHandler.eventTickBlocksAndAmbiance(this);
         super.func_147456_g();
         int i = 0;
         int j = 0;

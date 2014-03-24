@@ -29,7 +29,45 @@ public class EventHandler {
     private static final List<TickEventHandler> tickEventHandlers = new ArrayList<TickEventHandler>();
     private static final List<WorldEventHandler> worldEventHandlers = new ArrayList<WorldEventHandler>();
 
-    public static void event_tick() {
+    public static void addMod(Mod mod) {
+        if (mod instanceof BlockEventHandler) {
+            blockEventHandlers.add((BlockEventHandler) mod);
+        }
+        if (mod instanceof ClientEventHandler) {
+            clientEventHandlers.add((ClientEventHandler) mod);
+        }
+        if (mod instanceof GenericEventHandler) {
+            genericEventHandlers.add((GenericEventHandler) mod);
+        }
+        if (mod instanceof InventoryEventHandler) {
+            inventoryEventHandlers.add((InventoryEventHandler) mod);
+        }
+        if (mod instanceof OverrideEventHandler) {
+            overrideEventHandlers.add((OverrideEventHandler) mod);
+        }
+        if (mod instanceof PlayerEventHandler) {
+            playerEventHandlers.add((PlayerEventHandler) mod);
+        }
+        if (mod instanceof ProfilerEventHandler) {
+            profilerEventHandlers.add((ProfilerEventHandler) mod);
+        }
+        if (mod instanceof TickEventHandler) {
+            tickEventHandlers.add((TickEventHandler) mod);
+        }
+        if (mod instanceof WorldEventHandler) {
+            worldEventHandlers.add((WorldEventHandler) mod);
+        }
+    }
+
+    private static void setActiveMod(Object mod) {
+        if (mod instanceof Mod) {
+            BlazeLoader.currActiveMod = (Mod) mod;
+        } else {
+            BlazeLoader.currActiveMod = null;
+        }
+    }
+
+    public static void eventTick() {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (TickEventHandler mod : tickEventHandlers) {
             setActiveMod(mod);
@@ -38,7 +76,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static boolean event_onGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {
+    public static boolean eventOnGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (ClientEventHandler mod : clientEventHandlers) {
             setActiveMod(mod);
@@ -48,7 +86,7 @@ public class EventHandler {
         return allowed;
     }
 
-    public static void event_onContainerOpen(EntityClientPlayerMP player, S2DPacketOpenWindow packet) {
+    public static void overrideOnContainerOpen(EntityClientPlayerMP player, S2DPacketOpenWindow packet) {
         Mod prevMod = BlazeLoader.currActiveMod;
         String clazzName = packet.func_148902_e().split(":?:")[0];
 
@@ -60,7 +98,7 @@ public class EventHandler {
         }
 
         ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(player, packet);
-        for (ClientEventHandler mod : clientEventHandlers) {
+        for (OverrideEventHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             if (mod.eventContainerOpen(player, c, args)) {
                 break;
@@ -69,7 +107,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_startSection(String name) {
+    public static void eventStartSection(String name) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (ProfilerEventHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
@@ -78,7 +116,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_endSection(String name) {
+    public static void eventEndSection(String name) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (ProfilerEventHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
@@ -87,7 +125,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_loadWorld(WorldClient par1WorldClient, String par2Str) {
+    public static void eventLoadWorld(WorldClient par1WorldClient, String par2Str) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
@@ -96,7 +134,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_unloadWorld() {
+    public static void eventUnloadWorld() {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
@@ -105,7 +143,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_PlayerLogin(EntityPlayerMP player) {
+    public static void eventPlayerLogin(EntityPlayerMP player) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
@@ -114,7 +152,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_PlayerLogout(EntityPlayerMP player) {
+    public static void eventPlayerLogout(EntityPlayerMP player) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
@@ -124,7 +162,7 @@ public class EventHandler {
     }
 
     @Deprecated
-    public static void event_PlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath) {
+    public static void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
@@ -133,7 +171,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_ClientPlayerDeath() {
+    public static void eventClientPlayerDeath() {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
@@ -142,7 +180,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static void event_TickServerWorld(WorldServer world) {
+    public static void eventTickServerWorld(WorldServer world) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
@@ -151,7 +189,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static S0EPacketSpawnObject override_createSpawnPacket(Entity myEntity) {
+    public static S0EPacketSpawnObject overrideCreateSpawnPacket(Entity myEntity) {
         Mod prevMod = BlazeLoader.currActiveMod;
         S0EPacketSpawnObject packet = null;
         for (OverrideEventHandler mod : overrideEventHandlers) {
@@ -165,7 +203,7 @@ public class EventHandler {
         return packet;
     }
 
-    public static void event_TickBlocksAndAmbiance(WorldServer server) {
+    public static void eventTickBlocksAndAmbiance(WorldServer server) {
         Mod prevMod = BlazeLoader.currActiveMod;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
@@ -174,7 +212,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static boolean event_PlayerLoginAttempt(String username, boolean isAllowed) {
+    public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
         Mod prevMod = BlazeLoader.currActiveMod;
         boolean allow = isAllowed;
         for (PlayerEventHandler mod : playerEventHandlers) {
@@ -185,7 +223,7 @@ public class EventHandler {
         return allow;
     }
 
-    public static void override_addEntityToTracker(EntityTracker tracker, Entity entity) {
+    public static void overrideAddEntityToTracker(EntityTracker tracker, Entity entity) {
         Mod prevMod = BlazeLoader.currActiveMod;
         boolean isHandled = false;
         for (OverrideEventHandler mod : overrideEventHandlers) {
@@ -198,7 +236,7 @@ public class EventHandler {
         BlazeLoader.currActiveMod = prevMod;
     }
 
-    public static EntityFX override_spawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
+    public static EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
         Mod prevMod = BlazeLoader.currActiveMod;
         EntityFX entity = null;
         for (OverrideEventHandler mod : overrideEventHandlers) {
@@ -207,11 +245,5 @@ public class EventHandler {
         }
         BlazeLoader.currActiveMod = prevMod;
         return entity;
-    }
-
-    private static void setActiveMod(Object mod) {
-        if (mod instanceof Mod) {
-            BlazeLoader.currActiveMod = (Mod) mod;
-        }
     }
 }

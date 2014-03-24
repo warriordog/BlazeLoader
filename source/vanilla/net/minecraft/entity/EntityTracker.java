@@ -1,6 +1,6 @@
 package net.minecraft.entity;
 
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.boss.EntityDragon;
@@ -106,7 +106,7 @@ public class EntityTracker {
         } else if (par1Entity instanceof EntityEnderCrystal) {
             this.addEntityToTracker(par1Entity, 256, Integer.MAX_VALUE, false);
         } else {
-            ModList.addEntityToTracker(this, par1Entity);
+            EventHandler.overrideAddEntityToTracker(this, par1Entity);
         }
     }
 

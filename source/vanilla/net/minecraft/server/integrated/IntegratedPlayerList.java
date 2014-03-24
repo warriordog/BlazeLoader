@@ -1,7 +1,7 @@
 package net.minecraft.server.integrated;
 
 import com.mojang.authlib.GameProfile;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -56,7 +56,7 @@ public class IntegratedPlayerList extends ServerConfigurationManager {
     @Override
     public EntityPlayerMP respawnPlayer(EntityPlayerMP player, int dimension, boolean didWin) {
         EntityPlayerMP newPlayer = super.respawnPlayer(player, dimension, didWin);
-        ModList.eventPlayerSpawn(player, newPlayer, dimension, didWin);
+        EventHandler.eventPlayerSpawn(player, newPlayer, dimension, didWin);
         return newPlayer;
     }
 
@@ -66,7 +66,7 @@ public class IntegratedPlayerList extends ServerConfigurationManager {
     @Override
     public void playerLoggedOut(EntityPlayerMP player) {
         super.playerLoggedOut(player);
-        ModList.eventPlayerLogout(player);
+        EventHandler.eventPlayerLogout(player);
     }
 
     /**
@@ -75,7 +75,7 @@ public class IntegratedPlayerList extends ServerConfigurationManager {
     @Override
     public void playerLoggedIn(EntityPlayerMP player) {
         super.playerLoggedIn(player);
-        ModList.eventPlayerLogin(player);
+        EventHandler.eventPlayerLogin(player);
     }
 
     /**
@@ -83,6 +83,6 @@ public class IntegratedPlayerList extends ServerConfigurationManager {
      */
     @Override
     public boolean isAllowedToLogin(String username) {
-        return ModList.eventPlayerLoginAttempt(username, super.isAllowedToLogin(username));
+        return EventHandler.eventPlayerLoginAttempt(username, super.isAllowedToLogin(username));
     }
 }

@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import com.google.common.collect.Maps;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -1925,7 +1925,7 @@ public class RenderGlobal implements IWorldAccess {
                     }
 
                     if (entityfx == null) {
-                        entityfx = ModList.spawnParticle(par1Str, this.theWorld, par2, par4, par6, par8, par10, par12);
+                        entityfx = EventHandler.overrideSpawnParticle(par1Str, this.theWorld, par2, par4, par6, par8, par10, par12);
                     }
 
                     if (entityfx != null) {

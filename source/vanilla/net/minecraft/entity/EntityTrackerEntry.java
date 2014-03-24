@@ -1,6 +1,6 @@
 package net.minecraft.entity;
 
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ai.attributes.ServersideAttributeMap;
 import net.minecraft.entity.boss.EntityDragon;
@@ -453,7 +453,7 @@ public class EntityTrackerEntry {
                 } else if (this.myEntity instanceof EntityXPOrb) {
                     return new S11PacketSpawnExperienceOrb((EntityXPOrb) this.myEntity);
                 } else {
-                    S0EPacketSpawnObject spawnPacket = ModList.createSpawnPacket(myEntity);
+                    S0EPacketSpawnObject spawnPacket = EventHandler.overrideCreateSpawnPacket(myEntity);
                     if (spawnPacket != null) {
                         return spawnPacket;
                     } else {

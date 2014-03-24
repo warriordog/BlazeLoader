@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -1069,7 +1069,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
                 }
             }
         }
-        ModList.tick();
+        EventHandler.eventTick();
     }
 
     public void renderWorld(float par1, long par2) {

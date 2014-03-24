@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.google.common.collect.Maps;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -1918,7 +1918,7 @@ public class RenderGlobal implements IWorldAccess {
                     }
 
                     if (var21 == null) {
-                        var21 = ModList.spawnParticle(par1Str, this.theWorld, par2, par4, par6, par8, par10, par12);
+                        var21 = EventHandler.overrideSpawnParticle(par1Str, this.theWorld, par2, par4, par6, par8, par10, par12);
                     }
 
                     if (var21 != null) {

@@ -6,7 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.acomputerdog.BlazeLoader.mod.ModList;
+import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -844,7 +844,7 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
                 break;
 
             default:
-                ModList.onContainerOpen(entityclientplayermp, p_147265_1_);
+                EventHandler.overrideOnContainerOpen(entityclientplayermp, p_147265_1_);
         }
     }
 
