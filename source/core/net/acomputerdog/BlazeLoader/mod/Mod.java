@@ -229,14 +229,13 @@ public abstract class Mod {
     public void eventTickServerWorld() {
     }
 
-    //TODO rewrite to allow disabling vanilla
-
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
      *
      * @param server The server calling tickBlocksAndAmbiance
      */
     public void eventTickBlocksAndAmbiance(WorldServer server) {
+        //TODO rewrite to allow disabling vanilla
         this.eventTickBlocksAndAmbiance();
     }
 
