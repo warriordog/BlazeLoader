@@ -47,9 +47,16 @@ public class ApiGUI {
      */
     public static void accessContainer(EntityPlayerMP player, Container c, String guiLabel, boolean addCrafters) {
         if (!player.worldObj.isClient) {
-            player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(0, -1, c.getClass().getName() + ":?:" + guiLabel , 9, true));
+            
+            if (player.openContainer != player.inventoryContainer) {
+            	player.closeScreen();
+            }
+            
+            player.currentWindowId = player.currentWindowId % 100 + 1;
+            
+            player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, -1, c.getClass().getName() + ":?:" + guiLabel, c.getInventory().size(), true));
             player.openContainer = c;
-            player.openContainer.windowId = 1;
+            player.openContainer.windowId = player.currentWindowId;
             if (addCrafters) {
             	player.openContainer.addCraftingToCrafters(player);
             }

@@ -101,6 +101,7 @@ public class EventHandler {
         for (OverrideEventHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             if (mod.eventContainerOpen(player, c, args)) {
+            	player.openContainer.windowId = packet.func_148901_c();
                 break;
             }
         }
