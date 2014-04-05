@@ -40,7 +40,7 @@ public class StandardClock implements IDate, ITimePrecise {
      */
     public String getSimpleTimeAsString() {
         updateCalendar();
-        int hour = theCalendar.get(Calendar.HOUR);
+        int hour = theCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = theCalendar.get(Calendar.MINUTE);
         int second = theCalendar.get(Calendar.SECOND);
         return hour + ":" + minute + ":" + second;
@@ -53,7 +53,7 @@ public class StandardClock implements IDate, ITimePrecise {
      */
     public String getComplexTimeAsString() {
         updateCalendar();
-        int hour = theCalendar.get(Calendar.HOUR);
+        int hour = theCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = theCalendar.get(Calendar.MINUTE);
         int second = theCalendar.get(Calendar.SECOND);
         int millis = theCalendar.get(Calendar.MILLISECOND);
@@ -166,7 +166,7 @@ public class StandardClock implements IDate, ITimePrecise {
     @Override
     public int getHours() {
         updateCalendar();
-        return theCalendar.get(Calendar.HOUR);
+        return theCalendar.get(Calendar.HOUR_OF_DAY);
     }
 
     /**
