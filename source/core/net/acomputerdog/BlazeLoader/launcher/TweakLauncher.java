@@ -5,7 +5,7 @@ import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.acomputerdog.BlazeLoader.main.Version;
-import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
+import net.acomputerdog.core.logger.CLogger;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -20,7 +20,7 @@ import java.util.Map;
  * A launch class that allows BlazeLoader to be loaded without modifications to the jar.  Requires LaunchWrapper.
  */
 public class TweakLauncher implements ITweaker {
-    public static BLLogger logger = new BLLogger("BL_Launcher");
+    public static CLogger logger = new CLogger("BL_Launcher");
     protected List<String> tweaks = new ArrayList<String>();
     protected boolean hasInit = false;
     protected File gameDir, assetDir = null;

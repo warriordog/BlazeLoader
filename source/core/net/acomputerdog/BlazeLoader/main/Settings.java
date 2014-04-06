@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.main;
 
-import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
+import net.acomputerdog.core.logger.ELogLevel;
 
 /**
  * Global settings.  Saved to .minecraft/BL/BLConfig.json.  BlazeLoader.class uses Gson library to handle serialization.

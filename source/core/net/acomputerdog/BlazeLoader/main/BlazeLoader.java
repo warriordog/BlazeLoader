@@ -8,8 +8,8 @@ import net.acomputerdog.BlazeLoader.main.command.CommandBL;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.acomputerdog.BlazeLoader.mod.ModList;
 import net.acomputerdog.BlazeLoader.mod.ModLoader;
-import net.acomputerdog.BlazeLoader.util.logger.BLLogger;
-import net.acomputerdog.BlazeLoader.util.logger.ELogLevel;
+import net.acomputerdog.core.logger.CLogger;
+import net.acomputerdog.core.logger.ELogLevel;
 import net.minecraft.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
@@ -37,7 +37,7 @@ public final class BlazeLoader {
     public static CommandHandler commandHandler = new CommandHandler();
 
     private static Settings settings = new Settings();
-    private static BLLogger logger = new BLLogger("BlazeLoader", true, true);
+    private static CLogger logger = new CLogger("BlazeLoader", true, true, Settings.minimumLogLevel);
     private static final Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.TRANSIENT).setPrettyPrinting().create();
     private static File settingsFile;
     private static boolean settingsLoaded = false;
@@ -136,7 +136,7 @@ public final class BlazeLoader {
         logger.logInfo("Mod loading complete.");
     }
 
-    public static BLLogger getLogger() {
+    public static CLogger getLogger() {
         return logger;
     }
 
