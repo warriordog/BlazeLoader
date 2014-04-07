@@ -85,13 +85,31 @@ public class ApiWorld {
         return result;
     }
     
-    public static void breakBlock(World w, int x, int y, int z, boolean dropItems) {
-    	w.func_147480_a(x, y, z, dropItems);
+    /**
+     * Destroys a block in the world creating sound and particle effects as if it were broken by a player.
+     * @param w	World
+     * @param x	XCoordinate
+     * @param y YCoordinate
+     * @param z ZCoordinate
+     * @param dropItems Block  will drop as an item if true
+     */
+    public static void destroyBlock(World w, int x, int y, int z, boolean dropItems) {
+    	if (!w.isClient) w.func_147480_a(x, y, z, dropItems);
     }
     
-    public static void playDestructionEffect(World w, int x, int y, int z) {
-    	Block b = w.getBlock(x, y, z);
-    	int metadata = w.getBlockMetadata(x, y, z);
-    	w.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(b) + (metadata << 12));
+    /**
+     * Play sound and particle effect for a block being broken without removing
+     * the block
+     * @param w	World
+     * @param x	XCoordinate
+     * @param y YCoordinate
+     * @param z ZCoordinate
+     */
+    public static void playBlockDestructionEffect(World w, int x, int y, int z) {
+    	if (!w.isClient) {
+	    	Block b = w.getBlock(x, y, z);
+	    	int metadata = w.getBlockMetadata(x, y, z);
+	    	w.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(b) + (metadata << 12));
+    	}
     }
 }
