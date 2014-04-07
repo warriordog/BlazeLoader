@@ -300,6 +300,14 @@ public class EntityList {
             return entityName;
         }
 
+        public int getID() {
+            return entityId;
+        }
+
+        public Class getEntityClass() {
+            return entityClass;
+        }
+
         public void setName(String name) {
             classToStringMapping.put(entityClass, name);
             
@@ -316,10 +324,6 @@ public class EntityList {
             entityName = name;
         }
 
-        public int getID() {
-            return entityId;
-        }
-
     	public void setID(int id) {
     		stringToIDMapping.put(entityName, id);
     		classToIDMapping.put(entityClass, id);
@@ -332,10 +336,6 @@ public class EntityList {
     		entityId = id;
     	}
 
-        public Class getEntityClass() {
-            return entityClass;
-        }
-
         public void setEntityClass(Class c) {
             stringToClassMapping.put(entityName, c);
             IDtoClassMapping.put(entityId, c);
@@ -345,9 +345,11 @@ public class EntityList {
             }
             classToStringMapping.put(c, entityName);
             
-            if (classToIDMapping.containsKey(entityClass)) {
+            //Intentionally leaves the mapping from old class to id so that the
+            //client doesn't crash when the old class is used to try to spawn the entity
+            /*if (classToIDMapping.containsKey(entityClass)) {
             	classToIDMapping.remove(entityClass);
-            }
+            }*/
             classToIDMapping.put(c, entityId);
 
             entityClass = c;
