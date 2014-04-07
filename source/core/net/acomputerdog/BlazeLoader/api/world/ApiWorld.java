@@ -1,5 +1,6 @@
 package net.acomputerdog.BlazeLoader.api.world;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -82,5 +83,15 @@ public class ApiWorld {
         }
 
         return result;
+    }
+    
+    public static void breakBlock(World w, int x, int y, int z, boolean dropItems) {
+    	w.func_147480_a(x, y, z, dropItems);
+    }
+    
+    public static void playDestructionEffect(World w, int x, int y, int z) {
+    	Block b = w.getBlock(x, y, z);
+    	int metadata = w.getBlockMetadata(x, y, z);
+    	w.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(b) + (metadata << 12));
     }
 }
