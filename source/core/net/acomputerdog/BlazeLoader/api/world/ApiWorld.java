@@ -83,4 +83,33 @@ public class ApiWorld {
 
         return result;
     }
+    
+    /**
+     * Returns whether the current world gen allows for snow to form at the specified coordinates
+     * and that the block below allows snow to be placed on top of it.
+     * eg. Snow can't form on top of ice blocks.
+     * @param w	World
+     * @param x	XCoordinate
+     * @param y YCoordinate
+     * @param z ZCoordinate
+     * @return True if snow can be placed here.
+     */
+    public static boolean canSnowAt(World w, int x, int y, int z) {
+    	return canSnowAt(w, x, y, z, false);
+    }
+    
+    /**
+     * Returns whether the current world gen allows for snow to form at the specified coordinates
+     * and that the block below allows snow to be placed on top of it.
+     * eg. Snow can't form on top of ice blocks.
+     * @param w	World
+     * @param x	XCoordinate
+     * @param y YCoordinate
+     * @param z ZCoordinate
+     * @param ignoreSurface	If true it will return true even if the block below is ice.
+     * @return True if snow can be placed here.
+     */
+    public static boolean canSnowAt(World w, int x, int y, int z, boolean ignoreSurface) {
+    	return w.func_147478_e(x, y, z, ignoreSurface);
+    }
 }
