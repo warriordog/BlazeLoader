@@ -4,13 +4,12 @@ import java.util.Map;
 
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
-import net.acomputerdog.BlazeLoader.util.reflect.FieldInstance;
-import net.acomputerdog.BlazeLoader.util.reflect.ReflectionUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -85,7 +84,7 @@ public class ApiRender {
      * @param entity   The class of the entity to register the renderer for.
      * @param renderer The render to register.
      */
-    public static void registerEntityRenderer(Class entity, Render renderer) {
+    public static void registerEntityRenderer(Class<? extends Entity> entity, Render renderer) {
     	renderer.setRenderManager(RenderManager.instance);
         BlazeLoader.getEntityRenderMap().put(entity, renderer);
     }
