@@ -1,4 +1,4 @@
-package net.acomputerdog.BlazeLoader.api.gui;
+package net.acomputerdog.BlazeLoader.event.args;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
