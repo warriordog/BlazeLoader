@@ -1,10 +1,16 @@
 package net.acomputerdog.BlazeLoader.api.render;
 
+import java.util.Map;
+
 import net.acomputerdog.BlazeLoader.api.general.ApiGeneral;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Contains functions related to game rendering.
@@ -78,8 +84,18 @@ public class ApiRender {
      * @param entity   The class of the entity to register the renderer for.
      * @param renderer The render to register.
      */
-    public static void registerEntityRenderer(Class entity, Render renderer) {
+    public static void registerEntityRenderer(Class<? extends Entity> entity, Render renderer) {
     	renderer.setRenderManager(RenderManager.instance);
         BlazeLoader.getEntityRenderMap().put(entity, renderer);
+    }
+    
+    /**
+     * Registers a tile entity to have a special renderer similar to chests and mobspawners
+     * @param special	TileEntityClass
+     * @param renderer	Renderer to be used for this TileEntity
+     */
+    public static void setSpecialRender(Class<? extends TileEntity> special, TileEntitySpecialRenderer renderer) {
+    	renderer.func_147497_a(TileEntityRendererDispatcher.instance);
+    	TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(special, renderer);
     }
 }
