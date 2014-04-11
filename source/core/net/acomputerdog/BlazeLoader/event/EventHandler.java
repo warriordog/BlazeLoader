@@ -1,6 +1,6 @@
 package net.acomputerdog.BlazeLoader.event;
 
-import net.acomputerdog.BlazeLoader.api.gui.ContainerOpenedEventArgs;
+import net.acomputerdog.BlazeLoader.event.args.ContainerOpenedEventArgs;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.minecraft.client.entity.EntityClientPlayerMP;
