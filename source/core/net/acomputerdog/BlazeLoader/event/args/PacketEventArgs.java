@@ -5,16 +5,14 @@ import net.minecraft.network.Packet;
 
 public class PacketEventArgs<V extends Packet> {
 	
-	public final INetHandler netHandler;
 	public final V packet;
 	public final String channel;
 	public final String[] args;
 	
-	public PacketEventArgs(INetHandler handler, V pack, String packetId) {
-		netHandler = handler;
+	public PacketEventArgs(V pack, String packetId) {
 		packet = pack;
 		
-		String[] splitId = packetId.split("|");
+		String[] splitId = packetId.split("\\|");
 		int index = 1;
 		if (splitId.length > 1) {
 			channel = splitId[1];

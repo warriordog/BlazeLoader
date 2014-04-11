@@ -64,6 +64,9 @@ public class EventHandler {
         if (mod instanceof WorldEventHandler) {
             worldEventHandlers.add((WorldEventHandler) mod);
         }
+        if (mod instanceof NetworkEventHandler) {
+        	networkEventHandlers.add((NetworkEventHandler)mod);
+        }
     }
 
     private static void setActiveMod(Object mod) {
@@ -259,10 +262,10 @@ public class EventHandler {
     	String packetIdentifier = packet.func_149169_c();
     	if (packetIdentifier != null) {
     		if (packetIdentifier.indexOf("BL|") == 0) {
-    			PacketEventArgs args = new PacketEventArgs(handler, packet, packetIdentifier);
+    			PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
     			for (NetworkEventHandler mod : networkEventHandlers) {
-    				if (mod.toString() == packetIdentifier) {
-    					mod.eventClientRecieveCustomPayload(args);
+    				if (mod.toString().equals(args.channel)) {
+    					mod.eventClientRecieveCustomPayload(handler, args);
     				}
     			}
     		}
@@ -273,10 +276,10 @@ public class EventHandler {
     	String packetIdentifier = packet.func_149559_c();
     	if (packetIdentifier != null) {
     		if (packetIdentifier.indexOf("BL|") == 0) {
-    			PacketEventArgs args = new PacketEventArgs(handler, packet, packetIdentifier);
+    			PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
     			for (NetworkEventHandler mod : networkEventHandlers) {
-    				if (mod.toString() == packetIdentifier) {
-    					mod.eventServerRecieveCustomPayload(args);
+    				if (mod.toString().equals(args.channel)) {
+    					mod.eventServerRecieveCustomPayload(handler, args);
     				}
     			}
     		}
