@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +24,7 @@ import net.minecraft.world.WorldServer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EventHandler {
     private static final List<BlockEventHandler> blockEventHandlers = new ArrayList<BlockEventHandler>();
@@ -284,5 +286,27 @@ public class EventHandler {
     			}
     		}
     	}
+    }
+    
+    public static void eventKey(KeyBinding binding) {
+    	if (binding.getIsKeyPressed()) {
+	    	for (ClientEventHandler mod : clientEventHandlers) {
+	    		mod.eventKeyDown(binding);
+	    	}
+    	} else {
+    		for (ClientEventHandler mod : clientEventHandlers) {
+        		mod.eventKeyUp(binding);
+        	}
+    	}
+    }
+    
+    public static void eventKeyHeld() {
+    	for (KeyBinding i : (List<KeyBinding>)KeyBinding.keybindArray) {
+        	if (i.getIsKeyPressed()) {
+        		for (ClientEventHandler mod : clientEventHandlers) {
+            		mod.eventKeyHeld(i);
+            	}
+        	}
+        }
     }
 }

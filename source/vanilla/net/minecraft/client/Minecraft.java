@@ -1611,7 +1611,9 @@ public class Minecraft implements IPlayerUsage {
                     }
                 }
             }
-
+            
+    		EventHandler.eventKeyHeld();
+            
             for (var1 = 0; var1 < 9; ++var1) {
                 if (this.gameSettings.keyBindsHotbar[var1].isPressed()) {
                     this.thePlayer.inventory.currentItem = var1;

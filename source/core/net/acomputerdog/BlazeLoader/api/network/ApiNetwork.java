@@ -20,9 +20,9 @@ import net.minecraft.server.MinecraftServer;
 public class ApiNetwork {
 	private static void sendCustomPayload_do(INetHandler handler, NetworkEventHandler mod, String[] args, byte[] data) {
 		if (handler instanceof NetHandlerPlayServer) {
-			((NetHandlerPlayServer)handler).sendPacket(getCustomPayloadPacket(mod, data, args));
+			((NetHandlerPlayServer)handler).sendPacket(Server.getCustomPayloadPacket(mod, data, args));
 		} else if (handler instanceof NetHandlerPlayClient) {
-			((NetHandlerPlayClient)handler).addToSendQueue(getCustomPayloadPacket(mod, data, args));
+			((NetHandlerPlayClient)handler).addToSendQueue(Client.getCustomPayloadPacket(mod, data, args));
 		}
 	}
 	
@@ -33,30 +33,31 @@ public class ApiNetwork {
 		}
 		return channel;
 	}
-	
-	/**
-	 * Gets a CustomPayload packet that can be handled by this mod
-	 * @param sender	Mod sending the packet	
-	 * @param data		The data to be sent
-	 * @param args		Additional channel information
-	 * @return a S3FPacketCustomPayload with a predefined channel and payload
-	 */
-	public static Packet getCustomPayloadPacket(NetworkEventHandler sender, byte[] data, String... args) {
-		return new S3FPacketCustomPayload(getChannel(sender, args), data);
-	}
-	
-	/**
-	 * Gets a CustomPayload packet that can be handled by this mod
-	 * @param sender	Mod sending the packet	
-	 * @param data		The data to be sent
-	 * @param args		Additional channel information
-	 * @return a S3FPacketCustomPayload with a predefined channel and payload
-	 */
-	public static Packet getCustomPayloadPacket(NetworkEventHandler sender, ByteBuf data, String... args) {
-		return new S3FPacketCustomPayload(getChannel(sender, args), data.array());
-	}
-	
+		
 	public static class Client {
+		
+		/**
+		 * Gets a CustomPayload packet that can be handled by this mod when received on the server side
+		 * @param sender	Mod sending the packet	
+		 * @param data		The data to be sent
+		 * @param args		Additional channel information
+		 * @return a S3FPacketCustomPayload with a predefined channel and payload
+		 */
+		public static Packet getCustomPayloadPacket(NetworkEventHandler sender, byte[] data, String... args) {
+			return new C17PacketCustomPayload(getChannel(sender, args), data);
+		}
+		
+		/**
+		 * Gets a CustomPayload packet that can be handled by this mod when received on the server side
+		 * @param sender	Mod sending the packet	
+		 * @param data		The data to be sent
+		 * @param args		Additional channel information
+		 * @return a S3FPacketCustomPayload with a predefined channel and payload
+		 */
+		public static Packet getCustomPayloadPacket(NetworkEventHandler sender, ByteBuf data, String... args) {
+			return new C17PacketCustomPayload(getChannel(sender, args), data.array());
+		}
+		
 		/**
 		 * Sends a custom payload packet to be handled by this mod on the server side.
 		 * @param sender	Mod sending the packet
@@ -87,6 +88,29 @@ public class ApiNetwork {
 	}
 	
 	public static class Server {
+		
+		/**
+		 * Gets a CustomPayload packet that can be handled by this mod when received on the client side
+		 * @param sender	Mod sending the packet	
+		 * @param data		The data to be sent
+		 * @param args		Additional channel information
+		 * @return a S3FPacketCustomPayload with a predefined channel and payload
+		 */
+		public static Packet getCustomPayloadPacket(NetworkEventHandler sender, byte[] data, String... args) {
+			return new S3FPacketCustomPayload(getChannel(sender, args), data);
+		}
+		
+		/**
+		 * Gets a CustomPayload packet that can be handled by this mod when received on the client side
+		 * @param sender	Mod sending the packet	
+		 * @param data		The data to be sent
+		 * @param args		Additional channel information
+		 * @return a S3FPacketCustomPayload with a predefined channel and payload
+		 */
+		public static Packet getCustomPayloadPacket(NetworkEventHandler sender, ByteBuf data, String... args) {
+			return new S3FPacketCustomPayload(getChannel(sender, args), data.array());
+		}
+		
 		/**
 		 * Sends a custom payload packet to be handled by this mod on the client side.
 		 * @param sender	Mod sending the packet
