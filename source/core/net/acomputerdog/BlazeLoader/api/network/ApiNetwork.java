@@ -33,7 +33,11 @@ public class ApiNetwork {
 		}
 		return channel;
 	}
-		
+	
+	/**
+	 * With this class you are the client sending packets to the server.
+	 * The server can either be the intergrated server or a remote server.
+	 */
 	public static class Client {
 		
 		/**
@@ -87,6 +91,9 @@ public class ApiNetwork {
 		}
 	}
 	
+	/**
+	 * You are the server sending packets to the client.
+	 */
 	public static class Server {
 		
 		/**

@@ -1614,6 +1614,8 @@ public class Minecraft implements IPlayerUsage {
                     FMLCommonHandler.instance().fireKeyInput();
                 }
             }
+            
+            EventHandler.eventKeyHeld();
 
             for (i = 0; i < 9; ++i) {
                 if (this.gameSettings.keyBindsHotbar[i].isPressed()) {

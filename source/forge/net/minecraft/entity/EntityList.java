@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -187,6 +188,16 @@ public class EntityList {
 
     public static void func_151514_a() {
     }
+    
+    /**
+     * Gets an entity ID from a String.
+     *
+     * @param string The string identifying the entity.
+     * @return Return then ID of the entity.
+     */
+    public static int getIDFromString(String string) {
+        return stringToIDMapping.get(string);
+    }
 
     public static Set func_151515_b() {
         return Collections.unmodifiableSet(stringToIDMapping.keySet());
@@ -275,6 +286,85 @@ public class EntityList {
             this.secondaryColor = par3;
             this.field_151512_d = StatList.func_151182_a(this);
             this.field_151513_e = StatList.func_151176_b(this);
+        }
+    }
+    
+    public static class EntityRegistryEntry {
+        private Class entityClass;
+        private int entityId;
+        private String entityName;
+
+        public static EntityRegistryEntry getEntry(Entity e) {
+            return getEntry(e.getClass());
+        }
+
+        public static EntityRegistryEntry getEntry(Class c) {
+            return new EntityRegistryEntry(c);
+        }
+
+        private EntityRegistryEntry(Class c) {
+            entityClass = c;
+            entityId = classToIDMapping.get(c);
+            entityName = classToStringMapping.get(c);
+        }
+
+        public String getName() {
+            return entityName;
+        }
+
+        public int getID() {
+            return entityId;
+        }
+
+        public Class getEntityClass() {
+            return entityClass;
+        }
+
+        public void setName(String name) {
+            classToStringMapping.put(entityClass, name);
+            
+            if (stringToClassMapping.containsKey(entityName)) {
+            	stringToClassMapping.remove(entityName);
+            }
+            stringToClassMapping.put(name, entityClass);
+            
+            if (stringToIDMapping.containsKey(entityName)) {
+            	stringToIDMapping.remove(entityName);
+            }
+            stringToIDMapping.put(name, entityId);
+            
+            entityName = name;
+        }
+
+    	public void setID(int id) {
+    		stringToIDMapping.put(entityName, id);
+    		classToIDMapping.put(entityClass, id);
+    		
+    		if (IDtoClassMapping.containsKey(entityId)) {
+    			IDtoClassMapping.remove(entityId);
+    		}
+    		IDtoClassMapping.put(id, entityClass);
+    		
+    		entityId = id;
+    	}
+
+        public void setEntityClass(Class c) {
+            stringToClassMapping.put(entityName, c);
+            IDtoClassMapping.put(entityId, c);
+            
+            if (classToStringMapping.containsKey(entityClass)) {
+            	classToStringMapping.remove(entityClass);
+            }
+            classToStringMapping.put(c, entityName);
+            
+            //Intentionally leaves the mapping from old class to id so that the
+            //client doesn't crash when the old class is used to try to spawn the entity
+            /*if (classToIDMapping.containsKey(entityClass)) {
+            	classToIDMapping.remove(entityClass);
+            }*/
+            classToIDMapping.put(c, entityId);
+
+            entityClass = c;
         }
     }
 }

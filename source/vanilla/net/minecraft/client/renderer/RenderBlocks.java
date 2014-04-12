@@ -22,6 +22,12 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+/**
+ * TODO: RenderBlocks: Add this to forge version, more details below
+ *       Changes can be found by looking for references to renderBlocksBl at the bottom of this file.
+ *       The original code has been commented out for comparison.
+ *       However BLRenderBlocks may need some changes to include any forge hooks (a forge version of that class?).
+ */
 public class RenderBlocks
 {
     /** The IBlockAccess used by this instance of RenderBlocks */
