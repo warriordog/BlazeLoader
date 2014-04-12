@@ -1,22 +1,30 @@
 package net.acomputerdog.BlazeLoader.event;
 
 import net.acomputerdog.BlazeLoader.event.args.ContainerOpenedEventArgs;
+import net.acomputerdog.BlazeLoader.event.args.PacketEventArgs;
 import net.acomputerdog.BlazeLoader.main.BlazeLoader;
 import net.acomputerdog.BlazeLoader.mod.Mod;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EventHandler {
     private static final List<BlockEventHandler> blockEventHandlers = new ArrayList<BlockEventHandler>();
@@ -28,6 +36,7 @@ public class EventHandler {
     private static final List<ProfilerEventHandler> profilerEventHandlers = new ArrayList<ProfilerEventHandler>();
     private static final List<TickEventHandler> tickEventHandlers = new ArrayList<TickEventHandler>();
     private static final List<WorldEventHandler> worldEventHandlers = new ArrayList<WorldEventHandler>();
+    private static final List<NetworkEventHandler> networkEventHandlers = new ArrayList<NetworkEventHandler>();
 
     public static void addMod(Mod mod) {
         if (mod instanceof BlockEventHandler) {
@@ -56,6 +65,9 @@ public class EventHandler {
         }
         if (mod instanceof WorldEventHandler) {
             worldEventHandlers.add((WorldEventHandler) mod);
+        }
+        if (mod instanceof NetworkEventHandler) {
+        	networkEventHandlers.add((NetworkEventHandler)mod);
         }
     }
 
@@ -246,5 +258,55 @@ public class EventHandler {
         }
         BlazeLoader.currActiveMod = prevMod;
         return entity;
+    }
+    
+    public static void eventClientRecieveCustomPayload(NetHandlerPlayClient handler, S3FPacketCustomPayload packet) {
+    	String packetIdentifier = packet.func_149169_c();
+    	if (packetIdentifier != null) {
+    		if (packetIdentifier.indexOf("BL|") == 0) {
+    			PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
+    			for (NetworkEventHandler mod : networkEventHandlers) {
+    				if (mod.toString().equals(args.channel)) {
+    					mod.eventClientRecieveCustomPayload(handler, args);
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    public static void eventServerRecieveCustomPayload(NetHandlerPlayServer handler, C17PacketCustomPayload packet) {
+    	String packetIdentifier = packet.func_149559_c();
+    	if (packetIdentifier != null) {
+    		if (packetIdentifier.indexOf("BL|") == 0) {
+    			PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
+    			for (NetworkEventHandler mod : networkEventHandlers) {
+    				if (mod.toString().equals(args.channel)) {
+    					mod.eventServerRecieveCustomPayload(handler, args);
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    public static void eventKey(KeyBinding binding) {
+    	if (binding.getIsKeyPressed()) {
+	    	for (ClientEventHandler mod : clientEventHandlers) {
+	    		mod.eventKeyDown(binding);
+	    	}
+    	} else {
+    		for (ClientEventHandler mod : clientEventHandlers) {
+        		mod.eventKeyUp(binding);
+        	}
+    	}
+    }
+    
+    public static void eventKeyHeld() {
+    	for (KeyBinding i : (List<KeyBinding>)KeyBinding.keybindArray) {
+        	if (i.getIsKeyPressed()) {
+        		for (ClientEventHandler mod : clientEventHandlers) {
+            		mod.eventKeyHeld(i);
+            	}
+        	}
+        }
     }
 }

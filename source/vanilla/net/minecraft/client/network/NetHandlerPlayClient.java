@@ -1267,6 +1267,8 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient {
                     }, I18n.format("multiplayer.texturePrompt.line1", new Object[0]), I18n.format("multiplayer.texturePrompt.line2", new Object[0]), 0));
                 }
             }
+        } else {
+        	EventHandler.eventClientRecieveCustomPayload(this, p_147240_1_);
         }
     }
 
