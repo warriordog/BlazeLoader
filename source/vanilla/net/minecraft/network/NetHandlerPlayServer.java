@@ -2,19 +2,9 @@ package net.minecraft.network;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-
 import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.concurrent.Callable;
-
 import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.server.CommandBlockLogic;
@@ -30,45 +20,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerBeacon;
-import net.minecraft.inventory.ContainerMerchant;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemEditableBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemWritableBook;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.INetHandlerPlayServer;
-import net.minecraft.network.play.client.C00PacketKeepAlive;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.network.play.client.C0CPacketInput;
-import net.minecraft.network.play.client.C0DPacketCloseWindow;
-import net.minecraft.network.play.client.C0EPacketClickWindow;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
-import net.minecraft.network.play.client.C10PacketCreativeInventoryAction;
-import net.minecraft.network.play.client.C11PacketEnchantItem;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
-import net.minecraft.network.play.client.C14PacketTabComplete;
-import net.minecraft.network.play.client.C15PacketClientSettings;
-import net.minecraft.network.play.client.C16PacketClientStatus;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
-import net.minecraft.network.play.server.S00PacketKeepAlive;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.network.play.server.S2FPacketSetSlot;
-import net.minecraft.network.play.server.S32PacketConfirmTransaction;
-import net.minecraft.network.play.server.S3APacketTabComplete;
-import net.minecraft.network.play.server.S40PacketDisconnect;
+import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.BanEntry;
 import net.minecraft.stats.AchievementList;
@@ -76,19 +35,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatAllowedCharacters;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IntHashMap;
-import net.minecraft.util.ReportedException;
+import net.minecraft.util.*;
 import net.minecraft.world.WorldServer;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.Callable;
 
 public class NetHandlerPlayServer implements INetHandlerPlayServer
 {
@@ -174,14 +132,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
     public void kickPlayerFromServer(String p_147360_1_)
     {
         final ChatComponentText var2 = new ChatComponentText(p_147360_1_);
-        this.netManager.scheduleOutboundPacket(new S40PacketDisconnect(var2), new GenericFutureListener[] {new GenericFutureListener()
+        this.netManager.scheduleOutboundPacket(new S40PacketDisconnect(var2), new GenericFutureListener()
             {
                 private static final String __OBFID = "CL_00001453";
                 public void operationComplete(Future p_operationComplete_1_)
                 {
                     NetHandlerPlayServer.this.netManager.closeChannel(var2);
                 }
-            }
         });
         this.netManager.disableAutoRead();
     }
@@ -538,7 +495,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
         }
         else if (p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit() - 1 && (p_147346_1_.func_149568_f() == 1 || p_147346_1_.func_149571_d() >= this.serverController.getBuildLimit()))
         {
-            ChatComponentTranslation var9 = new ChatComponentTranslation("build.tooHigh", new Object[] {Integer.valueOf(this.serverController.getBuildLimit())});
+            ChatComponentTranslation var9 = new ChatComponentTranslation("build.tooHigh", this.serverController.getBuildLimit());
             var9.getChatStyle().setColor(EnumChatFormatting.RED);
             this.playerEntity.playerNetServerHandler.sendPacket(new S02PacketChat(var9));
             var4 = true;
@@ -620,7 +577,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
     {
         logger.info(this.playerEntity.getCommandSenderName() + " lost connection: " + p_147231_1_);
         this.serverController.func_147132_au();
-        ChatComponentTranslation var2 = new ChatComponentTranslation("multiplayer.player.left", new Object[] {this.playerEntity.func_145748_c_()});
+        ChatComponentTranslation var2 = new ChatComponentTranslation("multiplayer.player.left", this.playerEntity.func_145748_c_());
         var2.getChatStyle().setColor(EnumChatFormatting.YELLOW);
         this.serverController.getConfigurationManager().func_148539_a(var2);
         this.playerEntity.mountEntityAndWakeUp();
@@ -653,7 +610,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
 
         try
         {
-            this.netManager.scheduleOutboundPacket(p_147359_1_, new GenericFutureListener[0]);
+            this.netManager.scheduleOutboundPacket(p_147359_1_);
         }
         catch (Throwable var5)
         {
@@ -694,7 +651,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
     {
         if (this.playerEntity.func_147096_v() == EntityPlayer.EnumChatVisibility.HIDDEN)
         {
-            ChatComponentTranslation var4 = new ChatComponentTranslation("chat.cannotSend", new Object[0]);
+            ChatComponentTranslation var4 = new ChatComponentTranslation("chat.cannotSend");
             var4.getChatStyle().setColor(EnumChatFormatting.RED);
             this.sendPacket(new S02PacketChat(var4));
         }
@@ -719,7 +676,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
             }
             else
             {
-                ChatComponentTranslation var5 = new ChatComponentTranslation("chat.type.text", new Object[] {this.playerEntity.func_145748_c_(), var2});
+                ChatComponentTranslation var5 = new ChatComponentTranslation("chat.type.text", this.playerEntity.func_145748_c_(), var2);
                 this.serverController.getConfigurationManager().func_148544_a(var5, false);
             }
 
@@ -919,7 +876,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
             }
             else
             {
-                this.field_147372_n.addKey(this.playerEntity.openContainer.windowId, Short.valueOf(p_147351_1_.func_149547_f()));
+                this.field_147372_n.addKey(this.playerEntity.openContainer.windowId, p_147351_1_.func_149547_f());
                 this.playerEntity.playerNetServerHandler.sendPacket(new S32PacketConfirmTransaction(p_147351_1_.func_149548_c(), p_147351_1_.func_149547_f(), false));
                 this.playerEntity.openContainer.setPlayerIsPresent(this.playerEntity, false);
                 ArrayList var3 = new ArrayList();
@@ -966,7 +923,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
             {
                 if (var3 == null)
                 {
-                    this.playerEntity.inventoryContainer.putStackInSlot(p_147344_1_.func_149627_c(), (ItemStack)null);
+                    this.playerEntity.inventoryContainer.putStackInSlot(p_147344_1_.func_149627_c(), null);
                 }
                 else
                 {
@@ -997,7 +954,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
     {
         Short var2 = (Short)this.field_147372_n.lookup(this.playerEntity.openContainer.windowId);
 
-        if (var2 != null && p_147339_1_.func_149533_d() == var2.shortValue() && this.playerEntity.openContainer.windowId == p_147339_1_.func_149532_c() && !this.playerEntity.openContainer.isPlayerNotUsingContainer(this.playerEntity))
+        if (var2 != null && p_147339_1_.func_149533_d() == var2 && this.playerEntity.openContainer.windowId == p_147339_1_.func_149532_c() && !this.playerEntity.openContainer.isPlayerNotUsingContainer(this.playerEntity))
         {
             this.playerEntity.openContainer.setPlayerIsPresent(this.playerEntity, true);
         }
@@ -1095,11 +1052,9 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
     public void processTabComplete(C14PacketTabComplete p_147341_1_)
     {
         ArrayList var2 = Lists.newArrayList();
-        Iterator var3 = this.serverController.getPossibleCompletions(this.playerEntity, p_147341_1_.func_149419_c()).iterator();
 
-        while (var3.hasNext())
-        {
-            String var4 = (String)var3.next();
+        for (Object o : this.serverController.getPossibleCompletions(this.playerEntity, p_147341_1_.func_149419_c())) {
+            String var4 = (String) o;
             var2.add(var4);
         }
 
@@ -1199,7 +1154,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
             {
                 if (!this.serverController.isCommandBlockEnabled())
                 {
-                    this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled", new Object[0]));
+                    this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notEnabled"));
                 }
                 else if (this.playerEntity.canCommandSenderUseCommand(2, "") && this.playerEntity.capabilities.isCreativeMode)
                 {
@@ -1234,7 +1189,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
                         {
                             var18.func_145752_a(var23);
                             var18.func_145756_e();
-                            this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {var23}));
+                            this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", var23));
                         }
                     }
                     catch (Exception var9)
@@ -1244,7 +1199,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
                 }
                 else
                 {
-                    this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notAllowed", new Object[0]));
+                    this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.notAllowed"));
                 }
             }
             else if ("MC|Beacon".equals(p_147349_1_.func_149559_c()))
@@ -1292,7 +1247,6 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
                     var15.updateItemName("");
                 }
             } else {
-            	//TODO: NetHandlerPlayServer: Add this hook to forge version
             	EventHandler.eventServerRecieveCustomPayload(this, p_147349_1_);
             }
         }
@@ -1320,28 +1274,22 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer
             try
             {
                 field_151290_a[C16PacketClientStatus.EnumState.PERFORM_RESPAWN.ordinal()] = 1;
-            }
-            catch (NoSuchFieldError var3)
+            } catch (NoSuchFieldError ignored)
             {
-                ;
             }
 
             try
             {
                 field_151290_a[C16PacketClientStatus.EnumState.REQUEST_STATS.ordinal()] = 2;
-            }
-            catch (NoSuchFieldError var2)
+            } catch (NoSuchFieldError ignored)
             {
-                ;
             }
 
             try
             {
                 field_151290_a[C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT.ordinal()] = 3;
-            }
-            catch (NoSuchFieldError var1)
+            } catch (NoSuchFieldError ignored)
             {
-                ;
             }
         }
     }

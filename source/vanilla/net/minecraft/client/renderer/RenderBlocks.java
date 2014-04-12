@@ -8229,7 +8229,7 @@ public class RenderBlocks
             p_147758_1_ = ((TextureMap)Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.locationBlocksTexture)).getAtlasSprite("missingno");
         }
 
-        return (IIcon)p_147758_1_;
+        return p_147758_1_;
     }
 
     //Added fields

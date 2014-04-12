@@ -1,38 +1,14 @@
 package net.minecraft.client.settings;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.IntHashMap;
 
-/**
- * TODO: KeyBinding: Add this to forge version, more details below
- * Changes:
- *    keybindArray was made public (can be moved to AccessTransformer)
- *    setKeyBindState
- *       replace:
- *          var2.pressed = par1;
- *       with:
- *          if (var2.pressed != par1) {
-            	var2.pressed = par1;
-            	EventHandler.eventKey(var2);
-            }
- *   unpressKey
- *       replace:
- *          this.pressed = false;
- *       with:
- *          if (pressed) {
-        		pressed = false;
-        		EventHandler.eventKey(this);
-        	}
- *          
- *
- */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class KeyBinding implements Comparable
 {
     public static final List keybindArray = new ArrayList();
@@ -79,11 +55,9 @@ public class KeyBinding implements Comparable
 
     public static void unPressAllKeys()
     {
-        Iterator var0 = keybindArray.iterator();
 
-        while (var0.hasNext())
-        {
-            KeyBinding var1 = (KeyBinding)var0.next();
+        for (Object aKeybindArray : keybindArray) {
+            KeyBinding var1 = (KeyBinding) aKeybindArray;
             var1.unpressKey();
         }
     }
@@ -91,11 +65,9 @@ public class KeyBinding implements Comparable
     public static void resetKeyBindingArrayAndHash()
     {
         hash.clearMap();
-        Iterator var0 = keybindArray.iterator();
 
-        while (var0.hasNext())
-        {
-            KeyBinding var1 = (KeyBinding)var0.next();
+        for (Object aKeybindArray : keybindArray) {
+            KeyBinding var1 = (KeyBinding) aKeybindArray;
             hash.addKey(var1.keyCode, var1);
         }
     }
@@ -170,11 +142,11 @@ public class KeyBinding implements Comparable
 
     public int compareTo(KeyBinding p_151465_1_)
     {
-        int var2 = I18n.format(this.keyCategory, new Object[0]).compareTo(I18n.format(p_151465_1_.keyCategory, new Object[0]));
+        int var2 = I18n.format(this.keyCategory, new Object[0]).compareTo(I18n.format(p_151465_1_.keyCategory));
 
         if (var2 == 0)
         {
-            var2 = I18n.format(this.keyDescription, new Object[0]).compareTo(I18n.format(p_151465_1_.keyDescription, new Object[0]));
+            var2 = I18n.format(this.keyDescription, new Object[0]).compareTo(I18n.format(p_151465_1_.keyDescription));
         }
 
         return var2;
