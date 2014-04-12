@@ -1,31 +1,35 @@
 package net.acomputerdog.BlazeLoader.mod;
 
 /**
- * Base class of mods.  Mods should extend this class.
+ * Base Mod class. All Mods should extend this class.
  * Methods have default implementations, but can be overridden.
- * event... methods can be overridden to respond to game events.
- * Event methods that reference Minecraft classes have "No-args" versions that can be used for mods that wish to avoid being specific to particular Minecraft versions.
- * If a normal event method is overridden, it's no-args version will NOT be triggered.
+ * Event interfaces can be added to respond to certain types of events in the game.
  */
 public abstract class Mod {
     /**
-     * Returns ID used to identify this mod internally, even among different versions of the same mod.  Mods should override.
-     * --This should never be changed after the mod has been released!--
+     * Returns the ID used to identify this mod internally,
+     * even between different versions of the same mod.
+     * This method should be overriden by your mod and not:
+     * 
+     * >> This should never be changed after an initial released <<
      *
      * @return Returns the id of the mod.
      */
     public String getModId() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     /**
-     * Returns the user-friendly name of the mod.  Mods should override.
-     * --Can be changed among versions, so this should not be used to ID mods!--
+     * Returns the user-friendly name of the mod.
+     * This method should be overriden by your mod.
+     * 
+     * This may be changed between versions and so must NOT
+     * be used as a form of identification for you mod.
      *
      * @return Returns user-friendly name of the mod.
      */
     public String getModName() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 
     /**
@@ -47,8 +51,11 @@ public abstract class Mod {
     }
 
     /**
-     * Returns true if this mod is compatible with the installed version of BlazeLoader.  This should be checked using Version.class.
-     * -Called before mod is loaded!  Do not depend on Mod.load()!-
+     * Returns true if this mod is compatible with the installed version of BlazeLoader.
+     * This should be checked using the Version class.
+     * 
+     * >>> This is called before the mod is loaded <<<
+     * >>> Do not depend on Mod.load() <<<
      *
      * @return Returns true if the mod is compatible with the installed version of BlazeLoader.
      */
@@ -62,45 +69,51 @@ public abstract class Mod {
      * @return Return a String representing a user-friendly description of the mod.
      */
     public String getModDescription() {
-        return "No description!";
+        return "No description";
     }
 
     /**
      * Called when mod is loaded.  Called before game is loaded.
+     * This method should ideally be used for:
+     * 		1. Adding/Replacing blocks
+     *      2. Adding KeyBindings
+     *      3. Any other changes that should occur before the game initializes
      */
-    public void load() {
-    }
+    public void load() {}
 
     /**
      * Called when mod is started.  Game is fully loaded and can be interacted with.
+     * Blocks have already been initialized and had their Icons registered and
+     * KeyBindings have been loaded from the games config file.
+     * Use this method for last minute changes or for changes with wich you
+     * do not want the games own initialization to interfere.
      */
-    public void start() {
-    }
+    public void start() {}
 
     /**
-     * Called when mod is stopped.  Game is about to begin shutting down, so mod should release system resources, close streams, etc.
+     * Called when mod is stopped.
+     * Game is about to shut down, use this as your chance to
+     * release system resources, close streams, save stuff, etc.
      */
-    public void stop() {
-    }
+    public void stop() {}
 
     /**
-     * Returns true if: obj != null and obj == this or obj.getModId() == this.getModId().
+     * Checks if two Mod instances are equivalent.
+     * Includes a null check, and will only return true if the Id of the other mod matches that of this one.
      *
      * @param obj Object to compare to.
      * @return If obj is a mod of the same type as this mod.
      */
-    @Override
     public boolean equals(Object obj) {
-        return obj == this || obj != null && obj instanceof Mod && ((Mod) obj).getModId().equals(this.getModId());
+        return obj == this || obj != null && obj instanceof Mod && ((Mod) obj).getModId().equals(getModId());
     }
 
     /**
      * Returns the ID of the mod.
      *
-     * @return Return the value of this.getModId();
+     * @return Returns the value of getModId().
      */
-    @Override
     public String toString() {
-        return this.getModId();
+        return getModId();
     }
 }
