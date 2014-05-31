@@ -1,0 +1,41 @@
+--- C:/Development/mcp902clean/runtime/commands.py	Tue Dec 24 14:33:08 2013
++++ C:/Development/mcp902/runtime/commands.py	Mon Dec 30 13:54:57 2013
+@@ -1211,12 +1211,27 @@
+             raise Exception('Exceptor Log not found: ' + exclogdry[side])
+             
+         renames = {}
++        mapped = {}
+         
+         log = [l.strip() for l in open(exclogdry[side], 'r').readlines()]
+         for line in log:
+             if 'MarkerID' in line:
+                 columns = line.split()
+                 renames[columns[2] + '_'] = columns[3]
++                mapped[columns[3]] = columns[2]
++                
++        excconf = {CLIENT: self.xclientconf, SERVER: self.xserverconf}
++        conf = [l.strip() for l in open(excconf[side], 'r').readlines()]
++ 
++        for line in conf:
++            if '=CL_00' in line:
++                columns = line.split("=")
++                cl = columns[1] + '_'
++                if cl not in renames:
++                    if columns[0] in mapped:
++                        self.logger.info('> Not mapping %s with original mapping %s as it is already mapped to %s', columns[0], columns[1], mapped[columns[0]])
++                    else:
++                        renames[cl] = columns[0]
+         
+         reg = re.compile(r'CL_[0-9]+_')
+         with closing(open(clssrg[side], 'r')) as input:
+@@ -1369,8 +1384,8 @@
+             elif not key in reobfDict:
+                 raise Error("Class not found prereobfuscation : %s"%key)
+             #    print "Class not found prereobfuscation : %s"%key
+-            #elif decompDict[key] != reobfDict[key]:
+-            #    print 'Error : %s %s %s'%(key, decompDict[key],reobfDict[key])
++            elif decompDict[key] != reobfDict[key]:
++                print 'Error : %s %s %s'%(key, decompDict[key],reobfDict[key])
+             elif decompDict[key] != reobfDict[key] and not key in ignoreErrorDict[side]:
+                 raise Error("Mismatched ano class index : %s %s %s"%(key, decompDict[key],reobfDict[key]))
+ 
