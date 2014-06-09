@@ -1,7 +1,7 @@
 package net.acomputerdog.BlazeLoader.main;
 
 import com.mumfrey.liteloader.api.BrandingProvider;
-import com.mumfrey.liteloader.util.render.IconAbsolute;
+import com.mumfrey.liteloader.client.util.render.IconAbsolute;
 import net.acomputerdog.BlazeLoader.util.render.ColorUtils;
 import net.acomputerdog.BlazeLoader.version.Version;
 import net.minecraft.util.IIcon;

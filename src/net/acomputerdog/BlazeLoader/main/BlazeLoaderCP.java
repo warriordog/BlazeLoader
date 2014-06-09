@@ -1,12 +1,14 @@
 package net.acomputerdog.BlazeLoader.main;
 
 import com.mumfrey.liteloader.api.CoreProvider;
+import com.mumfrey.liteloader.common.GameEngine;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 import com.mumfrey.liteloader.resources.InternalResourcePack;
 import net.acomputerdog.BlazeLoader.event.EventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.world.World;
 
@@ -28,10 +30,10 @@ public class BlazeLoaderCP implements CoreProvider {
      * is the first point at which the Minecraft game instance should be referenced. Be aware that certain game
      * classes (such as the EntityRenderer) are NOT initialised at this point.
      *
-     * @param minecraft
+     * @param engine
      */
     @Override
-    public void onPostInit(Minecraft minecraft) {
+    public void onPostInit(GameEngine<?, ?> engine) {
         LiteLoader.getInstance().registerModResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
     }
 
@@ -57,13 +59,13 @@ public class BlazeLoaderCP implements CoreProvider {
     }
 
     /**
-     * Called immediately on joining a single or multi-player world when the JoinGame packet is received.
+     * Called immediately on joining a single or multi-player world when the JoinGame packet is received. Only called on the client.
      *
      * @param netHandler
      * @param loginPacket
      */
     @Override
-    public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
+    public void onJoinGame(INetHandler netHandler, Packet loginPacket) {
 
     }
 
