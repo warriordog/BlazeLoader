@@ -113,7 +113,7 @@ REM end embedded VBScript file
     echo Applying AccessTransformer...
     if not exist "%cd%/jars/libraries/org/ow2/asm/asm-debug-all/4.1/" mkdir "%cd%/jars/libraries/org/ow2/asm/asm-debug-all/4.1/"
     xcopy /I /Y "%cd%\lib\asm-debug-all-4.1.jar" "%cd%\jars\libraries\org\ow2\asm\asm-debug-all\4.1\"
-    "%cd%/BlazeLoader/apply_at.bat"
+    "%cd%/BlazeLoader/util/apply_at.bat"
     echo Done.
     echo.
     echo Decompiling...
