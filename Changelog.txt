@@ -1,8 +1,0 @@
-Changelog for BlazeLoader
-+ new feature
-* changed feature
-- removed feature
-=======================================================
-
-[pre-1.0]:
-Initial development.
