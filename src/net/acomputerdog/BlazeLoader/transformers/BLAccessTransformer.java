@@ -28,7 +28,7 @@ public class BLAccessTransformer implements IClassTransformer {
     }
 
     public BLAccessTransformer() throws IOException {
-        this("bl_at.cfg");
+        this("/res/bl_at.cfg".replaceAll("/", File.separator));
     }
 
     private void readRules(String rulesPath) throws IOException {

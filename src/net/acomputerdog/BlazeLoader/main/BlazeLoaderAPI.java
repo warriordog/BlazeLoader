@@ -7,6 +7,7 @@ import net.acomputerdog.BlazeLoader.event.BlazeLoaderIP;
 import net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer;
 import net.acomputerdog.BlazeLoader.version.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getRequiredTransformers() {
-        BLAccessTransformer.AT_SOURCE_OVERRIDE = this.getClass().getResourceAsStream("bl_at.cfg");
+        BLAccessTransformer.AT_SOURCE_OVERRIDE = this.getClass().getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator));
         return new String[]{"net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer"};
     }
 

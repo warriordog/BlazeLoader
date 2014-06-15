@@ -25,13 +25,13 @@ versions_dir = os.path.join(jars_dir, 'versions', '%s' % mc_ver)
 
 cp_sep = get_cp_sep()
 
-libs = '../jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;../jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar;./bl_at.cfg'.replace('/', os.sep)
+libs = '../jars/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar;../jars/libraries/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar;./res/bl_at.cfg'.replace('/', os.sep)
 libs = libs.replace(';', cp_sep)
 at = 'net/acomputerdog/BlazeLoader/launcher/BLAccessTransformer'.replace('/', os.sep)
 jar_target = '../jars/versions/"{mc_version}"/"{mc_version}".jar'.format(mc_version = mc_ver)
 
 compile_cmd = 'javac -cp' + ' ' + libs + ' ' + '-d bin ' + 'source/core/' + at + '.java'
-run_cmd = 'java -cp bin;'.replace(';', cp_sep) + libs + ' ' + at.replace(os.sep, '.') + ' ' + jar_target + ' ' + 'bl_at.cfg'
+run_cmd = 'java -cp bin;'.replace(';', cp_sep) + libs + ' ' + at.replace(os.sep, '.') + ' ' + jar_target + ' ' + './res/bl_at.cfg'
 
 def check_install():
 	print '> Checking installation'
