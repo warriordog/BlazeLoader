@@ -116,7 +116,7 @@ public class BLAccessTransformer implements IClassTransformer {
             if (m.changeClassVisibility) {
                 classNode.access = getFixedAccess(classNode.access, m);
             } else {
-                adjustAccess(m, classNode, m.name, m.description);
+                changeAccessFor(m, classNode, m.name, m.description);
             }
         }
 
@@ -126,7 +126,7 @@ public class BLAccessTransformer implements IClassTransformer {
         return writer.toByteArray();
     }
 
-    private void adjustAccess(AccessModifier m, ClassNode classNode, String name, String description) {
+    private void changeAccessFor(AccessModifier m, ClassNode classNode, String name, String description) {
         if (name.isEmpty() && description.isEmpty()) {
             for (MethodNode methodNode : classNode.methods) {
                 methodNode.access = getFixedAccess(methodNode.access, m);
