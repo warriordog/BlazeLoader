@@ -75,13 +75,15 @@ public class BLAccessTransformer implements IClassTransformer {
                     m.changeClassVisibility = true;
                 } else {
                     String name = description[1].trim();
-                    int index = name.indexOf('(');
+                    if (!name.equals("*")) {
+                        int index = name.indexOf('(');
 
-                    if (index > 0) {
-                        m.description = name.substring(index);
-                        m.name = name.substring(0, index);
-                    } else {
-                        m.name = name;
+                        if (index > 0) {
+                            m.description = name.substring(index);
+                            m.name = name.substring(0, index);
+                        } else {
+                            m.name = name;
+                        }
                     }
                 }
 
@@ -113,21 +115,8 @@ public class BLAccessTransformer implements IClassTransformer {
         for (AccessModifier m : mods) {
             if (m.changeClassVisibility) {
                 classNode.access = getFixedAccess(classNode.access, m);
-                continue;
-            }
-
-            if (m.description.isEmpty()) {
-                for (FieldNode fieldNode : classNode.fields) {
-                    if (fieldNode.name.equals(m.name)) {
-                        fieldNode.access = getFixedAccess(fieldNode.access, m);
-                    }
-                }
             } else {
-                for (MethodNode methodNode : classNode.methods) {
-                    if ((methodNode.name.equals(m.name) && methodNode.desc.equals(m.description))) {
-                        methodNode.access = getFixedAccess(methodNode.access, m);
-                    }
-                }
+                adjustAccess(m, classNode, m.name, m.description);
             }
         }
 
@@ -135,6 +124,29 @@ public class BLAccessTransformer implements IClassTransformer {
         classNode.accept(writer);
 
         return writer.toByteArray();
+    }
+
+    private void adjustAccess(AccessModifier m, ClassNode classNode, String name, String description) {
+        if (name.isEmpty() && description.isEmpty()) {
+            for (MethodNode methodNode : classNode.methods) {
+                methodNode.access = getFixedAccess(methodNode.access, m);
+            }
+            for (FieldNode fieldNode : classNode.fields) {
+                fieldNode.access = getFixedAccess(fieldNode.access, m);
+            }
+        } else if (description.isEmpty()) {
+            for (FieldNode fieldNode : classNode.fields) {
+                if (fieldNode.name.equals(name)) {
+                    fieldNode.access = getFixedAccess(fieldNode.access, m);
+                }
+            }
+        } else {
+            for (MethodNode methodNode : classNode.methods) {
+                if ((methodNode.name.equals(name) && methodNode.desc.equals(description))) {
+                    methodNode.access = getFixedAccess(methodNode.access, m);
+                }
+            }
+        }
     }
 
     private int getFixedAccess(int access, AccessModifier target) {
