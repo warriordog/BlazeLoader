@@ -121,8 +121,8 @@ REM end embedded VBScript file
     echo Done.
     echo.
     echo Copying BlazeLoader sources...
-    xcopy /I /Y /E /C /Q "%cd%\BlazeLoader\source\core\*" "%cd%\src\minecraft\"
-    xcopy /I /Y /E /C /Q "%cd%\BlazeLoader\source\vanilla\*" "%cd%\src\minecraft\"
+    xcopy /I /Y /E /C /Q "%cd%\BlazeLoader\src\*" "%cd%\src\minecraft\"
+    xcopy /I /Y /E /C /Q "%cd%\BlazeLoader\res\*" "%cd%\src\minecraft\"
     echo Done.
     echo.
     if "!setupmode!" == "bl" (

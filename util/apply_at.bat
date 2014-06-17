@@ -45,5 +45,5 @@ if not exist .\jars\libraries\org\ow2\asm\asm-debug-all\4.1\asm-debug-all-4.1.ja
     )
 )
 cd BlazeLoader\
-..\runtime\bin\python\python_mcp \util\apply_at.py %*
+..\runtime\bin\python\python_mcp .\util\apply_at.py %*
 cd ..
