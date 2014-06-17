@@ -20,7 +20,6 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import sun.net.www.content.text.Generic;
 
 import java.util.ArrayList;
 import java.util.List;
