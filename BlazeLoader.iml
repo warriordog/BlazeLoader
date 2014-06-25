@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="Client" />
     <orderEntry type="module" module-name="LiteLoader" />
     <orderEntry type="library" name="CompCore" level="project" />
+    <orderEntry type="library" name="OBFUtil" level="project" />
   </component>
 </module>
 
