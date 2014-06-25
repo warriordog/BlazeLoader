@@ -5,4 +5,5 @@
 -JOptSimple (included with MC)
 -LegacyLauncher (included with launcher)
 -ASM (asm-debug-all, Downloaded by the installer)
--CompCore (included in compiled builds, available on warriordog's github)
+-CompCore (included in compiled builds, available on warriordog's github, downloaded by setup)
+-OBFUtil (included in compiled builds, available on warriordog's github, downloaded by setup)
