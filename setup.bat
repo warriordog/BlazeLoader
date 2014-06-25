@@ -97,17 +97,24 @@ REM end embedded VBScript file
         exit /b 2
     )
     echo.
-    REM TODO: find a way to do this without hardcoding anything.  Maybe reuse Libaries.txt, or write a batch JSON parser(If I go insane)?
+    REM TODO: Find a way to do this without hardcoding anything.  Maybe reuse Libaries.txt, or write a batch JSON parser(If I go insane)?
     echo Downloading and copying libraries...
     if not exist "%cd%/lib/" mkdir "%cd%/lib/"
     cscript.exe //B "%cd%/temp/setup/bl_downloader.vbs" "http://repo1.maven.org/maven2/org/ow2/asm/asm-debug-all/4.1/asm-debug-all-4.1.jar" "%cd%/lib/asm-debug-all-4.1.jar"
     xcopy /Y "%appdata%\.minecraft\libraries\net\minecraft\launchwrapper\1.9\*.jar" "%cd%\lib\"
+    REM TODO: These libraries need to be downloaded as already compiled.
     cscript.exe //B "%cd%/temp/setup/bl_downloader.vbs" http://github.com/warriordog/CompCore/archive/master.zip "%cd%/temp/setup/CompCore_repo.zip"
     if not exist "%cd%/temp/setup/CompCore_repo.zip" (
         echo CompCore was not downloaded; aborting setup!
         exit /b 3
     )
+    cscript.exe //B "%cd%/temp/setup/bl_downloader.vbs" http://github.com/warriordog/OBFUtil/archive/master.zip "%cd%/temp/setup/OBFUtil_repo.zip"
+    if not exist "%cd%/temp/setup/OBFUtil_repo.zip" (
+        echo OBFUtil was not downloaded; aborting setup!
+        exit /b 4
+    )
     "%cd%/temp/setup/7-zip/7z.exe" x -o"%cd%/BlazeLoader/" -y "%cd%/temp/setup/CompCore_repo.zip"
+    "%cd%/temp/setup/7-zip/7z.exe" x -o"%cd%/BlazeLoader/" -y "%cd%/temp/setup/OBFUtil_repo.zip"
     echo Done.
     echo.
     echo Applying AccessTransformer...
