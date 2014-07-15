@@ -13,19 +13,10 @@ import java.net.URL;
 public class BlazeLoaderBP implements BrandingProvider {
     public static final BlazeLoaderBP instance = new BlazeLoaderBP();
 
-    private boolean hasInit = false;
-    private ResourceLocation twitterLoc;
-    private IIcon twitterIcon;
+    private static final ResourceLocation twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
+    private static final IIcon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
 
     private BlazeLoaderBP(){}
-
-    private void init() {
-        if (!hasInit) {
-            hasInit = true;
-            twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
-            twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
-        }
-    }
 
     /**
      * Get the priority of this provider, higher numbers take precedence. Some brandings can only be set
@@ -129,7 +120,6 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public ResourceLocation getTwitterAvatarResource() {
-        init();
         return twitterLoc;
     }
 
@@ -139,7 +129,6 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public IIcon getTwitterAvatarCoords() {
-        init();
         return twitterIcon;
     }
 
