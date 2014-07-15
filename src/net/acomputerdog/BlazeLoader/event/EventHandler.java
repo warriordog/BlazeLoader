@@ -1,7 +1,5 @@
 package net.acomputerdog.BlazeLoader.event;
 
-import net.acomputerdog.BlazeLoader.event.args.ContainerOpenedEventArgs;
-import net.acomputerdog.BlazeLoader.event.args.PacketEventArgs;
 import net.acomputerdog.BlazeLoader.main.BLMain;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -74,10 +72,10 @@ public class EventHandler {
             throw new IllegalArgumentException("Class not found: " + clazzName, e);
         }
 
-        ContainerOpenedEventArgs args = new ContainerOpenedEventArgs(player, packet);
+        OverrideEventHandler.ContainerOpenedEventArgs args = new OverrideEventHandler.ContainerOpenedEventArgs(player, packet);
         for (OverrideEventHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
-            if (mod.eventContainerOpen(player, c, args)) {
+            if (mod.overrideContainerOpen(player, c, args)) {
                 player.openContainer.windowId = packet.func_148901_c();
                 break;
             }
@@ -229,7 +227,7 @@ public class EventHandler {
         String packetIdentifier = packet.func_149169_c();
         if (packetIdentifier != null) {
             if (packetIdentifier.indexOf("BL|") == 0) {
-                PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
+                NetworkEventHandler.PacketEventArgs args = new NetworkEventHandler.PacketEventArgs(packet, packetIdentifier);
                 for (NetworkEventHandler mod : networkEventHandlers) {
                     if (mod.toString().equals(args.channel)) {
                         mod.eventClientRecieveCustomPayload(handler, args);
@@ -243,7 +241,7 @@ public class EventHandler {
         String packetIdentifier = packet.func_149559_c();
         if (packetIdentifier != null) {
             if (packetIdentifier.indexOf("BL|") == 0) {
-                PacketEventArgs args = new PacketEventArgs(packet, packetIdentifier);
+                NetworkEventHandler.PacketEventArgs args = new NetworkEventHandler.PacketEventArgs(packet, packetIdentifier);
                 for (NetworkEventHandler mod : networkEventHandlers) {
                     if (mod.toString().equals(args.channel)) {
                         mod.eventServerRecieveCustomPayload(handler, args);

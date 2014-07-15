@@ -1,13 +1,14 @@
 package net.acomputerdog.BlazeLoader.event;
 
-import com.mumfrey.liteloader.LiteMod;
-import net.acomputerdog.BlazeLoader.event.args.ContainerOpenedEventArgs;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
+import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 /**
@@ -59,5 +60,28 @@ public interface OverrideEventHandler extends BLMod {
      * @param containerClass Class of container being accessed
      * @return Return true if container has been handled
      */
-    public boolean eventContainerOpen(EntityClientPlayerMP player, Class containerClass, ContainerOpenedEventArgs e);
+    public boolean overrideContainerOpen(EntityClientPlayerMP player, Class containerClass, ContainerOpenedEventArgs e);
+
+    /**
+     * Contains args for a ContainerOpenedEvent
+     */
+    public static class ContainerOpenedEventArgs {
+        public final boolean locked;
+        public final String invName;
+        public final int slotsCount;
+
+        public final int posX;
+        public final int posY;
+        public final int posZ;
+
+        public ContainerOpenedEventArgs(EntityPlayer player, S2DPacketOpenWindow packet) {
+            locked = packet.func_148900_g();
+            invName = packet.func_148902_e().split(":?:")[1];
+            slotsCount = packet.func_148898_f();
+
+            posX = MathHelper.floor_double(player.posX);
+            posY = MathHelper.floor_double(player.posY);
+            posZ = MathHelper.floor_double(player.posZ);
+        }
+    }
 }
