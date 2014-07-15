@@ -16,7 +16,8 @@ public class BlazeLoaderBP implements BrandingProvider {
     private static final ResourceLocation twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
     private static final IIcon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
 
-    private BlazeLoaderBP(){}
+    private BlazeLoaderBP() {
+    }
 
     /**
      * Get the priority of this provider, higher numbers take precedence. Some brandings can only be set
@@ -36,7 +37,6 @@ public class BlazeLoaderBP implements BrandingProvider {
     @Override
     public int getBrandingColour() {
         return ColorUtils.getARBG(255, 255, 255, 0);
-        //return 0;
     }
 
     /**
