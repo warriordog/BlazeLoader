@@ -62,7 +62,8 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getRequiredTransformers() {
-        BLAccessTransformer.AT_SOURCE_OVERRIDE = this.getClass().getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator));
+        //BLAccessTransformer.AT_SOURCE_OVERRIDE = this.getClass().getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator));
+        //System.setProperty("BLAccessTransformer.IS_LAUCHING", )
         return new String[]{"net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer"};
     }
 

@@ -21,38 +21,24 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class BLAccessTransformer implements IClassTransformer {
     private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
-    public static InputStream AT_SOURCE_OVERRIDE = null;
-
-    protected BLAccessTransformer(String atFile) throws IOException {
-        readRules(atFile);
-    }
 
     public BLAccessTransformer() throws IOException {
-        this("/res/bl_at.cfg".replaceAll("/", File.separator));
+        this(BLAccessTransformer.class.getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator)));
     }
 
-    private void readRules(String rulesPath) throws IOException {
-        InputStream stream = null;
-        BufferedReader reader = null;
-        if (AT_SOURCE_OVERRIDE == null) {
-            URL rulesFile;
-            File file = new File(rulesPath);
+    public BLAccessTransformer(String atFile) throws IOException {
+        this(new File(atFile));
+    }
 
-            if (file.exists() || (file = new File(System.getProperty("user.dir"), rulesPath)).exists()) {
-                rulesFile = file.toURI().toURL();
-            } else {
-                rulesFile = getClass().getResource(rulesPath);
-            }
-            if (rulesFile == null) {
-                throw new FileNotFoundException("Rules file could not be located!");
-            }
-            stream = rulesFile.openStream();
-        } else {
-            stream = AT_SOURCE_OVERRIDE;
-        }
-        reader = new BufferedReader(new InputStreamReader(stream));
+    public BLAccessTransformer(File file) throws IOException {
+        this(new BufferedInputStream(new FileInputStream(file)));
+    }
+
+    public BLAccessTransformer(InputStream rules) throws IOException {
+        BufferedReader reader = null;
 
         try {
+            reader = new BufferedReader(new InputStreamReader(rules));
             String line;
 
             while ((line = reader.readLine()) != null) {
@@ -91,10 +77,12 @@ public class BLAccessTransformer implements IClassTransformer {
                 addToMap(className, m);
             }
         } finally {
-            reader.close();
+            if (reader != null) {
+                reader.close();
+            }
         }
 
-        System.out.println(String.format("Loaded %d access rules from %s", countRules(), rulesPath));
+        System.out.println(String.format("Loaded %d access rules.", countRules()));
     }
 
     @Override
