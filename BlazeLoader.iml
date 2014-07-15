@@ -12,6 +12,24 @@
     <orderEntry type="module" module-name="LiteLoader" />
     <orderEntry type="library" name="CompCore" level="project" />
     <orderEntry type="library" name="OBFUtil" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/AppData/Roaming/.minecraft/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../eclipse/LiteLoader/lib/asm-debug-all-4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

@@ -34,7 +34,7 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onPostInit(GameEngine<?, ?> engine) {
-        LiteLoader.getInstance().registerModResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
+        engine.registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
     }
 
     /**
@@ -65,7 +65,7 @@ public class BlazeLoaderCP implements CoreProvider {
      * @param loginPacket
      */
     @Override
-    public void onJoinGame(INetHandler netHandler, Packet loginPacket) {
+    public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
 
     }
 

@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.mod;
 
-import net.acomputerdog.BlazeLoader.mod.ModData;
 import net.minecraft.client.resources.FileResourcePack;
 
 import java.io.ByteArrayInputStream;
@@ -15,12 +14,12 @@ public class BLModResourcePack extends FileResourcePack {
         super(mod.getModSource());
         this.mod = mod;
         this.bytes = (
-                "{\n" +
-                        " \"pack\": {\n" +
-                        "   \"description\": \"Generated pack for Mod " + this.mod.getModId() + "\",\n" +
-                        "   \"pack_format\": 1\n" +
-                        "}\n" +
-                        "}").getBytes();
+            "{\n" +
+            " \"pack\": {\n" +
+            "   \"description\": \"Generated pack for Mod " + this.mod.getModId() + "\",\n" +
+            "   \"pack_format\": 1\n" +
+            "}\n" +
+            "}").getBytes();
     }
 
     @Override

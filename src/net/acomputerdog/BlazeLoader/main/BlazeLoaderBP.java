@@ -7,17 +7,25 @@ import net.acomputerdog.BlazeLoader.version.Version;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class BlazeLoaderBP implements BrandingProvider {
     public static final BlazeLoaderBP instance = new BlazeLoaderBP();
-    private static final ResourceLocation twitterIcon = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
-    private static final IIcon twitterCoords = new IconAbsolute(twitterIcon, "twitter", 32, 32, 0, 0, 32, 32, 32);
+
+    private boolean hasInit = false;
+    private ResourceLocation twitterLoc;
+    private IIcon twitterIcon;
 
     private BlazeLoaderBP(){}
+
+    private void init() {
+        if (!hasInit) {
+            hasInit = true;
+            twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
+            twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
+        }
+    }
 
     /**
      * Get the priority of this provider, higher numbers take precedence. Some brandings can only be set
@@ -121,7 +129,8 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public ResourceLocation getTwitterAvatarResource() {
-        return twitterIcon;
+        init();
+        return twitterLoc;
     }
 
     /**
@@ -130,7 +139,8 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public IIcon getTwitterAvatarCoords() {
-        return twitterCoords;
+        init();
+        return twitterIcon;
     }
 
 }

@@ -23,15 +23,9 @@ public class Settings {
     public static String configDir = "/BL/config/";
 
     /**
-     * Option to use the version folder for mods instead of the base BL folder.
-     */
-    public static boolean useVersionMods = true;
-
-    /**
      * The minimum log level required for a message to be displayed.
      */
-    public static transient ELogLevel minimumLogLevel = ELogLevel.DEBUG;
-    protected static String minimumLogLevelName = "debug";
+    public static String minimumLogLevel = "DEBUG";
 
     /**
      * If disabled, BlazeLoader will not load mods from the classpath.

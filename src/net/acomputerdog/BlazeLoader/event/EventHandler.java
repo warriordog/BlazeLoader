@@ -225,7 +225,7 @@ public class EventHandler {
         return entity;
     }
 
-    public static void eventClientRecieveCustomPayload(NetHandlerPlayClient handler, S3FPacketCustomPayload packet) {
+    public static void eventClientReceiveCustomPayload(NetHandlerPlayClient handler, S3FPacketCustomPayload packet) {
         String packetIdentifier = packet.func_149169_c();
         if (packetIdentifier != null) {
             if (packetIdentifier.indexOf("BL|") == 0) {
@@ -239,7 +239,7 @@ public class EventHandler {
         }
     }
 
-    public static void eventServerRecieveCustomPayload(NetHandlerPlayServer handler, C17PacketCustomPayload packet) {
+    public static void eventServerReceiveCustomPayload(NetHandlerPlayServer handler, C17PacketCustomPayload packet) {
         String packetIdentifier = packet.func_149559_c();
         if (packetIdentifier != null) {
             if (packetIdentifier.indexOf("BL|") == 0) {
@@ -253,6 +253,7 @@ public class EventHandler {
         }
     }
 
+    //TODO: rewrite to use a List<KeyEventListener>
     public static void eventKey(KeyBinding binding) {
         if (binding.getIsKeyPressed()) {
             for (ClientEventHandler mod : clientEventHandlers) {
@@ -265,11 +266,12 @@ public class EventHandler {
         }
     }
 
+    //TODO: rewrite to use a List<KeyEventListener>
     public static void eventKeyHeld() {
-        for (KeyBinding i : (List<KeyBinding>) KeyBinding.keybindArray) {
-            if (i.getIsKeyPressed()) {
+        for (KeyBinding b : (List<KeyBinding>) KeyBinding.keybindArray) {
+            if (b.getIsKeyPressed()) {
                 for (ClientEventHandler mod : clientEventHandlers) {
-                    mod.eventKeyHeld(i);
+                    mod.eventKeyHeld(b);
                 }
             }
         }

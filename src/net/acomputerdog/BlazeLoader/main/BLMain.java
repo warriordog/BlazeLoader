@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.main;
 
-import com.mumfrey.liteloader.LiteMod;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
@@ -20,6 +19,11 @@ public class BLMain {
     public static void init(LoaderEnvironment environment, LoaderProperties properties) {
         BLMain.environment = environment;
         BLMain.properties = properties;
+
+        LOGGER_FULL.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
+        LOGGER_MAIN.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
+        LOGGER_FAST.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
+
         BLMain.LOGGER_FULL.logInfo("BlazeLoader initialized.");
     }
 }

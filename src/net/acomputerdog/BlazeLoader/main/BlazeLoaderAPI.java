@@ -3,17 +3,14 @@ package net.acomputerdog.BlazeLoader.main;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
-import net.acomputerdog.BlazeLoader.event.BlazeLoaderIP;
 import net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer;
 import net.acomputerdog.BlazeLoader.version.*;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BlazeLoaderAPI implements LiteAPI {
-    private List<InterfaceProvider> interfaceProviders = new ArrayList<InterfaceProvider>();
-    private List<CoreProvider> coreProviders = new ArrayList<CoreProvider>();
 
     /**
      * Initialise this API, the API should do as little processing as possible here, but should also cache
@@ -24,8 +21,6 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public void init(LoaderEnvironment environment, LoaderProperties properties) {
-        interfaceProviders.add(BlazeLoaderIP.instance);
-        coreProviders.add(BlazeLoaderCP.instance);
         BLMain.init(environment, properties);
     }
 
@@ -108,7 +103,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<CoreProvider> getCoreProviders() {
-        return coreProviders;
+        return Arrays.asList((CoreProvider)BlazeLoaderCP.instance);
     }
 
     /**
@@ -116,8 +111,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<InterfaceProvider> getInterfaceProviders() {
-
-        return interfaceProviders;
+        return Arrays.asList((InterfaceProvider)BlazeLoaderIP.instance);
     }
 
     /**
@@ -129,10 +123,10 @@ public class BlazeLoaderAPI implements LiteAPI {
     }
 
     /**
-     * Get the branding provider for this API, can return null
+     * Get the customisation providers for this API, can return null
      */
     @Override
-    public BrandingProvider getBrandingProvider() {
-        return BlazeLoaderBP.instance;
+    public List<CustomisationProvider> getCustomisationProviders() {
+        return Arrays.asList((CustomisationProvider)BlazeLoaderBP.instance);
     }
 }
