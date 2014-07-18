@@ -6,7 +6,7 @@ package net.acomputerdog.BlazeLoader.version;
 public class VersionUtils {
     public static boolean isGameOBF() {
         try {
-            Class.forName("net.minecraft.client.Minecraft"); //do not obfuscate this name!
+            Class.forName("net.minecraft.crash.CrashReport"); //do not obfuscate this name!
             return false;
         } catch (Exception ignored) {
             return true;

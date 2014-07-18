@@ -1,15 +1,15 @@
-package net.acomputerdog.BlazeLoader.main;
+package net.acomputerdog.BlazeLoader.event;
 
 import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.api.Listener;
 import com.mumfrey.liteloader.core.InterfaceRegistrationDelegate;
-import net.acomputerdog.BlazeLoader.event.*;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 
 public class BlazeLoaderIP implements InterfaceProvider {
     public static final BlazeLoaderIP instance = new BlazeLoaderIP();
 
-    private BlazeLoaderIP() {}
+    private BlazeLoaderIP() {
+    }
 
     /**
      * Base type of Listeners which can consume events provided by this provider

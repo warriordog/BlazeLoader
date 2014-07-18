@@ -8,7 +8,6 @@ import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,7 @@ public class BLAccessTransformer implements IClassTransformer {
     private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
 
     public BLAccessTransformer() throws IOException {
-        this(BLAccessTransformer.class.getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator)));
+        this(BLAccessTransformer.class.getResourceAsStream("/conf/bl_at.cfg"));
     }
 
     public BLAccessTransformer(String atFile) throws IOException {

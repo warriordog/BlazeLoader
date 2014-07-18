@@ -3,10 +3,9 @@ package net.acomputerdog.BlazeLoader.main;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
-import net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer;
-import net.acomputerdog.BlazeLoader.version.*;
+import net.acomputerdog.BlazeLoader.event.BlazeLoaderIP;
+import net.acomputerdog.BlazeLoader.version.Version;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,9 +61,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getRequiredTransformers() {
-        //BLAccessTransformer.AT_SOURCE_OVERRIDE = this.getClass().getResourceAsStream("/res/bl_at.cfg".replaceAll("/", File.separator));
-        //System.setProperty("BLAccessTransformer.IS_LAUCHING", )
-        return new String[]{"net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer"};
+        return new String[]{"net.acomputerdog.BlazeLoader.transformers.BLAccessTransformer", "net.acomputerdog.BlazeLoader.transformers.BLEventInjectionTransformer"};
     }
 
     /**
@@ -104,7 +101,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<CoreProvider> getCoreProviders() {
-        return Arrays.asList((CoreProvider)BlazeLoaderCP.instance);
+        return Arrays.asList((CoreProvider) BlazeLoaderCP.instance);
     }
 
     /**
@@ -112,7 +109,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<InterfaceProvider> getInterfaceProviders() {
-        return Arrays.asList((InterfaceProvider)BlazeLoaderIP.instance);
+        return Arrays.asList((InterfaceProvider) BlazeLoaderIP.instance);
     }
 
     /**
@@ -128,6 +125,6 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Arrays.asList((CustomisationProvider)BlazeLoaderBP.instance);
+        return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
     }
 }
