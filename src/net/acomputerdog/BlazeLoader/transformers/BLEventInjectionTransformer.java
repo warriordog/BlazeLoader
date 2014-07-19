@@ -21,11 +21,6 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     @Override
     protected void addEvents() {
         try {
-            //BLMethodInfo loadWorld = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V"));
-            //BLMethodInfo startSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V"));
-            //BLMethodInfo endSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue());
-            //BLMethodInfo showGUI = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V"));
-
             this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")));
             this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V")));
             this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue()));
