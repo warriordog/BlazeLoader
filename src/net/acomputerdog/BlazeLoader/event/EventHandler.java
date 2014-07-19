@@ -20,6 +20,7 @@ import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -90,20 +91,23 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventStartSection(String name) {
+    public static void eventProfilerStart(EventInfo<Profiler> event, String name) {
         BLMod prevMod = BLMain.currActiveMod;
+        Profiler prof = event.getSource();
         for (ProfilerEventHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
-            mod.eventProfilerStart(name);
+            mod.eventProfilerStart(prof, name);
         }
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventEndSection(String name) {
+    public static void eventProfilerEnd(EventInfo<Profiler> event) {
         BLMod prevMod = BLMain.currActiveMod;
+        Profiler prof = event.getSource();
+        String lastSection = prof.getNameOfLastSection();
         for (ProfilerEventHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
-            mod.eventProfilerEnd(name);
+            mod.eventProfilerEnd(prof, lastSection);
         }
         BLMain.currActiveMod = prevMod;
     }
