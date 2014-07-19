@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -264,30 +263,6 @@ public class EventHandler {
                     if (mod.toString().equals(args.channel)) {
                         mod.eventServerRecieveCustomPayload(handler, args);
                     }
-                }
-            }
-        }
-    }
-
-    //TODO: rewrite to use a List<KeyEventListener>
-    public static void eventKey(KeyBinding binding) {
-        if (binding.getIsKeyPressed()) {
-            for (ClientEventHandler mod : clientEventHandlers) {
-                mod.eventKeyDown(binding);
-            }
-        } else {
-            for (ClientEventHandler mod : clientEventHandlers) {
-                mod.eventKeyUp(binding);
-            }
-        }
-    }
-
-    //TODO: rewrite to use a List<KeyEventListener>
-    public static void eventKeyHeld() {
-        for (KeyBinding b : (List<KeyBinding>) KeyBinding.keybindArray) {
-            if (b.getIsKeyPressed()) {
-                for (ClientEventHandler mod : clientEventHandlers) {
-                    mod.eventKeyHeld(b);
                 }
             }
         }
