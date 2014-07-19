@@ -7,7 +7,6 @@ import net.acomputerdog.OBFUtil.util.TargetType;
 
 import java.util.regex.Pattern;
 
-//TODO: Make compatible with Mumfrey's obfuscation system
 public class BLOBF extends Obf {
     private static final String PERIOD = Pattern.quote(".");
 

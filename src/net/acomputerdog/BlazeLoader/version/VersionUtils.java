@@ -4,11 +4,10 @@ package net.acomputerdog.BlazeLoader.version;
  * Utilities for the Version manager
  */
 
-//TODO: Use simple enums to avoid early class loading
 public class VersionUtils {
     public static boolean isGameOBF() {
         try {
-            Class.forName("net.minecraft.crash.CrashReport"); //do not obfuscate this name!
+            Class.forName("net.minecraft.world.EnumSkyBlock"); //do not obfuscate this name!
             return false;
         } catch (Exception ignored) {
             return true;
@@ -17,7 +16,7 @@ public class VersionUtils {
 
     public static boolean hasForge() {
         try {
-            Class.forName("net.minecraftforge.oredict.ShapedOreRecipe");
+            Class.forName("net.minecraftforge.common.EnumPlantType");
             return true;
         } catch (Exception ignored) {
             return false;

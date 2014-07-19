@@ -8,7 +8,6 @@ import java.io.OutputStream;
  * The data does not have to stay within the JVM; it is permitted to read/write to them externally (such as from a file or over a network).
  * Because the data is sent through streams, there is no guarantee that this IStreamable will receive or send data at a specific time, or that it will at all.
  */
-//TODO: considered adding "public boolean hasChannel(String channel);"
 public interface IStreamable {
 
     /**
@@ -24,4 +23,12 @@ public interface IStreamable {
      * @return Returns an InputStream that allows reading from the owning object.
      */
     public InputStream getReadStream(String channel);
+
+    /**
+     * Checks if this IStreamable supports the specified channel.
+     *
+     * @param channel The channel name to check.
+     * @return Return true if the channel is supported, false otherwise.
+     */
+    public boolean supportsChannel(String channel);
 }
