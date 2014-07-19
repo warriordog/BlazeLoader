@@ -9,9 +9,18 @@ import java.util.regex.Pattern;
  * BL extension of MethodInfo that allows getting all data from a single obfuscation
  */
 public class BLMethodInfo extends MethodInfo {
+    private final String simpleName;
+
     private BLMethodInfo(Obf owner, String method, String desc) {
         super(owner, method, desc);
+        this.simpleName = getMethodName(method);
     }
+
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    //---------------------[Static stuff]----------------------------
 
     private static final String SPACE = Pattern.quote(" ");
     private static final String PERIOD = Pattern.quote(".");
@@ -49,5 +58,16 @@ public class BLMethodInfo extends MethodInfo {
             builder.append(parts[index]);
         }
         return builder.toString();
+    }
+
+    private static String getMethodName(String method) {
+        if (method == null) {
+            return null;
+        }
+        if ("".equals(method)) {
+            return "";
+        }
+        String[] parts = method.split(PERIOD);
+        return parts[parts.length - 1];
     }
 }

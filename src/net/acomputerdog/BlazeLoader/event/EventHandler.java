@@ -92,7 +92,7 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventProfilerStart(EventInfo<Profiler> event, String name) {
+    public static void eventStartSection(EventInfo<Profiler> event, String name) {
         BLMod prevMod = BLMain.currActiveMod;
         Profiler prof = event.getSource();
         for (ProfilerEventHandler mod : profilerEventHandlers) {
@@ -102,7 +102,7 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventProfilerEnd(EventInfo<Profiler> event) {
+    public static void eventEndSection(EventInfo<Profiler> event) {
         BLMod prevMod = BLMain.currActiveMod;
         Profiler prof = event.getSource();
         String lastSection = prof.getNameOfLastSection();
