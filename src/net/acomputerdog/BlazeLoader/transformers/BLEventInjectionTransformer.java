@@ -13,6 +13,7 @@ import net.acomputerdog.BlazeLoader.util.obf.BLOBF;
  */
 public class BLEventInjectionTransformer extends EventInjectionTransformer {
     private static final String EVENT_HANDLER = "net.acomputerdog.BlazeLoader.event.EventHandler";
+    private static final InjectionPoint methodHead = new MethodHead();
 
     /**
      * Subclasses should register events here
@@ -20,21 +21,23 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     @Override
     protected void addEvents() {
         try {
-            BLMethodInfo loadWorld = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V").getValue());
-            BLMethodInfo startSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V").getValue());
-            BLMethodInfo endSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue());
-            BLMethodInfo showGUI = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V").getValue());
+            //BLMethodInfo loadWorld = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V"));
+            //BLMethodInfo startSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V"));
+            //BLMethodInfo endSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue());
+            //BLMethodInfo showGUI = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V"));
 
-            InjectionPoint methodHead = new MethodHead();
-
-            this.addBLEvent(loadWorld, methodHead);
-            this.addBLEvent(startSection, methodHead);
-            this.addBLEvent(endSection, methodHead);
-            this.addBLEvent(showGUI, methodHead);
+            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")));
+            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V")));
+            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue()));
+            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V")));
         } catch (Exception e) {
             System.err.println("A fatal exception occurred while injecting BlazeLoader!  BlazeLoader will not be able to run!");
             throw new RuntimeException("Exception injecting BlazeLoader!", e);
         }
+    }
+
+    private void addBLEvent(BLMethodInfo method) {
+        this.addBLEvent(method, methodHead);
     }
 
     private void addBLEvent(BLMethodInfo method, InjectionPoint injectionPoint) {

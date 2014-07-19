@@ -25,6 +25,10 @@ public class BLMethodInfo extends MethodInfo {
     private static final String SPACE = Pattern.quote(" ");
     private static final String PERIOD = Pattern.quote(".");
 
+    public static BLMethodInfo create(BLOBF method) {
+        return create(method.getValue());
+    }
+
     public static BLMethodInfo create(String method) {
         if (method == null) {
             return null;
