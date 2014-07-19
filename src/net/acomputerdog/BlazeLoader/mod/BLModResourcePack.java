@@ -6,6 +6,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * A ResourcePack containing mod resources
+ */
 public class BLModResourcePack extends FileResourcePack {
     public ModData mod;
     private final byte[] bytes;
@@ -14,12 +17,12 @@ public class BLModResourcePack extends FileResourcePack {
         super(mod.getModSource());
         this.mod = mod;
         this.bytes = (
-            "{\n" +
-            " \"pack\": {\n" +
-            "   \"description\": \"Generated pack for Mod " + this.mod.getModId() + "\",\n" +
-            "   \"pack_format\": 1\n" +
-            "}\n" +
-            "}").getBytes();
+                "{\n" +
+                        " \"pack\": {\n" +
+                        "   \"description\": \"Generated pack for Mod " + this.mod.getModId() + "\",\n" +
+                        "   \"pack_format\": 1\n" +
+                        "}\n" +
+                        "}").getBytes();
     }
 
     @Override

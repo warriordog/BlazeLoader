@@ -5,6 +5,9 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 
+/**
+ * Interface for mods that handle network events
+ */
 public interface NetworkEventHandler extends BLMod {
 
     /**

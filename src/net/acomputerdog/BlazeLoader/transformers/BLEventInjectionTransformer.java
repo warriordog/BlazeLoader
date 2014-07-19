@@ -9,6 +9,9 @@ import net.acomputerdog.BlazeLoader.util.obf.BLOBF;
 
 import java.util.regex.Pattern;
 
+/**
+ * Injects events into MC classes
+ */
 public class BLEventInjectionTransformer extends EventInjectionTransformer {
     /**
      * Subclasses should register events here

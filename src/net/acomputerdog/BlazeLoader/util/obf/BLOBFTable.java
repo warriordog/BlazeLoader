@@ -6,11 +6,14 @@ import net.acomputerdog.OBFUtil.util.TargetType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * BlazeLoader OBFTable that allows converting stored data into BLOBFs.
+ * Provided methods automatically cache calls, so repeated calls with the same parameters will return the same BLOBF object.
+ */
 public class BLOBFTable extends DirectOBFTableSRG {
     private final Map<TargetType, Map<String, BLOBF>> obfNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
     private final Map<TargetType, Map<String, BLOBF>> srgNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
     private final Map<TargetType, Map<String, BLOBF>> mcpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> smpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
 
     public BLOBFTable() {
         super();
@@ -18,7 +21,6 @@ public class BLOBFTable extends DirectOBFTableSRG {
             obfNameMap.put(type, new HashMap<String, BLOBF>());
             srgNameMap.put(type, new HashMap<String, BLOBF>());
             mcpNameMap.put(type, new HashMap<String, BLOBF>());
-            smpNameMap.put(type, new HashMap<String, BLOBF>());
         }
     }
 
@@ -30,7 +32,6 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
-                smpNameMap.get(type).put(obf.simpleName, obf);
             } else {
                 System.out.println("Missing mapping: " + obfName);
             }
@@ -46,7 +47,6 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
-                smpNameMap.get(type).put(obf.simpleName, obf);
             }
         }
         return obf;
@@ -60,14 +60,8 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
-                smpNameMap.get(type).put(obf.simpleName, obf);
             }
         }
         return obf;
     }
-
-    public BLOBF getSMP(String smpName, TargetType type) {
-        return smpNameMap.get(type).get(smpName); //there is not enough information to create a full obfuscation map from just the SMPName
-    }
-
 }

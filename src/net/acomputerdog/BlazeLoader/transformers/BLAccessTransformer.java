@@ -18,6 +18,9 @@ import java.util.zip.ZipOutputStream;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Transforms class member access rules
+ */
 public class BLAccessTransformer implements IClassTransformer {
     private Map<String, List<AccessModifier>> modifiers = new HashMap<String, List<AccessModifier>>();
 

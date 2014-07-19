@@ -6,6 +6,9 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * Tools for working with the java Class Path
+ */
 public class ClassPath {
 
     /**

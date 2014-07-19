@@ -1,5 +1,8 @@
 package net.acomputerdog.BlazeLoader.util.math;
 
+/**
+ * Math utility functions
+ */
 public class MathUtils {
     /**
      * Checks if a string represents a number.

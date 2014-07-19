@@ -10,6 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import java.net.URI;
 import java.net.URL;
 
+/**
+ * BlazeLoader BrandingProvider
+ */
 public class BlazeLoaderBP implements BrandingProvider {
     public static final BlazeLoaderBP instance = new BlazeLoaderBP();
 

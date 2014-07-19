@@ -6,6 +6,9 @@ import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.ELogLevel;
 
+/**
+ * BL main class
+ */
 public class BLMain {
     public static final CLogger LOGGER_FULL = new CLogger("BlazeLoader", true, true, ELogLevel.DEBUG);
     public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, ELogLevel.DEBUG);

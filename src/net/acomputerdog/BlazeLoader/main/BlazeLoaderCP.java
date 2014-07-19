@@ -2,20 +2,21 @@ package net.acomputerdog.BlazeLoader.main;
 
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.common.GameEngine;
-import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 import com.mumfrey.liteloader.resources.InternalResourcePack;
 import net.acomputerdog.BlazeLoader.event.EventHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.world.World;
 
+/**
+ * BlazeLoader CoreProvider
+ */
 public class BlazeLoaderCP implements CoreProvider {
     public static final BlazeLoaderCP instance = new BlazeLoaderCP();
 
-    private BlazeLoaderCP() {}
+    private BlazeLoaderCP() {
+    }
 
 
     @Override

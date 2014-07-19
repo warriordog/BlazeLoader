@@ -5,6 +5,9 @@ import com.mumfrey.liteloader.api.Listener;
 import com.mumfrey.liteloader.core.InterfaceRegistrationDelegate;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 
+/**
+ * BlazeLoader InterfaceProvider
+ */
 public class BlazeLoaderIP implements InterfaceProvider {
     public static final BlazeLoaderIP instance = new BlazeLoaderIP();
 

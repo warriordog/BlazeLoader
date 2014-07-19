@@ -9,6 +9,9 @@ import net.acomputerdog.BlazeLoader.version.Version;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * BlazeLoader LiteAPI
+ */
 public class BlazeLoaderAPI implements LiteAPI {
 
     /**

@@ -1,5 +1,8 @@
 package net.acomputerdog.BlazeLoader.util.render;
 
+/**
+ * Utilities to assist with using colors in game
+ */
 public class ColorUtils {
     /**
      * Generates a FontRenderer-compatible ARBG color int.

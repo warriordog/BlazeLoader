@@ -24,6 +24,9 @@ import net.minecraft.world.WorldServer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Distributes game events to mods
+ */
 public class EventHandler {
     public static final List<BlockEventHandler> blockEventHandlers = new ArrayList<BlockEventHandler>();
     public static final List<ClientEventHandler> clientEventHandlers = new ArrayList<ClientEventHandler>();
