@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 /**
  * Class to bind a Field to a containing Object.
  */
+@Deprecated
 public class FieldInstance<I> {
     protected Field boundField;
     protected Object boundObject;

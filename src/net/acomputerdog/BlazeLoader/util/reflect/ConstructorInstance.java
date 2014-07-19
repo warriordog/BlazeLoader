@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 /**
  * Class to bind a Constructor to a containing Object.
  */
+@Deprecated
 public class ConstructorInstance {
     protected Constructor boundConstructor;
     protected Object boundObject;

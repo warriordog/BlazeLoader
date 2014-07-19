@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 /**
  * Class to bind a Method to a containing Object.
  */
+@Deprecated
 public class MethodInstance {
     protected Method boundMethod;
     protected Object boundObject;

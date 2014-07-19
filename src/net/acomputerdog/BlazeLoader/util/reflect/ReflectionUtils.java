@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 /**
  * Api functions to simplify reflective tasks.
  */
+@Deprecated
 public class ReflectionUtils {
 
     /**
