@@ -17,9 +17,12 @@ public interface WorldEventHandler extends BLMod {
     public void eventLoadWorld(WorldClient world, String message);
 
     /**
-     * Called when the current world is unloaded.
+     * Called when a world is unloaded.
+     *
+     * @param world   The world being unloaded.
+     * @param message The message displayed to the user on the loading screen.
      */
-    public void eventUnloadWorld();
+    public void eventUnloadWorld(WorldClient world, String message);
 
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.

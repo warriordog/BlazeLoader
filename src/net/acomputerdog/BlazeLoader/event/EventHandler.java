@@ -106,20 +106,16 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient par1WorldClient, String par2Str) {
+    public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
         BLMod prevMod = BLMain.currActiveMod;
+        WorldClient currWorld = Minecraft.getMinecraft().theWorld;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
-            mod.eventLoadWorld(par1WorldClient, par2Str);
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
-    public static void eventUnloadWorld() {
-        BLMod prevMod = BLMain.currActiveMod;
-        for (WorldEventHandler mod : worldEventHandlers) {
-            setActiveMod(mod);
-            mod.eventUnloadWorld();
+            if (world != null) {
+                mod.eventLoadWorld(world, message);
+            } else {
+                mod.eventUnloadWorld(currWorld, message);
+            }
         }
         BLMain.currActiveMod = prevMod;
     }
