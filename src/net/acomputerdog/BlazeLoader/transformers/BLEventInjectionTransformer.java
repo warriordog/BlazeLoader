@@ -21,14 +21,18 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     @Override
     protected void addEvents() {
         try {
-            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V")));
-            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V")));
-            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue()));
-            this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V")));
+            addBLEvent("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
+            addBLEvent("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
+            addBLEvent("net.minecraft.profiler.Profiler.endSection ()V");
+            addBLEvent("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
         } catch (Exception e) {
             System.err.println("A fatal exception occurred while injecting BlazeLoader!  BlazeLoader will not be able to run!");
             throw new RuntimeException("Exception injecting BlazeLoader!", e);
         }
+    }
+
+    private void addBLEvent(String method) {
+        this.addBLEvent(BLMethodInfo.create(BLOBF.getMethodMCP(method)));
     }
 
     private void addBLEvent(BLMethodInfo method) {
