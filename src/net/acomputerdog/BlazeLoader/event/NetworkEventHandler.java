@@ -13,14 +13,14 @@ public interface NetworkEventHandler extends BLMod {
     /**
      * Triggered when the client recieves a Custom packet sent in the name of this mod
      *
-     * @param args
+     * @param args Packet arguments
      */
     public void eventClientRecieveCustomPayload(NetHandlerPlayClient handler, PacketEventArgs args);
 
     /**
      * Triggered when the server recieves a Custom packet sent in the name of this mod
      *
-     * @param args
+     * @param args Packet arguments
      */
     public void eventServerRecieveCustomPayload(NetHandlerPlayServer handler, PacketEventArgs args);
 
@@ -37,14 +37,11 @@ public interface NetworkEventHandler extends BLMod {
             packet = pack;
 
             String[] splitId = packetId.split("\\|");
-            int index = 1;
             if (splitId.length > 1) {
                 channel = splitId[1];
                 if (splitId.length > 2) {
                     args = new String[splitId.length - 2];
-                    for (int i = 2; i < splitId.length; i++) {
-                        args[i - 2] = splitId[i];
-                    }
+                    System.arraycopy(splitId, 2, args, 0, splitId.length - 2);
                 } else {
                     args = new String[0];
                 }

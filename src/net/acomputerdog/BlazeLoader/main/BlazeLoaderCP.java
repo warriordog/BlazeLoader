@@ -31,7 +31,7 @@ public class BlazeLoaderCP implements CoreProvider {
      * is the first point at which the Minecraft game instance should be referenced. Be aware that certain game
      * classes (such as the EntityRenderer) are NOT initialised at this point.
      *
-     * @param engine
+     * @param engine Game engine
      */
     @Override
     public void onPostInit(GameEngine<?, ?> engine) {
@@ -43,7 +43,7 @@ public class BlazeLoaderCP implements CoreProvider {
      * the CoreProvider to perform any tasks which should be performed in the postInit phase but after mods
      * have been initialised.
      *
-     * @param mods
+     * @param mods Mods that have been loaded
      */
     @Override
     public void onPostInitComplete(LiteLoaderMods mods) {
@@ -62,8 +62,8 @@ public class BlazeLoaderCP implements CoreProvider {
     /**
      * Called immediately on joining a single or multi-player world when the JoinGame packet is received. Only called on the client.
      *
-     * @param netHandler
-     * @param loginPacket
+     * @param netHandler Network handler
+     * @param loginPacket Login packet
      */
     @Override
     public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {

@@ -1,6 +1,5 @@
 package net.acomputerdog.BlazeLoader.event;
 
-import com.mumfrey.liteloader.LiteMod;
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;

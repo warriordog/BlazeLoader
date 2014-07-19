@@ -18,8 +18,8 @@ public class BlazeLoaderAPI implements LiteAPI {
      * Initialise this API, the API should do as little processing as possible here, but should also cache
      * the supplied environment and properties instances for later use
      *
-     * @param environment
-     * @param properties
+     * @param environment LiteLoader-provided LoaderEnvironment
+     * @param properties LitLoader-provided LoaderProperties
      */
     @Override
     public void init(LoaderEnvironment environment, LoaderProperties properties) {
@@ -92,7 +92,7 @@ public class BlazeLoaderAPI implements LiteAPI {
     }
 
     /**
-     * Should return a list of Enumerator modules to be injected, can return null if the API doesn't want to inject any additonal modules
+     * Should return a list of Enumerator modules to be injected, can return null if the API doesn't want to inject any additional modules
      */
     @Override
     public List<EnumeratorModule> getEnumeratorModules() {

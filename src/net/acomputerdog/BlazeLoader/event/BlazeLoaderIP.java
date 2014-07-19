@@ -26,7 +26,7 @@ public class BlazeLoaderIP implements InterfaceProvider {
      * The provider should call back against the supplied delegate in order to advertise the interfaces
      * it provides.
      *
-     * @param delegate
+     * @param delegate Interface registration delegate
      */
     @Override
     public void registerInterfaces(InterfaceRegistrationDelegate delegate) {

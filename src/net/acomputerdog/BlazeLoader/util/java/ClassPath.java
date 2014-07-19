@@ -71,12 +71,14 @@ public class ClassPath {
 
     private static URI getURI(String path) {
         try {
-            return ClassPath.class.getClassLoader().getResource(path).toURI();
+            URL url = ClassPath.class.getClassLoader().getResource(path);
+            if (url == null) {
+                return null;
+            }
+            return url.toURI();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Exception getting URI!", e);
         }
-
-        return null;
     }
 
     private static String validateName(String name) {
