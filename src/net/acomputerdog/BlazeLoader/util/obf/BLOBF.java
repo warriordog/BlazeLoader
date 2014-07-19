@@ -31,7 +31,6 @@ public class BLOBF extends Obf {
      */
     public BLOBF(String obfName, String seargeName, String mcpName, String obfDesc, String seargeDesc, String mcpDesc) {
         this(seargeName, obfName, mcpName);
-
     }
 
     public String getValue() {

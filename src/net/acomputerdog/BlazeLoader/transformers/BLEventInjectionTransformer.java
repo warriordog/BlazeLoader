@@ -15,21 +15,19 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
      */
     @Override
     protected void addEvents() {
-        BLOBF minecraftOBF = BLOBF.getClassMCP("net.minecraft.client.Minecraft");
-        String[] loadWorldOBF = splitArgs(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet.minecraft.client.multiplayer.WorldClient;Ljava.lang.String;)V").obf); //TODO get rid of parameters!
-        //MethodInfo loadWorld = new MethodInfo(minecraftOBF, loadWorldOBF[0].replace(minecraftOBF + ".", ""), loadWorldOBF[1]);
-        MethodInfo loadWorld = new MethodInfo(minecraftOBF, loadWorldOBF[0], loadWorldOBF[1]);
-        InjectionPoint methodHead = new MethodHead();
+        try {
+            BLOBF minecraft = BLOBF.getClassMCP("net.minecraft.client.Minecraft");
+            String[] loadWorldOBF = splitArgs(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V").getValue());
+            MethodInfo loadWorld = new MethodInfo(minecraft, loadWorldOBF[0], loadWorldOBF[1]);
 
-        this.addEvent(Event.getOrCreate("Minecraft.loadWorld", false), loadWorld, methodHead)
-                .addListener(new MethodInfo("net.acomputerdog.BlazeLoader.event.EventHandler", "eventLoadWorld"));
+            InjectionPoint methodHead = new MethodHead();
 
-        String[] runGameLoop = splitArgs(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.runGameLoop ()V").name);
-
-        System.err.println("\"" + runGameLoop[0] + "\" : \"" + runGameLoop[1] + "\"");
-        this.addEvent(Event.getOrCreate("Minecraft.runGameLoop", false), new MethodInfo(minecraftOBF, runGameLoop[0], runGameLoop[1]), methodHead)
-                .addListener(new MethodInfo("net.acomputerdog.BlazeLoader.event.EventHandler", "runGameLoop"));
-
+            this.addEvent(Event.getOrCreate("Minecraft.loadWorld", false), loadWorld, methodHead)
+                    .addListener(new MethodInfo("net.acomputerdog.BlazeLoader.event.EventHandler", "eventLoadWorld"));
+        } catch (Exception e) {
+            System.err.println("A fatal exception occurred while injecting BlazeLoader!  BlazeLoader will not be able to run!");
+            throw new RuntimeException("Exception injecting BlazeLoader!", e);
+        }
     }
 
     private String[] splitArgs(String method) {

@@ -3,6 +3,8 @@ package net.acomputerdog.BlazeLoader.version;
 /**
  * Utilities for the Version manager
  */
+
+//TODO: Use simple enums to avoid early class loading
 public class VersionUtils {
     public static boolean isGameOBF() {
         try {

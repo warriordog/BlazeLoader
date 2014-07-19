@@ -103,19 +103,7 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventLoadWorld(EventInfo<Minecraft> e) {
-        System.out.println("Event load world!");
-        //System.out.println("WorldClient: " + String.valueOf(par1WorldClient));
-        //System.out.println("String: " + String.valueOf(par2Str));
-    }
-
-    public static void runGameLoop(EventInfo<Minecraft> e) {
-        System.out.println("Run game loop!");
-        //System.out.println("WorldClient: " + String.valueOf(par1WorldClient));
-        //System.out.println("String: " + String.valueOf(par2Str));
-    }
-
-    public static void eventLoadWorld(WorldClient par1WorldClient, String par2Str, Minecraft mc) {
+    public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient par1WorldClient, String par2Str) {
         BLMod prevMod = BLMain.currActiveMod;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
