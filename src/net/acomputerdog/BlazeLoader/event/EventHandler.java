@@ -13,8 +13,10 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
+import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
@@ -108,14 +110,24 @@ public class EventHandler {
 
     public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
         BLMod prevMod = BLMain.currActiveMod;
-        WorldClient currWorld = Minecraft.getMinecraft().theWorld;
+        Minecraft mc = event.getSource();
+        WorldClient currWorld = mc.theWorld;
         for (WorldEventHandler mod : worldEventHandlers) {
             setActiveMod(mod);
             if (world != null) {
-                mod.eventLoadWorld(world, message);
+                mod.eventLoadWorld(mc, world, message);
             } else {
-                mod.eventUnloadWorld(currWorld, message);
+                mod.eventUnloadWorld(mc, currWorld, message);
             }
+        }
+        BLMain.currActiveMod = prevMod;
+    }
+
+    public static void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
+        BLMod prevMod = BLMain.currActiveMod;
+        for (PlayerEventHandler mod : playerEventHandlers) {
+            setActiveMod(mod);
+            mod.eventClientJoinGame(netHandler, loginPacket);
         }
         BLMain.currActiveMod = prevMod;
     }
@@ -133,7 +145,7 @@ public class EventHandler {
         BLMod prevMod = BLMain.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            mod.eventPlayerLogout(player);
+            mod.eventMPPlayerLogout(player);
         }
         BLMain.currActiveMod = prevMod;
     }
@@ -143,7 +155,7 @@ public class EventHandler {
         BLMod prevMod = BLMain.currActiveMod;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            mod.eventOtherPlayerRespawn(oldPlayer, newPlayer, dimension, causedByDeath);
+            mod.eventMPPlayerRespawn(oldPlayer, newPlayer, dimension, causedByDeath);
         }
         BLMain.currActiveMod = prevMod;
     }
@@ -194,7 +206,7 @@ public class EventHandler {
         boolean allow = isAllowed;
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            allow = mod.eventPlayerLoginAttempt(username, isAllowed);
+            allow = mod.eventMPPlayerLoginAttempt(username, isAllowed);
         }
         BLMain.currActiveMod = prevMod;
         return allow;
@@ -290,6 +302,15 @@ public class EventHandler {
         for (GenericEventHandler mod : genericEventHandlers) {
             setActiveMod(mod);
             mod.stop();
+        }
+        BLMain.currActiveMod = prevMod;
+    }
+
+    public static void eventWorldChanged(World world) {
+        BLMod prevMod = BLMain.currActiveMod;
+        for (WorldEventHandler mod : worldEventHandlers) {
+            setActiveMod(mod);
+            mod.eventWorldChanged(world);
         }
         BLMain.currActiveMod = prevMod;
     }

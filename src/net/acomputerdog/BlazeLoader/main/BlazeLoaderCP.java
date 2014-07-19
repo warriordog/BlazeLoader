@@ -67,7 +67,7 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
-
+        EventHandler.eventClientJoinGame(netHandler, loginPacket);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class BlazeLoaderCP implements CoreProvider {
 
     @Override
     public void onTick(boolean clock, float partialTicks, boolean inGame) {
-
+        EventHandler.eventTick();
     }
 
     @Override
     public void onWorldChanged(World world) {
-
+        EventHandler.eventWorldChanged(world);
     }
 }

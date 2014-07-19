@@ -2,6 +2,8 @@ package net.acomputerdog.BlazeLoader.event;
 
 import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.play.server.S01PacketJoinGame;
 
 /**
  * Interface for mods that handle player events
@@ -15,7 +17,7 @@ public interface PlayerEventHandler extends BLMod {
      * @param isAllowed The result of the game's user check.  True if the player is allowed to join.
      * @return Return true to allow the player to join, false to prevent it.
      */
-    public boolean eventPlayerLoginAttempt(String username, boolean isAllowed);
+    public boolean eventMPPlayerLoginAttempt(String username, boolean isAllowed);
 
 
     /**
@@ -30,7 +32,7 @@ public interface PlayerEventHandler extends BLMod {
      *
      * @param player The player logging out.
      */
-    public void eventPlayerLogout(EntityPlayerMP player);
+    public void eventMPPlayerLogout(EntityPlayerMP player);
 
 
     /**
@@ -41,10 +43,18 @@ public interface PlayerEventHandler extends BLMod {
      * @param dimension     The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
-    public void eventOtherPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath);
+    public void eventMPPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath);
 
     /**
      * Called when the client player dies.
      */
     public void eventClientPlayerDeath();
+
+    /**
+     * Called when the client connects to a server or singleplayer game
+     *
+     * @param netHandler  The network handler processing loginPacket
+     * @param loginPacket The login packet for this login
+     */
+    public void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket);
 }
