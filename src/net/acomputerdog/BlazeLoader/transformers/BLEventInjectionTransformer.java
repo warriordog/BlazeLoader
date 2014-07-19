@@ -26,12 +26,14 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
             MethodInfo loadWorld = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V").getValue());
             MethodInfo startSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V").getValue());
             MethodInfo endSection = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.profiler.Profiler.endSection ()V").getValue());
+            MethodInfo showGUI = BLMethodInfo.create(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V").getValue());
 
             InjectionPoint methodHead = new MethodHead();
 
             this.addBLEvent("BL.eventLoadWorld", loadWorld, methodHead);
             this.addBLEvent("BL.eventProfilerStart", startSection, methodHead);
             this.addBLEvent("BL.eventProfilerEnd", endSection, methodHead);
+            this.addBLEvent("BL.eventDisplayGuiScreen", showGUI, methodHead);
         } catch (Exception e) {
             System.err.println("A fatal exception occurred while injecting BlazeLoader!  BlazeLoader will not be able to run!");
             throw new RuntimeException("Exception injecting BlazeLoader!", e);

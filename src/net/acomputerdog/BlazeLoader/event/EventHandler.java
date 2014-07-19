@@ -59,14 +59,15 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static boolean eventOnGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed) {
+    public static void eventDisplayGuiScreen(EventInfo<Minecraft> event, GuiScreen gui) {
         BLMod prevMod = BLMain.currActiveMod;
+        Minecraft mc = event.getSource();
+        GuiScreen currentScreen = mc.currentScreen;
         for (ClientEventHandler mod : clientEventHandlers) {
             setActiveMod(mod);
-            allowed = mod.eventDisplayGui(oldGui, newGui, allowed);
+            mod.eventDisplayGui(mc, currentScreen, gui);
         }
         BLMain.currActiveMod = prevMod;
-        return allowed;
     }
 
     public static void overrideOnContainerOpen(EntityClientPlayerMP player, S2DPacketOpenWindow packet) {

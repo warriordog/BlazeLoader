@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.event;
 
 import net.acomputerdog.BlazeLoader.mod.BLMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 
@@ -11,13 +12,11 @@ public interface ClientEventHandler extends BLMod {
 
     /**
      * Called when a GUI is about to be displayed.
-     *
+     * @param minecraft The Minecraft object creating the event.
      * @param oldGui  The current GUI.
      * @param newGui  The GUI being displayed.
-     * @param allowed Set to true if the GUI will be displayed, false if another mod has disabled it.
-     * @return Return true to allow the GUI, false to block it.
      */
-    public boolean eventDisplayGui(GuiScreen oldGui, GuiScreen newGui, boolean allowed);
+    public void eventDisplayGui(Minecraft minecraft, GuiScreen oldGui, GuiScreen newGui);
 
     /**
      * Triggered when the user presses a bound key.
