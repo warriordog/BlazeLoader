@@ -24,8 +24,12 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         this.addEvent(Event.getOrCreate("Minecraft.loadWorld", false), loadWorld, methodHead)
                 .addListener(new MethodInfo("net.acomputerdog.BlazeLoader.event.EventHandler", "eventLoadWorld"));
 
-        this.addEvent(Event.getOrCreate("Minecraft.runGameLoop", false), new MethodInfo(minecraftOBF, "runGameLoop"), methodHead)
+        String[] runGameLoop = splitArgs(BLOBF.getMethodMCP("net.minecraft.client.Minecraft.runGameLoop ()V").name);
+
+        System.err.println("\"" + runGameLoop[0] + "\" : \"" + runGameLoop[1] + "\"");
+        this.addEvent(Event.getOrCreate("Minecraft.runGameLoop", false), new MethodInfo(minecraftOBF, runGameLoop[0], runGameLoop[1]), methodHead)
                 .addListener(new MethodInfo("net.acomputerdog.BlazeLoader.event.EventHandler", "runGameLoop"));
+
     }
 
     private String[] splitArgs(String method) {

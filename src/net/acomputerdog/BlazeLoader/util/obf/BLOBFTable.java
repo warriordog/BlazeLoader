@@ -7,30 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BLOBFTable extends DirectOBFTableSRG {
-    private final Map<TargetType, Map<String, BLOBF>> obfMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> srgMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> mcpMap = new HashMap<TargetType, Map<String, BLOBF>>();
-    private final Map<TargetType, Map<String, BLOBF>> smpMap = new HashMap<TargetType, Map<String, BLOBF>>();
+    private final Map<TargetType, Map<String, BLOBF>> obfNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
+    private final Map<TargetType, Map<String, BLOBF>> srgNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
+    private final Map<TargetType, Map<String, BLOBF>> mcpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
+    private final Map<TargetType, Map<String, BLOBF>> smpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
 
     public BLOBFTable() {
         super();
         for (TargetType type : TargetType.values()) {
-            obfMap.put(type, new HashMap<String, BLOBF>());
-            srgMap.put(type, new HashMap<String, BLOBF>());
-            mcpMap.put(type, new HashMap<String, BLOBF>());
-            smpMap.put(type, new HashMap<String, BLOBF>());
+            obfNameMap.put(type, new HashMap<String, BLOBF>());
+            srgNameMap.put(type, new HashMap<String, BLOBF>());
+            mcpNameMap.put(type, new HashMap<String, BLOBF>());
+            smpNameMap.put(type, new HashMap<String, BLOBF>());
         }
     }
 
     public BLOBF getOBF(String obfName, TargetType type) {
-        BLOBF obf = obfMap.get(type).get(obfName);
+        BLOBF obf = obfNameMap.get(type).get(obfName);
         if (obf == null) {
             if (super.hasTypeObf(obfName, type)) {
-                obf = new BLOBF(super.getSRGFromObfType(obfName, type), obfName, super.deobfType(obfName, type));
-                obfMap.get(type).put(obf.obf, obf);
-                srgMap.get(type).put(obf.srg, obf);
-                mcpMap.get(type).put(obf.name, obf);
-                smpMap.get(type).put(obf.simpleName, obf);
+                obf = new BLOBF(obfName, super.getSRGFromObfType(obfName, type), super.deobfType(obfName, type));
+                obfNameMap.get(type).put(obf.obf, obf);
+                srgNameMap.get(type).put(obf.srg, obf);
+                mcpNameMap.get(type).put(obf.name, obf);
+                smpNameMap.get(type).put(obf.simpleName, obf);
             } else {
                 System.out.println("Missing mapping: " + obfName);
             }
@@ -39,35 +39,35 @@ public class BLOBFTable extends DirectOBFTableSRG {
     }
 
     public BLOBF getSRG(String srgName, TargetType type) {
-        BLOBF obf = srgMap.get(type).get(srgName);
+        BLOBF obf = srgNameMap.get(type).get(srgName);
         if (obf == null) {
             if (super.hasTypeSRG(srgName, type)) {
-                obf = new BLOBF(srgName, super.getObfFromSRGType(srgName, type), super.getDeObfFromSRGType(srgName, type));
-                obfMap.get(type).put(obf.obf, obf);
-                srgMap.get(type).put(obf.srg, obf);
-                mcpMap.get(type).put(obf.name, obf);
-                smpMap.get(type).put(obf.simpleName, obf);
+                obf = new BLOBF(super.getObfFromSRGType(srgName, type), srgName, super.getDeObfFromSRGType(srgName, type));
+                obfNameMap.get(type).put(obf.obf, obf);
+                srgNameMap.get(type).put(obf.srg, obf);
+                mcpNameMap.get(type).put(obf.name, obf);
+                smpNameMap.get(type).put(obf.simpleName, obf);
             }
         }
         return obf;
     }
 
     public BLOBF getMCP(String mcpName, TargetType type) {
-        BLOBF obf = mcpMap.get(type).get(mcpName);
+        BLOBF obf = mcpNameMap.get(type).get(mcpName);
         if (obf == null) {
             if (super.hasTypeDeobf(mcpName, type)) {
-                obf = new BLOBF(super.getSRGFromDeObfType(mcpName, type), super.obfType(mcpName, type), mcpName);
-                obfMap.get(type).put(obf.obf, obf);
-                srgMap.get(type).put(obf.srg, obf);
-                mcpMap.get(type).put(obf.name, obf);
-                smpMap.get(type).put(obf.simpleName, obf);
+                obf = new BLOBF(super.obfType(mcpName, type), super.getSRGFromDeObfType(mcpName, type), mcpName);
+                obfNameMap.get(type).put(obf.obf, obf);
+                srgNameMap.get(type).put(obf.srg, obf);
+                mcpNameMap.get(type).put(obf.name, obf);
+                smpNameMap.get(type).put(obf.simpleName, obf);
             }
         }
         return obf;
     }
 
     public BLOBF getSMP(String smpName, TargetType type) {
-        return smpMap.get(type).get(smpName); //there is not enough information to create a full obfuscation map from just the SMPName
+        return smpNameMap.get(type).get(smpName); //there is not enough information to create a full obfuscation map from just the SMPName
     }
 
 }

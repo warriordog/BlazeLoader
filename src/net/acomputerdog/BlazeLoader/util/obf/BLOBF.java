@@ -13,14 +13,24 @@ public class BLOBF extends Obf {
     public final String simpleName;
 
     /**
-     * @param seargeName
      * @param obfName
+     * @param seargeName
      * @param mcpName
      */
-    public BLOBF(String seargeName, String obfName, String mcpName) {
+    public BLOBF(String obfName, String seargeName, String mcpName) {
         super(seargeName, obfName, mcpName);
         String[] nameParts = mcpName.split(PERIOD);
         this.simpleName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : mcpName;
+    }
+
+    /**
+     * @param obfName
+     * @param seargeName
+     * @param mcpName
+     */
+    public BLOBF(String obfName, String seargeName, String mcpName, String obfDesc, String seargeDesc, String mcpDesc) {
+        this(seargeName, obfName, mcpName);
+
     }
 
     //-----------------------------[Static Stuff]------------------------------------
