@@ -1,6 +1,7 @@
 package net.acomputerdog.BlazeLoader.util.obf;
 
 import com.mumfrey.liteloader.core.runtime.Obf;
+import net.acomputerdog.BlazeLoader.version.Version;
 import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
 import net.acomputerdog.OBFUtil.util.TargetType;
 
@@ -31,6 +32,16 @@ public class BLOBF extends Obf {
     public BLOBF(String obfName, String seargeName, String mcpName, String obfDesc, String seargeDesc, String mcpDesc) {
         this(seargeName, obfName, mcpName);
 
+    }
+
+    public String getValue() {
+        if (!Version.isGameObfuscated()) {
+            return super.name;
+        }
+        if (Version.isForgeInstalled()) {
+            return super.srg;
+        }
+        return super.obf;
     }
 
     //-----------------------------[Static Stuff]------------------------------------
