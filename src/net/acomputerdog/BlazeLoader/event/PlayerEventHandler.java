@@ -4,6 +4,7 @@ import net.acomputerdog.BlazeLoader.mod.BLMod;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.server.management.ServerConfigurationManager;
 
 /**
  * Interface for mods that handle player events
@@ -25,25 +26,24 @@ public interface PlayerEventHandler extends BLMod {
      *
      * @param player The player logging in.
      */
-    public void eventPlayerLogin(EntityPlayerMP player);
+    public void eventMPPlayerLogin(ServerConfigurationManager manager, EntityPlayerMP player);
 
     /**
      * Called when a player logs out of the game.
      *
      * @param player The player logging out.
      */
-    public void eventMPPlayerLogout(EntityPlayerMP player);
+    public void eventMPPlayerLogout(ServerConfigurationManager manager, EntityPlayerMP player);
 
 
     /**
      * Called when a non-local player respawns.  Only works for other players.
      *
      * @param oldPlayer     The player that died.
-     * @param newPlayer     The player being spawned.
      * @param dimension     The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
-    public void eventMPPlayerRespawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath);
+    public void eventMPPlayerRespawn(ServerConfigurationManager manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
 
     /**
      * Called when the client player dies.

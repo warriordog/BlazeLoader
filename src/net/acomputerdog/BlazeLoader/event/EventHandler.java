@@ -20,6 +20,7 @@ import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -136,30 +137,32 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventPlayerLogin(EntityPlayerMP player) {
+    public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
         BLMod prevMod = BLMain.currActiveMod;
+        ServerConfigurationManager manager = event.getSource();
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            mod.eventPlayerLogin(player);
+            mod.eventMPPlayerLogin(manager, player);
         }
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventPlayerLogout(EntityPlayerMP player) {
+    public static void eventPlayerLoggedOut(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
         BLMod prevMod = BLMain.currActiveMod;
+        ServerConfigurationManager manager = event.getSource();
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            mod.eventMPPlayerLogout(player);
+            mod.eventMPPlayerLogout(manager, player);
         }
         BLMain.currActiveMod = prevMod;
     }
 
-    @Deprecated
-    public static void eventPlayerSpawn(EntityPlayerMP oldPlayer, EntityPlayerMP newPlayer, int dimension, boolean causedByDeath) {
+    public static void eventRespawnPlayer(EventInfo<ServerConfigurationManager> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
         BLMod prevMod = BLMain.currActiveMod;
+        ServerConfigurationManager manager = event.getSource();
         for (PlayerEventHandler mod : playerEventHandlers) {
             setActiveMod(mod);
-            mod.eventMPPlayerRespawn(oldPlayer, newPlayer, dimension, causedByDeath);
+            mod.eventMPPlayerRespawn(manager, oldPlayer, dimension, !didWin);
         }
         BLMain.currActiveMod = prevMod;
     }
