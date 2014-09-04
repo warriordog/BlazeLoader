@@ -1,9 +1,7 @@
 //Libraries required by BL
 
 -Minecraft
--Gson (included with MC)
--JOptSimple (included with MC)
--LegacyLauncher (included with launcher)
+-LegacyLauncher (included with launcher, run an indev version to get it if needed)
 -ASM (asm-debug-all, Downloaded by the installer)
 -CompCore (included in compiled builds, available on warriordog's github, downloaded by setup)
 -OBFUtil (included in compiled builds, available on warriordog's github, downloaded by setup)
