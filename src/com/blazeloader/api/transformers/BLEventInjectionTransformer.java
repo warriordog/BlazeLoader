@@ -27,7 +27,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
             addBLEvent("net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
             addBLEvent("net.minecraft.server.management.ServerConfigurationManager.playerLoggedIn (Lnet/minecraft/entity/player/EntityPlayerMP;)V");
             addBLEvent("net.minecraft.server.management.ServerConfigurationManager.playerLoggedOut (Lnet/minecraft/entity/player/EntityPlayerMP;)V");
-            addBLEvent("net.minecraft.server.management.ServerConfigurationManager.respawnPlayer (Lnet/minecraft/entity/player/EntityPlayerMP;IZ)net/minecraft/entity/player/EntityPlayerMP");
+            addBLEvent("net.minecraft.server.management.ServerConfigurationManager.respawnPlayer (Lnet/minecraft/entity/player/EntityPlayerMP;IZ)Lnet/minecraft/entity/player/EntityPlayerMP;");
         } catch (Exception e) {
             System.err.println("A fatal exception occurred while injecting BlazeLoader!  BlazeLoader will not be able to run!");
             throw new RuntimeException("Exception injecting BlazeLoader!", e);

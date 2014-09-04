@@ -26,6 +26,9 @@ public class BLMethodInfo extends MethodInfo {
     private static final String PERIOD = Pattern.quote(".");
 
     public static BLMethodInfo create(BLOBF method) {
+        if (method == null) {
+            return null;
+        }
         return create(method.getValue());
     }
 
