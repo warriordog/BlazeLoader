@@ -1,5 +1,6 @@
 package com.blazeloader.api.util.obf;
 
+import com.blazeloader.api.version.Version;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
 
@@ -11,9 +12,13 @@ import java.util.regex.Pattern;
 public class BLMethodInfo extends MethodInfo {
     private final String simpleName;
 
-    private BLMethodInfo(Obf owner, String method, String desc) {
+    private BLMethodInfo(Obf owner, String method, String desc, String simpleName) {
         super(owner, method, desc);
-        this.simpleName = getMethodName(method);
+        this.simpleName = simpleName;
+    }
+
+    private BLMethodInfo(Obf owner, String method, String desc) {
+        this(owner, method, desc, getMethodName(method));
     }
 
     public String getSimpleName() {
@@ -46,8 +51,19 @@ public class BLMethodInfo extends MethodInfo {
             throw new IllegalArgumentException("Method name must contain class and method name!");
         }
         String name = nameParts[nameParts.length - 1];
-        Obf owner = BLOBF.getClassMCP(getClassName(nameParts));
+
+        Obf owner = getObfType(getClassName(nameParts));
         return new BLMethodInfo(owner, name, desc);
+    }
+
+    private static Obf getObfType(String name) {
+        if (!Version.isGameObfuscated()) {
+            return BLOBF.getClassMCP(name);
+        }
+        if (Version.isForgeInstalled()) {
+            return BLOBF.getClassSRG(name);
+        }
+        return BLOBF.getClassOBF(name);
     }
 
     private static String getClassName(String[] parts) {
