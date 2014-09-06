@@ -1,6 +1,5 @@
 package com.blazeloader.api.api.entity;
 
-import com.blazeloader.api.main.BLMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EnumCreatureType;
@@ -16,6 +15,7 @@ import java.util.List;
  * Api for entity-related functions
  */
 public class ApiEntity {
+    private static int currFreeEntityId = 0;
 
     /**
      * Registers a custom entity type.
@@ -119,11 +119,11 @@ public class ApiEntity {
      * @return return a free entity ID.
      */
     public static int getFreeEntityId() {
-        while (EntityList.getClassFromID(BLMain.currFreeEntityId) != null) {
-            BLMain.currFreeEntityId++;
+        while (EntityList.getClassFromID(currFreeEntityId) != null) {
+            currFreeEntityId++;
         }
-        int currId = BLMain.currFreeEntityId;
-        BLMain.currFreeEntityId++;
+        int currId = currFreeEntityId;
+        currFreeEntityId++;
         return currId;
     }
 

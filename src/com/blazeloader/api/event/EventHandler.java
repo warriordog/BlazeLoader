@@ -51,12 +51,15 @@ public class EventHandler {
     }
 
     public static void eventTick() {
+        BLMain.numTicks++;
+        BLMain.isInTick = true;
         BLMod prevMod = BLMain.currActiveMod;
         for (TickEventHandler mod : tickEventHandlers) {
             setActiveMod(mod);
             mod.eventTick();
         }
         BLMain.currActiveMod = prevMod;
+        BLMain.isInTick = false;
     }
 
     public static void eventDisplayGuiScreen(EventInfo<Minecraft> event, GuiScreen gui) {

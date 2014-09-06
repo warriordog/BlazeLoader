@@ -1,5 +1,7 @@
 package com.blazeloader.api.api.toolset;
 
+import com.blazeloader.api.util.java.Reflect;
+import com.blazeloader.api.util.obf.BLOBF;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,7 +14,7 @@ import java.util.HashSet;
 public class ToolPickaxe extends ItemPickaxe {
     private final ToolSetAttributes my_material;
 
-    public static final HashSet<Block> effectiveBlocks = (HashSet<Block>) ReflectionUtils.getField(ItemPickaxe.class, null, 0).get();
+    public static final HashSet<Block> effectiveBlocks = Reflect.getFieldValue(ItemPickaxe.class, null, BLOBF.getFieldMCP("net.minecraft.item.ItemPickaxe.effectiveBlocks").getValue());
 
     private float damageValue = 4;
 

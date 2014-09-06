@@ -1,8 +1,8 @@
-package com.blazeloader.api.api.util;
+package com.blazeloader.api.util.render;
 
 import net.minecraft.item.ItemDye;
 
-public final class MCColor {
+public class MCColor {
     public static final MCColor
             DYE_BLACK = new MCColor(ItemDye.dyeColors[0]),
             DYE_RED = new MCColor(ItemDye.dyeColors[1]),
