@@ -12,7 +12,7 @@ import com.mumfrey.liteloader.transformers.event.inject.MethodHead;
  * Injects events into MC classes
  */
 public class BLEventInjectionTransformer extends EventInjectionTransformer {
-    private static final String EVENT_HANDLER = "com.blazeloader.api.direct.EventHandlerHandler";
+    private static final String EVENT_HANDLER = "com.blazeloader.api.direct.event.EventHandler";
     private static final InjectionPoint methodHead = new MethodHead();
 
     /**
