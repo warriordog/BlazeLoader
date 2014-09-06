@@ -1,5 +1,7 @@
 package com.blazeloader.api.api.entity;
 
+import com.blazeloader.api.util.java.Reflect;
+import com.blazeloader.api.util.obf.BLOBF;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EnumCreatureType;
@@ -10,11 +12,26 @@ import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Api for entity-related functions
  */
 public class ApiEntity {
+    public static final Map<String, Class> stringToClassMap;
+    public static final Map<Class, String> classToStringMap;
+    public static final Map<Integer, Class> idToClassMap;
+    public static final Map<Class, Integer> classToIdMap;
+    public static final Map<String, Integer> stringToIdMap;
+
+    static {
+        stringToClassMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.stringToClassMapping").getValue());
+        classToStringMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.classToStringMapping").getValue());
+        idToClassMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.IDtoClassMapping").getValue());
+        classToIdMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.classToIDMapping").getValue());
+        stringToIdMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.stringToIDMapping").getValue());
+    }
+
     private static int currFreeEntityId = 0;
 
     /**
@@ -36,29 +53,6 @@ public class ApiEntity {
      */
     public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo) {
         EntityList.entityEggs.put(entityId, eggInfo);
-    }
-
-    /**
-     * Re-registers an entity to use a different class
-     *
-     * @param oldC Original class
-     * @param newC Replacement class
-     */
-    public static void swapEntityClass(Class<? extends Entity> oldC, Class<? extends Entity> newC) {
-        EntityList.EntityRegistryEntry.getEntry(oldC).setEntityClass(newC);
-        swapEntitySpawn(oldC, newC);
-    }
-
-    /**
-     * Changes spawn lists to replace an entities class
-     *
-     * @param oldC Original class
-     * @param newC Replacement class
-     */
-    public static void swapEntitySpawn(Class<? extends Entity> oldC, Class<? extends Entity> newC) {
-        for (EnumCreatureType i : EnumCreatureType.values()) {
-            swapEntitySpawn(oldC, newC, i);
-        }
     }
 
     /**
@@ -174,7 +168,7 @@ public class ApiEntity {
      * @return Return then ID of the entity.
      */
     public static int getEntityIDFromType(String type) {
-        return EntityList.getIDFromString(type);
+        return stringToIdMap.get(type);
     }
 
     /**

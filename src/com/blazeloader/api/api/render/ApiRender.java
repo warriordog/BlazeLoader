@@ -1,7 +1,8 @@
 package com.blazeloader.api.api.render;
 
 import com.blazeloader.api.api.general.ApiGeneral;
-import com.blazeloader.api.main.BLMain;
+import com.blazeloader.api.util.java.Reflect;
+import com.blazeloader.api.util.obf.BLOBF;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -10,10 +11,14 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.Map;
+
 /**
  * Contains functions related to game rendering.
  */
 public class ApiRender {
+
+    private static final String entityRenderMapName = BLOBF.getFieldMCP("net.minecraft.client.renderer.entity.RenderManager.entityRenderMap").getValue();
 
     /**
      * Generates a FontRenderer-compatible ARBG color int.
@@ -44,7 +49,7 @@ public class ApiRender {
      * @param centered Center the text around the coordinates specified.
      */
     public static void drawString(String string, int x, int y, int color, boolean shadow, boolean centered) {
-        FontRenderer render = ApiGeneral.theMinecraft.fontRenderer;
+        FontRenderer render = ApiGeneral.theMinecraft.fontRendererObj;
         if (centered) {
             x -= render.getStringWidth(string) / 2;
         }
@@ -84,7 +89,7 @@ public class ApiRender {
      */
     public static void registerEntityRenderer(Class<? extends Entity> entity, Render renderer) {
         renderer.setRenderManager(RenderManager.instance);
-        BLMain.getEntityRenderMap().put(entity, renderer);
+        Reflect.<Map<Class, Render>>getFieldValue(RenderManager.class, RenderManager.instance, entityRenderMapName).put(entity, renderer);
     }
 
     /**
