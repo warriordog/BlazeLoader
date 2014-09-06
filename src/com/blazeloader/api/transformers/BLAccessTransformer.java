@@ -1,5 +1,7 @@
 package com.blazeloader.api.transformers;
 
+import com.blazeloader.api.util.obf.BLOBF;
+import net.acomputerdog.OBFUtil.util.TargetType;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -48,35 +51,23 @@ public class BLAccessTransformer implements IClassTransformer {
                     continue;
                 }
 
-                String[] sections = line.split("#");
-                String[] parts = sections[0].split(" ");
+                String[] sections = line.split(Pattern.quote("#"));
+                String[] parts = sections[0].trim().split(Pattern.quote(" "));
 
-                if (parts.length > 2) {
-                    throw new IllegalArgumentException("Malformed Line: " + line);
+                if (parts.length != 3) {
+                    System.err.println("Malformed Line: " + line);
+                    continue;
                 }
-
-                AccessModifier m = new AccessModifier();
-                m.setAccessMode(parts[0].trim());
-                String[] description = parts[1].trim().split("\\.");
-
-                if (description.length == 1) {
-                    m.changeClassVisibility = true;
+                String part1 = parts[1].trim();
+                if (part1.equalsIgnoreCase("CLASS")) {
+                    transformClass(parts[0].trim(), parts[2].trim());
+                } else if (part1.equalsIgnoreCase("METHOD")) {
+                    transformMethod(parts[0].trim(), parts[2].trim());
+                } else if (part1.equalsIgnoreCase("FIELD")) {
+                    transformField(parts[0].trim(), parts[2].trim());
                 } else {
-                    String name = description[1].trim();
-                    if (!name.equals("*")) {
-                        int index = name.indexOf('(');
-
-                        if (index > 0) {
-                            m.description = name.substring(index);
-                            m.name = name.substring(0, index);
-                        } else {
-                            m.name = name;
-                        }
-                    }
+                    System.err.println("Unknown transformation type: " + line);
                 }
-
-                String className = description[0];
-                addToMap(className, m);
             }
         } finally {
             if (reader != null) {
@@ -85,6 +76,50 @@ public class BLAccessTransformer implements IClassTransformer {
         }
 
         System.out.println(String.format("Loaded %d access rules.", countRules()));
+    }
+
+    private void transformClass(String access, String name) {
+        AccessModifier m = new AccessModifier();
+        m.setAccessMode(access);
+        m.name = name;
+        m.changeClassVisibility = true;
+    }
+
+    private void transformMethod(String access, String name) {
+        AccessModifier m = new AccessModifier();
+        m.setAccessMode(access);
+
+        String clName = name.substring(0, name.indexOf('('));
+        int clNameLastDot = clName.lastIndexOf('.');
+
+        String method = name.substring(clNameLastDot, name.length()).trim();
+        if (!method.equals("*")) {
+            int index = method.indexOf('(');
+
+            if (index > 0) {
+                m.description = method.substring(index);
+                m.name = method.substring(0, index);
+            } else {
+                System.err.println("Invalid method transformation: " + name);
+                return;
+            }
+        }
+
+        String className = clName.substring(0, clNameLastDot);
+        addToMap(className, m);
+    }
+
+    private void transformField(String access, String name) {
+        AccessModifier m = new AccessModifier();
+        m.setAccessMode(access);
+
+        String fieldName = name.substring(name.lastIndexOf('.'), name.length()).trim();
+        if (!fieldName.equals("*")) {
+            m.name = name;
+        }
+
+        String className = name.substring(0, name.lastIndexOf('.'));
+        addToMap(className, m);
     }
 
     @Override
@@ -172,6 +207,34 @@ public class BLAccessTransformer implements IClassTransformer {
         return ret;
     }
 
+    private String getRealName(String name) {
+        if (name == null) {
+            return null;
+        }
+        String[] parts = name.split(Pattern.quote("@"));
+        if (parts.length < 2) {
+            System.err.println("Malformed name: " + name);
+            return name;
+        }
+        TargetType type = (name.indexOf('(') != -1) ? TargetType.METHOD : TargetType.FIELD;
+        BLOBF blobf;
+        if (name.equalsIgnoreCase("obf")) {
+            blobf = BLOBF.getOBF(name, type);
+        } else if (name.equalsIgnoreCase("srg")) {
+            blobf = BLOBF.getSRG(name, type);
+        } else if (name.equalsIgnoreCase("mcp")) {
+            blobf = BLOBF.getMCP(name, type);
+        } else {
+            System.err.println("Unknown OBF state: " + name);
+            return name;
+        }
+        if (blobf == null) {
+            System.err.println("Undefined name mapping: " + name);
+            return name;
+        }
+        return blobf.getValue();
+    }
+
     public static void main(String[] args) {
         try {
             if (args.length < 2) {
@@ -193,7 +256,7 @@ public class BLAccessTransformer implements IClassTransformer {
             }
 
             if (!hasTransformer) {
-                System.out.println("Could not find a valid transformer to perform!");
+                System.err.println("Could not find a valid transformer to perform!");
                 System.exit(1);
             }
 
@@ -201,12 +264,12 @@ public class BLAccessTransformer implements IClassTransformer {
             File temp = new File(args[0] + ".ATBackup");
 
             if (!orig.exists() && !temp.exists()) {
-                System.out.println("Could not find target jar: " + orig);
+                System.err.println("Could not find target jar: " + orig);
                 System.exit(1);
             }
 
             if (!orig.renameTo(temp)) {
-                System.out.println("Could not rename file: " + orig + " -> " + temp);
+                System.err.println("Could not rename file: " + orig + " -> " + temp);
                 System.exit(1);
             }
 
@@ -218,11 +281,11 @@ public class BLAccessTransformer implements IClassTransformer {
             }
 
             if (!temp.delete()) {
-                System.out.println("Could not delete temp file: " + temp);
+                System.err.println("Could not delete temp file: " + temp);
             }
         } catch (Throwable t) {
             System.gc();
-            System.out.println("Error occurred transforming access!");
+            System.err.println("Error occurred transforming access!");
             t.printStackTrace();
             System.exit(1);
         }

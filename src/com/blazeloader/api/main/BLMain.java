@@ -1,5 +1,7 @@
 package com.blazeloader.api.main;
 
+import com.blazeloader.api.api.command.BLCommandHandler;
+import com.blazeloader.api.api.general.ApiGeneral;
 import com.blazeloader.api.mod.BLMod;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -14,7 +16,11 @@ public class BLMain {
     public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, ELogLevel.DEBUG);
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, ELogLevel.DEBUG);
 
-    public static BLMod currActiveMod;
+    public static BLMod currActiveMod = null;
+    public static boolean isInTick = false;
+    public static int numTicks = 0;
+
+    public static final BLCommandHandler commandHandler = new BLCommandHandler();
 
     private static LoaderEnvironment environment;
     private static LoaderProperties properties;
@@ -28,5 +34,10 @@ public class BLMain {
         LOGGER_FAST.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
 
         BLMain.LOGGER_FULL.logInfo("BlazeLoader initialized.");
+    }
+
+    public static void shutdown(int code) {
+        LOGGER_FULL.logError("Unexpected shutdown with code " + code + "!");
+        ApiGeneral.theMinecraft.shutdown();
     }
 }
