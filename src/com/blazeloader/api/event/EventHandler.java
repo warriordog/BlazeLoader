@@ -3,6 +3,7 @@ package com.blazeloader.api.event;
 import com.blazeloader.api.main.BLMain;
 import com.blazeloader.api.mod.BLMod;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
+import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
@@ -20,6 +21,7 @@ import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -160,7 +162,7 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventRespawnPlayer(EventInfo<ServerConfigurationManager> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
+    public static void eventRespawnPlayer(ReturnEventInfo<IntegratedPlayerList, ?> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) { //not sure why this one is different, but it crashes with the normal system...
         BLMod prevMod = BLMain.currActiveMod;
         ServerConfigurationManager manager = event.getSource();
         for (PlayerEventHandler mod : playerEventHandlers) {

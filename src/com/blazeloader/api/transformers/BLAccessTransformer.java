@@ -55,7 +55,7 @@ public class BLAccessTransformer implements IClassTransformer {
                 String[] parts = sections[0].trim().split(Pattern.quote(" "));
 
                 if (parts.length != 3) {
-                    System.out.println("Malformed Line: " + line);
+                    System.err.println("Malformed Line: " + line);
                     continue;
                 }
                 String part1 = parts[1].trim();
@@ -66,7 +66,7 @@ public class BLAccessTransformer implements IClassTransformer {
                 } else if (part1.equalsIgnoreCase("FIELD")) {
                     transformField(parts[0].trim(), parts[2].trim());
                 } else {
-                    System.out.println("Unknown transformation type: " + line);
+                    System.err.println("Unknown transformation type: " + line);
                 }
             }
         } finally {
@@ -100,7 +100,7 @@ public class BLAccessTransformer implements IClassTransformer {
                 m.description = method.substring(index);
                 m.name = method.substring(0, index);
             } else {
-                System.out.println("Invalid method transformation: " + name);
+                System.err.println("Invalid method transformation: " + name);
                 return;
             }
         }
@@ -213,7 +213,7 @@ public class BLAccessTransformer implements IClassTransformer {
         }
         String[] parts = name.split(Pattern.quote("@"));
         if (parts.length < 2) {
-            System.out.println("Malformed name: " + name);
+            System.err.println("Malformed name: " + name);
             return name;
         }
         TargetType type = (name.indexOf('(') != -1) ? TargetType.METHOD : TargetType.FIELD;
@@ -225,11 +225,11 @@ public class BLAccessTransformer implements IClassTransformer {
         } else if (name.equalsIgnoreCase("mcp")) {
             blobf = BLOBF.getMCP(name, type);
         } else {
-            System.out.println("Unknown OBF state: " + name);
+            System.err.println("Unknown OBF state: " + name);
             return name;
         }
         if (blobf == null) {
-            System.out.println("Undefined name mapping: " + name);
+            System.err.println("Undefined name mapping: " + name);
             return name;
         }
         return blobf.getValue();
@@ -256,7 +256,7 @@ public class BLAccessTransformer implements IClassTransformer {
             }
 
             if (!hasTransformer) {
-                System.out.println("Could not find a valid transformer to perform!");
+                System.err.println("Could not find a valid transformer to perform!");
                 System.exit(1);
             }
 
@@ -264,12 +264,12 @@ public class BLAccessTransformer implements IClassTransformer {
             File temp = new File(args[0] + ".ATBackup");
 
             if (!orig.exists() && !temp.exists()) {
-                System.out.println("Could not find target jar: " + orig);
+                System.err.println("Could not find target jar: " + orig);
                 System.exit(1);
             }
 
             if (!orig.renameTo(temp)) {
-                System.out.println("Could not rename file: " + orig + " -> " + temp);
+                System.err.println("Could not rename file: " + orig + " -> " + temp);
                 System.exit(1);
             }
 
@@ -281,11 +281,11 @@ public class BLAccessTransformer implements IClassTransformer {
             }
 
             if (!temp.delete()) {
-                System.out.println("Could not delete temp file: " + temp);
+                System.err.println("Could not delete temp file: " + temp);
             }
         } catch (Throwable t) {
             System.gc();
-            System.out.println("Error occurred transforming access!");
+            System.err.println("Error occurred transforming access!");
             t.printStackTrace();
             System.exit(1);
         }
