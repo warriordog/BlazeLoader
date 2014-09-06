@@ -12,7 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 /**
  * A modified version of ServerCommandManager.  Exactly the same but does not auto-load vanilla commands.
  */
-public class BLCommandManager extends CommandHandler {
+public class BLCommandHandler extends CommandHandler {
 
     /**
      * Sends a message to the admins of the server from a given CommandSender with the given resource string and given

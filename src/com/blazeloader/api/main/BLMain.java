@@ -1,5 +1,6 @@
 package com.blazeloader.api.main;
 
+import com.blazeloader.api.api.command.BLCommandHandler;
 import com.blazeloader.api.mod.BLMod;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -15,6 +16,8 @@ public class BLMain {
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, ELogLevel.DEBUG);
 
     public static BLMod currActiveMod;
+
+    public static final BLCommandHandler commandHandler = new BLCommandHandler();
 
     private static LoaderEnvironment environment;
     private static LoaderProperties properties;
