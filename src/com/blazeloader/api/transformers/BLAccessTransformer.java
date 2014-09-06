@@ -218,11 +218,11 @@ public class BLAccessTransformer implements IClassTransformer {
         }
         TargetType type = (name.indexOf('(') != -1) ? TargetType.METHOD : TargetType.FIELD;
         BLOBF blobf;
-        if (name.equals("obf")) {
+        if (name.equalsIgnoreCase("obf")) {
             blobf = BLOBF.getOBF(name, type);
-        } else if (name.equals("srg")) {
+        } else if (name.equalsIgnoreCase("srg")) {
             blobf = BLOBF.getSRG(name, type);
-        } else if (name.equals("mcp")) {
+        } else if (name.equalsIgnoreCase("mcp")) {
             blobf = BLOBF.getMCP(name, type);
         } else {
             System.out.println("Unknown OBF state: " + name);
