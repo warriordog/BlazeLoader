@@ -1,6 +1,6 @@
 package com.blazeloader.api.direct.base.obf;
 
-import com.blazeloader.api.version.Version;
+import com.blazeloader.api.core.base.version.Version;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
 

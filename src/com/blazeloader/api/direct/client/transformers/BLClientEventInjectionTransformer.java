@@ -1,5 +1,7 @@
 package com.blazeloader.api.direct.client.transformers;
 
+import com.blazeloader.api.direct.base.obf.BLMethodInfo;
+import com.blazeloader.api.direct.base.obf.BLOBF;
 import com.blazeloader.api.direct.base.transformers.BLBaseEventInjectionTransformer;
 import com.mumfrey.liteloader.transformers.event.Event;
 import com.mumfrey.liteloader.transformers.event.InjectionPoint;

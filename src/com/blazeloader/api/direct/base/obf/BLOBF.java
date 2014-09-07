@@ -1,6 +1,6 @@
 package com.blazeloader.api.direct.base.obf;
 
-import com.blazeloader.api.version.Version;
+import com.blazeloader.api.core.base.version.Version;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
 import net.acomputerdog.OBFUtil.util.TargetType;
@@ -51,11 +51,11 @@ public class BLOBF extends Obf {
     /**
      * BL's central obfuscation table, contains all raw package, class, method, and field obfuscation mappings.
      */
-    public static final com.blazeloader.api.util.obf.BLOBFTable OBF = loadOBF();
+    public static final BLOBFTable OBF = loadOBF();
 
-    private static com.blazeloader.api.util.obf.BLOBFTable loadOBF() {
+    private static BLOBFTable loadOBF() {
         try {
-            com.blazeloader.api.util.obf.BLOBFTable obf = new com.blazeloader.api.util.obf.BLOBFTable();
+            BLOBFTable obf = new BLOBFTable();
             //TODO: Add support for loading server obfuscation tables
             new BLOBFParser(false).loadEntries(BLOBF.class.getResourceAsStream("/conf/minecraft_client.obf"), obf, true);
             return obf;

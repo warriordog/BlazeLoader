@@ -1,10 +1,10 @@
 package com.blazeloader.api.core.base.main;
 
-import com.blazeloader.api.api.command.BLCommandHandler;
 import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.core.client.main.BLMainClient;
 import com.blazeloader.api.core.server.main.BLMainServer;
 import com.blazeloader.api.direct.client.event.BlazeLoaderIPClient;
+import com.blazeloader.api.direct.server.api.command.BLCommandHandler;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;

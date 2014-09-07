@@ -1,8 +1,9 @@
 package com.blazeloader.api.api.general;
 
-import com.blazeloader.api.main.BLMain;
+import com.blazeloader.api.core.base.main.BLMain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.profiler.Profiler;
 
 import java.io.File;
 
@@ -39,7 +40,7 @@ public class ApiGeneral {
     /**
      * The game profiler.  Mods that wish to include profiler support can use this.
      */
-    public static net.minecraft.profiler.Profiler theProfiler = null;
+    public static Profiler theProfiler = null;
 
     /**
      * Shuts down the game with a specified error code.  Use 0 for normal shutdown.

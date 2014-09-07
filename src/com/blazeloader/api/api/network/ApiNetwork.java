@@ -1,7 +1,6 @@
 package com.blazeloader.api.api.network;
 
 import com.blazeloader.api.api.general.ApiGeneral;
-import com.blazeloader.api.event.NetworkEventHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayerMP;
