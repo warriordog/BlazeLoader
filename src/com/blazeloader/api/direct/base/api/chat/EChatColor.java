@@ -1,4 +1,4 @@
-package com.blazeloader.api.direct.server.api.chat;
+package com.blazeloader.api.direct.base.api.chat;
 
 /**
  * Chat formatting markers.
