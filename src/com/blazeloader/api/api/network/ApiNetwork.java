@@ -1,11 +1,11 @@
 package com.blazeloader.api.api.network;
 
 import com.blazeloader.api.api.general.ApiGeneral;
+import com.blazeloader.api.core.base.mod.BLMod;
+import com.blazeloader.api.direct.client.event.NetworkEventClientHandler;
+import com.blazeloader.api.direct.server.event.NetworkEventServerHandler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
@@ -15,16 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class ApiNetwork {
-    private static void sendCustomPayload_do(INetHandler handler, NetworkEventHandler mod, String[] args, byte[] data) {
-        if (handler instanceof NetHandlerPlayServer) {
-            ((NetHandlerPlayServer) handler).sendPacket(Server.getCustomPayloadPacket(mod, data, args));
-        } else if (handler instanceof NetHandlerPlayClient) {
-            ((NetHandlerPlayClient) handler).addToSendQueue(Client.getCustomPayloadPacket(mod, data, args));
-        }
-    }
 
-    private static String getChannel(NetworkEventHandler mod, String[] args) {
-        String channel = "BL|" + mod.toString();
+    private static String getChannel(BLMod mod, String[] args) {
+        String channel = "BL|" + mod.getModId();
         for (String i : args) {
             channel += "|" + i;
         }
@@ -45,7 +38,7 @@ public class ApiNetwork {
          * @param args   Additional channel information
          * @return a S3FPacketCustomPayload with a predefined channel and payload
          */
-        public static Packet getCustomPayloadPacket(NetworkEventHandler sender, byte[] data, String... args) {
+        public static Packet getCustomPayloadPacketClient(NetworkEventClientHandler sender, byte[] data, String... args) {
             return new C17PacketCustomPayload(getChannel(sender, args), data);
         }
 
@@ -57,7 +50,7 @@ public class ApiNetwork {
          * @param args   Additional channel information
          * @return a S3FPacketCustomPayload with a predefined channel and payload
          */
-        public static Packet getCustomPayloadPacket(NetworkEventHandler sender, ByteBuf data, String... args) {
+        public static Packet getCustomPayloadPacketClient(NetworkEventClientHandler sender, ByteBuf data, String... args) {
             return new C17PacketCustomPayload(getChannel(sender, args), data.array());
         }
 
@@ -68,8 +61,8 @@ public class ApiNetwork {
          * @param data   The data to be sent
          * @param args   Additional channel information
          */
-        public static void sendCustomPayload(NetworkEventHandler sender, byte[] data, String... args) {
-            sendCustomPayload_do(ApiGeneral.theMinecraft.getNetHandler(), sender, args, data);
+        public static void sendCustomPayloadClient(NetworkEventClientHandler sender, byte[] data, String... args) {
+            ApiGeneral.theMinecraft.getNetHandler().addToSendQueue(Client.getCustomPayloadPacketClient(sender, data, args));
         }
 
         /**
@@ -79,8 +72,8 @@ public class ApiNetwork {
          * @param data   The data to be sent
          * @param args   Additional channel information
          */
-        public static void sendCustomPayload(NetworkEventHandler sender, ByteBuf data, String... args) {
-            sendCustomPayload(sender, data.array(), args);
+        public static void sendCustomPayloadClient(NetworkEventClientHandler sender, ByteBuf data, String... args) {
+            sendCustomPayloadClient(sender, data.array(), args);
         }
 
         /**
@@ -88,7 +81,7 @@ public class ApiNetwork {
          *
          * @param p
          */
-        public static void sendPacket(Packet p) {
+        public static void sendPacketClient(Packet p) {
             ApiGeneral.theMinecraft.getNetHandler().addToSendQueue(p);
         }
     }
@@ -106,7 +99,7 @@ public class ApiNetwork {
          * @param args   Additional channel information
          * @return a S3FPacketCustomPayload with a predefined channel and payload
          */
-        public static Packet getCustomPayloadPacket(NetworkEventHandler sender, byte[] data, String... args) {
+        public static Packet getCustomPayloadPacketServer(NetworkEventServerHandler sender, byte[] data, String... args) {
             return new S3FPacketCustomPayload(getChannel(sender, args), data);
         }
 
@@ -118,7 +111,7 @@ public class ApiNetwork {
          * @param args   Additional channel information
          * @return a S3FPacketCustomPayload with a predefined channel and payload
          */
-        public static Packet getCustomPayloadPacket(NetworkEventHandler sender, ByteBuf data, String... args) {
+        public static Packet getCustomPayloadPacketServer(NetworkEventServerHandler sender, ByteBuf data, String... args) {
             return new S3FPacketCustomPayload(getChannel(sender, args), data.array());
         }
 
@@ -130,8 +123,8 @@ public class ApiNetwork {
          * @param data     The data to be sent
          * @param args     Additional channel information
          */
-        public static void sendCustomPayload(NetworkEventHandler sender, EntityPlayerMP reciever, byte[] data, String... args) {
-            sendCustomPayload_do(reciever.playerNetServerHandler, sender, args, data);
+        public static void sendCustomPayloadServer(NetworkEventServerHandler sender, EntityPlayerMP reciever, byte[] data, String... args) {
+            reciever.playerNetServerHandler.sendPacket(Server.getCustomPayloadPacketServer(sender, data, args));
         }
 
         /**
@@ -142,8 +135,8 @@ public class ApiNetwork {
          * @param data     The data to be sent
          * @param args     Additional channel information
          */
-        public static void sendCustomPayload(NetworkEventHandler sender, EntityPlayerMP reciever, ByteBuf data, String... args) {
-            sendCustomPayload(sender, reciever, data.array(), args);
+        public static void sendCustomPayloadServer(NetworkEventServerHandler sender, EntityPlayerMP reciever, ByteBuf data, String... args) {
+            sendCustomPayloadServer(sender, reciever, data.array(), args);
         }
 
         /**
@@ -151,7 +144,7 @@ public class ApiNetwork {
          *
          * @param p Packet to send
          */
-        public static void sendToAllPlayers(Packet p) {
+        public static void sendToAllPlayersServer(Packet p) {
             if (MinecraftServer.getServer() != null) {
                 MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(p);
             }
@@ -163,7 +156,7 @@ public class ApiNetwork {
          * @param p         Packet to send
          * @param dimension Id of the dimension of the players to recieve this packet
          */
-        public static void sendToPlayersInDimension(Packet p, int dimension) {
+        public static void sendToPlayersInDimensionServer(Packet p, int dimension) {
             if (MinecraftServer.getServer() != null) {
                 MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayersInDimension(p, dimension);
             }
@@ -174,7 +167,7 @@ public class ApiNetwork {
          *
          * @return Unmodifiable List of EntityPlayerMP objects
          */
-        public List<EntityPlayerMP> getPlayerEntities() {
+        public List<EntityPlayerMP> getPlayerEntitiesServer() {
             if (MinecraftServer.getServer() != null) {
                 return Collections.unmodifiableList((List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList);
             }
