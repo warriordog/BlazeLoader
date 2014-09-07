@@ -2,6 +2,8 @@ package com.blazeloader.api.direct.client.event;
 
 import com.blazeloader.api.core.base.main.BLMain;
 import com.blazeloader.api.core.base.mod.BLMod;
+import com.blazeloader.api.direct.base.event.EventHandlerBase;
+import com.blazeloader.api.direct.base.event.TickEventBaseHandler;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -13,8 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
@@ -22,7 +22,6 @@ import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,29 +29,19 @@ import java.util.List;
 /**
  * Distributes game events to mods
  */
-public class EventHandler {
+public class EventHandlerClient extends EventHandlerBase {
     public static final List<BlockEventHandler> blockEventHandlers = new ArrayList<BlockEventHandler>();
-    public static final List<ClientEventHandler> clientEventHandlers = new ArrayList<ClientEventHandler>();
-    public static final List<GenericEventHandler> genericEventHandlers = new ArrayList<GenericEventHandler>();
+    public static final List<GuiEventClientHandler> clientEventHandlers = new ArrayList<GuiEventClientHandler>();
     public static final List<InventoryEventHandler> inventoryEventHandlers = new ArrayList<InventoryEventHandler>();
     public static final List<OverrideEventHandler> overrideEventHandlers = new ArrayList<OverrideEventHandler>();
     public static final List<PlayerEventHandler> playerEventHandlers = new ArrayList<PlayerEventHandler>();
     public static final List<ProfilerEventHandler> profilerEventHandlers = new ArrayList<ProfilerEventHandler>();
-    public static final List<TickEventHandler> tickEventHandlers = new ArrayList<TickEventHandler>();
     public static final List<WorldEventHandler> worldEventHandlers = new ArrayList<WorldEventHandler>();
     public static final List<NetworkEventHandler> networkEventHandlers = new ArrayList<NetworkEventHandler>();
 
-    private static void setActiveMod(Object mod) {
-        if (mod instanceof BLMod) {
-            BLMain.currActiveMod = (BLMod) mod;
-        } else {
-            BLMain.currActiveMod = null;
-        }
-    }
-
     public static void eventTick() {
         BLMod prevMod = BLMain.currActiveMod;
-        for (TickEventHandler mod : tickEventHandlers) {
+        for (TickEventBaseHandler mod : tickEventHandlers) {
             setActiveMod(mod);
             mod.eventTick();
         }
@@ -63,7 +52,7 @@ public class EventHandler {
         BLMod prevMod = BLMain.currActiveMod;
         Minecraft mc = event.getSource();
         GuiScreen currentScreen = mc.currentScreen;
-        for (ClientEventHandler mod : clientEventHandlers) {
+        for (GuiEventClientHandler mod : clientEventHandlers) {
             setActiveMod(mod);
             mod.eventDisplayGui(mc, currentScreen, gui);
         }
@@ -176,15 +165,6 @@ public class EventHandler {
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventTickServerWorld(WorldServer world) {
-        BLMod prevMod = BLMain.currActiveMod;
-        for (WorldEventHandler mod : worldEventHandlers) {
-            setActiveMod(mod);
-            mod.eventTickServerWorld(world);
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
     public static S0EPacketSpawnObject overrideCreateSpawnPacket(Entity myEntity) {
         BLMod prevMod = BLMain.currActiveMod;
         S0EPacketSpawnObject packet = null;
@@ -197,15 +177,6 @@ public class EventHandler {
         }
         BLMain.currActiveMod = prevMod;
         return packet;
-    }
-
-    public static void eventTickBlocksAndAmbiance(WorldServer server) {
-        BLMod prevMod = BLMain.currActiveMod;
-        for (WorldEventHandler mod : worldEventHandlers) {
-            setActiveMod(mod);
-            mod.eventTickBlocksAndAmbiance(server);
-        }
-        BLMain.currActiveMod = prevMod;
     }
 
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
@@ -255,38 +226,6 @@ public class EventHandler {
                 }
             }
         }
-    }
-
-    public static void eventServerReceiveCustomPayload(NetHandlerPlayServer handler, C17PacketCustomPayload packet) {
-        String packetIdentifier = packet.func_149559_c();
-        if (packetIdentifier != null) {
-            if (packetIdentifier.indexOf("BL|") == 0) {
-                NetworkEventHandler.PacketEventArgs args = new NetworkEventHandler.PacketEventArgs(packet, packetIdentifier);
-                for (NetworkEventHandler mod : networkEventHandlers) {
-                    if (mod.toString().equals(args.channel)) {
-                        mod.eventServerRecieveCustomPayload(handler, args);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void eventStart() {
-        BLMod prevMod = BLMain.currActiveMod;
-        for (GenericEventHandler mod : genericEventHandlers) {
-            setActiveMod(mod);
-            mod.start();
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
-    public static void eventEnd() {
-        BLMod prevMod = BLMain.currActiveMod;
-        for (GenericEventHandler mod : genericEventHandlers) {
-            setActiveMod(mod);
-            mod.stop();
-        }
-        BLMain.currActiveMod = prevMod;
     }
 
     public static void eventWorldChanged(World world) {

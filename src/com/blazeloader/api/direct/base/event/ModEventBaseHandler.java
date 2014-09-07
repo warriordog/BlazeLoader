@@ -1,11 +1,11 @@
-package com.blazeloader.api.direct.client.event;
+package com.blazeloader.api.direct.base.event;
 
 import com.blazeloader.api.core.base.mod.BLMod;
 
 /**
  * Interface for mods that handle generic events
  */
-public interface GenericEventHandler extends BLMod {
+public interface ModEventBaseHandler extends BLMod {
     /**
      * Called when mod is started.  Game is fully loaded and can be interacted with.
      */

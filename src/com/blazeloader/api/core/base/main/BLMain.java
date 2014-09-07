@@ -3,7 +3,7 @@ package com.blazeloader.api.core.base.main;
 import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.core.client.main.BLMainClient;
 import com.blazeloader.api.core.server.main.BLMainServer;
-import com.blazeloader.api.direct.client.event.BlazeLoaderIP;
+import com.blazeloader.api.direct.client.event.BlazeLoaderIPClient;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
@@ -64,7 +64,7 @@ public abstract class BLMain {
     }
 
     public List<InterfaceProvider> getInterfaceProviders() {
-        return Arrays.asList((InterfaceProvider) BlazeLoaderIP.instance);
+        return Arrays.asList((InterfaceProvider) BlazeLoaderIPClient.instance);
     }
 
     public List<Observer> getObservers() {

@@ -1,6 +1,6 @@
 package com.blazeloader.api.core.base.main;
 
-import com.blazeloader.api.direct.client.event.EventHandler;
+import com.blazeloader.api.direct.client.event.EventHandlerClient;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.common.GameEngine;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
@@ -56,7 +56,7 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onStartupComplete() {
-        EventHandler.eventStart();
+        EventHandlerClient.eventStart();
     }
 
     /**
@@ -67,7 +67,7 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
-        EventHandler.eventClientJoinGame(netHandler, loginPacket);
+        EventHandlerClient.eventClientJoinGame(netHandler, loginPacket);
     }
 
     @Override
@@ -77,16 +77,16 @@ public class BlazeLoaderCP implements CoreProvider {
 
     @Override
     public void onShutDown() {
-        EventHandler.eventEnd();
+        EventHandlerClient.eventEnd();
     }
 
     @Override
     public void onTick(boolean clock, float partialTicks, boolean inGame) {
-        EventHandler.eventTick();
+        EventHandlerClient.eventTick();
     }
 
     @Override
     public void onWorldChanged(World world) {
-        EventHandler.eventWorldChanged(world);
+        EventHandlerClient.eventWorldChanged(world);
     }
 }

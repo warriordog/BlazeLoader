@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 /**
  * Interface for mods that handle client-specific events
  */
-public interface ClientEventHandler extends BLMod {
+public interface GuiEventClientHandler extends BLMod {
 
     /**
      * Called when a GUI is about to be displayed.
