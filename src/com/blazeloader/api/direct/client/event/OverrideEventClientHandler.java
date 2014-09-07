@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 /**
  * Interface for mods that handle game events not handled by vanilla.  Override events are only called if the game is unable to handle the event on it's own.
  */
-public interface OverrideEventHandler extends BLMod {
+public interface OverrideEventClientHandler extends BLMod {
 
     /**
      * Creates a spawn packet for the given entity.

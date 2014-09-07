@@ -13,14 +13,12 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -33,11 +31,11 @@ public class EventHandlerClient extends EventHandlerBase {
     public static final List<BlockEventHandler> blockEventHandlers = new ArrayList<BlockEventHandler>();
     public static final List<GuiEventClientHandler> clientEventHandlers = new ArrayList<GuiEventClientHandler>();
     public static final List<InventoryEventHandler> inventoryEventHandlers = new ArrayList<InventoryEventHandler>();
-    public static final List<OverrideEventHandler> overrideEventHandlers = new ArrayList<OverrideEventHandler>();
-    public static final List<PlayerEventHandler> playerEventHandlers = new ArrayList<PlayerEventHandler>();
-    public static final List<ProfilerEventHandler> profilerEventHandlers = new ArrayList<ProfilerEventHandler>();
-    public static final List<WorldEventHandler> worldEventHandlers = new ArrayList<WorldEventHandler>();
-    public static final List<NetworkEventHandler> networkEventHandlers = new ArrayList<NetworkEventHandler>();
+    public static final List<OverrideEventClientHandler> overrideEventHandlers = new ArrayList<OverrideEventClientHandler>();
+    public static final List<PlayerEventClientHandler> playerEventHandlers = new ArrayList<PlayerEventClientHandler>();
+    public static final List<ProfilerEventClientHandler> profilerEventHandlers = new ArrayList<ProfilerEventClientHandler>();
+    public static final List<WorldEventClientHandler> worldEventHandlers = new ArrayList<WorldEventClientHandler>();
+    public static final List<NetworkEventClientHandler> networkEventHandlers = new ArrayList<NetworkEventClientHandler>();
 
     public static void eventTick() {
         BLMod prevMod = BLMain.currActiveMod;
@@ -70,8 +68,8 @@ public class EventHandlerClient extends EventHandlerBase {
             throw new IllegalArgumentException("Class not found: " + clazzName, e);
         }
 
-        OverrideEventHandler.ContainerOpenedEventArgs args = new OverrideEventHandler.ContainerOpenedEventArgs(player, packet);
-        for (OverrideEventHandler mod : overrideEventHandlers) {
+        OverrideEventClientHandler.ContainerOpenedEventArgs args = new OverrideEventClientHandler.ContainerOpenedEventArgs(player, packet);
+        for (OverrideEventClientHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             if (mod.overrideContainerOpen(player, c, args)) {
                 player.openContainer.windowId = packet.func_148901_c();
@@ -84,7 +82,7 @@ public class EventHandlerClient extends EventHandlerBase {
     public static void eventStartSection(EventInfo<Profiler> event, String name) {
         BLMod prevMod = BLMain.currActiveMod;
         Profiler prof = event.getSource();
-        for (ProfilerEventHandler mod : profilerEventHandlers) {
+        for (ProfilerEventClientHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
             mod.eventProfilerStart(prof, name);
         }
@@ -95,7 +93,7 @@ public class EventHandlerClient extends EventHandlerBase {
         BLMod prevMod = BLMain.currActiveMod;
         Profiler prof = event.getSource();
         String lastSection = prof.getNameOfLastSection();
-        for (ProfilerEventHandler mod : profilerEventHandlers) {
+        for (ProfilerEventClientHandler mod : profilerEventHandlers) {
             setActiveMod(mod);
             mod.eventProfilerEnd(prof, lastSection);
         }
@@ -106,7 +104,7 @@ public class EventHandlerClient extends EventHandlerBase {
         BLMod prevMod = BLMain.currActiveMod;
         Minecraft mc = event.getSource();
         WorldClient currWorld = mc.theWorld;
-        for (WorldEventHandler mod : worldEventHandlers) {
+        for (WorldEventClientHandler mod : worldEventHandlers) {
             setActiveMod(mod);
             if (world != null) {
                 mod.eventLoadWorld(mc, world, message);
@@ -119,46 +117,16 @@ public class EventHandlerClient extends EventHandlerBase {
 
     public static void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
         BLMod prevMod = BLMain.currActiveMod;
-        for (PlayerEventHandler mod : playerEventHandlers) {
+        for (PlayerEventClientHandler mod : playerEventHandlers) {
             setActiveMod(mod);
             mod.eventClientJoinGame(netHandler, loginPacket);
         }
         BLMain.currActiveMod = prevMod;
     }
 
-    public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
-        BLMod prevMod = BLMain.currActiveMod;
-        ServerConfigurationManager manager = event.getSource();
-        for (PlayerEventHandler mod : playerEventHandlers) {
-            setActiveMod(mod);
-            mod.eventMPPlayerLogin(manager, player);
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
-    public static void eventPlayerLoggedOut(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
-        BLMod prevMod = BLMain.currActiveMod;
-        ServerConfigurationManager manager = event.getSource();
-        for (PlayerEventHandler mod : playerEventHandlers) {
-            setActiveMod(mod);
-            mod.eventMPPlayerLogout(manager, player);
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
-    public static void eventRespawnPlayer(EventInfo<ServerConfigurationManager> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
-        BLMod prevMod = BLMain.currActiveMod;
-        ServerConfigurationManager manager = event.getSource();
-        for (PlayerEventHandler mod : playerEventHandlers) {
-            setActiveMod(mod);
-            mod.eventMPPlayerRespawn(manager, oldPlayer, dimension, !didWin);
-        }
-        BLMain.currActiveMod = prevMod;
-    }
-
     public static void eventClientPlayerDeath() {
         BLMod prevMod = BLMain.currActiveMod;
-        for (PlayerEventHandler mod : playerEventHandlers) {
+        for (PlayerEventClientHandler mod : playerEventHandlers) {
             setActiveMod(mod);
             mod.eventClientPlayerDeath();
         }
@@ -168,7 +136,7 @@ public class EventHandlerClient extends EventHandlerBase {
     public static S0EPacketSpawnObject overrideCreateSpawnPacket(Entity myEntity) {
         BLMod prevMod = BLMain.currActiveMod;
         S0EPacketSpawnObject packet = null;
-        for (OverrideEventHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             S0EPacketSpawnObject modPacket = mod.overrideCreateSpawnPacket(myEntity, packet != null);
             if (modPacket != null) {
@@ -179,21 +147,10 @@ public class EventHandlerClient extends EventHandlerBase {
         return packet;
     }
 
-    public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
-        BLMod prevMod = BLMain.currActiveMod;
-        boolean allow = isAllowed;
-        for (PlayerEventHandler mod : playerEventHandlers) {
-            setActiveMod(mod);
-            allow = mod.eventMPPlayerLoginAttempt(username, isAllowed);
-        }
-        BLMain.currActiveMod = prevMod;
-        return allow;
-    }
-
     public static void overrideAddEntityToTracker(EntityTracker tracker, Entity entity) {
         BLMod prevMod = BLMain.currActiveMod;
         boolean isHandled = false;
-        for (OverrideEventHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             boolean didHandle = mod.overrideAddEntityToTracker(tracker, entity, isHandled);
             if (didHandle) {
@@ -206,7 +163,7 @@ public class EventHandlerClient extends EventHandlerBase {
     public static EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
         BLMod prevMod = BLMain.currActiveMod;
         EntityFX entity = null;
-        for (OverrideEventHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventHandlers) {
             setActiveMod(mod);
             entity = mod.overrideSpawnParticle(name, world, x, y, z, p1, p2, p3, entity);
         }
@@ -218,8 +175,8 @@ public class EventHandlerClient extends EventHandlerBase {
         String packetIdentifier = packet.func_149169_c();
         if (packetIdentifier != null) {
             if (packetIdentifier.indexOf("BL|") == 0) {
-                NetworkEventHandler.PacketEventArgs args = new NetworkEventHandler.PacketEventArgs(packet, packetIdentifier);
-                for (NetworkEventHandler mod : networkEventHandlers) {
+                NetworkEventClientHandler.PacketEventArgs args = new NetworkEventClientHandler.PacketEventArgs(packet, packetIdentifier);
+                for (NetworkEventClientHandler mod : networkEventHandlers) {
                     if (mod.toString().equals(args.channel)) {
                         mod.eventClientRecieveCustomPayload(handler, args);
                     }
@@ -230,7 +187,7 @@ public class EventHandlerClient extends EventHandlerBase {
 
     public static void eventWorldChanged(World world) {
         BLMod prevMod = BLMain.currActiveMod;
-        for (WorldEventHandler mod : worldEventHandlers) {
+        for (WorldEventClientHandler mod : worldEventHandlers) {
             setActiveMod(mod);
             mod.eventWorldChanged(world);
         }

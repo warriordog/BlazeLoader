@@ -6,7 +6,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 /**
  * Interface for mods that handle network events
  */
-public interface NetworkEventHandler extends NetworkEventBaseHandler {
+public interface NetworkEventClientHandler extends NetworkEventBaseHandler {
 
     /**
      * Triggered when the client recieves a Custom packet sent in the name of this mod

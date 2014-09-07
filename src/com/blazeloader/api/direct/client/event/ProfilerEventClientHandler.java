@@ -6,7 +6,7 @@ import net.minecraft.profiler.Profiler;
 /**
  * Interface for mods that handle profiler events
  */
-public interface ProfilerEventHandler extends BLMod {
+public interface ProfilerEventClientHandler extends BLMod {
     /**
      * Called when a profiler section is started.  Mods are notified BEFORE profiler.
      *

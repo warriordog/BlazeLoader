@@ -1,4 +1,4 @@
-package com.blazeloader.api.direct.base.transformers;
+package com.blazeloader.api.direct.client.transformers;
 
 import com.blazeloader.api.direct.base.obf.BLMethodInfo;
 import com.blazeloader.api.direct.base.obf.BLOBF;
@@ -11,8 +11,8 @@ import com.mumfrey.liteloader.transformers.event.inject.MethodHead;
 /**
  * Injects events into MC classes
  */
-public class BLEventInjectionTransformer extends EventInjectionTransformer {
-    private static final String EVENT_HANDLER = "com.blazeloader.api.direct.client.event.EventHandler";
+public class BLClientEventInjectionTransformer extends EventInjectionTransformer {
+    private static final String EVENT_HANDLER = "com.blazeloader.api.direct.client.event.EventHandlerClient";
     private static final InjectionPoint methodHead = new MethodHead();
 
     /**

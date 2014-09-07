@@ -1,15 +1,10 @@
-package com.blazeloader.api.direct.client.event;
+package com.blazeloader.api.direct.server.server;
 
 import com.blazeloader.api.core.base.mod.BLMod;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.server.management.ServerConfigurationManager;
 
-/**
- * Interface for mods that handle player events
- */
-public interface PlayerEventHandler extends BLMod {
+public interface PlayerEventServerHandler extends BLMod {
 
     /**
      * Called when a player attempts to log in.  This is after the game has already checked if the user is valid.
@@ -44,17 +39,4 @@ public interface PlayerEventHandler extends BLMod {
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
     public void eventMPPlayerRespawn(ServerConfigurationManager manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
-
-    /**
-     * Called when the client player dies.
-     */
-    public void eventClientPlayerDeath();
-
-    /**
-     * Called when the client connects to a server or singleplayer game
-     *
-     * @param netHandler  The network handler processing loginPacket
-     * @param loginPacket The login packet for this login
-     */
-    public void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket);
 }

@@ -36,12 +36,12 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
         delegate.registerInterface(GuiEventClientHandler.class);
         delegate.registerInterface(ModEventBaseHandler.class);
         delegate.registerInterface(InventoryEventHandler.class);
-        delegate.registerInterface(NetworkEventHandler.class);
-        delegate.registerInterface(OverrideEventHandler.class);
-        delegate.registerInterface(PlayerEventHandler.class);
-        delegate.registerInterface(ProfilerEventHandler.class);
+        delegate.registerInterface(NetworkEventClientHandler.class);
+        delegate.registerInterface(OverrideEventClientHandler.class);
+        delegate.registerInterface(PlayerEventClientHandler.class);
+        delegate.registerInterface(ProfilerEventClientHandler.class);
         delegate.registerInterface(TickEventBaseHandler.class);
-        delegate.registerInterface(WorldEventHandler.class);
+        delegate.registerInterface(WorldEventClientHandler.class);
     }
 
     /**
@@ -68,19 +68,19 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
         EventHandlerClient.inventoryEventHandlers.add(e);
     }
 
-    public void addNetworkEvent(NetworkEventHandler e) {
+    public void addNetworkEvent(NetworkEventClientHandler e) {
         EventHandlerClient.networkEventHandlers.add(e);
     }
 
-    public void addOverrideEvent(OverrideEventHandler e) {
+    public void addOverrideEvent(OverrideEventClientHandler e) {
         EventHandlerClient.overrideEventHandlers.add(e);
     }
 
-    public void addPlayerEvent(PlayerEventHandler e) {
+    public void addPlayerEvent(PlayerEventClientHandler e) {
         EventHandlerClient.playerEventHandlers.add(e);
     }
 
-    public void addProfilerEvent(ProfilerEventHandler e) {
+    public void addProfilerEvent(ProfilerEventClientHandler e) {
         EventHandlerClient.profilerEventHandlers.add(e);
     }
 
@@ -88,7 +88,7 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
         EventHandlerClient.tickEventHandlers.add(e);
     }
 
-    public void addWorldEventHandler(WorldEventHandler e) {
+    public void addWorldEventHandler(WorldEventClientHandler e) {
         EventHandlerClient.worldEventHandlers.add(e);
     }
 }

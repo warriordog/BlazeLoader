@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 /**
  * Interface for mods that handle world events
  */
-public interface WorldEventHandler extends BLMod {
+public interface WorldEventClientHandler extends BLMod {
     /**
      * Called when a world is loaded.
      *
