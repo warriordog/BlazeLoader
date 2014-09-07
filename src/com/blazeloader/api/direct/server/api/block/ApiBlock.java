@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.server.api.block;
 
-import com.blazeloader.api.api.general.ApiGeneral;
 import com.blazeloader.api.core.base.util.math.MathUtils;
+import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -99,7 +99,7 @@ public class ApiBlock {
      * @return The WorldServer for the specified index.
      */
     public static WorldServer getServerForDimension(int dimension) {
-        return ApiGeneral.theMinecraft.getIntegratedServer().worldServers[dimension];
+        return ApiGeneralClient.theMinecraft.getIntegratedServer().worldServers[dimension];
     }
 
     /**

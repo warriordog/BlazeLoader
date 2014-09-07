@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.base.api.tick;
 
-import com.blazeloader.api.api.general.ApiGeneral;
 import com.blazeloader.api.core.base.main.BLMain;
+import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
 
 /**
  * Api for function related to the world tick.
@@ -14,7 +14,7 @@ public class ApiTick {
      * @return Returns the game's current tick rate.
      */
     public static float getTPS() {
-        return ApiGeneral.theMinecraft.timer.ticksPerSecond;
+        return ApiGeneralClient.theMinecraft.timer.ticksPerSecond;
     }
 
     /**
@@ -23,7 +23,7 @@ public class ApiTick {
      * @param tps The new tick rate.
      */
     public static void setTPS(float tps) {
-        ApiGeneral.theMinecraft.timer.ticksPerSecond = tps;
+        ApiGeneralClient.theMinecraft.timer.ticksPerSecond = tps;
     }
 
     /**
