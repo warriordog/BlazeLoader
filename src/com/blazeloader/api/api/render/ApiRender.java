@@ -1,8 +1,8 @@
 package com.blazeloader.api.api.render;
 
 import com.blazeloader.api.api.general.ApiGeneral;
-import com.blazeloader.api.util.java.Reflect;
-import com.blazeloader.api.util.obf.BLOBF;
+import com.blazeloader.api.core.base.util.java.Reflect;
+import com.blazeloader.api.direct.base.obf.BLOBF;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
