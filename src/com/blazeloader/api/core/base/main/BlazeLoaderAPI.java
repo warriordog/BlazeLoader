@@ -1,12 +1,12 @@
 package com.blazeloader.api.core.base.main;
 
 import com.blazeloader.api.core.base.version.Version;
-import com.blazeloader.api.direct.client.event.BlazeLoaderIP;
+import com.blazeloader.api.core.client.main.BLMainClient;
+import com.blazeloader.api.core.server.main.BLMainServer;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,7 +23,11 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public void init(LoaderEnvironment environment, LoaderProperties properties) {
-        BLMain.init(environment, properties);
+        if (environment.getType() == LoaderEnvironment.EnvironmentType.CLIENT) {
+            new BLMainClient(environment, properties).init();
+        } else {
+            new BLMainServer(environment, properties).init();
+        }
     }
 
     /**
@@ -64,7 +68,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getRequiredTransformers() {
-        return new String[]{"com.blazeloader.api.direct.base.transformers.BLAccessTransformer", "com.blazeloader.api.direct.base.transformers.BLEventInjectionTransformer"};
+        return BLMain.instance().getRequiredTransformers();
     }
 
     /**
@@ -72,7 +76,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getRequiredDownstreamTransformers() {
-        return null;
+        return BLMain.instance().getRequiredDownstreamTransformers();
     }
 
     /**
@@ -80,7 +84,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String[] getPacketTransformers() {
-        return null;
+        return BLMain.instance().getRequiredDownstreamTransformers();
     }
 
     /**
@@ -96,7 +100,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<EnumeratorModule> getEnumeratorModules() {
-        return null;
+        return BLMain.instance().getEnumeratorModules();
     }
 
     /**
@@ -104,7 +108,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<CoreProvider> getCoreProviders() {
-        return Arrays.asList((CoreProvider) BlazeLoaderCP.instance);
+        return BLMain.instance().getCoreProviders();
     }
 
     /**
@@ -112,7 +116,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<InterfaceProvider> getInterfaceProviders() {
-        return Arrays.asList((InterfaceProvider) BlazeLoaderIP.instance);
+        return BLMain.instance().getInterfaceProviders();
     }
 
     /**
@@ -120,7 +124,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<Observer> getObservers() {
-        return null;
+        return BLMain.instance().getObservers();
     }
 
     /**
@@ -128,6 +132,6 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
+        return BLMain.instance().getCustomisationProviders();
     }
 }

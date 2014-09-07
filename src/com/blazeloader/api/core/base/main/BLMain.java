@@ -3,10 +3,15 @@ package com.blazeloader.api.core.base.main;
 import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.core.client.main.BLMainClient;
 import com.blazeloader.api.core.server.main.BLMainServer;
+import com.blazeloader.api.direct.client.event.BlazeLoaderIP;
+import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.ELogLevel;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * BL main class
@@ -38,6 +43,38 @@ public abstract class BLMain {
         BLMain.LOGGER_FULL.logInfo("BlazeLoader initialized.");
     }
 
+    public String[] getRequiredTransformers() {
+        return new String[]{"com.blazeloader.api.direct.base.transformers.BLAccessTransformer", "com.blazeloader.api.direct.base.transformers.BLEventInjectionTransformer"};
+    }
+
+    public String[] getRequiredDownstreamTransformers() {
+        return null;
+    }
+
+    public String[] getPacketTransformers() {
+        return null;
+    }
+
+    public List<EnumeratorModule> getEnumeratorModules() {
+        return null;
+    }
+
+    public List<CoreProvider> getCoreProviders() {
+        return Arrays.asList((CoreProvider) BlazeLoaderCP.instance);
+    }
+
+    public List<InterfaceProvider> getInterfaceProviders() {
+        return Arrays.asList((InterfaceProvider) BlazeLoaderIP.instance);
+    }
+
+    public List<Observer> getObservers() {
+        return null;
+    }
+
+    public List<CustomisationProvider> getCustomisationProviders() {
+        return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
+    }
+
     public abstract void init();
 
     public abstract boolean supportsServer();
@@ -48,7 +85,7 @@ public abstract class BLMain {
 
     public abstract BLMainServer getServer();
 
-    public static BLMain getInstance() {
+    public static BLMain instance() {
         return instance;
     }
 }
