@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
@@ -17,7 +16,6 @@ import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
 
@@ -35,7 +33,6 @@ public class EventHandlerClient extends EventHandlerBase {
     public static final List<PlayerEventClientHandler> playerEventHandlers = new ArrayList<PlayerEventClientHandler>();
     public static final List<ProfilerEventClientHandler> profilerEventHandlers = new ArrayList<ProfilerEventClientHandler>();
     public static final List<WorldEventClientHandler> worldEventHandlers = new ArrayList<WorldEventClientHandler>();
-    public static final List<NetworkEventClientHandler> networkEventHandlers = new ArrayList<NetworkEventClientHandler>();
 
     public static void eventTick() {
         BLMod prevMod = BLMain.currActiveMod;
@@ -169,20 +166,6 @@ public class EventHandlerClient extends EventHandlerBase {
         }
         BLMain.currActiveMod = prevMod;
         return entity;
-    }
-
-    public static void eventClientReceiveCustomPayload(NetHandlerPlayClient handler, S3FPacketCustomPayload packet) {
-        String packetIdentifier = packet.func_149169_c();
-        if (packetIdentifier != null) {
-            if (packetIdentifier.indexOf("BL|") == 0) {
-                NetworkEventClientHandler.PacketEventArgs args = new NetworkEventClientHandler.PacketEventArgs(packet, packetIdentifier);
-                for (NetworkEventClientHandler mod : networkEventHandlers) {
-                    if (mod.toString().equals(args.channel)) {
-                        mod.eventClientRecieveCustomPayload(handler, args);
-                    }
-                }
-            }
-        }
     }
 
     public static void eventWorldChanged(World world) {

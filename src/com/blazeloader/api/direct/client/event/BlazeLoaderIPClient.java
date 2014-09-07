@@ -36,7 +36,6 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
         delegate.registerInterface(GuiEventClientHandler.class);
         delegate.registerInterface(ModEventBaseHandler.class);
         delegate.registerInterface(InventoryEventHandler.class);
-        delegate.registerInterface(NetworkEventClientHandler.class);
         delegate.registerInterface(OverrideEventClientHandler.class);
         delegate.registerInterface(PlayerEventClientHandler.class);
         delegate.registerInterface(ProfilerEventClientHandler.class);
@@ -66,10 +65,6 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
 
     public void addInventoryEvent(InventoryEventHandler e) {
         EventHandlerClient.inventoryEventHandlers.add(e);
-    }
-
-    public void addNetworkEvent(NetworkEventClientHandler e) {
-        EventHandlerClient.networkEventHandlers.add(e);
     }
 
     public void addOverrideEvent(OverrideEventClientHandler e) {
