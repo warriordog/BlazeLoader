@@ -49,7 +49,7 @@ public abstract class BLMain {
     }
 
     public String[] getRequiredTransformers() {
-        return new String[]{"com.blazeloader.api.direct.base.transformers.BLAccessTransformer", "com.blazeloader.api.direct.client.transformers.BLEventInjectionTransformer"};
+        return new String[]{"com.blazeloader.api.direct.base.transformers.BLAccessTransformer", "com.blazeloader.api.direct.client.transformers.BLClientEventInjectionTransformer"};
     }
 
     public String[] getRequiredDownstreamTransformers() {
