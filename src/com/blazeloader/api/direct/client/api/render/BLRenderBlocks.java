@@ -1,5 +1,6 @@
 package com.blazeloader.api.direct.client.api.render;
 
+import com.blazeloader.api.direct.client.util.MCColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;

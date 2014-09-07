@@ -47,14 +47,8 @@ public class ApiGeneral {
      *
      * @param code The error code to return to the system after shutdown.
      */
-    public static void shutdown(int code) {
-        BLMain.shutdown(code);
+    public static void shutdown(String message, int code) {
+        BLMain.instance().shutdown(message, code);
     }
 
-    /**
-     * Shuts down the game with error code 0 (no error).
-     */
-    public static void shutdown() {
-        shutdown(0);
-    }
 }

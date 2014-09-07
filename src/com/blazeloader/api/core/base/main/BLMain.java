@@ -80,6 +80,8 @@ public abstract class BLMain {
         return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
     }
 
+    public abstract void shutdown(String message, int code);
+
     public abstract void init();
 
     public abstract boolean supportsServer();

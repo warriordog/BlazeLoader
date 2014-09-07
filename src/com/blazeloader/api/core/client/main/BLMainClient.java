@@ -4,6 +4,7 @@ import com.blazeloader.api.core.base.main.BLMain;
 import com.blazeloader.api.core.server.main.BLMainServer;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
+import net.minecraft.client.Minecraft;
 
 public class BLMainClient extends BLMain {
     public BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
@@ -13,6 +14,20 @@ public class BLMainClient extends BLMain {
     @Override
     public void init() {
 
+    }
+
+    @Override
+    public void shutdown(String message, int code) {
+        LOGGER_FULL.logFatal("Unexpected shutdown requested!");
+        LOGGER_FULL.logFatal("Message: " + message);
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft != null) {
+            LOGGER_FULL.logFatal("Calling client shutdown.");
+            minecraft.shutdown();
+        } else {
+            LOGGER_FULL.logFatal("Client is not running, closing immediately with code " + code + "!");
+            System.exit(code);
+        }
     }
 
     @Override
