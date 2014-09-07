@@ -8,6 +8,10 @@ import com.mumfrey.liteloader.transformers.event.InjectionPoint;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
 import com.mumfrey.liteloader.transformers.event.inject.MethodHead;
 
+/**
+ * Side-independent event injector
+ * TODO: split into subclasses
+ */
 public abstract class BLBaseEventInjectionTransformer extends EventInjectionTransformer {
 
     protected static final int SIDE_BASE = 0;

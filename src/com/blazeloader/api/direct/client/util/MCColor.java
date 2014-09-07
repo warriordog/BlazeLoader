@@ -2,6 +2,9 @@ package com.blazeloader.api.direct.client.util;
 
 import net.minecraft.item.ItemDye;
 
+/**
+ * Minecraft color values
+ */
 public class MCColor {
 
     public static final MCColor

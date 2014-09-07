@@ -6,6 +6,9 @@ import com.blazeloader.api.core.base.mod.BLMod;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Side-independent event handler
+ */
 public class EventHandlerBase {
     public static final List<ModEventBaseHandler> modEventHandlers = new ArrayList<ModEventBaseHandler>();
     public static final List<TickEventBaseHandler> tickEventHandlers = new ArrayList<TickEventBaseHandler>();

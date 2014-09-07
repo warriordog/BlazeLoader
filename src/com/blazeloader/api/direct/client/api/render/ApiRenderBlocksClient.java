@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author Sollace
  */
-public class APIRenderBlocks {
+public class ApiRenderBlocksClient {
     private static Map<Block, Boolean[]> BlockRenderMapping = new HashMap<Block, Boolean[]>();
 
     /**

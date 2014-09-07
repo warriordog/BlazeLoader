@@ -4,6 +4,9 @@ import com.blazeloader.api.core.base.mod.BLMod;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 
+/**
+ * Server-side player events.
+ */
 public interface PlayerEventServerHandler extends BLMod {
 
     /**

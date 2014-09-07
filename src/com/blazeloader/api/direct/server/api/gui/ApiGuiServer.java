@@ -4,6 +4,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 
+/**
+ * Server-side GUI functions
+ */
 public class ApiGuiServer {
     /**
      * Untested

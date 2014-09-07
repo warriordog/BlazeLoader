@@ -20,14 +20,26 @@ import java.util.List;
 public abstract class BLMain {
     private static BLMain instance;
 
+    /**
+     * Logger that logs date and time
+     */
     public static final CLogger LOGGER_FULL = new CLogger("BlazeLoader", true, true, ELogLevel.DEBUG);
+    /**
+     * Logger that logs time but not date
+     */
     public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, ELogLevel.DEBUG);
+    /**
+     * Logger that does not log date or time
+     */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, ELogLevel.DEBUG);
 
-    public static BLMod currActiveMod;
-    public static boolean isInTick = false;
-    public static int numTicks = 0;
+    public static BLMod currActiveMod; //if an event is in progress, this is a reference to the mod that is currently handling the event.
+    public static boolean isInTick = false; //true if a game tick is in progress
+    public static int numTicks = 0; //number of ticks that the game has been running
 
+    /**
+     * Command handler for mods to register commands with.  Will always exist, although if server does not exist this will not be used.
+     */
     public static final BLCommandHandler commandHandler = new BLCommandHandler();
 
     public final LoaderEnvironment environment;

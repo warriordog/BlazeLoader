@@ -1,6 +1,5 @@
 package com.blazeloader.api.direct.server.api.item;
 
-
 import net.minecraft.item.Item;
 
 /**

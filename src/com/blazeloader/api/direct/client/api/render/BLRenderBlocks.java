@@ -101,7 +101,7 @@ public class BLRenderBlocks {
      * @return true if blocks have been rendered
      */
     public boolean renderStandardBlock(Block block, int x, int y, int z) {
-        int var5 = APIRenderBlocks.getWorldRenderColor(block, renderBlocks.blockAccess, x, y, z);
+        int var5 = ApiRenderBlocksClient.getWorldRenderColor(block, renderBlocks.blockAccess, x, y, z);
 
         float redComp = (float) (var5 >> 16 & 255) / 255.0F,
                 greenComp = (float) (var5 >> 8 & 255) / 255.0F,
@@ -127,13 +127,13 @@ public class BLRenderBlocks {
      */
     public void renderStandardBlockAsItem(Block block, int metadata, float mult) {
         Tessellator tess = Tessellator.instance;
-        boolean over = APIRenderBlocks.getRenderGrassInv(block, metadata);
+        boolean over = ApiRenderBlocksClient.getRenderGrassInv(block, metadata);
         boolean renderGrass = over || block == Blocks.grass;//APIRenderBlocks.getRenderGrassInv(block, metadata);
 
         int renderColor = block.getRenderColor(metadata);
 
         if (renderBlocks.useInventoryTint) {
-            renderColor = renderGrass ? 16777215 : APIRenderBlocks.getInventoryRenderColor(block, metadata);
+            renderColor = renderGrass ? 16777215 : ApiRenderBlocksClient.getInventoryRenderColor(block, metadata);
             setColorTint(renderColor, mult);
         }
 
@@ -147,7 +147,7 @@ public class BLRenderBlocks {
         drawItemSide(tess, 0F, -1F, 0F, block, metadata, 0);
 
         if ((renderGrass && renderBlocks.useInventoryTint) || over) {
-            renderColor = APIRenderBlocks.getInventoryRenderColor(block, metadata);
+            renderColor = ApiRenderBlocksClient.getInventoryRenderColor(block, metadata);
 
             setColorTint(renderColor, mult);
 
@@ -190,7 +190,7 @@ public class BLRenderBlocks {
                 aoLight;
 
         boolean result = false,
-                renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z),
+                renderGrass = ApiRenderBlocksClient.getRenderGrass(this, block, x, y, z),
                 renderWithColor = true,
                 canGrassX, canGrassZPos, canGrassZNeg;
 
@@ -773,7 +773,7 @@ public class BLRenderBlocks {
                 aoLight;
 
         boolean result = false,
-                renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z),
+                renderGrass = ApiRenderBlocksClient.getRenderGrass(this, block, x, y, z),
                 renderWithColor = true,
                 canGrassX, canGrassZPos, canGrassZNeg;
 
@@ -1304,13 +1304,13 @@ public class BLRenderBlocks {
 
     private boolean renderStandardBlockWithColorMultiplier(Block block, int x, int y, int z, float multR, float multG, float multB) {
         renderBlocks.enableAO = false;
-        boolean renderGrass = APIRenderBlocks.getRenderGrass(this, block, x, y, z) || block == Blocks.grass;
+        boolean renderGrass = ApiRenderBlocksClient.getRenderGrass(this, block, x, y, z) || block == Blocks.grass;
 
         float[][] colors = new float[4][3];
         float[] mult = MCColor.newRGBarray(multR, multG, multB);
 
         {
-            if (!APIRenderBlocks.getRenderGrassInv(block, renderBlocks.blockAccess.getBlockMetadata(x, y, z))) {
+            if (!ApiRenderBlocksClient.getRenderGrassInv(block, renderBlocks.blockAccess.getBlockMetadata(x, y, z))) {
                 colors[1] = mult;
             } else {
                 colors[1] = MCColor.newRGBarray(1);
@@ -1357,8 +1357,8 @@ public class BLRenderBlocks {
                     return true;
                 }
 
-                if (renderGrass && !APIRenderBlocks.getHasSnow(this, par1Block, x, y, z)) {
-                    if ((texture = APIRenderBlocks.getIconSideOverlay(this, par1Block, x, y, z, side)) != null) {
+                if (renderGrass && !ApiRenderBlocksClient.getHasSnow(this, par1Block, x, y, z)) {
+                    if ((texture = ApiRenderBlocksClient.getIconSideOverlay(this, par1Block, x, y, z, side)) != null) {
                         tessellator.setColorOpaque_F(rgb[0] * rgbMult[0], rgb[1] * rgbMult[1], rgb[2] * rgbMult[2]);
                         RenderFaceforSide(par1Block, x, y, z, texture, side);
                     }
@@ -1437,7 +1437,7 @@ public class BLRenderBlocks {
      * Draws the overlay texture on a block in the inventory
      */
     public void drawStandardItemSidesOverlay(Tessellator tess, Block block, int metadata, float baseColor) {
-        setColorTint(APIRenderBlocks.getInventoryRenderColor(block, metadata), baseColor);
+        setColorTint(ApiRenderBlocksClient.getInventoryRenderColor(block, metadata), baseColor);
         drawItemSideUniversal(tess, 0F, -1F, 0F, block, metadata, 0, true);
         drawItemSideUniversal(tess, 0F, 1F, 0F, block, metadata, 1, true);
         drawItemSideUniversal(tess, 0F, 0F, -1F, block, metadata, 2, true);
@@ -1469,8 +1469,8 @@ public class BLRenderBlocks {
                 }
             }
 
-            if (renderGrass && !APIRenderBlocks.getHasSnow(this, block, x, y, z)) {
-                IIcon over = APIRenderBlocks.getIconSideOverlay(this, block, x, y, z, side);
+            if (renderGrass && !ApiRenderBlocksClient.getHasSnow(this, block, x, y, z)) {
+                IIcon over = ApiRenderBlocksClient.getIconSideOverlay(this, block, x, y, z, side);
 
                 if (over != null) {
                     multColors(multR, multG, multB);
@@ -1494,7 +1494,7 @@ public class BLRenderBlocks {
         tess.setNormal(a, b, c);
 
         if (inv) {
-            IIcon over = APIRenderBlocks.getIconSideOverlay(this, block, data, 0, 0, 0, side);
+            IIcon over = ApiRenderBlocksClient.getIconSideOverlay(this, block, data, 0, 0, 0, side);
             if (over != null) {
                 RenderFaceforSide(block, 0, 0, 0, over, side);
             }

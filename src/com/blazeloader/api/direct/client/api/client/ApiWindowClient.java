@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+/**
+ * API functions for changing the client window.  Title branding, etc.
+ */
 public class ApiWindowClient {
     private static ArrayList<String> brands = new ArrayList<String>();
 

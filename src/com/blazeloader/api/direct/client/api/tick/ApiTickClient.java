@@ -2,6 +2,9 @@ package com.blazeloader.api.direct.client.api.tick;
 
 import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
 
+/**
+ * Client side tick functions
+ */
 public class ApiTickClient {
     /**
      * Gets the game's tick rate.  Uses reflection only on first run.

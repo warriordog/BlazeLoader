@@ -6,6 +6,9 @@ import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.minecraft.client.Minecraft;
 
+/**
+ * Client BLMain.
+ */
 public class BLMainClient extends BLMain {
     public BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
         super(environment, properties);

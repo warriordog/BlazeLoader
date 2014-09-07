@@ -3,6 +3,9 @@ package com.blazeloader.api.direct.server.event;
 import com.blazeloader.api.core.base.mod.BLMod;
 import net.minecraft.world.WorldServer;
 
+/**
+ * Server-side world events
+ */
 public interface WorldEventServerHandler extends BLMod {
 
     /**
