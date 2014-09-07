@@ -30,8 +30,8 @@ public abstract class BLMain {
 
     public static final BLCommandHandler commandHandler = new BLCommandHandler();
 
-    private final LoaderEnvironment environment;
-    private final LoaderProperties properties;
+    public final LoaderEnvironment environment;
+    public final LoaderProperties properties;
 
     protected BLMain(LoaderEnvironment environment, LoaderProperties properties) {
         if (instance != null) {

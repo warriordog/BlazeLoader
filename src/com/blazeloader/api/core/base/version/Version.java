@@ -1,5 +1,7 @@
 package com.blazeloader.api.core.base.version;
 
+import com.blazeloader.api.core.base.main.BLMain;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,23 @@ public class Version {
      */
     public static boolean isGameObfuscated() {
         return isOBF;
+    }
+
+    /**
+     * Returns true if running on the client, false for server.  Only works AFTER BlazeLoader is initialized.
+     * @return Return true is running on client, false for server.
+     */
+    public static boolean isClient() {
+        return !isServer();
+    }
+
+    /**
+     * Returns true if running on the server, false for client.  Only works AFTER BlazeLoader is initialized.
+     *
+     * @return Return true is running on server, false for client.
+     */
+    public static boolean isServer() {
+        return BLMain.instance().supportsServer();
     }
 
     /**
