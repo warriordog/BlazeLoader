@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Api for entity-related functions
  */
-public class ApiEntity {
+public class ApiEntityBase {
     public static final Map<String, Class> stringToClassMap;
     public static final Map<Class, String> classToStringMap;
     public static final Map<Integer, Class> idToClassMap;

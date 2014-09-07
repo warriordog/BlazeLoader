@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-public class ApiClientWindow {
+public class ApiWindowClient {
     private static ArrayList<String> brands = new ArrayList<String>();
 
     /**

@@ -6,7 +6,7 @@ import net.minecraft.item.Item;
 /**
  * Api functions for items.
  */
-public class ApiItem {
+public class ApiItemServer {
 
     /**
      * Registers an item in the game registry.

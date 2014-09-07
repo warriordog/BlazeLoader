@@ -6,7 +6,7 @@ import net.minecraft.util.ChatComponentText;
 /**
  * API for chat-related functions.
  */
-public class ApiChat {
+public class ApiChatServer {
 
     /**
      * Sends a raw chat to a command user.

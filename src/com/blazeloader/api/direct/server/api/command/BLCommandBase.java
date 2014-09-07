@@ -1,6 +1,6 @@
 package com.blazeloader.api.direct.server.api.command;
 
-import com.blazeloader.api.direct.server.api.chat.ApiChat;
+import com.blazeloader.api.direct.server.api.chat.ApiChatServer;
 import com.blazeloader.api.direct.server.api.chat.EChatColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -37,7 +37,7 @@ public abstract class BLCommandBase extends CommandBase {
      * @param message The message to send.
      */
     protected void sendChat(ICommandSender target, String message) {
-        ApiChat.sendChat(target, message);
+        ApiChatServer.sendChat(target, message);
     }
 
     /**

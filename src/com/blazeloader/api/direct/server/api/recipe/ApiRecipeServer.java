@@ -8,7 +8,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 /**
  * API function related to vanilla crafting
  */
-public class ApiRecipe {
+public class ApiRecipeServer {
 
     /**
      * Registers a shaped recipe.

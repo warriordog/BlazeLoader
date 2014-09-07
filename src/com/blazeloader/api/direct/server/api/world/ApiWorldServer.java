@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * ApiFunctions related to worlds
  */
-public class ApiWorld {
+public class ApiWorldServer {
 
     private static List<IChunkGenerator> generators = new ArrayList<IChunkGenerator>();
 

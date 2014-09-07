@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Contains functions related to game rendering.
  */
-public class ApiRender {
+public class ApiRenderClient {
 
     private static final String entityRenderMapName = BLOBF.getFieldMCP("net.minecraft.client.renderer.entity.RenderManager.entityRenderMap").getValue();
 
