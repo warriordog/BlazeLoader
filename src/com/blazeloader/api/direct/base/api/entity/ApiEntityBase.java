@@ -54,7 +54,29 @@ public class ApiEntityBase {
     public static void registerEntityEggInfo(int entityId, EntityList.EntityEggInfo eggInfo) {
         EntityList.entityEggs.put(entityId, eggInfo);
     }
-
+    
+    /**
+    * Changes the class used by an entity universally.
+    *
+    * @param o Original class
+    * @param c Replacement class
+    */
+    public static void swapEntityClass(Class<? extends Entity> o, Class<? extends Entity> c) {
+    	if (ApiEntityBase.classToStringMap.containsKey(o) && ApiEntityBase.classToIdMap.containsKey(c)) {
+	    	String name = ApiEntityBase.classToStringMap.get(o);
+	    	int id = ApiEntityBase.classToIdMap.get(o);
+	    	
+	    	ApiEntityBase.stringToClassMap.put(name, c);
+	    	ApiEntityBase.classToStringMap.put(c, name);
+	    	ApiEntityBase.idToClassMap.put(id, c);
+	    	ApiEntityBase.classToIdMap.put(c, id);
+	    	
+			for (EnumCreatureType i : EnumCreatureType.values()) {
+				ApiEntityBase.swapEntitySpawn(o, c, i);
+			}
+    	}
+    }
+    
     /**
      * Replaces the class used when spawning an entity in a world.
      *
