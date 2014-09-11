@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.server.api.command;
 
+import com.blazeloader.api.direct.base.api.chat.EChatColor;
 import com.blazeloader.api.direct.server.api.chat.ApiChatServer;
-import com.blazeloader.api.direct.server.api.chat.EChatColor;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
