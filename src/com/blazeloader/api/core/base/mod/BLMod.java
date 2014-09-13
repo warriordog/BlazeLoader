@@ -27,14 +27,6 @@ public interface BLMod extends LiteMod {
      */
     public String getName();
 
-    /**
-     * Compares two mods of the same type to determine which is newer.  Mods should override this and implement their own comparison logic.
-     *
-     * @param otherMod The mod to compare
-     * @return Return the newer mod
-     */
-    public BLMod getNewerVersion(BLMod otherMod);
-
     @Override
     /**
      * Gets the version of the mod as a String for display.
@@ -42,14 +34,6 @@ public interface BLMod extends LiteMod {
      * @return Returns the version of the mod as an integer.
      */
     public String getVersion();
-
-    /**
-     * Returns true if this mod is compatible with the installed version of BlazeLoader.  This should be checked using Version.class.
-     * -Called before mod is loaded!  Do not depend on Mod.load()!-
-     *
-     * @return Returns true if the mod is compatible with the installed version of BlazeLoader.
-     */
-    public boolean isCompatibleWithEnvironment();
 
     /**
      * Gets a user-friendly description of the mod.
