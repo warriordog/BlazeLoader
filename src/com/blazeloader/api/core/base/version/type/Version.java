@@ -1,9 +1,11 @@
-package com.blazeloader.api.core.base.version;
+package com.blazeloader.api.core.base.version.type;
+
+import com.blazeloader.api.core.base.version.BuildType;
 
 /**
  * Interface for anything with a version.
  */
-public interface Versioned {
+public interface Version {
     /**
      * The number of version categories this version has.  1 for major only; 2 for major and minor; 3 for major, minor, and patch; 4 for major, minor, patch, and additional.
      *
@@ -12,32 +14,11 @@ public interface Versioned {
     public int getVersionDepth();
 
     /**
-     * Gets the major version int of this version.
-     *
-     * @return The major version
+     * Gets the version of the specified depth.
+     * @param num The depth of the version, must be less than getVersionDepth()
+     * @return Return the version value for this depth.
      */
-    public int getVersion1();
-
-    /**
-     * Gets the minor version int of this version.  Can throw an exception if version does not exist.
-     *
-     * @return The minor version
-     */
-    public int getVersion2();
-
-    /**
-     * Gets the patch version int of this version.  Can throw an exception if version does not exist.
-     *
-     * @return The patch version
-     */
-    public int getVersion3();
-
-    /**
-     * Gets the additional version int of this version.  Can throw an exception if version does not exist.
-     *
-     * @return The additional version
-     */
-    public int getVersion4();
+    public int getVersionNum(int num);
 
     /**
      * Gets the ID that will be used internally to identify this version.

@@ -1,6 +1,6 @@
 package com.blazeloader.api.core.base.main;
 
-import com.blazeloader.api.core.base.version.Version;
+import com.blazeloader.api.core.base.version.Versions;
 import com.blazeloader.api.core.client.render.ColorUtils;
 import com.mumfrey.liteloader.api.BrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
@@ -84,7 +84,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public String getDisplayName() {
-        return Version.BL_VERSION.getFriendlyName();
+        return Versions.BL_VERSION.getFriendlyName();
     }
 
     /**

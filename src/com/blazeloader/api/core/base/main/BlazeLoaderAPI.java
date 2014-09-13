@@ -1,6 +1,6 @@
 package com.blazeloader.api.core.base.main;
 
-import com.blazeloader.api.core.base.version.Version;
+import com.blazeloader.api.core.base.version.Versions;
 import com.blazeloader.api.core.client.main.BLMainClient;
 import com.blazeloader.api.core.server.main.BLMainServer;
 import com.mumfrey.liteloader.api.*;
@@ -51,7 +51,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public String getVersion() {
-        return Version.getBLMainVersion().getVersionString();
+        return Versions.getBLMainVersion().getVersionString();
     }
 
     /**
@@ -60,7 +60,7 @@ public class BlazeLoaderAPI implements LiteAPI {
      */
     @Override
     public int getRevision() {
-        return Version.getBLMainVersion().getVersion2();
+        return Versions.getBLMainVersion().getVersion2();
     }
 
     /**

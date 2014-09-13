@@ -1,5 +1,6 @@
 package com.blazeloader.api.core.base.mod;
 
+import com.blazeloader.api.core.base.version.type.ModVersion;
 import com.mumfrey.liteloader.LiteMod;
 
 /**
@@ -41,5 +42,12 @@ public interface BLMod extends LiteMod {
      * @return Return a String representing a user-friendly description of the mod.
      */
     public String getModDescription();
+
+    /**
+     * Gets a ModVersion that describes the version of this mod.  For performance it is recommended to create the version once and return the same each time.
+     *
+     * @return Return a ModVersion that describes the version of this mod.
+     */
+    public ModVersion getModVersion();
 
 }

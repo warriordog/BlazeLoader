@@ -1,6 +1,6 @@
 package com.blazeloader.api.direct.base.obf;
 
-import com.blazeloader.api.core.base.version.Version;
+import com.blazeloader.api.core.base.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.MethodInfo;
 
@@ -57,10 +57,10 @@ public class BLMethodInfo extends MethodInfo {
     }
 
     private static Obf getObfType(String name) {
-        if (!Version.isGameObfuscated()) {
+        if (!Versions.isGameObfuscated()) {
             return BLOBF.getClassMCP(name);
         }
-        if (Version.isForgeInstalled()) {
+        if (Versions.isForgeInstalled()) {
             return BLOBF.getClassSRG(name);
         }
         return BLOBF.getClassOBF(name);

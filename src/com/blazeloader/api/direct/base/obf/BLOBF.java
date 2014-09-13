@@ -1,6 +1,6 @@
 package com.blazeloader.api.direct.base.obf;
 
-import com.blazeloader.api.core.base.version.Version;
+import com.blazeloader.api.core.base.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
 import net.acomputerdog.OBFUtil.util.TargetType;
@@ -37,10 +37,10 @@ public class BLOBF extends Obf {
      * @return Return the mcp name if the game is deobfuscated, return the srg name if forge is installed, return the obf name if the game is obfuscated.
      */
     public String getValue() {
-        if (!Version.isGameObfuscated()) {
+        if (!Versions.isGameObfuscated()) {
             return super.name;
         }
-        if (Version.isForgeInstalled()) {
+        if (Versions.isForgeInstalled()) {
             return super.srg;
         }
         return super.obf;

@@ -1,6 +1,8 @@
 package com.blazeloader.api.core.base.version;
 
 import com.blazeloader.api.core.base.main.BLMain;
+import com.blazeloader.api.core.base.version.type.Version;
+import com.blazeloader.api.core.base.version.type.values.QuadrupleVersion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,11 +10,11 @@ import java.util.Map;
 /**
  * Version class that allows access to versions of various BL components
  */
-public class Version {
+public class Versions {
     private static final boolean isOBF = VersionUtils.isGameOBF();
     private static final boolean isForgeInstalled = VersionUtils.hasForge();
-    private static final Map<String, Versioned> versionMap = new HashMap<String, Versioned>();
-    public static final Versioned BL_VERSION = new BasicVersion(new int[]{1, 0, 0, 0}, "BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT);
+    private static final Map<String, Version> versionMap = new HashMap<String, Version>();
+    public static final QuadrupleVersion BL_VERSION = new QuadrupleVersion("BlazeLoader.main", "BlazeLoader", BuildType.DEVELOPMENT, 1, 0, 0, 0);
 
     /**
      * Detects if the game is obfuscated.
@@ -25,6 +27,7 @@ public class Version {
 
     /**
      * Returns true if running on the client, false for server.  Only works AFTER BlazeLoader is initialized.
+     *
      * @return Return true is running on client, false for server.
      */
     public static boolean isClient() {
@@ -49,15 +52,15 @@ public class Version {
         return isForgeInstalled;
     }
 
-    public static Versioned getBLMainVersion() {
+    public static QuadrupleVersion getBLMainVersion() {
         return BL_VERSION;
     }
 
-    public static Versioned getVersionOf(String id) {
+    public static Version getVersionOf(String id) {
         return versionMap.get(id);
     }
 
-    public static void addVersion(Versioned version) {
+    public static void addVersion(Version version) {
         versionMap.put(version.getID(), version);
     }
 
