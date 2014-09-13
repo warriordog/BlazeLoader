@@ -52,7 +52,7 @@ public class Versions {
         return isForgeInstalled;
     }
 
-    public static Version getBLMainVersion() {
+    public static QuadrupleVersion getBLMainVersion() {
         return BL_VERSION;
     }
 
