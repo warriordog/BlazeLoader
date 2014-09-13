@@ -36,14 +36,6 @@ public interface BLMod extends LiteMod {
     public String getVersion();
 
     /**
-     * Returns true if this mod is compatible with the installed version of BlazeLoader.  This should be checked using Version.class.
-     * -Called before mod is loaded!  Do not depend on Mod.load()!-
-     *
-     * @return Returns true if the mod is compatible with the installed version of BlazeLoader.
-     */
-    public boolean isCompatibleWithEnvironment();
-
-    /**
      * Gets a user-friendly description of the mod.
      *
      * @return Return a String representing a user-friendly description of the mod.
