@@ -27,14 +27,6 @@ public interface BLMod extends LiteMod {
      */
     public String getName();
 
-    /**
-     * Compares two mods of the same type to determine which is newer.  Mods should override this and implement their own comparison logic.
-     *
-     * @param otherMod The mod to compare
-     * @return Return the newer mod
-     */
-    public BLMod getNewerVersion(BLMod otherMod);
-
     @Override
     /**
      * Gets the version of the mod as a String for display.
