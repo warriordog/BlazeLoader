@@ -33,7 +33,6 @@ public abstract class BLMain {
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, ELogLevel.DEBUG);
 
-    public static BLMod currActiveMod; //if an event is in progress, this is a reference to the mod that is currently handling the event.
     public static boolean isInTick = false; //true if a game tick is in progress
     public static int numTicks = 0; //number of ticks that the game has been running
 
