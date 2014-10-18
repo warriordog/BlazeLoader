@@ -21,7 +21,7 @@ public class ToolPickaxe extends ItemPickaxe {
     public ToolPickaxe(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
         my_material = material;
-        setMaxDurability(material.getMaxUses());
+        super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         damageValue = material.getDamageVsEntity(2);
     }
@@ -39,7 +39,7 @@ public class ToolPickaxe extends ItemPickaxe {
     }
 
     public Multimap getItemAttributeModifiers() {
-        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), field_111210_e, damageValue, "Tool modifier");
+        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
     }
 
     public boolean func_150897_b(Block p_150897_1_) {

@@ -35,8 +35,8 @@ public class BShapelessRecipe extends ShapelessRecipes {
                     boolean result = false;
 
                     for (ItemStack next : workingSet) {
-                        int nextDurability = next.getCurrentDurability();
-                        if (stack == next && (nextDurability == 32767 || stack.getCurrentDurability() == nextDurability)) {
+                        int nextDurability = next.getItemDamage();
+                        if (stack == next && (nextDurability == 32767 || stack.getItemDamage() == nextDurability)) {
                             result = true;
                             workingSet.remove(next);
                             break;

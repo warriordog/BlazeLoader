@@ -80,14 +80,6 @@ public class BlazeLoaderAPI implements LiteAPI {
     }
 
     /**
-     * Should return an array of required packet transformer names, these transformers will be injected UPSTREAM. Can return null.
-     */
-    @Override
-    public String[] getPacketTransformers() {
-        return BLMain.instance().getRequiredDownstreamTransformers();
-    }
-
-    /**
      * Return a mod class prefix supported by this API, can return null if an API just wants to use "LiteMod" as a standard class name prefix
      */
     @Override
@@ -117,6 +109,11 @@ public class BlazeLoaderAPI implements LiteAPI {
     @Override
     public List<InterfaceProvider> getInterfaceProviders() {
         return BLMain.instance().getInterfaceProviders();
+    }
+
+    @Override
+    public List<Observer> getPreInitObservers() {
+        return BLMain.instance().getPreInitObservers();
     }
 
     /**

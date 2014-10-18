@@ -254,10 +254,10 @@ public class BLCraftingManager {
 
         if (pointer == 2 && one == two && one.stackSize == 1 && two.stackSize == 1 && one.getItem().isDamageable()) {
             Item itemOne = one.getItem();
-            int damageRemainder = itemOne.getMaxDurability() - one.getCurrentDurability();
-            int otherDamageRemainder = itemOne.getMaxDurability() - two.getCurrentDurability();
-            int damageOff = damageRemainder + otherDamageRemainder + itemOne.getMaxDurability() * 5 / 100;
-            int resultDamage = itemOne.getMaxDurability() - damageOff;
+            int damageRemainder = itemOne.getMaxDamage() - one.getItemDamage();
+            int otherDamageRemainder = itemOne.getMaxDamage() - two.getItemDamage();
+            int damageOff = damageRemainder + otherDamageRemainder + itemOne.getMaxDamage() * 5 / 100;
+            int resultDamage = itemOne.getMaxDamage() - damageOff;
 
             if (resultDamage < 0) {
                 resultDamage = 0;

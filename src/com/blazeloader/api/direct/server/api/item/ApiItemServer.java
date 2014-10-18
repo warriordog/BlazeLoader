@@ -15,6 +15,6 @@ public class ApiItemServer {
      * @param item The item itself
      */
     public static void registerItem(int id, String name, Item item) {
-        Item.itemRegistry.addObject(id, name, item);
+        Item.itemRegistry.register(id, name, item);
     }
 }

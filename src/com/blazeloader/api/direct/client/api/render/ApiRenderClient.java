@@ -1,17 +1,8 @@
 package com.blazeloader.api.direct.client.api.render;
 
-import com.blazeloader.api.core.base.util.java.Reflect;
 import com.blazeloader.api.direct.base.obf.BLOBF;
 import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-
-import java.util.Map;
 
 /**
  * Contains functions related to game rendering.
@@ -79,27 +70,5 @@ public class ApiRenderClient {
      */
     public static void drawString(String string, int x, int y, int color) {
         drawString(string, x, y, color, false, false);
-    }
-
-    /**
-     * Registers an entity renderer, overriding it if it exists.
-     *
-     * @param entity   The class of the entity to register the renderer for.
-     * @param renderer The render to register.
-     */
-    public static void registerEntityRenderer(Class<? extends Entity> entity, Render renderer) {
-        renderer.setRenderManager(RenderManager.instance);
-        Reflect.<Map<Class, Render>>getFieldValue(RenderManager.class, RenderManager.instance, entityRenderMapName).put(entity, renderer);
-    }
-
-    /**
-     * Registers a tile entity to have a special renderer similar to chests and mobspawners
-     *
-     * @param special  TileEntityClass
-     * @param renderer Renderer to be used for this TileEntity
-     */
-    public static void setSpecialRender(Class<? extends TileEntity> special, TileEntitySpecialRenderer renderer) {
-        renderer.func_147497_a(TileEntityRendererDispatcher.instance);
-        TileEntityRendererDispatcher.instance.mapSpecialRenderers.put(special, renderer);
     }
 }

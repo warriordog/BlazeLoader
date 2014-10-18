@@ -19,7 +19,7 @@ public class ToolSpade extends ItemSpade {
     public ToolSpade(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
         my_material = material;
-        setMaxDurability(material.getMaxUses());
+        super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         damageValue = material.getDamageVsEntity(1);
     }
@@ -37,6 +37,6 @@ public class ToolSpade extends ItemSpade {
     }
 
     public Multimap getItemAttributeModifiers() {
-        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), field_111210_e, damageValue, "Tool modifier");
+        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
     }
 }

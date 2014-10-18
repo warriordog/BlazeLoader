@@ -1,15 +1,14 @@
 package com.blazeloader.api.core.base.main;
 
-import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.core.client.main.BLMainClient;
 import com.blazeloader.api.core.server.main.BLMainServer;
 import com.blazeloader.api.direct.client.event.BlazeLoaderIPClient;
-import com.blazeloader.api.direct.server.api.command.BLCommandHandler;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.ELogLevel;
+import net.minecraft.command.CommandHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +38,7 @@ public abstract class BLMain {
     /**
      * Command handler for mods to register commands with.  Will always exist, although if server does not exist this will not be used.
      */
-    public static final BLCommandHandler commandHandler = new BLCommandHandler();
+    public static final CommandHandler commandHandler = new CommandHandler();
 
     public final LoaderEnvironment environment;
     public final LoaderProperties properties;
@@ -89,6 +88,10 @@ public abstract class BLMain {
 
     public List<CustomisationProvider> getCustomisationProviders() {
         return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
+    }
+
+    public List<Observer> getPreInitObservers() {
+        return null;
     }
 
     public abstract void shutdown(String message, int code);

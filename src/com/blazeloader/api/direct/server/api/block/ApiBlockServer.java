@@ -3,9 +3,10 @@ package com.blazeloader.api.direct.server.api.block;
 import com.blazeloader.api.core.base.util.math.MathUtils;
 import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -15,47 +16,78 @@ import net.minecraft.world.WorldServer;
 public class ApiBlockServer {
 
     /**
-     * Sets the block at a specified location.
+     * Sets the block at a specified location.  And triggers a block update
      *
-     * @param world      The world to change the block in.  Should be a dimension index returned by getDimensionIndex.
-     * @param x          The X-coordinate to change.
-     * @param y          The Y-coordinate to change.
-     * @param z          The Z-coordinate to change.
-     * @param block      the block to set
-     * @param metadata   The block Metadata to set.
-     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
+     * @param world The world to change the block in.
+     * @param pos   The position of the block.
+     * @param block the block to set.
      */
-    public static void setBlockAt(int world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
-        setBlockAt(getServerForDimension(world), x, y, z, block, metadata, notifyFlag);
+    public static void setBlockAt(World world, BlockPos pos, IBlockState block) {
+        world.setBlockState(pos, block, 3);
     }
 
     /**
      * Sets the block at a specified location.
      *
-     * @param world      The world to change the block in..
+     * @param world      The world to change the block in.
+     * @param pos        The position of the block.
+     * @param block      the block to set
+     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
+     */
+    public static void setBlockAt(World world, BlockPos pos, IBlockState block, int notifyFlag) {
+        world.setBlockState(pos, block, notifyFlag);
+    }
+
+    /**
+     * Sets the block at a specified location.  And triggers a block update
+     *
+     * @param world The world to change the block in.
+     * @param x     The X-coordinate to change.
+     * @param y     The Y-coordinate to change.
+     * @param z     The Z-coordinate to change.
+     * @param block the block to set.
+     */
+    public static void setBlockAt(World world, int x, int y, int z, IBlockState block) {
+        setBlockAt(world, new BlockPos(x, y, z), block, 3);
+    }
+
+    /**
+     * Sets the block at a specified location.
+     *
+     * @param world      The world to change the block in.
      * @param x          The X-coordinate to change.
      * @param y          The Y-coordinate to change.
      * @param z          The Z-coordinate to change.
      * @param block      the block to set
-     * @param metadata   The block Metadata to set.
      * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
      */
-    public static void setBlockAt(World world, int x, int y, int z, Block block, int metadata, int notifyFlag) {
-        world.setBlock(x, y, z, block, metadata, notifyFlag);
+    public static void setBlockAt(World world, int x, int y, int z, IBlockState block, int notifyFlag) {
+        setBlockAt(world, new BlockPos(x, y, z), block, notifyFlag);
     }
 
     /**
      * Destroys a block in the world creating sound and particle effects as if it were broken by a player.
      *
-     * @param w         World
+     * @param world     World
      * @param x         XCoordinate
      * @param y         YCoordinate
      * @param z         ZCoordinate
      * @param dropItems Block  will drop as an item if true
      */
-    public static void destroyBlock(World w, int x, int y, int z, boolean dropItems) {
-        if (!w.isRemote) {
-            w.breakBlock(x, y, z, dropItems);
+    public static void destroyBlock(World world, int x, int y, int z, boolean dropItems) {
+        destroyBlock(world, new BlockPos(x, y, z), dropItems);
+    }
+
+    /**
+     * Destroys a block in the world creating sound and particle effects as if it were broken by a player.
+     *
+     * @param world     World
+     * @param pos       The position of the block.
+     * @param dropItems Block  will drop as an item if true
+     */
+    public static void destroyBlock(World world, BlockPos pos, boolean dropItems) {
+        if (!world.isRemote) {
+            world.destroyBlock(pos, dropItems);
         }
     }
 
@@ -69,10 +101,20 @@ public class ApiBlockServer {
      * @param z ZCoordinate
      */
     public static void playBlockDestructionEffect(World w, int x, int y, int z) {
+        playBlockDestructionEffect(w, new BlockPos(x, y, z));
+    }
+
+    /**
+     * Play sound and particle effect for a block being broken without removing
+     * the block
+     *
+     * @param w   World
+     * @param pos The position of the block.
+     */
+    public static void playBlockDestructionEffect(World w, BlockPos pos) {
         if (!w.isRemote) {
-            Block b = w.getBlock(x, y, z);
-            int metadata = w.getBlockMetadata(x, y, z);
-            w.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(b) + (metadata << 12));
+            IBlockState b = w.getBlockState(pos);
+            w.playAuxSFX(2001, pos, Block.getStateId(b));
         }
     }
 
@@ -111,47 +153,19 @@ public class ApiBlockServer {
      * @param z     The Z-coordinate to get.
      * @return Return the block at the specified location.
      */
-    public static Block getBlockAt(int world, int x, int y, int z) {
-        return getServerForDimension(world).getBlock(x, y, z);
+    public static IBlockState getBlockAt(World world, int x, int y, int z) {
+        return getBlockAt(world, new BlockPos(x, y, z));
     }
 
     /**
      * Gets the Block at a location.
      *
      * @param world The world to get the block from.
-     * @param x     The X-coordinate to get.
-     * @param y     The Y-coordinate to get.
-     * @param z     The Z-coordinate to get.
+     * @param pos   The position of the block.
      * @return Return the block at the specified location.
      */
-    public static Block getBlockAt(World world, int x, int y, int z) {
-        return world.getBlock(x, y, z);
-    }
-
-    /**
-     * Gets the Block Metadata of a location.
-     *
-     * @param world The world to get the Metadata from.
-     * @param x     The X-coordinate to get.
-     * @param y     The Y-coordinate to get.
-     * @param z     The Z-coordinate to get.
-     * @return Return the block Metadata at the specified location.
-     */
-    public static int getBlockMetadataAt(int world, int x, int y, int z) {
-        return getServerForDimension(world).getBlockMetadata(x, y, z);
-    }
-
-    /**
-     * Gets the Block Metadata of a location.
-     *
-     * @param world The world to get the Metadata from.
-     * @param x     The X-coordinate to get.
-     * @param y     The Y-coordinate to get.
-     * @param z     The Z-coordinate to get.
-     * @return Return the block Metadata at the specified location.
-     */
-    public static int getBlockMetadataAt(World world, int x, int y, int z) {
-        return world.getBlockMetadata(x, y, z);
+    public static IBlockState getBlockAt(World world, BlockPos pos) {
+        return world.getBlockState(pos);
     }
 
     /**
@@ -202,7 +216,7 @@ public class ApiBlockServer {
      * @param block The block to add
      */
     public static void registerBlock(int id, String name, Block block) {
-        Block.blockRegistry.addObject(id, name, block);
+        Block.blockRegistry.register(id, name, block);
     }
 
     /**
@@ -217,23 +231,13 @@ public class ApiBlockServer {
     }
 
     /**
-     * Gets the icon of a block.
-     *
-     * @param block The block to get the icon from
-     * @return Return the icon belonging to param block
-     */
-    public static IIcon getBlockIcon(Block block) {
-        return block.blockIcon;
-    }
-
-    /**
      * Gets the name of a block.
      *
      * @param block The block to get the name for
      * @return Return a string of the name belonging to param block
      */
     public static String getBlockName(Block block) {
-        return Block.blockRegistry.getNameForObject(block);
+        return (String) Block.blockRegistry.getNameForObject(block);
     }
 
 }

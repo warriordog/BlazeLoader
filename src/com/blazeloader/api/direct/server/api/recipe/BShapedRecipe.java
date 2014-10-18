@@ -91,8 +91,8 @@ public class BShapedRecipe extends ShapedRecipes {
                         return false;
                     }
 
-                    int resultDurability = result.getCurrentDurability();
-                    if (resultDurability != 32767 && resultDurability != existing.getCurrentDurability()) {
+                    int resultDurability = result.getItemDamage();
+                    if (resultDurability != 32767 && resultDurability != existing.getItemDamage()) {
                         return false;
                     }
                 }

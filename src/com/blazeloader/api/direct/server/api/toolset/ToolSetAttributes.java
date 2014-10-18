@@ -34,7 +34,7 @@ public class ToolSetAttributes {
         efficiencyOnProperMaterial = efficiency;
         damageVsEntity = damage;
         enchant = enchantability;
-        item = Item.itemRegistry.getNameForObject(materialItem.getItem());
+        item = (String) Item.itemRegistry.getNameForObject(materialItem.getItem());
     }
 
     public int getMaxUses() {

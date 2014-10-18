@@ -12,7 +12,7 @@ public class ToolSword extends ItemSword {
     public ToolSword(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
         my_material = material;
-        setMaxDurability(material.getMaxUses());
+        super.setMaxDamage(material.getMaxUses());
         damageValue = material.getDamageVsEntity(4);
     }
 
@@ -33,6 +33,6 @@ public class ToolSword extends ItemSword {
     }
 
     public Multimap getItemAttributeModifiers() {
-        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), field_111210_e, damageValue, "Weapon modifier");
+        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Weapon modifier");
     }
 }
