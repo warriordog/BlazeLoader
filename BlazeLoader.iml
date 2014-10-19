@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Client" />
     <orderEntry type="module" module-name="LiteLoader" />
@@ -60,7 +60,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../lib/asm-debug-all-4.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/asm-debug-all-5.0.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
