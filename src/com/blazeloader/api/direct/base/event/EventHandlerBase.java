@@ -1,11 +1,6 @@
 package com.blazeloader.api.direct.base.event;
 
-import com.blazeloader.api.core.base.main.BLMain;
-import com.blazeloader.api.core.base.mod.BLMod;
 import com.mumfrey.liteloader.core.event.HandlerList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Side-independent event handler
