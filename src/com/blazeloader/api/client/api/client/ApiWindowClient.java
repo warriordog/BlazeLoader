@@ -1,6 +1,6 @@
 package com.blazeloader.api.client.api.client;
 
-import com.blazeloader.api.util.java.ClassPath;
+import com.blazeloader.api.client.util.ResourceLoc;
 import org.lwjgl.opengl.Display;
 
 import javax.imageio.ImageIO;
@@ -28,8 +28,8 @@ public class ApiWindowClient {
      * @param resourcePack Name of resource pack
      */
     public static void setIcon(String resourcePack) {
-        File icon16x = ClassPath.getResource(resourcePack, "icon/icon_16x16.png");
-        File icon32x = ClassPath.getResource(resourcePack, "icon/icon_32x32.png");
+        File icon16x = ResourceLoc.getResource(resourcePack, "icon/icon_16x16.png");
+        File icon32x = ResourceLoc.getResource(resourcePack, "icon/icon_32x32.png");
 
         if (icon16x != null && icon32x == null) icon32x = icon16x;
         if (icon16x == null && icon32x != null) icon16x = icon32x;
