@@ -1,4 +1,4 @@
-package com.blazeloader.api.util.compatibility;
+package com.blazeloader.api.compatibility;
 
 import java.util.HashMap;
 import java.util.Map;
