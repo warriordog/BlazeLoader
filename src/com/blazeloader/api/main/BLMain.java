@@ -7,6 +7,7 @@ import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.ELogLevel;
 import net.minecraft.command.CommandHandler;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * BL main class
  */
-public abstract class BLMain {
+public class BLMain {
     private static BLMain instance;
 
     /**
@@ -41,7 +42,7 @@ public abstract class BLMain {
     public final LoaderEnvironment environment;
     public final LoaderProperties properties;
 
-    protected BLMain(LoaderEnvironment environment, LoaderProperties properties) {
+    BLMain(LoaderEnvironment environment, LoaderProperties properties) {
         if (instance != null) {
             throw new IllegalStateException("BLMain cannot be created twice!");
         }
@@ -92,17 +93,35 @@ public abstract class BLMain {
         return null;
     }
 
-    public abstract void shutdown(String message, int code);
+    public void shutdown(String message, int code) {
+        try {
+            LOGGER_FULL.logFatal("Unexpected shutdown requested!");
+            LOGGER_FULL.logFatal("Message: " + message);
+            MinecraftServer server = MinecraftServer.getServer();
+            if (server != null) {
+                LOGGER_FULL.logFatal("Calling server shutdown.");
+                server.initiateShutdown();
+            } else {
+                LOGGER_FULL.logFatal("Server is not running, closing immediately with code " + code + "!");
+                System.exit(code);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(code);
+        }
+    }
 
-    public abstract void init();
+    public void init() {
 
-    public abstract boolean supportsServer();
+    }
 
-    public abstract boolean supportsClient();
+    public boolean supportsClient() {
+        return false;
+    }
 
-    public abstract BLMainClient getClient();
-
-    public abstract BLMainServer getServer();
+    public BLMainClient getClient() {
+        throw new UnsupportedOperationException("This BLMain does not support BLMainClient!");
+    }
 
     public static BLMain instance() {
         return instance;

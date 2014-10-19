@@ -24,7 +24,7 @@ public class BlazeLoaderAPI implements LiteAPI {
         if (environment.getType() == LoaderEnvironment.EnvironmentType.CLIENT) {
             new BLMainClient(environment, properties).init();
         } else {
-            new BLMainServer(environment, properties).init();
+            new BLMain(environment, properties).init();
         }
     }
 
