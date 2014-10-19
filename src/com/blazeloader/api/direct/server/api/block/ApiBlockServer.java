@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.server.api.block;
 
-import com.blazeloader.api.core.base.util.math.MathUtils;
 import com.blazeloader.api.direct.client.api.general.ApiGeneralClient;
+import net.acomputerdog.core.java.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;

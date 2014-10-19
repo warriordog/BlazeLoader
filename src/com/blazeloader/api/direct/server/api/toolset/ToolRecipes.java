@@ -1,8 +1,8 @@
 package com.blazeloader.api.direct.server.api.toolset;
 
-import com.blazeloader.api.core.base.util.java.Reflect;
 import com.blazeloader.api.direct.base.obf.BLOBF;
 import com.blazeloader.api.direct.server.api.recipe.BLCraftingManager;
+import net.acomputerdog.core.java.Reflect;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

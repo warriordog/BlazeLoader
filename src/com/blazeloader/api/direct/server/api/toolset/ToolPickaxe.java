@@ -1,8 +1,8 @@
 package com.blazeloader.api.direct.server.api.toolset;
 
-import com.blazeloader.api.core.base.util.java.Reflect;
 import com.blazeloader.api.direct.base.obf.BLOBF;
 import com.google.common.collect.Multimap;
+import net.acomputerdog.core.java.Reflect;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;

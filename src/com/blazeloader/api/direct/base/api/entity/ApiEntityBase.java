@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.base.api.entity;
 
-import com.blazeloader.api.core.base.util.java.Reflect;
 import com.blazeloader.api.direct.base.obf.BLOBF;
+import net.acomputerdog.core.java.Reflect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EnumCreatureType;
