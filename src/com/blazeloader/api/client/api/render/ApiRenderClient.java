@@ -1,15 +1,12 @@
 package com.blazeloader.api.client.api.render;
 
 import com.blazeloader.api.client.api.general.ApiGeneralClient;
-import com.blazeloader.api.obf.BLOBF;
 import net.minecraft.client.gui.FontRenderer;
 
 /**
  * Contains functions related to game rendering.
  */
 public class ApiRenderClient {
-
-    private static final String entityRenderMapName = BLOBF.getFieldMCP("net.minecraft.client.renderer.entity.RenderManager.entityRenderMap").getValue();
 
     /**
      * Generates a FontRenderer-compatible ARBG color int.
