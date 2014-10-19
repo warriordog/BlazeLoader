@@ -1,18 +1,11 @@
 package com.blazeloader.api.direct.server.event;
 
-import com.blazeloader.api.core.base.main.BLMain;
-import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.direct.base.event.EventHandlerBase;
 import com.mumfrey.liteloader.core.event.HandlerList;
-import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EventHandlerServer extends EventHandlerBase {
     public static final HandlerList<WorldEventServerHandler> worldEventHandlers = new HandlerList<WorldEventServerHandler>(WorldEventServerHandler.class);

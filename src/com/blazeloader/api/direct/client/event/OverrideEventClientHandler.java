@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.client.event;
 
 import com.blazeloader.api.core.base.mod.BLMod;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
@@ -60,7 +60,7 @@ public interface OverrideEventClientHandler extends BLMod {
      * @param containerClass Class of container being accessed
      * @return Return true if container has been handled
      */
-    public boolean overrideContainerOpen(EntityClientPlayerMP player, Class containerClass, ContainerOpenedEventArgs e);
+    public boolean overrideContainerOpen(AbstractClientPlayer player, Class containerClass, ContainerOpenedEventArgs e);
 
     /**
      * Contains args for a ContainerOpenedEvent

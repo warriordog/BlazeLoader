@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
     </content>
-    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Client" />
     <orderEntry type="module" module-name="LiteLoader" />
@@ -15,7 +15,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../jars/libraries/com/google/guava/guava/15.0/guava-15.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../jars/libraries/com/google/guava/guava/17.0/guava-17.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -24,7 +24,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../jars/libraries/io/netty/netty-all/4.0.10.Final/netty-all-4.0.10.Final.jar!/" />
+          <root url="jar://$MODULE_DIR$/../jars/libraries/io/netty/netty-all/4.0.15.Final/netty-all-4.0.15.Final.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -34,15 +34,6 @@
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/AppData/Roaming/.minecraft/libraries/net/minecraft/launchwrapper/1.9/launchwrapper-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../eclipse/LiteLoader/lib/asm-debug-all-4.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -61,6 +52,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../jars/libraries/com/mojang/authlib/1.5.17/authlib-1.5.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/asm-debug-all-5.0.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

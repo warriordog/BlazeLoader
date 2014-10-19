@@ -8,7 +8,7 @@ public class ToolHoe extends ItemHoe {
     public ToolHoe(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
         my_material = material;
-        setMaxDurability(material.getMaxUses());
+        super.setMaxDamage(material.getMaxUses());
     }
 
     public String getMaterialName() {

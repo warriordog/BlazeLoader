@@ -1,7 +1,7 @@
 package com.blazeloader.api.direct.client.api.general;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.profiler.Profiler;
 
 /**
@@ -17,7 +17,7 @@ public class ApiGeneralClient {
     /**
      * Local player controller
      */
-    public static EntityClientPlayerMP localPlayer = null;
+    public static AbstractClientPlayer localPlayer = null;
 
     /**
      * The game profiler.  Mods that wish to include profiler support can use this.

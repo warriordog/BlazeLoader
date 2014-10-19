@@ -38,7 +38,7 @@ public class ApiRecipeServer {
      * @param xp     Float value with the amount of xp received when cooking an item/block
      */
     public static void addSmeltingRecipe(Block input, ItemStack output, float xp) {
-        FurnaceRecipes.instance().addSmelting(input, output, xp);
+        FurnaceRecipes.instance().addSmeltingRecipeForBlock(input, output, xp);
     }
 
     /**
@@ -60,6 +60,6 @@ public class ApiRecipeServer {
      * @param xp     Float value with the amount of xp received when cooking an item/block
      */
     public static void addSmeltingRecipe(ItemStack input, ItemStack output, float xp) {
-        FurnaceRecipes.instance().addSmelting(input, output, xp);
+        FurnaceRecipes.instance().addSmeltingRecipe(input, output, xp);
     }
 }

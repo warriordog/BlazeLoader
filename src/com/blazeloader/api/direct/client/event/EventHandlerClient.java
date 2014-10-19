@@ -1,14 +1,10 @@
 package com.blazeloader.api.direct.client.event;
 
-import com.blazeloader.api.core.base.main.BLMain;
-import com.blazeloader.api.core.base.mod.BLMod;
 import com.blazeloader.api.direct.base.event.EventHandlerBase;
-import com.blazeloader.api.direct.base.event.TickEventBaseHandler;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EntityFX;
@@ -20,9 +16,6 @@ import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Distributes game events to mods
@@ -45,7 +38,7 @@ public class EventHandlerClient extends EventHandlerBase {
         clientEventHandlers.all().eventDisplayGui(mc, mc.currentScreen, gui);
     }
 
-    public static void overrideOnContainerOpen(EntityClientPlayerMP player, S2DPacketOpenWindow packet) {
+    public static void overrideOnContainerOpen(AbstractClientPlayer player, S2DPacketOpenWindow packet) {
         String clazzName = packet.func_148902_e().split(":?:")[0];
         Class c;
         try {
@@ -56,7 +49,7 @@ public class EventHandlerClient extends EventHandlerBase {
 
         OverrideEventClientHandler.ContainerOpenedEventArgs args = new OverrideEventClientHandler.ContainerOpenedEventArgs(player, packet);
         /*if (overrideEventHandlers.all().overrideContainerOpen(player, c, args)) {
-        	player.openContainer.windowId = packet.func_148901_c();
+            player.openContainer.windowId = packet.func_148901_c();
         }*/
         //TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
         for (OverrideEventClientHandler mod : overrideEventHandlers) {
@@ -79,9 +72,9 @@ public class EventHandlerClient extends EventHandlerBase {
     public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
         Minecraft mc = event.getSource();
         if (world != null) {
-    		worldEventHandlers.all().eventLoadWorld(mc, world, message);
+            worldEventHandlers.all().eventLoadWorld(mc, world, message);
         } else {
-        	worldEventHandlers.all().eventUnloadWorld(mc, mc.theWorld, message);
+            worldEventHandlers.all().eventUnloadWorld(mc, mc.theWorld, message);
         }
     }
 
@@ -90,7 +83,7 @@ public class EventHandlerClient extends EventHandlerBase {
     }
 
     public static void eventClientPlayerDeath() {
-    	playerEventHandlers.all().eventClientPlayerDeath();
+        playerEventHandlers.all().eventClientPlayerDeath();
     }
 
     public static S0EPacketSpawnObject overrideCreateSpawnPacket(Entity myEntity) {
@@ -105,7 +98,7 @@ public class EventHandlerClient extends EventHandlerBase {
     public static void overrideAddEntityToTracker(EntityTracker tracker, Entity entity) {
         boolean isHandled = false;
         for (OverrideEventClientHandler mod : overrideEventHandlers) {
-        	isHandled |= mod.overrideAddEntityToTracker(tracker, entity, isHandled);
+            isHandled |= mod.overrideAddEntityToTracker(tracker, entity, isHandled);
         }
     }
 

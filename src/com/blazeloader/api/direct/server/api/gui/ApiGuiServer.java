@@ -3,6 +3,7 @@ package com.blazeloader.api.direct.server.api.gui;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
+import net.minecraft.util.ChatComponentText;
 
 /**
  * Server-side GUI functions
@@ -26,7 +27,8 @@ public class ApiGuiServer {
 
             player.currentWindowId = player.currentWindowId % 100 + 1;
 
-            player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, -1, c.getClass().getName() + ":?:" + guiLabel, c.getInventory().size(), true));
+            //TODO:  No idea what the arguments are, so this probably does not work.
+            player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, c.getClass().getName() + ":?:" + guiLabel, new ChatComponentText("INVENTORY"), c.getInventory().size()));
             player.openContainer = c;
             player.openContainer.windowId = player.currentWindowId;
             if (addCrafters) {

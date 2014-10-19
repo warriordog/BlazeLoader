@@ -4,7 +4,7 @@ import com.blazeloader.api.core.base.version.Versions;
 import com.blazeloader.api.core.client.render.ColorUtils;
 import com.mumfrey.liteloader.api.BrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
-import net.minecraft.util.IIcon;
+import com.mumfrey.liteloader.util.render.Icon;
 import net.minecraft.util.ResourceLocation;
 
 import java.net.URI;
@@ -17,7 +17,7 @@ public class BlazeLoaderBP implements BrandingProvider {
     public static final BlazeLoaderBP instance = new BlazeLoaderBP();
 
     private static final ResourceLocation twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
-    private static final IIcon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
+    private static final Icon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
 
     private BlazeLoaderBP() {
     }
@@ -56,7 +56,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      * a non-null value and the logo will only be used if BOTH methods return a valid object.
      */
     @Override
-    public IIcon getLogoCoords() {
+    public Icon getLogoCoords() {
         return null;
     }
 
@@ -75,7 +75,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      * returns a non-null value and the icon will only be used if BOTH methods return a valid object.
      */
     @Override
-    public IIcon getIconCoords() {
+    public Icon getIconCoords() {
         return null;
     }
 
@@ -131,7 +131,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      * coordinates here.
      */
     @Override
-    public IIcon getTwitterAvatarCoords() {
+    public Icon getTwitterAvatarCoords() {
         return twitterIcon;
     }
 
