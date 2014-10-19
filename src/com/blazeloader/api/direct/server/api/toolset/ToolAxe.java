@@ -1,18 +1,12 @@
 package com.blazeloader.api.direct.server.api.toolset;
 
-import com.blazeloader.api.direct.base.obf.BLOBF;
 import com.google.common.collect.Multimap;
-import net.acomputerdog.core.java.Reflect;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashSet;
 
 public class ToolAxe extends ItemAxe {
     private final ToolSetAttributes my_material;
-
-    public static final HashSet<Block> effectiveBlocks = Reflect.getFieldValue(ItemAxe.class, null, BLOBF.getFieldMCP("net.minecraft.item.ItemAxe.field_150917_c").getValue());
 
     private float damageValue = 4;
 
