@@ -4,6 +4,10 @@ import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.minecraft.client.Minecraft;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Client BLMain.
  */
@@ -15,6 +19,17 @@ public class BLMainClient extends BLMain {
     @Override
     public void init() {
 
+    }
+
+    @Override
+    public String[] getRequiredTransformers() {
+        String[] superRequiredArr = super.getRequiredTransformers();
+        List<String> superRequired = new ArrayList<String>();
+        if (superRequiredArr != null) {
+            superRequired.addAll(Arrays.asList(superRequiredArr));
+        }
+        superRequired.add("com.blazeloader.api.client.transformers.BLEventInjectionTransformerClient");
+        return superRequired.toArray(new String[superRequired.size()]);
     }
 
     @Override
