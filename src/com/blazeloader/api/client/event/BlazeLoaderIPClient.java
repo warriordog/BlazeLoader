@@ -1,7 +1,7 @@
 package com.blazeloader.api.client.event;
 
-import com.blazeloader.api.event.ModEventBaseHandler;
-import com.blazeloader.api.event.TickEventBaseHandler;
+import com.blazeloader.api.event.ModEventHandler;
+import com.blazeloader.api.event.TickEventHandler;
 import com.blazeloader.api.mod.BLMod;
 import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.api.Listener;
@@ -32,14 +32,14 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
      */
     @Override
     public void registerInterfaces(InterfaceRegistrationDelegate delegate) {
-        delegate.registerInterface(BlockEventHandler.class);
+        delegate.registerInterface(BlockEventClientHandler.class);
         delegate.registerInterface(GuiEventClientHandler.class);
-        delegate.registerInterface(ModEventBaseHandler.class);
-        delegate.registerInterface(InventoryEventHandler.class);
+        delegate.registerInterface(ModEventHandler.class);
+        delegate.registerInterface(InventoryEventClientHandler.class);
         delegate.registerInterface(OverrideEventClientHandler.class);
         delegate.registerInterface(PlayerEventClientHandler.class);
         delegate.registerInterface(ProfilerEventClientHandler.class);
-        delegate.registerInterface(TickEventBaseHandler.class);
+        delegate.registerInterface(TickEventHandler.class);
         delegate.registerInterface(WorldEventClientHandler.class);
     }
 
@@ -51,39 +51,39 @@ public class BlazeLoaderIPClient implements InterfaceProvider {
 
     }
 
-    public void addBlockEvent(BlockEventHandler e) {
-        EventHandlerClient.blockEventHandlers.add(e);
+    public void addBlockEvent(BlockEventClientHandler e) {
+        EventHandlerClient.blockEventClients.add(e);
     }
 
     public void addClientEvent(GuiEventClientHandler e) {
-        EventHandlerClient.clientEventHandlers.add(e);
+        EventHandlerClient.guiEventClients.add(e);
     }
 
-    public void addGenericEvent(ModEventBaseHandler e) {
+    public void addGenericEvent(ModEventHandler e) {
         EventHandlerClient.modEventHandlers.add(e);
     }
 
-    public void addInventoryEvent(InventoryEventHandler e) {
-        EventHandlerClient.inventoryEventHandlers.add(e);
+    public void addInventoryEvent(InventoryEventClientHandler e) {
+        EventHandlerClient.inventoryEventClients.add(e);
     }
 
     public void addOverrideEvent(OverrideEventClientHandler e) {
-        EventHandlerClient.overrideEventHandlers.add(e);
+        EventHandlerClient.overrideEventClients.add(e);
     }
 
     public void addPlayerEvent(PlayerEventClientHandler e) {
-        EventHandlerClient.playerEventHandlers.add(e);
+        EventHandlerClient.playerEventClients.add(e);
     }
 
     public void addProfilerEvent(ProfilerEventClientHandler e) {
-        EventHandlerClient.profilerEventHandlers.add(e);
+        EventHandlerClient.profilerEventClients.add(e);
     }
 
-    public void addTickEvent(TickEventBaseHandler e) {
+    public void addTickEvent(TickEventHandler e) {
         EventHandlerClient.tickEventHandlers.add(e);
     }
 
     public void addWorldEventHandler(WorldEventClientHandler e) {
-        EventHandlerClient.worldEventHandlers.add(e);
+        EventHandlerClient.worldEventClients.add(e);
     }
 }

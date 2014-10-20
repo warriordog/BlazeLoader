@@ -5,7 +5,7 @@ import com.blazeloader.api.mod.BLMod;
 /**
  * Interface for mods that handle generic events
  */
-public interface ModEventBaseHandler extends BLMod {
+public interface ModEventHandler extends BLMod {
     /**
      * Called when mod is started.  Game is fully loaded and can be interacted with.
      */

@@ -7,7 +7,7 @@ import net.minecraft.server.management.ServerConfigurationManager;
 /**
  * Server-side player events.
  */
-public interface PlayerEventServerHandler extends BLMod {
+public interface PlayerEventHandler extends BLMod {
 
     /**
      * Called when a player attempts to log in.  This is after the game has already checked if the user is valid.

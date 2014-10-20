@@ -6,14 +6,31 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 
-public class EventHandlerServer extends EventHandlerBase {
-    public static final HandlerList<WorldEventServerHandler> worldEventHandlers = new HandlerList<WorldEventServerHandler>(WorldEventServerHandler.class);
-    public static final HandlerList<PlayerEventServerHandler> playerEventHandlers = new HandlerList<PlayerEventServerHandler>(PlayerEventServerHandler.class);
+/**
+ * Side-independent event handler
+ */
+public class EventHandler {
+    public static final HandlerList<ModEventHandler> modEventHandlers = new HandlerList<ModEventHandler>(ModEventHandler.class);
+    public static final HandlerList<TickEventHandler> tickEventHandlers = new HandlerList<TickEventHandler>(TickEventHandler.class);
+    public static final HandlerList<WorldEventHandler> worldEventHandlers = new HandlerList<WorldEventHandler>(WorldEventHandler.class);
+    public static final HandlerList<PlayerEventHandler> playerEventHandlers = new HandlerList<PlayerEventHandler>(PlayerEventHandler.class);
+
+
+    public static void eventTick() {
+        tickEventHandlers.all().eventTick();
+    }
+
+    public static void eventStart() {
+        modEventHandlers.all().start();
+    }
+
+    public static void eventEnd() {
+        modEventHandlers.all().stop();
+    }
 
     public static void eventTickBlocksAndAmbiance(WorldServer server) {
         worldEventHandlers.all().eventTickBlocksAndAmbiance(server);
     }
-
 
     public static void eventTickServerWorld(WorldServer world) {
         worldEventHandlers.all().eventTickServerWorld(world);
@@ -33,7 +50,7 @@ public class EventHandlerServer extends EventHandlerBase {
 
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
         boolean allow = isAllowed;
-        for (PlayerEventServerHandler mod : playerEventHandlers) {
+        for (PlayerEventHandler mod : playerEventHandlers) {
             allow = mod.eventMPPlayerLoginAttempt(username, isAllowed);
         }
         return allow;

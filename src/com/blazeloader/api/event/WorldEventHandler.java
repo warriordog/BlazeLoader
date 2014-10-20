@@ -6,7 +6,7 @@ import net.minecraft.world.WorldServer;
 /**
  * Server-side world events
  */
-public interface WorldEventServerHandler extends BLMod {
+public interface WorldEventHandler extends BLMod {
 
     /**
      * Called when WorldServer.tickBlocksAndAmbiance is called.
