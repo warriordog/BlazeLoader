@@ -6,9 +6,9 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.util.ChatComponentText;
 
 /**
- * Server-side GUI functions
+ * GUI functions
  */
-public class ApiGuiServer {
+public class ApiGui {
     /**
      * Untested
      * Opens a mod added container

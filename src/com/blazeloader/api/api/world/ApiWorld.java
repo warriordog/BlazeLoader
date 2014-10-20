@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * ApiFunctions related to worlds
+ * Api functions related to worlds
  */
-public class ApiWorldServer {
+public class ApiWorld {
 
     private static List<IChunkGenerator> generators = new ArrayList<IChunkGenerator>();
 

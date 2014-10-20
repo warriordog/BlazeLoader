@@ -3,7 +3,7 @@ package com.blazeloader.api.api.block;
 /**
  * Notification flags for block set events.  Can be added together.
  */
-public enum ENotificationType {
+public enum NotificationType {
     /**
      * Do send the change to clients.  Almost always wanted.
      */
@@ -21,7 +21,7 @@ public enum ENotificationType {
 
     protected int flag;
 
-    ENotificationType(int flag) {
+    NotificationType(int flag) {
         this.flag = flag;
     }
 
@@ -40,7 +40,7 @@ public enum ENotificationType {
      * @param type The other ENotificationType to add to.
      * @return Return the value of the two ENotificationTypes added together.
      */
-    public int add(ENotificationType type) {
+    public int add(NotificationType type) {
         return flag + type.getType();
     }
 }
