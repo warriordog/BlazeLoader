@@ -5,6 +5,6 @@ import com.blazeloader.api.mod.BLMod;
 /**
  * Interface for mods that handle inventory events
  */
-public interface InventoryEventHandler extends BLMod {
+public interface InventoryEventClientHandler extends BLMod {
 
 }

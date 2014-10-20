@@ -5,9 +5,9 @@ import com.blazeloader.api.main.BLMain;
 import java.io.File;
 
 /**
- * General side-independent API functions
+ * General API functions
  */
-public class ApiGeneralBase {
+public class ApiGeneral {
     /**
      * Location of Minecraft's working directory (.minecraft).
      */

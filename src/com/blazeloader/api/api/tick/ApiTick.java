@@ -5,7 +5,7 @@ import com.blazeloader.api.main.BLMain;
 /**
  * Api for function related to the world tick.
  */
-public class ApiTickBase {
+public class ApiTick {
 
     /**
      * Returns true if the game is currently in the middle of a tick.

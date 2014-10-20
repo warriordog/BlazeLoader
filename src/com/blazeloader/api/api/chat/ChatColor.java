@@ -3,7 +3,7 @@ package com.blazeloader.api.api.chat;
 /**
  * Chat formatting markers.
  */
-public enum EChatColor {
+public enum ChatColor {
     COLOR_AQUA("b"),
     COLOR_BLACK("0"),
     COLOR_BLUE("9"),
@@ -30,7 +30,7 @@ public enum EChatColor {
     protected String code;
     private static final String sectionSign = String.valueOf('\u00a7');
 
-    EChatColor(String code) {
+    ChatColor(String code) {
         this.code = code;
     }
 
@@ -49,7 +49,7 @@ public enum EChatColor {
      * @param otherColor A String representing another color to combine with.
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
-    public String get(String otherColor) {
+    public String combine(String otherColor) {
         return (get() + otherColor);
     }
 
@@ -59,8 +59,8 @@ public enum EChatColor {
      * @param otherColor An EChatColor representing another color to combine with.
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
-    public String get(EChatColor otherColor) {
-        return get(otherColor.get());
+    public String combine(ChatColor otherColor) {
+        return combine(otherColor.get());
     }
 
     /**

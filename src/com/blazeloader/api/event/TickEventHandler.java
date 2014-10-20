@@ -5,7 +5,7 @@ import com.blazeloader.api.mod.BLMod;
 /**
  * Interface for mods that handle tick events
  */
-public interface TickEventBaseHandler extends BLMod {
+public interface TickEventHandler extends BLMod {
     /**
      * Called when the game is ticked.
      */

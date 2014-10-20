@@ -1,4 +1,4 @@
-package com.blazeloader.api.util.java;
+package com.blazeloader.api.client.util;
 
 import net.minecraft.server.MinecraftServer;
 
@@ -7,9 +7,9 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * Tools for working with the java Class Path
+ * Tools for locating resources
  */
-public class ClassPath {
+public class ResourceLoc {
 
     /**
      * Gets the .jar location
@@ -71,7 +71,7 @@ public class ClassPath {
 
     private static URI getURI(String path) {
         try {
-            URL url = ClassPath.class.getClassLoader().getResource(path);
+            URL url = ResourceLoc.class.getClassLoader().getResource(path);
             if (url == null) {
                 return null;
             }

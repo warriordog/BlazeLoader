@@ -1,6 +1,6 @@
 package com.blazeloader.api.client.event;
 
-import com.blazeloader.api.event.EventHandlerBase;
+import com.blazeloader.api.event.EventHandler;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 import net.minecraft.client.Minecraft;
@@ -20,22 +20,18 @@ import net.minecraft.world.World;
 /**
  * Distributes game events to mods
  */
-public class EventHandlerClient extends EventHandlerBase {
-    public static final HandlerList<BlockEventHandler> blockEventHandlers = new HandlerList<BlockEventHandler>(BlockEventHandler.class);
-    public static final HandlerList<GuiEventClientHandler> clientEventHandlers = new HandlerList<GuiEventClientHandler>(GuiEventClientHandler.class);
-    public static final HandlerList<InventoryEventHandler> inventoryEventHandlers = new HandlerList<InventoryEventHandler>(InventoryEventHandler.class);
-    public static final HandlerList<OverrideEventClientHandler> overrideEventHandlers = new HandlerList<OverrideEventClientHandler>(OverrideEventClientHandler.class);
-    public static final HandlerList<PlayerEventClientHandler> playerEventHandlers = new HandlerList<PlayerEventClientHandler>(PlayerEventClientHandler.class);
-    public static final HandlerList<ProfilerEventClientHandler> profilerEventHandlers = new HandlerList<ProfilerEventClientHandler>(ProfilerEventClientHandler.class);
-    public static final HandlerList<WorldEventClientHandler> worldEventHandlers = new HandlerList<WorldEventClientHandler>(WorldEventClientHandler.class);
-
-    public static void eventTick() {
-        tickEventHandlers.all().eventTick();
-    }
+public class EventHandlerClient extends EventHandler {
+    public static final HandlerList<BlockEventClientHandler> blockEventClients = new HandlerList<BlockEventClientHandler>(BlockEventClientHandler.class);
+    public static final HandlerList<GuiEventClientHandler> guiEventClients = new HandlerList<GuiEventClientHandler>(GuiEventClientHandler.class);
+    public static final HandlerList<InventoryEventClientHandler> inventoryEventClients = new HandlerList<InventoryEventClientHandler>(InventoryEventClientHandler.class);
+    public static final HandlerList<OverrideEventClientHandler> overrideEventClients = new HandlerList<OverrideEventClientHandler>(OverrideEventClientHandler.class);
+    public static final HandlerList<PlayerEventClientHandler> playerEventClients = new HandlerList<PlayerEventClientHandler>(PlayerEventClientHandler.class);
+    public static final HandlerList<ProfilerEventClientHandler> profilerEventClients = new HandlerList<ProfilerEventClientHandler>(ProfilerEventClientHandler.class);
+    public static final HandlerList<WorldEventClientHandler> worldEventClients = new HandlerList<WorldEventClientHandler>(WorldEventClientHandler.class);
 
     public static void eventDisplayGuiScreen(EventInfo<Minecraft> event, GuiScreen gui) {
         Minecraft mc = event.getSource();
-        clientEventHandlers.all().eventDisplayGui(mc, mc.currentScreen, gui);
+        guiEventClients.all().eventDisplayGui(mc, mc.currentScreen, gui);
     }
 
     public static void overrideOnContainerOpen(AbstractClientPlayer player, S2DPacketOpenWindow packet) {
@@ -48,11 +44,11 @@ public class EventHandlerClient extends EventHandlerBase {
         }
 
         OverrideEventClientHandler.ContainerOpenedEventArgs args = new OverrideEventClientHandler.ContainerOpenedEventArgs(player, packet);
-        /*if (overrideEventHandlers.all().overrideContainerOpen(player, c, args)) {
+        /*if (overrideEventClients.all().overrideContainerOpen(player, c, args)) {
             player.openContainer.windowId = packet.func_148901_c();
         }*/
         //TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
-        for (OverrideEventClientHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventClients) {
             if (mod.overrideContainerOpen(player, c, args)) {
                 player.openContainer.windowId = packet.func_148901_c();
                 break;
@@ -61,34 +57,34 @@ public class EventHandlerClient extends EventHandlerBase {
     }
 
     public static void eventStartSection(EventInfo<Profiler> event, String name) {
-        profilerEventHandlers.all().eventProfilerStart(event.getSource(), name);
+        profilerEventClients.all().eventProfilerStart(event.getSource(), name);
     }
 
     public static void eventEndSection(EventInfo<Profiler> event) {
         Profiler prof = event.getSource();
-        profilerEventHandlers.all().eventProfilerEnd(prof, prof.getNameOfLastSection());
+        profilerEventClients.all().eventProfilerEnd(prof, prof.getNameOfLastSection());
     }
 
     public static void eventLoadWorld(EventInfo<Minecraft> event, WorldClient world, String message) {
         Minecraft mc = event.getSource();
         if (world != null) {
-            worldEventHandlers.all().eventLoadWorld(mc, world, message);
+            worldEventClients.all().eventLoadWorld(mc, world, message);
         } else {
-            worldEventHandlers.all().eventUnloadWorld(mc, mc.theWorld, message);
+            worldEventClients.all().eventUnloadWorld(mc, mc.theWorld, message);
         }
     }
 
     public static void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket) {
-        playerEventHandlers.all().eventClientJoinGame(netHandler, loginPacket);
+        playerEventClients.all().eventClientJoinGame(netHandler, loginPacket);
     }
 
     public static void eventClientPlayerDeath() {
-        playerEventHandlers.all().eventClientPlayerDeath();
+        playerEventClients.all().eventClientPlayerDeath();
     }
 
     public static S0EPacketSpawnObject overrideCreateSpawnPacket(Entity myEntity) {
         S0EPacketSpawnObject packet = null;
-        for (OverrideEventClientHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventClients) {
             S0EPacketSpawnObject modPacket = mod.overrideCreateSpawnPacket(myEntity, packet != null);
             if (modPacket != null) packet = modPacket;
         }
@@ -97,20 +93,20 @@ public class EventHandlerClient extends EventHandlerBase {
 
     public static void overrideAddEntityToTracker(EntityTracker tracker, Entity entity) {
         boolean isHandled = false;
-        for (OverrideEventClientHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventClients) {
             isHandled |= mod.overrideAddEntityToTracker(tracker, entity, isHandled);
         }
     }
 
     public static EntityFX overrideSpawnParticle(String name, World world, double x, double y, double z, double p1, double p2, double p3) {
         EntityFX entity = null;
-        for (OverrideEventClientHandler mod : overrideEventHandlers) {
+        for (OverrideEventClientHandler mod : overrideEventClients) {
             entity = mod.overrideSpawnParticle(name, world, x, y, z, p1, p2, p3, entity);
         }
         return entity;
     }
 
     public static void eventWorldChanged(World world) {
-        worldEventHandlers.all().eventWorldChanged(world);
+        worldEventClients.all().eventWorldChanged(world);
     }
 }

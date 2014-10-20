@@ -17,7 +17,8 @@ import java.util.Map;
 /**
  * Api for entity-related functions
  */
-public class ApiEntityBase {
+public class ApiEntity {
+    //TODO replace with access transformer
     public static final Map<String, Class> stringToClassMap;
     public static final Map<Class, String> classToStringMap;
     public static final Map<Integer, Class> idToClassMap;
@@ -62,17 +63,17 @@ public class ApiEntityBase {
      * @param c Replacement class
      */
     public static void swapEntityClass(Class<? extends Entity> o, Class<? extends Entity> c) {
-        if (ApiEntityBase.classToStringMap.containsKey(o) && ApiEntityBase.classToIdMap.containsKey(c)) {
-            String name = ApiEntityBase.classToStringMap.get(o);
-            int id = ApiEntityBase.classToIdMap.get(o);
+        if (ApiEntity.classToStringMap.containsKey(o) && ApiEntity.classToIdMap.containsKey(c)) {
+            String name = ApiEntity.classToStringMap.get(o);
+            int id = ApiEntity.classToIdMap.get(o);
 
-            ApiEntityBase.stringToClassMap.put(name, c);
-            ApiEntityBase.classToStringMap.put(c, name);
-            ApiEntityBase.idToClassMap.put(id, c);
-            ApiEntityBase.classToIdMap.put(c, id);
+            ApiEntity.stringToClassMap.put(name, c);
+            ApiEntity.classToStringMap.put(c, name);
+            ApiEntity.idToClassMap.put(id, c);
+            ApiEntity.classToIdMap.put(c, id);
 
             for (EnumCreatureType i : EnumCreatureType.values()) {
-                ApiEntityBase.swapEntitySpawn(o, c, i);
+                ApiEntity.swapEntitySpawn(o, c, i);
             }
         }
     }

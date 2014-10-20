@@ -13,7 +13,7 @@ import net.minecraft.world.WorldServer;
 /**
  * Api for block-specific functions
  */
-public class ApiBlockServer {
+public class ApiBlock {
 
     /**
      * Sets the block at a specified location.  And triggers a block update
