@@ -17,7 +17,7 @@ public class ApiCommand {
      * @return Return the command manager, or a temporary replacement.
      */
     public static CommandHandler getCommandManager() {
-        return BLMain.commandHandler;
+        return BLMain.instance().getCommandHandler();
     }
 
     /**
@@ -26,7 +26,7 @@ public class ApiCommand {
      * @param command The command to register.
      */
     public static void registerCommand(ICommand command) {
-        BLMain.commandHandler.registerCommand(command);
+        getCommandManager().registerCommand(command);
     }
 
     /**
@@ -36,7 +36,7 @@ public class ApiCommand {
      * @param command The command to execute.
      */
     public static void useCommand(ICommandSender sender, String command) {
-        BLMain.commandHandler.executeCommand(sender, command);
+        getCommandManager().executeCommand(sender, command);
     }
 
     /**
