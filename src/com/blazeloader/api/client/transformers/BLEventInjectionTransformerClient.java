@@ -1,5 +1,6 @@
 package com.blazeloader.api.client.transformers;
 
+import com.blazeloader.api.main.BLMain;
 import com.blazeloader.api.transformers.BLEventInjectionTransformer;
 
 /**
@@ -18,8 +19,8 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
             addBLEvent(SIDE_CLIENT, "net.minecraft.profiler.Profiler.endSection ()V");
             addBLEvent(SIDE_CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
         } catch (Exception e) {
-            System.err.println("A fatal exception occurred while injecting BlazeLoader client events!  BlazeLoader will not be able to run!");
-            throw new RuntimeException("Exception injecting BlazeLoader events!", e);
+            e.printStackTrace();
+            BLMain.instance().shutdown("A fatal exception occurred while injecting BlazeLoader client events!  BlazeLoader will not be able to run!", -1);
         }
     }
 

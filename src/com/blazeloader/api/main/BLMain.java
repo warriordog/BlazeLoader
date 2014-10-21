@@ -6,7 +6,7 @@ import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.ELogLevel;
-import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.Arrays;
@@ -34,13 +34,10 @@ public class BLMain {
     public static boolean isInTick = false; //true if a game tick is in progress
     public static int numTicks = 0; //number of ticks that the game has been running
 
-    /**
-     * Command handler for mods to register commands with.  Will always exist, although if server does not exist this will not be used.
-     */
-    public static final CommandHandler commandHandler = new CommandHandler();
-
     public final LoaderEnvironment environment;
     public final LoaderProperties properties;
+
+    private ServerCommandManager commandHandler;
 
     BLMain(LoaderEnvironment environment, LoaderProperties properties) {
         if (instance != null) {
@@ -126,4 +123,11 @@ public class BLMain {
     public static BLMain instance() {
         return instance;
     }
+
+
+    public ServerCommandManager getCommandHandler() {
+        //TODO: return an IntegratedServerCommandManager if running on client.  Not a high priority as integrated is currently empty...
+        return commandHandler == null ? commandHandler = new ServerCommandManager() : commandHandler;
+    }
+
 }
