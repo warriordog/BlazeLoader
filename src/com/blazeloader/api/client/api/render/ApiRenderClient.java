@@ -17,7 +17,7 @@ public class ApiRenderClient {
      * @param blue  Blue-channel value.
      * @return Return the alpha, red, green, and blue compressed into an ARBG int.
      */
-    public static int getARBG(int alpha, int red, int green, int blue) {
+    public static int getARGB(int alpha, int red, int green, int blue) {
         int arbg = 0;
         arbg |= (alpha & 255) << 24;
         arbg |= (red & 255) << 16;
