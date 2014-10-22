@@ -32,8 +32,6 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
-            } else {
-                System.out.println("Missing mapping: " + obfName);
             }
         }
         return obf;
