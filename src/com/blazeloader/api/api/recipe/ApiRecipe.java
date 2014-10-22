@@ -16,7 +16,7 @@ public class ApiRecipe {
      * @param output An itemStack with the recipe output
      * @param args   An object array on how to form the recipe e.g. "##", "##", "##", Character.valueOf('#'), new ItemStack(Block.door)
      */
-    public static void addCraftingRecipeShaped(ItemStack output, Object... args) {
+    public static void addShapedCraftingRecipe(ItemStack output, Object... args) {
         BLCraftingManager.addVanillaRecipe(output, args);
     }
 
@@ -26,7 +26,7 @@ public class ApiRecipe {
      * @param output An itemStack with the recipe output
      * @param args   An object array of itemStacks to use
      */
-    public static void addCraftingRecipeShapeless(ItemStack output, Object... args) {
+    public static void addShapelessCraftingRecipe(ItemStack output, Object... args) {
         BLCraftingManager.addVanillaShapelessRecipe(output, args);
     }
 
