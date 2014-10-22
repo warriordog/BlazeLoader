@@ -1,19 +1,19 @@
 package com.blazeloader.api.api.toolset;
 
-import com.blazeloader.api.api.recipe.BLCraftingManager;
 import com.blazeloader.api.obf.BLOBF;
 import net.acomputerdog.core.java.Reflect;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.RecipesTools;
 
 public class ToolRecipes {
     private static final String[][] patterns = Reflect.getFieldValue(RecipesTools.class, new RecipesTools(), BLOBF.getFieldMCP("net.minecraft.item.crafting.RecipesTools.recipePatterns").getValue());
 
-    private final BLCraftingManager manager;
+    private final CraftingManager manager;
 
-    public ToolRecipes(BLCraftingManager CraftingManager) {
+    public ToolRecipes(CraftingManager CraftingManager) {
         manager = CraftingManager;
     }
 
@@ -26,15 +26,9 @@ public class ToolRecipes {
     }
 
     private void AddRecipes(Item material, Item[] tools, boolean vanilla) {
-        BLCraftingManager man = vanilla ? getVanillaManager() : manager;
-
         for (int i = 0; i < tools.length && i < patterns.length; i++) {
-            man.addRecipe(new ItemStack(tools[i]),
+            manager.addRecipe(new ItemStack(tools[i]),
                     patterns[i], '#', Items.stick, 'X', material);
         }
-    }
-
-    private BLCraftingManager getVanillaManager() {
-        return BLCraftingManager.getInstance(BLCraftingManager.VanillaCraftingManagerKey);
     }
 }
