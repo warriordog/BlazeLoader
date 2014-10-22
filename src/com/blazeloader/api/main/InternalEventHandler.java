@@ -1,6 +1,8 @@
 package com.blazeloader.api.main;
 
+import com.blazeloader.api.client.api.client.ApiWindowClient;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
+import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
@@ -10,5 +12,9 @@ import net.minecraft.server.MinecraftServer;
 public class InternalEventHandler {
     public static void eventCreateNewCommandManager(ReturnEventInfo<MinecraftServer, ServerCommandManager> event) {
         event.setReturnValue(BLMain.instance().getCommandHandler());
+    }
+
+    public static void eventGetClientModName(ReturnEventInfo<ClientBrandRetriever, String> event) {
+        event.setReturnValue(ApiWindowClient.getClientBrand());
     }
 }

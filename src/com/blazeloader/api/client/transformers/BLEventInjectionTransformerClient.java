@@ -18,6 +18,7 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
             addBLEvent(SIDE_CLIENT, "net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
             addBLEvent(SIDE_CLIENT, "net.minecraft.profiler.Profiler.endSection ()V");
             addBLEvent(SIDE_CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
+            addBLEvent(SIDE_INTERNAL, "net.minecraft.client.ClientBrandRetriever.getClientModName ()Ljava/lang/String;", beforeReturn);
         } catch (Exception e) {
             e.printStackTrace();
             BLMain.instance().shutdown("A fatal exception occurred while injecting BlazeLoader client events!  BlazeLoader will not be able to run!", -1);

@@ -57,7 +57,7 @@ public class ApiWindowClient {
      * @param brand Brand Name
      */
     public static void setClientBrand(String brand) {
-        if (!brand.isEmpty() && !brands.contains(brand)) {
+        if (brand != null && !brand.isEmpty() && !brands.contains(brand)) {
             brands.add(brand);
         }
     }
@@ -66,19 +66,13 @@ public class ApiWindowClient {
      * Gets the formatted Client brand name
      */
     public static String getClientBrand() {
-        if (brands.size() == 0) {
-            return "BlazeLoader";
+        StringBuilder builder = new StringBuilder();
+        builder.append("BlazeLoader");
+        for (String str : brands) {
+            builder.append(", ");
+            builder.append(str);
         }
-
-        String result = "";
-
-        for (String i : brands) {
-            if (!result.equals("")) {
-                result += ", ";
-            }
-            result += i;
-        }
-        return "blazeloader (" + result + ")";
+        return builder.toString();
     }
 
     private static ByteBuffer getIcon(File par1File) throws IOException {
