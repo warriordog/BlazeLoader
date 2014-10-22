@@ -1,9 +1,9 @@
 package com.blazeloader.api.api.block;
 
-import com.blazeloader.api.client.api.general.ApiGeneralClient;
 import net.acomputerdog.core.java.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -141,7 +141,8 @@ public class ApiBlock {
      * @return The WorldServer for the specified index.
      */
     public static WorldServer getServerForDimension(int dimension) {
-        return ApiGeneralClient.theMinecraft.getIntegratedServer().worldServers[dimension];
+        //TODO needs a better way to get the current server!
+        return Minecraft.getMinecraft().getIntegratedServer().worldServers[dimension];
     }
 
     /**

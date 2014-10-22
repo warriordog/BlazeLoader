@@ -1,6 +1,6 @@
 package com.blazeloader.api.client.api.render;
 
-import com.blazeloader.api.client.api.general.ApiGeneralClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 /**
@@ -37,7 +37,7 @@ public class ApiRenderClient {
      * @param centered Center the text around the coordinates specified.
      */
     public static void drawString(String string, int x, int y, int color, boolean shadow, boolean centered) {
-        FontRenderer render = ApiGeneralClient.theMinecraft.fontRendererObj;
+        FontRenderer render = Minecraft.getMinecraft().fontRendererObj;
         if (centered) {
             x -= render.getStringWidth(string) / 2;
         }
