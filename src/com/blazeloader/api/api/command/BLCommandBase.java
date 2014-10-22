@@ -47,7 +47,7 @@ public abstract class BLCommandBase extends CommandBase {
      * @param message The message to send.
      */
     protected void sendChatLine(ICommandSender target, String message) {
-        sendChat(target, message + ChatColor.FORMAT_RESET);
+        sendChat(target, ChatColor.FORMAT_RESET.format(message));
     }
 
     /**

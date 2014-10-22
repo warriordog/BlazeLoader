@@ -10,13 +10,14 @@ import net.minecraft.util.ChatComponentText;
  */
 public class ApiGui {
     /**
-     * Untested
+     * MOST LIKELY BROKEN, USE AT YOUR OWN RISK!!!!!
+     *
      * Opens a mod added container
      *
      * @param player      the player to open the container for
      * @param c           The container to open
-     * @param guiLabel
-     * @param addCrafters
+     * @param guiLabel The title of the GUI
+     * @param addCrafters If true, add crafting support to the container
      */
     public static void openClientContainer(EntityPlayerMP player, Container c, String guiLabel, boolean addCrafters) {
         if (!player.worldObj.isRemote) {

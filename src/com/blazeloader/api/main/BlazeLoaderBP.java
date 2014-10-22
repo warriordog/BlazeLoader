@@ -1,6 +1,6 @@
 package com.blazeloader.api.main;
 
-import com.blazeloader.api.client.render.ColorUtils;
+import com.blazeloader.api.client.api.render.ApiRenderClient;
 import com.blazeloader.api.version.Versions;
 import com.mumfrey.liteloader.api.BrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
@@ -39,7 +39,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public int getBrandingColour() {
-        return ColorUtils.getARBG(255, 255, 255, 0);
+        return ApiRenderClient.getARGB(255, 255, 255, 0);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.blazeloader.api.client.api.render;
 
-import com.blazeloader.api.client.api.general.ApiGeneralClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
 /**
@@ -17,7 +17,7 @@ public class ApiRenderClient {
      * @param blue  Blue-channel value.
      * @return Return the alpha, red, green, and blue compressed into an ARBG int.
      */
-    public static int getARBG(int alpha, int red, int green, int blue) {
+    public static int getARGB(int alpha, int red, int green, int blue) {
         int arbg = 0;
         arbg |= (alpha & 255) << 24;
         arbg |= (red & 255) << 16;
@@ -37,7 +37,7 @@ public class ApiRenderClient {
      * @param centered Center the text around the coordinates specified.
      */
     public static void drawString(String string, int x, int y, int color, boolean shadow, boolean centered) {
-        FontRenderer render = ApiGeneralClient.theMinecraft.fontRendererObj;
+        FontRenderer render = Minecraft.getMinecraft().fontRendererObj;
         if (centered) {
             x -= render.getStringWidth(string) / 2;
         }
