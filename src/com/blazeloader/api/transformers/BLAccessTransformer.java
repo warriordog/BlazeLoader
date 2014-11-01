@@ -60,11 +60,11 @@ public class BLAccessTransformer implements IClassTransformer {
                 }
                 String part1 = parts[1].trim();
                 if (part1.equalsIgnoreCase("CLASS")) {
-                    transformClass(parts[0].trim(), parts[2].trim());
+                    addClassTransformation(parts[0].trim(), getRealName(parts[2].trim(), TargetType.CLASS));
                 } else if (part1.equalsIgnoreCase("METHOD")) {
-                    transformMethod(parts[0].trim(), parts[2].trim());
+                    addMethodTransformation(parts[0].trim(), getRealName(parts[2].trim(), TargetType.METHOD));
                 } else if (part1.equalsIgnoreCase("FIELD")) {
-                    transformField(parts[0].trim(), parts[2].trim());
+                    addFieldTransformation(parts[0].trim(), getRealName(parts[2].trim(), TargetType.FIELD));
                 } else {
                     System.err.println("Unknown transformation type: " + line);
                 }
@@ -75,17 +75,17 @@ public class BLAccessTransformer implements IClassTransformer {
             }
         }
 
-        System.out.println(String.format("Loaded %d access rules.", countRules()));
+        System.out.println(String.format("Loaded %d access rules.", numLoadedRules()));
     }
 
-    private void transformClass(String access, String name) {
+    private void addClassTransformation(String access, String name) {
         AccessModifier m = new AccessModifier();
         m.setAccessMode(access);
         m.name = name;
         m.changeClassVisibility = true;
     }
 
-    private void transformMethod(String access, String name) {
+    private void addMethodTransformation(String access, String name) {
         AccessModifier m = new AccessModifier();
         m.setAccessMode(access);
 
@@ -106,10 +106,10 @@ public class BLAccessTransformer implements IClassTransformer {
         }
 
         String className = clName.substring(0, clNameLastDot);
-        addToMap(className, m);
+        addAccessModifier(className, m);
     }
 
-    private void transformField(String access, String name) {
+    private void addFieldTransformation(String access, String name) {
         AccessModifier m = new AccessModifier();
         m.setAccessMode(access);
 
@@ -119,7 +119,7 @@ public class BLAccessTransformer implements IClassTransformer {
         }
 
         String className = name.substring(0, name.lastIndexOf('.'));
-        addToMap(className, m);
+        addAccessModifier(className, m);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class BLAccessTransformer implements IClassTransformer {
 
         for (AccessModifier m : mods) {
             if (m.changeClassVisibility) {
-                classNode.access = getFixedAccess(classNode.access, m);
+                classNode.access = getModifiedAccess(classNode.access, m);
             } else {
                 changeAccessFor(m, classNode, m.name, m.description);
             }
@@ -154,27 +154,27 @@ public class BLAccessTransformer implements IClassTransformer {
     private void changeAccessFor(AccessModifier m, ClassNode classNode, String name, String description) {
         if (name.isEmpty() && description.isEmpty()) {
             for (MethodNode methodNode : classNode.methods) {
-                methodNode.access = getFixedAccess(methodNode.access, m);
+                methodNode.access = getModifiedAccess(methodNode.access, m);
             }
             for (FieldNode fieldNode : classNode.fields) {
-                fieldNode.access = getFixedAccess(fieldNode.access, m);
+                fieldNode.access = getModifiedAccess(fieldNode.access, m);
             }
         } else if (description.isEmpty()) {
             for (FieldNode fieldNode : classNode.fields) {
                 if (fieldNode.name.equals(name)) {
-                    fieldNode.access = getFixedAccess(fieldNode.access, m);
+                    fieldNode.access = getModifiedAccess(fieldNode.access, m);
                 }
             }
         } else {
             for (MethodNode methodNode : classNode.methods) {
                 if ((methodNode.name.equals(name) && methodNode.desc.equals(description))) {
-                    methodNode.access = getFixedAccess(methodNode.access, m);
+                    methodNode.access = getModifiedAccess(methodNode.access, m);
                 }
             }
         }
     }
 
-    private int getFixedAccess(int access, AccessModifier target) {
+    private int getModifiedAccess(int access, AccessModifier target) {
         target.oldAccessMode = access;
         int t = target.targetAccessMode;
         int ret = (access & ~7);
@@ -207,7 +207,7 @@ public class BLAccessTransformer implements IClassTransformer {
         return ret;
     }
 
-    private String getRealName(String name) {
+    private String getRealName(String name, TargetType type) {
         if (name == null) {
             return null;
         }
@@ -216,21 +216,22 @@ public class BLAccessTransformer implements IClassTransformer {
             System.err.println("Malformed name: " + name);
             return name;
         }
-        TargetType type = (name.indexOf('(') != -1) ? TargetType.METHOD : TargetType.FIELD;
+        String obfType = parts[0];
+        String obfName = parts[1];
         BLOBF blobf;
-        if (name.equalsIgnoreCase("obf")) {
-            blobf = BLOBF.getOBF(name, type);
-        } else if (name.equalsIgnoreCase("srg")) {
-            blobf = BLOBF.getSRG(name, type);
-        } else if (name.equalsIgnoreCase("mcp")) {
-            blobf = BLOBF.getMCP(name, type);
+        if (obfType.equalsIgnoreCase("obf")) {
+            blobf = BLOBF.getOBF(obfName, type);
+        } else if (obfType.equalsIgnoreCase("srg")) {
+            blobf = BLOBF.getSRG(obfName, type);
+        } else if (obfType.equalsIgnoreCase("mcp")) {
+            blobf = BLOBF.getMCP(obfName, type);
         } else {
-            System.err.println("Unknown OBF state: " + name);
-            return name;
+            System.err.println("Unknown OBF type: " + obfType);
+            return obfName;
         }
         if (blobf == null) {
-            System.err.println("Undefined name mapping: " + name);
-            return name;
+            System.err.println("Undefined " + type.name() + " mapping: " + obfName);
+            return obfName;
         }
         return blobf.getValue();
     }
@@ -365,7 +366,7 @@ public class BLAccessTransformer implements IClassTransformer {
         }
     }
 
-    private void addToMap(String name, AccessModifier m) {
+    private void addAccessModifier(String name, AccessModifier m) {
         List<AccessModifier> mods;
 
         if (!modifiers.containsKey(name)) {
@@ -379,7 +380,7 @@ public class BLAccessTransformer implements IClassTransformer {
         }
     }
 
-    private int countRules() {
+    private int numLoadedRules() {
         int count = 0;
 
         for (String name : modifiers.keySet()) {
