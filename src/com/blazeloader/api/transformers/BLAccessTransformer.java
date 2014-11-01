@@ -12,10 +12,20 @@ import org.objectweb.asm.tree.ClassNode;
 
 import java.io.IOException;
 
+/**
+ * Allows changing field and method publicity levels and final values.
+ */
 public class BLAccessTransformer implements IClassTransformer {
     private static BLAccessTransformer instance;
 
+    /**
+     * TransformationMap containing class-specific transformations
+     */
     private final TransformationMap transformations;
+
+    /**
+     * TransformationMap containing "global" (or not class-specific) transformations
+     */
     private final GlobalTransformationMap globalTransformations;
 
     public BLAccessTransformer() {

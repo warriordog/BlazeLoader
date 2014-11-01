@@ -15,20 +15,15 @@ public class FieldPublicTransformation extends FieldTransformation {
     @Override
     public boolean apply(ClassNode cls) {
         String dotName = getDotName(cls.name);
-        //System.out.println("Attempting to apply PUBLIC on: " + dotName);
         boolean didApply = false;
         if (dotName.equals(targetClass)) {
             for (FieldNode field : cls.fields) {
-                //System.out.println(field.name);
                 if (isGlobal || field.name.equals(fieldName)) {
-                    //System.out.println("Applying!");
                     field.access = setAccess(field.access, access);
-                    //field.access = setPublic(field.access, access);
                     didApply = true;
                 }
             }
         }
-        //System.out.println(didApply);
         return didApply;
     }
 }

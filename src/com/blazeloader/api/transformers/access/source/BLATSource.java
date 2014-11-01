@@ -128,11 +128,6 @@ public class BLATSource extends TransformationSource {
             throw new IllegalArgumentException("Malformed name: " + name);
         }
         String obfType = parts[0];
-        //String obfName = getObfName(parts[1]);
-        //String obfEnd = getObfSuffix(parts[1]);
-        //if (type == TargetType.METHOD && parts.length >= 3) {
-        //    parts[1] = parts[1].concat(" ").concat(parts[2]);
-        //}
         String[] obfName = splitGlobal(parts[1]);
         BLOBF blobf;
         if (obfType.equalsIgnoreCase("obf")) {

@@ -15,22 +15,15 @@ public class MethodPublicTransformation extends MethodTransformation {
     @Override
     public boolean apply(ClassNode cls) {
         String dotName = getDotName(cls.name);
-        //System.out.println("Attempting to apply PUBLIC on: \"" + dotName + "\": \"" + targetClass + "\"/\"" + methodName + "\"/\"" + isGlobal + "\"");
         boolean didApply = false;
         if (dotName.equals(targetClass)) {
             for (MethodNode method : cls.methods) {
                 String mName = method.name.concat(" ").concat(method.desc).replace('/', '.');
-                //System.out.println(mName);
                 if (isGlobal || mName.equals(methodName)) {
-                    //System.out.println(mName);
-                    //System.out.println("Applying!");
-                    //field.access = setAccess(field.access, access);
-                    //field.access = setPublic(field.access, access);
                     didApply = true;
                 }
             }
         }
-        //System.out.println(didApply);
         return didApply;
     }
 }
