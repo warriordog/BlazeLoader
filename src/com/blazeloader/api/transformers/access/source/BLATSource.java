@@ -1,8 +1,8 @@
 package com.blazeloader.api.transformers.access.source;
 
 import com.blazeloader.api.obf.BLOBF;
+import com.blazeloader.api.transformers.BLAccessTransformer;
 import com.blazeloader.api.transformers.access.AccessLevel;
-import com.blazeloader.api.transformers.access.BLAccessTransformer;
 import com.blazeloader.api.transformers.access.transformation.*;
 import net.acomputerdog.OBFUtil.util.TargetType;
 
