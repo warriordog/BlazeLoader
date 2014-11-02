@@ -4,14 +4,12 @@ import com.blazeloader.api.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import net.acomputerdog.OBFUtil.parse.types.BLOBFParser;
 import net.acomputerdog.OBFUtil.util.TargetType;
-
-import java.util.regex.Pattern;
+import net.acomputerdog.core.java.Patterns;
 
 /**
  * BlazeLoader extension of LL's Obf class
  */
 public class BLOBF extends Obf {
-    private static final String PERIOD = Pattern.quote(".");
 
     /**
      * The simple (mcp, no package) name of this BLOBF
@@ -27,7 +25,7 @@ public class BLOBF extends Obf {
      */
     public BLOBF(String obfName, String seargeName, String mcpName) {
         super(seargeName, obfName, mcpName);
-        String[] nameParts = mcpName.split(PERIOD);
+        String[] nameParts = mcpName.split(Patterns.PERIOD);
         this.simpleName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : mcpName;
     }
 

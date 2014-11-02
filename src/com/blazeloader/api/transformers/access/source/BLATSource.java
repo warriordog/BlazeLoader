@@ -5,6 +5,7 @@ import com.blazeloader.api.transformers.BLAccessTransformer;
 import com.blazeloader.api.transformers.access.AccessLevel;
 import com.blazeloader.api.transformers.access.transformation.*;
 import net.acomputerdog.OBFUtil.util.TargetType;
+import net.acomputerdog.core.java.Patterns;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,14 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class BLATSource extends TransformationSource {
-    private static final String REGEX_COMMA = Pattern.quote(",");
-    private static final String REGEX_ASTERISK = Pattern.quote(".*"); //"." is intentional
-    private static final String REGEX_AT = Pattern.quote("@");
-    private static final String REGEX_HASHTAG = Pattern.quote("#"); //I know full well that that is not the real name, but pound sign / number sign sound wrong
-    private static final String REGEX_SPACE = Pattern.quote(" ");
 
     private final List<Transformation> transformations;
 
@@ -37,8 +32,8 @@ public class BLATSource extends TransformationSource {
                         continue;
                     }
 
-                    String[] sections = line.split(REGEX_HASHTAG);
-                    String[] parts = sections[0].trim().split(REGEX_SPACE);
+                    String[] sections = line.split(Patterns.NUMBERSIGN);
+                    String[] parts = sections[0].trim().split(Patterns.SPACE);
 
                     if (parts.length < 3) {
                         System.err.println("Malformed Line: " + line);
@@ -73,7 +68,7 @@ public class BLATSource extends TransformationSource {
         int lastDot = name.lastIndexOf('.');
         String clName = name.substring(0, lastDot);
         String mName = name.substring(lastDot + 1, name.length()).replace('/', '.');
-        String[] changeArr = changes.split(REGEX_COMMA);
+        String[] changeArr = changes.split(Patterns.COMMA);
         for (String change : changeArr) {
             if ("f".equalsIgnoreCase(change)) {
                 transformations.add(new MethodFinalTransformation(clName, mName, true));
@@ -99,7 +94,7 @@ public class BLATSource extends TransformationSource {
         int lastDot = name.lastIndexOf('.');
         String clName = name.substring(0, lastDot);
         String fName = name.substring(lastDot + 1, name.length());
-        String[] changeArr = changes.split(REGEX_COMMA);
+        String[] changeArr = changes.split(Patterns.COMMA);
         for (String change : changeArr) {
             if ("f".equalsIgnoreCase(change)) {
                 transformations.add(new FieldFinalTransformation(clName, fName, true));
@@ -123,7 +118,7 @@ public class BLATSource extends TransformationSource {
         if (name == null) {
             return null;
         }
-        String[] parts = name.split(REGEX_AT);
+        String[] parts = name.split(Patterns.AT);
         if (parts.length < 2) {
             throw new IllegalArgumentException("Malformed name: " + name);
         }
