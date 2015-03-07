@@ -75,10 +75,10 @@ public interface OverrideEventClientHandler extends BLMod {
         public final int posZ;
 
         public ContainerOpenedEventArgs(EntityPlayer player, S2DPacketOpenWindow packet) {
-            locked = packet.func_148900_g();
-            invName = packet.func_148902_e().split(":?:")[1];
-            slotsCount = packet.func_148898_f();
-
+            locked = packet.hasSlots();
+            invName = packet.getGuiId();
+            slotsCount = packet.getSlotCount();
+            
             posX = MathHelper.floor_double(player.posX);
             posY = MathHelper.floor_double(player.posY);
             posZ = MathHelper.floor_double(player.posZ);

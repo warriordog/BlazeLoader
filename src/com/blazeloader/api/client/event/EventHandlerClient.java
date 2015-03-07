@@ -2,7 +2,9 @@ package com.blazeloader.api.client.event;
 
 import com.blazeloader.api.event.EventHandler;
 import com.mumfrey.liteloader.core.event.HandlerList;
+import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;
@@ -24,7 +26,7 @@ public class EventHandlerClient extends EventHandler {
     public static final HandlerList<BlockEventClientHandler> blockEventClients = new HandlerList<BlockEventClientHandler>(BlockEventClientHandler.class);
     public static final HandlerList<GuiEventClientHandler> guiEventClients = new HandlerList<GuiEventClientHandler>(GuiEventClientHandler.class);
     public static final HandlerList<InventoryEventClientHandler> inventoryEventClients = new HandlerList<InventoryEventClientHandler>(InventoryEventClientHandler.class);
-    public static final HandlerList<OverrideEventClientHandler> overrideEventClients = new HandlerList<OverrideEventClientHandler>(OverrideEventClientHandler.class);
+    public static final HandlerList<OverrideEventClientHandler> overrideEventClients = new HandlerList<OverrideEventClientHandler>(OverrideEventClientHandler.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<PlayerEventClientHandler> playerEventClients = new HandlerList<PlayerEventClientHandler>(PlayerEventClientHandler.class);
     public static final HandlerList<ProfilerEventClientHandler> profilerEventClients = new HandlerList<ProfilerEventClientHandler>(ProfilerEventClientHandler.class);
     public static final HandlerList<WorldEventClientHandler> worldEventClients = new HandlerList<WorldEventClientHandler>(WorldEventClientHandler.class);
@@ -35,7 +37,7 @@ public class EventHandlerClient extends EventHandler {
     }
 
     public static void overrideOnContainerOpen(AbstractClientPlayer player, S2DPacketOpenWindow packet) {
-        String clazzName = packet.func_148902_e().split(":?:")[0];
+        String clazzName = packet.getGuiId().split(":?:")[0];
         Class c;
         try {
             c = Class.forName(clazzName);
@@ -44,16 +46,18 @@ public class EventHandlerClient extends EventHandler {
         }
 
         OverrideEventClientHandler.ContainerOpenedEventArgs args = new OverrideEventClientHandler.ContainerOpenedEventArgs(player, packet);
-        /*if (overrideEventClients.all().overrideContainerOpen(player, c, args)) {
+        if (overrideEventClients.all().overrideContainerOpen(player, c, args)) {
             player.openContainer.windowId = packet.func_148901_c();
-        }*/
-        //TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
-        for (OverrideEventClientHandler mod : overrideEventClients) {
+        }
+        /*TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
+         * Switched away from iterator. May require some testing.
+         */
+        /*for (OverrideEventClientHandler mod : overrideEventClients) {
             if (mod.overrideContainerOpen(player, c, args)) {
                 player.openContainer.windowId = packet.func_148901_c();
                 break;
             }
-        }
+        }*/
     }
 
     public static void eventStartSection(EventInfo<Profiler> event, String name) {
