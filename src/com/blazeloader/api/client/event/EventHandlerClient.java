@@ -37,17 +37,9 @@ public class EventHandlerClient extends EventHandler {
     }
 
     public static void overrideOnContainerOpen(AbstractClientPlayer player, S2DPacketOpenWindow packet) {
-        String clazzName = packet.getGuiId().split(":?:")[0];
-        Class c;
-        try {
-            c = Class.forName(clazzName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Class not found: " + clazzName, e);
-        }
-
         OverrideEventClientHandler.ContainerOpenedEventArgs args = new OverrideEventClientHandler.ContainerOpenedEventArgs(player, packet);
-        if (overrideEventClients.all().overrideContainerOpen(player, c, args)) {
-            player.openContainer.windowId = packet.func_148901_c();
+        if (overrideEventClients.all().overrideContainerOpen(player, args)) {
+            player.openContainer.windowId = packet.getWindowId();
         }
         /*TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
          * Switched away from iterator. May require some testing.

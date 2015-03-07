@@ -1,5 +1,6 @@
 package com.blazeloader.api.api.gui;
 
+import com.blazeloader.api.api.recipe.ApiCrafting;
 import com.blazeloader.api.client.api.gui.IModInventory;
 import com.blazeloader.api.client.api.gui.IModLockableInventory;
 
@@ -32,6 +33,9 @@ public class ApiGui {
      */
 	@Deprecated
     public static void openClientContainer(EntityPlayerMP player, Container c, String guiLabel, boolean addCrafters) {
+		
+		
+		
     }
     
 	/**
@@ -53,8 +57,9 @@ public class ApiGui {
         }
         
         player.getNextWindowId();
+        Container container = inventory.createContainer(player.inventory, player);
         player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, inventory.getGuiID(), inventory.getDisplayName(), inventory.getSizeInventory()));
-        player.openContainer = inventory.createContainer(player.inventory, player);
+        player.openContainer = container;
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.onCraftGuiOpened(player);
     }
