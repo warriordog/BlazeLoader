@@ -1,7 +1,5 @@
 package com.blazeloader.api.api.entity;
 
-import com.blazeloader.api.obf.BLOBF;
-import net.acomputerdog.core.java.Reflect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EnumCreatureType;
@@ -12,26 +10,11 @@ import net.minecraft.world.biome.BiomeGenBase.SpawnListEntry;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Api for entity-related functions
  */
 public class ApiEntity {
-    //TODO replace with access transformer
-    public static final Map<String, Class> stringToClassMap;
-    public static final Map<Class, String> classToStringMap;
-    public static final Map<Integer, Class> idToClassMap;
-    public static final Map<Class, Integer> classToIdMap;
-    public static final Map<String, Integer> stringToIdMap;
-
-    static {
-        stringToClassMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.stringToClassMapping").getValue());
-        classToStringMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.classToStringMapping").getValue());
-        idToClassMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.IDtoClassMapping").getValue());
-        classToIdMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.classToIDMapping").getValue());
-        stringToIdMap = Reflect.getFieldValue(EntityList.class, null, BLOBF.getFieldMCP("net.minecraft.entity.EntityList.stringToIDMapping").getValue());
-    }
 
     private static int currFreeEntityId = 0;
 
@@ -63,14 +46,14 @@ public class ApiEntity {
      * @param c Replacement class
      */
     public static void swapEntityClass(Class<? extends Entity> o, Class<? extends Entity> c) {
-        if (ApiEntity.classToStringMap.containsKey(o) && ApiEntity.classToIdMap.containsKey(c)) {
-            String name = ApiEntity.classToStringMap.get(o);
-            int id = ApiEntity.classToIdMap.get(o);
+        if (EntityList.classToStringMapping.containsKey(o) && EntityList.classToIDMapping.containsKey(c)) {
+            String name = (String) EntityList.classToStringMapping.get(o);
+            int id = (Integer) EntityList.classToIDMapping.get(o);
 
-            ApiEntity.stringToClassMap.put(name, c);
-            ApiEntity.classToStringMap.put(c, name);
-            ApiEntity.idToClassMap.put(id, c);
-            ApiEntity.classToIdMap.put(c, id);
+            EntityList.stringToClassMapping.put(name, c);
+            EntityList.classToStringMapping.put(c, name);
+            EntityList.idToClassMapping.put(id, c);
+            EntityList.classToIDMapping.put(c, id);
 
             for (EnumCreatureType i : EnumCreatureType.values()) {
                 ApiEntity.swapEntitySpawn(o, c, i);
@@ -191,7 +174,7 @@ public class ApiEntity {
      * @return Return then ID of the entity.
      */
     public static int getEntityIDFromType(String type) {
-        return stringToIdMap.get(type);
+        return (Integer) EntityList.stringToIDMapping.get(type);
     }
 
     /**
