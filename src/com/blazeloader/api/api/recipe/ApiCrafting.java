@@ -38,6 +38,26 @@ public class ApiCrafting {
 	}
 	
 	/**
+	 * Intended for compatibility with mods that implemement their
+	 * own CraftingManageers based off of the vanilla one.
+	 * 
+	 * Will parse a vanilla minecraft CraftingManager to a Blazeloader apis compatible Manager.
+	 * 
+	 * It is not recommened to use this method often. Rather start off with a Manager
+	 * or keep a reference to the converted result for later use.
+	 * 
+	 * @param manager	CraftingManager to convert
+	 * 
+	 * @return Manager corresponding to the given CraftingManager
+	 */
+	public static Manager toManager(CraftingManager manager) {
+		for (Manager i : instances.values()) {
+			if (i.equals(manager)) return i;
+		}
+		return createCraftingManager((ArrayList<IRecipe>)manager.getRecipeList());
+	}
+	
+	/**
 	 * Gets a CraftingManager from the pool by it's unique id.
 	 * 
 	 * @param id	integer id of the manager you'd like to find.
@@ -48,9 +68,16 @@ public class ApiCrafting {
 		return instances.containsKey(id) ? instances.get(id) : null;
 	}
 	
+	/**
+	 * Creates a brand spanking **new** Crafting Manager.
+	 */
 	public static Manager createCraftingManager() {
+		return createCraftingManager(new ArrayList<IRecipe>());
+	}
+	
+	private final static Manager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
 		int id = nextId++;
-		instances.put(id, new Manager(id, new ArrayList<IRecipe>()));
+		instances.put(id, new Manager(id, startingRecipes));
 		return instances.get(id);
 	}
 	
@@ -331,7 +358,13 @@ public class ApiCrafting {
 	    
 	    public boolean equals(Object obj) {
 	    	if (obj instanceof Manager) {
-	    		return ((Manager) obj).compareTo(this) == 0;
+	    		return ((Manager) obj).id == id;
+	    	}
+	    	if (obj instanceof CraftingManager) {
+	    		return recipes.equals(((CraftingManager)obj).getRecipeList());
+	    	}
+	    	if (obj instanceof List<?>) {
+	    		return obj.equals(recipes);
 	    	}
 	    	return super.equals(obj);
 	    }
