@@ -5,7 +5,7 @@ import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
 import net.acomputerdog.core.logger.CLogger;
-import net.acomputerdog.core.logger.ELogLevel;
+import net.acomputerdog.core.logger.LogLevel;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
@@ -21,15 +21,15 @@ public class BLMain {
     /**
      * Logger that logs date and time
      */
-    public static final CLogger LOGGER_FULL = new CLogger("BlazeLoader", true, true, ELogLevel.DEBUG);
+    public static final CLogger LOGGER_FULL = new CLogger("BlazeLoader", true, true, LogLevel.DEBUG);
     /**
      * Logger that logs time but not date
      */
-    public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, ELogLevel.DEBUG);
+    public static final CLogger LOGGER_MAIN = new CLogger("BlazeLoader", false, true, LogLevel.DEBUG);
     /**
      * Logger that does not log date or time
      */
-    public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, ELogLevel.DEBUG);
+    public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
 
     public static boolean isInTick = false; //true if a game tick is in progress
     public static int numTicks = 0; //number of ticks that the game has been running
@@ -47,9 +47,9 @@ public class BLMain {
         this.environment = environment;
         this.properties = properties;
 
-        LOGGER_FULL.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
-        LOGGER_MAIN.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
-        LOGGER_FAST.setMinimumLogLevel(ELogLevel.valueOf(Settings.minimumLogLevel));
+        LOGGER_FULL.setMinimumLogLevel(LogLevel.valueOf(Settings.minimumLogLevel));
+        LOGGER_MAIN.setMinimumLogLevel(LogLevel.valueOf(Settings.minimumLogLevel));
+        LOGGER_FAST.setMinimumLogLevel(LogLevel.valueOf(Settings.minimumLogLevel));
 
         BLMain.LOGGER_FULL.logInfo("BlazeLoader initialized.");
     }

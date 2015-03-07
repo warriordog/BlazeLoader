@@ -1,6 +1,6 @@
 package com.blazeloader.api.api.block;
 
-import net.acomputerdog.core.java.MathUtils;
+import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
