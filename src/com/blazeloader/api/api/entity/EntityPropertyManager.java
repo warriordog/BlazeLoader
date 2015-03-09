@@ -2,14 +2,15 @@ package com.blazeloader.api.api.entity;
 
 import java.util.HashMap;
 
+import com.blazeloader.api.main.BLMain;
 import com.mumfrey.liteloader.core.event.HandlerList;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 /**
  * This can probably be replaced with storing the properties in the entity class directly.
- * @author Chris Albers
  *
  */
 public class EntityPropertyManager {
@@ -18,7 +19,7 @@ public class EntityPropertyManager {
 	
 	public static void registerEntityProperties(Entity e, IEntityProperties p) {
 		if (!mapping.containsKey(e)) {
-			mapping.put(e, new Properties(e));
+			mapping.put(e, new Properties());
 		}
 		mapping.get(e).registerHandler(p);
 	}
@@ -29,34 +30,67 @@ public class EntityPropertyManager {
 		}
 	}
 	
+	public static IEntityProperties getEntityPropertyObject(Entity e, Class<? extends IEntityProperties> c) {
+		if (mapping.containsKey(e)) {
+			for (IEntityProperties i : mapping.get(e).handlers) {
+				if (i.getClass() == c) return i;
+			}
+		}
+		return null;
+	}
+	
+	public static void copyToEntity(Entity source, Entity destination) {
+		if (mapping.containsKey(source)) {
+			mapping.put(destination, mapping.get(source));
+		}
+	}
+	
+	public static void entityDestroyed(Entity e) {
+		if (mapping.containsKey(e)) {
+			mapping.remove(e);
+		}
+	}
+	
 	public static void entityinit(Entity e) {
 		if (mapping.containsKey(e)) {
-			mapping.get(e).entityInit();
+			mapping.get(e).entityInit(e, e.worldObj);
 		}
 	}
 	
 	public static void readFromNBT(Entity e, NBTTagCompound t) {
 		if (mapping.containsKey(e)) {
-			mapping.get(e).readFromNBT(t);
+			Properties p = mapping.get(e);
+			try {
+				p.readFromNBT(t);
+			} catch (Throwable er) {
+				BLMain.LOGGER_MAIN.logFatal("Failed in reading entity NBT into (" + p.getClass().getCanonicalName() + ").", er);
+			}
 		}
 	}
 	
 	public static void writeToNBT(Entity e, NBTTagCompound t) {
 		if (mapping.containsKey(e)) {
-			mapping.get(e).writeToNBT(t);
+			Properties p = mapping.get(e);
+			try {
+				p.writeToNBT(t);
+			} catch (Throwable er) {
+				BLMain.LOGGER_MAIN.logFatal("Failed in writing entity NBT from (" + p.getClass().getCanonicalName() + ").", er);
+			}
 		}
 	}
 	
 	private static class Properties {
-		private final Entity entity;
-		
 		private final HandlerList<IEntityProperties> handlers = new HandlerList<IEntityProperties>(IEntityProperties.class);
 		
-		public Properties(Entity e) {
-			entity = e;
-		}
+		public Properties() {}
 		
 		public void registerHandler(IEntityProperties handler) {
+			for (IEntityProperties i : handlers) {
+				if (i.getClass().equals(handler.getClass())) {
+					BLMain.LOGGER_MAIN.logWarning("Attempted to register duplicate Properties object (" + handler.getClass().getCanonicalName() + "). Only one instance allowed per entity. Handler was not registered.");
+					return;
+				}
+			}
 			handlers.add(handler);
 		}
 		
@@ -64,8 +98,8 @@ public class EntityPropertyManager {
 			if (handlers.contains(handler)) handlers.remove(handler);
 		}
 		
-		public void entityInit() {
-			handlers.all().entityInit(entity);
+		public void entityInit(Entity entity, World world) {
+			handlers.all().entityInit(entity, world);
 		}
 		
 		public void readFromNBT(NBTTagCompound t) {
