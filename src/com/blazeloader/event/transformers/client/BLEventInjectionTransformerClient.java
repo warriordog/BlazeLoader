@@ -14,11 +14,11 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
     @Override
     protected void addEvents() {
         try {
-            addBLEvent(SIDE_CLIENT, "net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
-            addBLEvent(SIDE_CLIENT, "net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
-            addBLEvent(SIDE_CLIENT, "net.minecraft.profiler.Profiler.endSection ()V");
-            addBLEvent(SIDE_CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
-            addBLEvent(SIDE_INTERNAL, "net.minecraft.client.ClientBrandRetriever.getClientModName ()Ljava/lang/String;", beforeReturn);
+            addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.loadWorld (Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V");
+            addBLEvent(EventSide.CLIENT, "net.minecraft.profiler.Profiler.startSection (Ljava/lang/String;)V");
+            addBLEvent(EventSide.CLIENT, "net.minecraft.profiler.Profiler.endSection ()V");
+            addBLEvent(EventSide.CLIENT, "net.minecraft.client.Minecraft.displayGuiScreen (Lnet/minecraft/client/gui/GuiScreen;)V");
+            addBLEvent(EventSide.INTERNAL, "net.minecraft.client.ClientBrandRetriever.getClientModName ()Ljava/lang/String;", beforeReturn);
         } catch (Exception e) {
             e.printStackTrace();
             BLMain.instance().shutdown("A fatal exception occurred while injecting BlazeLoader client events!  BlazeLoader will not be able to run!", -1);
