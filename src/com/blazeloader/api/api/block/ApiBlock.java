@@ -1,9 +1,11 @@
 package com.blazeloader.api.api.block;
 
+import com.blazeloader.api.main.BLMain;
+import com.blazeloader.api.version.Versions;
+
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -119,19 +121,15 @@ public class ApiBlock {
     }
 
     /**
-     * Gets the IntegratedServer.worldServers[] index of the specified world.  As of MC1.6.2 the only possible values are -1, 0, and 1.
+     * Gets the IntegratedServer.worldServers[] index of the specified world. 
      *
      * @param dimensionLevel The dimension to get the index of.
      * @return Return the index of the dimension.
      */
     public static int getDimensionIndex(int dimensionLevel) {
-        if (dimensionLevel == -1) {
-            return 1;
-        } else if (dimensionLevel == 1) {
-            return 2;
-        } else {
-            return dimensionLevel;
-        }
+        if (dimensionLevel == -1) return 1;
+        if (dimensionLevel == 1) return 2;
+        return dimensionLevel;
     }
 
     /**
@@ -141,34 +139,57 @@ public class ApiBlock {
      * @return The WorldServer for the specified index.
      */
     public static WorldServer getServerForDimension(int dimension) {
-        //TODO needs a better way to get the current server!
-        return Minecraft.getMinecraft().getIntegratedServer().worldServers[dimension];
+    	WorldServer[] worldServers = null;
+    	if (Versions.isClient()) {
+	    	try {
+	    		if (net.minecraft.client.Minecraft.getMinecraft().isSingleplayer()) {
+	    			worldServers = net.minecraft.client.Minecraft.getMinecraft().getIntegratedServer().worldServers;
+	    		}
+	    	} catch (Exception e) {
+	    		BLMain.LOGGER_FULL.logError("Exception in fetching worldservers for side CLIENT. Please submit a bug report to Blazeloader devs.", e);
+	    	}
+    	} else {
+	    	try {
+	    		worldServers = net.minecraft.server.MinecraftServer.getServer().worldServers;
+	    	} catch (Throwable e) {
+	    		BLMain.LOGGER_FULL.logError("Exception in fetching worldservers for side SERVER. Please submit a bug report to Blazeloader devs.", e);
+	    	}
+    	}
+    	if (worldServers != null) {
+    		dimension = getDimensionIndex(dimension);
+    		if (dimension < 0 && dimension >= worldServers.length) {
+    			dimension = 0;
+    			BLMain.LOGGER_FULL.logWarning("Unsupported dimension index. Make sure you pass in the index of the dimension you want, not the dimension code.");
+    		}
+    		return worldServers[dimension];
+    	}
+        return null;
     }
-
+    
     /**
-     * Gets the Block at a location.
+     * Gets the state of the block found at the specified location.
      *
      * @param world The world to get the block from.
      * @param x     The X-coordinate to get.
      * @param y     The Y-coordinate to get.
      * @param z     The Z-coordinate to get.
-     * @return Return the block at the specified location.
+     * @return Return the blockstate Mapping at the specified location.
      */
     public static IBlockState getBlockAt(World world, int x, int y, int z) {
         return getBlockAt(world, new BlockPos(x, y, z));
     }
 
     /**
-     * Gets the Block at a location.
+     * Gets the state of the block found at the specified location.
      *
      * @param world The world to get the block from.
      * @param pos   The position of the block.
-     * @return Return the block at the specified location.
+     * @return Return the blockstate Mapping at the specified location.
      */
     public static IBlockState getBlockAt(World world, BlockPos pos) {
         return world.getBlockState(pos);
     }
-
+    
     /**
      * Gets a block by it's name or ID
      *
