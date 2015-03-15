@@ -1,4 +1,4 @@
-package com.blazeloader.util.client;
+package com.blazeloader.api.client;
 
 import net.minecraft.item.ItemDye;
 

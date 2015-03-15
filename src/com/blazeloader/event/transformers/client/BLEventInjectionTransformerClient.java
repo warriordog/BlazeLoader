@@ -1,7 +1,7 @@
-package com.blazeloader.bl.transformers.client;
+package com.blazeloader.event.transformers.client;
 
 import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.bl.transformers.BLEventInjectionTransformer;
+import com.blazeloader.event.transformers.BLEventInjectionTransformer;
 
 /**
  * Injects events into MC classes

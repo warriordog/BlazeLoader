@@ -1,4 +1,4 @@
-package com.blazeloader.bl.transformers;
+package com.blazeloader.util.transformers;
 
 import static org.objectweb.asm.Opcodes.*;
 

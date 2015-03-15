@@ -1,10 +1,10 @@
-package com.blazeloader.bl.transformers;
+package com.blazeloader.util.transformers;
 
-import com.blazeloader.bl.transformers.mapping.DefaultTransformationMap;
-import com.blazeloader.bl.transformers.mapping.GlobalTransformationMap;
-import com.blazeloader.bl.transformers.mapping.TransformationMap;
-import com.blazeloader.bl.transformers.source.BLATSource;
-import com.blazeloader.bl.transformers.transformations.Transformation;
+import com.blazeloader.util.transformers.mapping.DefaultTransformationMap;
+import com.blazeloader.util.transformers.mapping.GlobalTransformationMap;
+import com.blazeloader.util.transformers.mapping.TransformationMap;
+import com.blazeloader.util.transformers.source.BLATSource;
+import com.blazeloader.util.transformers.transformations.Transformation;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 

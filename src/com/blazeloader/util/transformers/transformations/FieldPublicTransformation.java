@@ -1,16 +1,16 @@
-package com.blazeloader.bl.transformers.transformations;
+package com.blazeloader.util.transformers.transformations;
 
-import com.blazeloader.bl.transformers.AccessLevel;
+import com.blazeloader.util.transformers.AccessLevel;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
-public class FieldFinalTransformation extends FieldTransformation {
-    public final boolean isFinal;
+public class FieldPublicTransformation extends FieldTransformation {
+    public final AccessLevel access;
 
-    public FieldFinalTransformation(String targetClass, String fieldName, boolean isFinal) {
+    public FieldPublicTransformation(String targetClass, String fieldName, AccessLevel access) {
         super(targetClass, fieldName);
-        this.isFinal = isFinal;
+        this.access = access;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class FieldFinalTransformation extends FieldTransformation {
         if (dotName.equals(targetClass)) {
             for (FieldNode field : cls.fields) {
                 if (isGlobal || field.name.equals(fieldName)) {
-                    field.access = setAccess(field.access, AccessLevel.PUBLIC, true, isFinal);
+                    field.access = setAccess(field.access, access);
                     didApply = true;
                 }
             }

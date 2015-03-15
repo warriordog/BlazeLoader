@@ -1,4 +1,4 @@
-package com.blazeloader.bl.transformers.transformations;
+package com.blazeloader.util.transformers.transformations;
 
 public abstract class FieldTransformation extends Transformation {
     public final String fieldName;

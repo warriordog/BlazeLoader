@@ -1,7 +1,5 @@
 package com.blazeloader.api.client;
 
-import com.blazeloader.util.client.ResourceLoc;
-
 import org.lwjgl.opengl.Display;
 
 import javax.imageio.ImageIO;

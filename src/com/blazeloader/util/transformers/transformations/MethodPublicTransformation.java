@@ -1,14 +1,16 @@
-package com.blazeloader.bl.transformers.transformations;
+package com.blazeloader.util.transformers.transformations;
+
+import com.blazeloader.util.transformers.AccessLevel;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-public class MethodFinalTransformation extends MethodTransformation {
-    public final boolean isFinal;
+public class MethodPublicTransformation extends MethodTransformation {
+    public final AccessLevel access;
 
-    public MethodFinalTransformation(String targetClass, String methodName, boolean isFinal) {
+    public MethodPublicTransformation(String targetClass, String methodName, AccessLevel access) {
         super(targetClass, methodName);
-        this.isFinal = isFinal;
+        this.access = access;
     }
 
     @Override

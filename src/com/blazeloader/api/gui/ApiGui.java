@@ -1,7 +1,7 @@
 package com.blazeloader.api.gui;
 
-import com.blazeloader.api.client.api.gui.IModInventory;
-import com.blazeloader.api.client.api.gui.IModLockableInventory;
+import com.blazeloader.api.client.gui.IModInventory;
+import com.blazeloader.api.client.gui.IModLockableInventory;
 import com.blazeloader.api.recipe.ApiCrafting;
 
 import net.minecraft.entity.player.EntityPlayerMP;

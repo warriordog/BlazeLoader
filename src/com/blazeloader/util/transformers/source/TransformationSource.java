@@ -1,6 +1,6 @@
-package com.blazeloader.bl.transformers.source;
+package com.blazeloader.util.transformers.source;
 
-import com.blazeloader.bl.transformers.BLAccessTransformer;
+import com.blazeloader.util.transformers.BLAccessTransformer;
 
 public abstract class TransformationSource {
     public abstract void provideTransformations(BLAccessTransformer transformer);

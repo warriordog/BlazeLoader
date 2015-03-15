@@ -1,9 +1,9 @@
-package com.blazeloader.bl.transformers.source;
+package com.blazeloader.util.transformers.source;
 
 import com.blazeloader.bl.obf.BLOBF;
-import com.blazeloader.bl.transformers.AccessLevel;
-import com.blazeloader.bl.transformers.BLAccessTransformer;
-import com.blazeloader.bl.transformers.transformations.*;
+import com.blazeloader.util.transformers.AccessLevel;
+import com.blazeloader.util.transformers.BLAccessTransformer;
+import com.blazeloader.util.transformers.transformations.*;
 
 import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;

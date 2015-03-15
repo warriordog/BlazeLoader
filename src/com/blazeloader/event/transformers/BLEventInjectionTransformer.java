@@ -1,4 +1,4 @@
-package com.blazeloader.bl.transformers;
+package com.blazeloader.event.transformers;
 
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.obf.BLMethodInfo;

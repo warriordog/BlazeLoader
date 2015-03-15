@@ -1,6 +1,6 @@
-package com.blazeloader.bl.transformers.mapping;
+package com.blazeloader.util.transformers.mapping;
 
-import com.blazeloader.bl.transformers.transformations.Transformation;
+import com.blazeloader.util.transformers.transformations.Transformation;
 
 import java.util.List;
 

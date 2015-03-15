@@ -1,4 +1,4 @@
-package com.blazeloader.bl.transformers.transformations;
+package com.blazeloader.util.transformers.transformations;
 
 public abstract class MethodTransformation extends Transformation {
     public final String methodName;

@@ -1,6 +1,6 @@
-package com.blazeloader.bl.transformers.transformations;
+package com.blazeloader.util.transformers.transformations;
 
-import com.blazeloader.bl.transformers.AccessLevel;
+import com.blazeloader.util.transformers.AccessLevel;
 
 import org.objectweb.asm.tree.ClassNode;
 
