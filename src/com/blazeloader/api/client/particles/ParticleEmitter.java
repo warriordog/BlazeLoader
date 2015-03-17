@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.effects;
+package com.blazeloader.api.client.particles;
 
 import net.minecraft.client.particle.EntityParticleEmitter;
 import net.minecraft.entity.Entity;

@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.effects;
+package com.blazeloader.api.client.particles;
 
 import java.util.ArrayList;
 

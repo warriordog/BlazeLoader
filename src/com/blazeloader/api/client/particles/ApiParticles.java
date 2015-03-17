@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.effects;
+package com.blazeloader.api.client.particles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,13 +32,13 @@ import net.minecraft.world.World;
  *
  */
 public class ApiParticles {
-	private static final ArrayList<String> particleNames;
-	private static Map<Integer, IParticleFactory> vanillaRegistry;
+	private static final ArrayList<String> particleNames = new ArrayList<String>();
 	private static final HashMap<Integer, ParticleType> particleIds = new HashMap<Integer, ParticleType>();
 	private static final ArrayList<ParticleType> particlesRegistry = new ArrayList<ParticleType>();
 	
+	private static Map<Integer, IParticleFactory> vanillaRegistry;
+	
 	static {
-		particleNames = new ArrayList<String>();
 		for (String i : EnumParticleTypes.getParticleNames()) {
 			if (!particleNames.contains(i)) particleNames.add(i);
 		}
@@ -85,7 +85,7 @@ public class ApiParticles {
 		}
 		
 		try {
-			return getParticleFromId(EnumParticleTypes.getParticleFromId(id));
+			return getParticle(EnumParticleTypes.getParticleFromId(id));
 		} catch (Throwable e) {}
 		return ParticleType.NONE;
 	}
@@ -97,9 +97,9 @@ public class ApiParticles {
 	 * 
 	 * @return Associated particle type
 	 */
-	public static ParticleType getParticleFromId(EnumParticleTypes vanillaType) {
+	public static ParticleType getParticle(EnumParticleTypes vanillaType) {
 		try {
-			ParticleType result = get(vanillaType);
+			ParticleType result = internalGetParticle(vanillaType);
 			particleIds.put(vanillaType.getParticleID(), result);
 			return result;
 		} catch (Throwable e) {}
@@ -107,8 +107,8 @@ public class ApiParticles {
 		return ParticleType.NONE;
 	}
 	
-	private static ParticleType get(EnumParticleTypes vanillaType) {
-		return (new ParticleType(vanillaRegistry.get(vanillaType.getParticleID()), vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID());
+	private static ParticleType internalGetParticle(EnumParticleTypes vanillaType) {
+		return (new ParticleType(getVanillaParticleRegistry().get(vanillaType.getParticleID()), vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID());
 	}
 	
 	/**
@@ -117,7 +117,8 @@ public class ApiParticles {
 	 * 
 	 * @returns A new, or previously cached, mapping with all custom particles added.
 	 */
-	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
+	//TODO: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
+	public static Map<Integer, IParticleFactory> syncronizeParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;
 			int injected = 0;
@@ -338,7 +339,11 @@ public class ApiParticles {
     	}
     }
     
+    private static Map<String, IParticleFactory> getVanillaParticleRegistry() {
+    	return Minecraft.getMinecraft().effectRenderer.field_178932_g;
+    }
+    
     private static EntityDiggingFX buildDiggingEffect(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState) {
-    	return (EntityDiggingFX)(new EntityDiggingFX.Factory()).getEntityFX(0, w, x, y, z, vX, vY, vZ, Block.getStateId(blockState));
+    	return (EntityDiggingFX)(new EntityDiggingFX.Factory()).getEntityFX(EnumParticleTypes.BLOCK_CRACK.getParticleID(), w, x, y, z, vX, vY, vZ, Block.getStateId(blockState));
     }
 }
