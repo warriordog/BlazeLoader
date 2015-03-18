@@ -17,6 +17,9 @@ public class Sphere implements IShape {
 	private final boolean hollow;
 	private final double rad;
 	
+	private float yaw = 0;
+	private float pitch = 0;
+	
 	/**
 	 * Creates a uniform sphere.
 	 * 
@@ -68,6 +71,12 @@ public class Sphere implements IShape {
 		double pheta = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
 		double phi = MathHelper.getRandomDoubleInRange(rand, 0, Math.PI);
 		
-		return new Vec3(rho * Math.sin(phi) * Math.cos(pheta) * stretch.xCoord,rho * Math.sin(phi) * Math.sin(pheta) * stretch.yCoord, rho * Math.cos(phi) * stretch.zCoord);
+		return (new Vec3(rho * Math.sin(phi) * Math.cos(pheta) * stretch.xCoord,rho * Math.sin(phi) * Math.sin(pheta) * stretch.yCoord, rho * Math.cos(phi) * stretch.zCoord)).rotateYaw(yaw).rotatePitch(pitch);
+	}
+	
+	public Sphere setRotation(float u, float v) {
+		yaw = u;
+		pitch = v;
+		return this;
 	}
 }

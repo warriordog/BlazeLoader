@@ -13,10 +13,6 @@ import com.google.common.collect.Collections2;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityDiggingFX;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -28,22 +24,26 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 /**
- * Provides an API and registry for client based custom particles.
+ * Provides an API and registry for custom particles.
+ *
+ * For client only functionality see ApiParticlesClient
+ *
+ * Warning: Experimental.
  *
  */
 public class ApiParticles {
+	
 	/**
 	 * Registers a custom particle.
 	 * 
-	 * @param factory			IParticleFactory to generate an EntityFX when needed
 	 * @param name				The name of your particle
 	 * @param ignoreDistance	Whether your particle will always spawn regardless of how far it is from the camera
 	 * @param argumentCount		Number of extra arguments your particle takes when create
 	 * 
 	 * @return ParticleType representing your particle. Use this to spawn your particle.
 	 */
-	public static IParticle registerParticle(IParticleFactory factory, String name, boolean ignoreDistance, int argumentCount) {
-		return ParticlesRegister.instance.setFactory(ParticlesRegister.instance.registerParticle(name, ignoreDistance, argumentCount), factory);
+	public static IParticle registerParticle(String name, boolean ignoreDistance, int argumentCount) {
+		return ParticlesRegister.instance().registerParticle(name, ignoreDistance, argumentCount);
 	}
 	
 	/**
@@ -69,33 +69,33 @@ public class ApiParticles {
 	/**
 	 * Retrieves a ParticleType for one of vanilla Minecraft's particles.
 	 * 
-	 * @param id	Particle ID
+	 * @param vanillaType	The EnumParticleType for the particle you want
 	 * 
 	 * @return Associated particle type
 	 */
-	public static IParticle getParticle(EnumParticleTypes vanillaType) {
-		return ParticlesRegister.getParticle(vanillaType);
+	public static IParticle getParticleFromEnum(EnumParticleTypes vanillaType) {
+		return ParticlesRegister.getParticleFromEnum(vanillaType);
 	}
 	
     /**
      * Spawns block hit particles around an entity.
      * 
      * @param e				Entity to apply the affect to.
-     * @param blockState	Blockstate for the block to base the particles off of.
+     * @param blockState	BlockState for the block to base the particles off of.
      */
     public static void addBlockHitEffectsToEntity(Entity e, IBlockState blockState) {
-    	ParticlesRegister.instance.addBlockHitEffectsToEntity(e, blockState);
+    	ParticlesRegister.instance().addBlockHitEffectsToEntity(e, blockState);
     }
     
     /**
      * Spawns block hit particles along one wide of the given Entity's hitbox.
      * 
      * @param e				Entity to apply the affect to.
-     * @param blockState	Blockstate for the block to base the particles off of.
-     * @param side			The side of the entity's hit box to apply this effect to.
+     * @param blockState	BlockState for the block to base the particles off of.
+     * @param side			The side of the entity's hit box to apply this effect to. (0-5)
      */
     public static void addBlockHitEffectsToEntity(Entity e, IBlockState blockState, int side) {
-    	ParticlesRegister.instance.addBlockHitEffectsToEntity(e, blockState, side);
+    	ParticlesRegister.instance().addBlockHitEffectsToEntity(e, blockState, side);
     }
     
     /**
@@ -106,7 +106,7 @@ public class ApiParticles {
      * @param blockState	BlockState for the block to base the particles off of.
      */
     public static void addBlockDestroyEffectsToEntity(Entity e, IBlockState blockState) {
-    	ParticlesRegister.instance.addBlockDestroyEffectsToEntity(e, blockState);
+    	ParticlesRegister.instance().addBlockDestroyEffectsToEntity(e, blockState);
     }
     
     /**
@@ -152,17 +152,7 @@ public class ApiParticles {
 	 * @param total				Density of particles per block
 	 */
 	public static void spawnParticleShape(ParticleData particle, World world, double x, double y, double z, IShape shape, int total) {
-		ParticlesRegister.instance.spawnParticleShape(particle, world, x, y, z, shape, total);
-	}
-	
-	/**
-	 * Spawns a particle emitter in the world attached to the given entity.
-	 * 
-	 * @param e			Entity to attach to
-	 * @param particle	Particle to spawn
-	 */
-	public static void spawnParticleEmitter(Entity e, ParticleData particle) {
-		ParticlesRegister.instance.spawnParticleEmitter(e, particle);
+		ParticlesRegister.instance().spawnParticleShape(particle, world, x, y, z, shape, total);
 	}
 	
 	/**
@@ -172,15 +162,6 @@ public class ApiParticles {
      * @param world			World to spawn the particle in
 	 */
     public static void spawnParticle(ParticleData particle, World world) {
-    	ParticlesRegister.instance.spawnParticle(particle, world);
-    }
-    
-    /**
-     * Adds a particle to the client renderer
-     * 
-     * @param fx	EntityFX to add.
-     */
-    public static void addEffectToRenderer(Entity fx) {
-    	ParticlesRegister.instance.addEffectToRenderer(fx);
+    	ParticlesRegister.instance().spawnParticle(particle, world);
     }
 }

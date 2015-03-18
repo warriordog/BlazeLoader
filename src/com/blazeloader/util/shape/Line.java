@@ -21,6 +21,9 @@ public class Line implements IShape {
 	double sY;
 	double sZ;
 	
+	private float yaw = 0;
+	private float pitch = 0;
+	
 	/**
 	 * Creates a line with a given length, starting point, and gradient represented
 	 * by another point.
@@ -61,7 +64,12 @@ public class Line implements IShape {
 	
 	public Vec3 computePoint(Random rand) {
 		double distance = MathHelper.getRandomDoubleInRange(rand, 0, len);
-		return new Vec3(distance * dX, distance * dY, distance * dZ);
+		return (new Vec3(distance * dX, distance * dY, distance * dZ)).rotateYaw(yaw).rotatePitch(pitch);
 	}
-
+	
+	public Line setRotation(float u, float v) {
+		yaw = u;
+		pitch = v;
+		return this;
+	}
 }

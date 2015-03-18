@@ -32,7 +32,9 @@ public class BLMain {
      * Logger that does not log date or time
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
-
+    
+    public static final String PLUGINCHANNEL = "BLAZELOADE:R:";
+    
     /**
      * true if a game tick is in progress
      */

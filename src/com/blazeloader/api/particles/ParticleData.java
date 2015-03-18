@@ -11,6 +11,7 @@ public final class ParticleData {
 	private IParticle type;
 	private boolean ignoreDist;
 	private int[] args;
+	private double maxRenderDistance = 256;
 	
 	protected double posX;
 	protected double posY;
@@ -19,8 +20,6 @@ public final class ParticleData {
 	protected double velX;
 	protected double velY;
 	protected double velZ;
-	
-	protected double maxRenderDistance = 256;
 	
 	/**
 	 * Creates a ParticleData

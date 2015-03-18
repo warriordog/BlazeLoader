@@ -11,6 +11,16 @@ import net.minecraft.util.Vec3;
 public interface IShape {
 	
 	/**
+	 * Rotates this shape around it's center.
+	 * 
+	 * @param u		Rotate yaw
+	 * @param v		Rotate pitch
+	 * 
+	 * @return This Shape
+	 */
+	public IShape setRotation(float u, float v);
+	
+	/**
 	 * Get the volume of space filled by this shape, or the surface area if hollow.
 	 * 
 	 * @return double volume

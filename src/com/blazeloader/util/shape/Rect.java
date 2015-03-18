@@ -17,6 +17,9 @@ public class Rect implements IShape {
 	
 	boolean hollow;
 	
+	private float yaw = 0;
+	private float pitch = 0;
+	
 	/**
 	 * Creates a square.
 	 * 
@@ -62,7 +65,12 @@ public class Rect implements IShape {
 		double x = MathHelper.getRandomDoubleInRange(rand, 0, width);
 		double y = MathHelper.getRandomDoubleInRange(rand, 0, depth);
 		double z = MathHelper.getRandomDoubleInRange(rand, 0, height);
-		return new Vec3(x, y, z);
+		return (new Vec3(x, y, z)).rotateYaw(yaw).rotatePitch(pitch);
 	}
-
+	
+	public Rect setRotation(float u, float v) {
+		yaw = u;
+		pitch = v;
+		return this;
+	}
 }

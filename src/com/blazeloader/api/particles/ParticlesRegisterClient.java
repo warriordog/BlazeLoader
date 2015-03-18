@@ -35,18 +35,22 @@ import com.blazeloader.util.shape.Sphere;
 public class ParticlesRegisterClient extends ParticlesRegister {
 	private static Map<Integer, IParticleFactory> vanillaRegistry;
 	
-	public void initialiseParticleIds() {
-		syncronizeParticlesRegistry(getVanillaParticleRegistry());
+	protected ParticlesRegisterClient() {
+		super();
+	}
+	
+	public void initialiseIds() {
+		syncroniseParticlesRegistry(getVanillaParticleRegistry());
 	}
 	
 	/**
-	 * Initializes particle IDs and loads them into the vanilla registry for external API support.
+	 * Initialises particle IDs and loads them into the vanilla registry for external API support.
 	 * @param mapping	Mapping of pre-registered vanilla Particles
 	 * 
 	 * @returns A new, or previously cached, mapping with all custom particles added.
 	 */
 	//TODO: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
-	private Map<Integer, IParticleFactory> syncronizeParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
+	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;
 			int injected = 0;
@@ -85,7 +89,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	}
 	
 	@Override
-	protected IParticle internalGetParticle(EnumParticleTypes vanillaType) {
+	protected IParticle getParticle(EnumParticleTypes vanillaType) {
 		return setFactory((new ParticleTypeClient(vanillaType.getParticleName(), vanillaType.func_179344_e(), vanillaType.getArgumentCount())).setId(vanillaType.getParticleID()), getVanillaParticleRegistry().get(vanillaType.getParticleID()));
 	}
 	
@@ -142,7 +146,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     }
     
     public void addEffectToRenderer(Entity fx) {
-    	if (fx != null) {
+    	if (fx != null && fx instanceof EntityFX) {
     		Minecraft.getMinecraft().effectRenderer.addEffect((EntityFX)fx);
     	}
     }
