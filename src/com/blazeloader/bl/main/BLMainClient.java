@@ -2,7 +2,11 @@ package com.blazeloader.bl.main;
 
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.ServerCommandManager;
+import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +18,6 @@ import java.util.List;
 public class BLMainClient extends BLMain {
     BLMainClient(LoaderEnvironment environment, LoaderProperties properties) {
         super(environment, properties);
-    }
-
-    @Override
-    public void init() {
-
     }
 
     @Override
@@ -50,13 +49,20 @@ public class BLMainClient extends BLMain {
             System.exit(code);
         }
     }
+    
     @Override
     public boolean supportsClient() {
         return true;
     }
-
+    
+    //...why?
     @Override
     public BLMainClient getClient() {
         return this;
+    }
+    
+    @Override
+    protected CommandHandler createCommandHandler() {
+    	return new IntegratedServerCommandManager();
     }
 }

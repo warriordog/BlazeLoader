@@ -1,4 +1,4 @@
-package com.blazeloader.api.client.particles;
+package com.blazeloader.api.particles;
 
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.Vec3;
@@ -8,7 +8,7 @@ import net.minecraft.util.Vec3;
  * 
  */
 public final class ParticleData {
-	private ParticleType type;
+	private IParticle type;
 	private boolean ignoreDist;
 	private int[] args;
 	
@@ -31,7 +31,7 @@ public final class ParticleData {
 	 * 
 	 * @return ParticleData containing all the given information
 	 */
-	public static ParticleData get(ParticleType type, boolean fulcrum, int ...arguments) {
+	public static ParticleData get(IParticle type, boolean fulcrum, int ...arguments) {
 		return new ParticleData(type, fulcrum, arguments);
 	}
 		
@@ -48,7 +48,7 @@ public final class ParticleData {
 		return new ParticleData(ApiParticles.getParticleFromId(type.getParticleID()), fulcrum, arguments);
 	}
 	
-	private ParticleData(ParticleType particle, boolean fulcrum, int[] data) {
+	private ParticleData(IParticle particle, boolean fulcrum, int[] data) {
 		type = particle;
 		ignoreDist = fulcrum;
 		args = data;
@@ -59,7 +59,7 @@ public final class ParticleData {
 	 * 
 	 * @return ParticleType
 	 */
-	public ParticleType getType() {
+	public IParticle getType() {
 		return type;
 	}
 	

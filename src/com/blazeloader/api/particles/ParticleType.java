@@ -1,12 +1,6 @@
-package com.blazeloader.api.client.particles;
+package com.blazeloader.api.particles;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.util.EnumParticleTypes;
-
-public class ParticleType {
-	
+public class ParticleType implements IParticle {
 	/**
 	 * A default value representing nothing.
 	 */
@@ -15,27 +9,15 @@ public class ParticleType {
 	private final String particleName;
 	private final int argCount;
 	
-	private final IParticleFactory particleFactory;
-	
 	private int particleId;
 	
 	private boolean ignoreDist;
 	private int maxParticleDistance = 255;
 	
-	public ParticleType(IParticleFactory factory, String name, boolean ignoreDistance, int argumentCount) {
+	public ParticleType(String name, boolean ignoreDistance, int argumentCount) {
 		particleName = name;
 		argCount = argumentCount;
-		particleFactory = factory;
 		setIgnoreDistance(ignoreDistance);
-	}
-	
-	/**
-	 * Gets the factory used to spawn this particle.
-	 * 
-	 * @return IParticleFactory
-	 */
-	public IParticleFactory getFactory() {
-		return particleFactory;
 	}
 	
 	/**
@@ -90,7 +72,16 @@ public class ParticleType {
 		return particleId;
 	}
 	
-	protected final ParticleType setId(int id) {
+	/**
+	 * This particle's name.
+	 * 
+	 * @return String name
+	 */
+	public final String getName() {
+		return particleName;
+	}
+	
+	public final IParticle setId(int id) {
 		particleId = id;
 		return this;
 	}
@@ -104,9 +95,18 @@ public class ParticleType {
 		return argCount > 0;
 	}
 	
+	/**
+	 * Returns the total extra arguents this particle accepts.
+	 * 
+	 * @return int args
+	 */
+	public int getArgumentCount() {
+		return argCount;
+	}
+	
 	private static class NullParticleType extends ParticleType {
 		private NullParticleType() {
-			super(null, "UNKNOWN", false, 0);
+			super("UNKNOWN", false, 0);
 		}
 		
 		public int getMaxDistance() {
