@@ -41,8 +41,9 @@ public class EventHandlerClient extends EventHandler {
         if (overrideEventClients.all().overrideContainerOpen(player, args)) {
             player.openContainer.windowId = packet.getWindowId();
         }
-        /*TODO: This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
-         * Switched away from iterator. May require some testing.
+        /*TODO: Switched away from iterator. May require some testing.
+         * This one remains as an iteration for the time being as it requires ReturnLogicOp.OR_BREAK_ON_TRUE.
+         * 
          */
         /*for (OverrideEventClientHandler mod : overrideEventClients) {
             if (mod.overrideContainerOpen(player, c, args)) {

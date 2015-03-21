@@ -3,6 +3,7 @@ package com.blazeloader.bl.main;
 import com.blazeloader.event.handlers.client.EventHandlerClient;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.common.GameEngine;
+import com.mumfrey.liteloader.common.Resources;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 import com.mumfrey.liteloader.resources.InternalResourcePack;
 
@@ -36,7 +37,9 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onPostInit(GameEngine<?, ?> engine) {
-        engine.registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
+    	if (engine.isClient()) {
+    		((Resources<?, InternalResourcePack>)engine.getResources()).registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
+    	}
     }
 
     /**
