@@ -31,8 +31,7 @@ public class ApiParticlesClient {
 	
 	/**
 	 * Spawns a particle emitter in the world attached to the given entity.
-	 * 
-	 * Client only. Calling this on the server will not do anything.
+	 * <p>Client only. Calling this on the server will not do anything.
 	 * 
 	 * @param e			Entity to attach to
 	 * @param particle	Particle to spawn

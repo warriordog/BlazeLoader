@@ -14,14 +14,14 @@ import java.util.ArrayList;
  * API functions for changing the client window.  Title branding, etc.
  */
 public class ApiWindowClient {
-    private static ArrayList<String> brands = new ArrayList<String>();
+    private static final ArrayList<String> brands = new ArrayList<String>();
 
     /**
      * Sets the window icon from a mod resource pack
      * <p/>
      * icons are loaded from the following location:
-     * assets/ {resource_pack_name} /icon/icon_16x16.png
-     * assets/ {resource_pack_name} /icon/icon_32x32.png
+     * <i><br>assets/ {resource_pack_name} /icon/icon_16x16.png
+     * <br>assets/ {resource_pack_name} /icon/icon_32x32.png</i>
      * <p/>
      * at least one of these images must be present
      *
@@ -45,12 +45,21 @@ public class ApiWindowClient {
     /**
      * Sets the window title
      *
-     * @param title The title of the window
+     * @param title The title to use for the Minecraft window
      */
     public static void setTitle(String title) {
         Display.setTitle(title);
     }
-
+    
+    /**
+     * Gets the title used for the Minecraft window
+     * 
+     * @return title
+     */
+    public static String getTitle() {
+    	return Display.getTitle();
+    }
+    
     /**
      * Adds a mod to the client brand
      *

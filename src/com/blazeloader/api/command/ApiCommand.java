@@ -13,7 +13,7 @@ public class ApiCommand {
 
     /**
      * Gets the command manager, if it exists.  Otherwise returns a temporary handler that can be used.
-     * If the real handler is created then all commands registered in the temporary are dumped into the actual handler.
+     * <br>If the real handler is created then all commands registered in the temporary are dumped into the actual handler.
      *
      * @return Return the command manager, or a temporary replacement.
      */

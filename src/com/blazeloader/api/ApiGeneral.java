@@ -9,12 +9,14 @@ import java.io.File;
  */
 public class ApiGeneral {
     /**
-     * Location of Minecraft's working directory (.minecraft).
+     * Location of Minecraft's working directory.
+     * <br><br>%APPDATA%/.minecraft/ for windows.
      */
     public static final File mainDir = new File("./");
 
     /**
-     * Shuts down the game with a specified error code.  Use 0 for normal shutdown.
+     * Shuts down the game with a specified error code.
+     * <br><br>Use <b>0</b> for normal shutdown.
      *
      * @param code The error code to return to the system after shutdown.
      */

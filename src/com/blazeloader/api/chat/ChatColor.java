@@ -78,10 +78,9 @@ public class ChatColor {
         colorMap.put(code, this);
     }
 
-    @Deprecated
     /**
      * Gets the color code of this EChatColor.
-     * Deprecated, use value() instead.
+     * @Deprecated use value() instead.
      *
      * @return Return the color code associated with this EChatColor.
      */
@@ -106,7 +105,7 @@ public class ChatColor {
      */
     public ChatColor combine(ChatColor otherColor) {
         //return new ChatColor(code.concat(SECTION_SIGN_STR).concat(otherColor.code));
-        return getChatColor(this.code.concat(otherColor.code));
+        return getChatColor(code.concat(otherColor.code));
     }
 
     /**

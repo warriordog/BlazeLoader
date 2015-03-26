@@ -6,7 +6,9 @@ import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -18,32 +20,10 @@ import net.minecraft.world.WorldServer;
  * Api for block-specific functions
  */
 public class ApiBlock {
+	
 
     /**
-     * Sets the block at a specified location.  And triggers a block update
-     *
-     * @param world The world to change the block in.
-     * @param pos   The position of the block.
-     * @param block the block to set.
-     */
-    public static void setBlockAt(World world, BlockPos pos, IBlockState block) {
-        world.setBlockState(pos, block, 3);
-    }
-
-    /**
-     * Sets the block at a specified location.
-     *
-     * @param world      The world to change the block in.
-     * @param pos        The position of the block.
-     * @param block      the block to set
-     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
-     */
-    public static void setBlockAt(World world, BlockPos pos, IBlockState block, int notifyFlag) {
-        world.setBlockState(pos, block, notifyFlag);
-    }
-
-    /**
-     * Sets the block at a specified location.  And triggers a block update
+     * Sets the block at a specified location. And triggers a block update
      *
      * @param world The world to change the block in.
      * @param x     The X-coordinate to change.
@@ -52,8 +32,20 @@ public class ApiBlock {
      * @param block the block to set.
      */
     public static void setBlockAt(World world, int x, int y, int z, IBlockState block) {
-        setBlockAt(world, new BlockPos(x, y, z), block, 3);
+        setBlockAt(world, new BlockPos(x, y, z), block);
     }
+	
+    /**
+     * Sets the block at a specified location.  And triggers a block update
+     *
+     * @param world The world to change the block in.
+     * @param pos   The position of the block.
+     * @param block the block to set.
+     */
+    public static void setBlockAt(World world, BlockPos pos, IBlockState block) {
+    	setBlockAt(world, pos, block, UpdateType.UPDATE_AND_NOTIFY);
+    }
+    
 
     /**
      * Sets the block at a specified location.
@@ -63,20 +55,32 @@ public class ApiBlock {
      * @param y          The Y-coordinate to change.
      * @param z          The Z-coordinate to change.
      * @param block      the block to set
-     * @param notifyFlag The notification flags.  Should be the value(s) of ENotificationType
+     * @param notifyFlag The notification flags.
      */
-    public static void setBlockAt(World world, int x, int y, int z, IBlockState block, int notifyFlag) {
+    public static void setBlockAt(World world, int x, int y, int z, IBlockState block, UpdateType notifyFlag) {
         setBlockAt(world, new BlockPos(x, y, z), block, notifyFlag);
+    }
+    
+    /**
+     * Sets the block at a specified location.
+     *
+     * @param world      The world to change the block in.
+     * @param pos        The position of the block.
+     * @param block      the block to set
+     * @param notifyFlag The notification flags.
+     */
+    public static void setBlockAt(World world, BlockPos pos, IBlockState block, UpdateType notifyFlag) {
+        world.setBlockState(pos, block, notifyFlag.value);
     }
 
     /**
      * Destroys a block in the world creating sound and particle effects as if it were broken by a player.
      *
-     * @param world     World
-     * @param x         XCoordinate
-     * @param y         YCoordinate
-     * @param z         ZCoordinate
-     * @param dropItems Block  will drop as an item if true
+     * @param world     	the world containing the block
+     * @param x         	XCoordinate
+     * @param y         	YCoordinate
+     * @param z         	ZCoordinate
+     * @param dropItems		true if the block must drop as an item, or it's contained items
      */
     public static void destroyBlock(World world, int x, int y, int z, boolean dropItems) {
         destroyBlock(world, new BlockPos(x, y, z), dropItems);
@@ -85,13 +89,19 @@ public class ApiBlock {
     /**
      * Destroys a block in the world creating sound and particle effects as if it were broken by a player.
      *
-     * @param world     World
-     * @param pos       The position of the block.
-     * @param dropItems Block  will drop as an item if true
+     * @param world     	the world containing the block
+     * @param pos       	the position of the block.
+     * @param dropItems		true if the block must drop as an item, or it's contained items
      */
     public static void destroyBlock(World world, BlockPos pos, boolean dropItems) {
         if (!world.isRemote) {
             world.destroyBlock(pos, dropItems);
+        } else {
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            if (block.getMaterial() == Material.air) return;
+            if (dropItems) block.dropBlockAsItem(world, pos, state, 0);
+            setBlockAt(world, pos, Blocks.air.getDefaultState());
         }
     }
 
@@ -274,7 +284,7 @@ public class ApiBlock {
      * @return Return a string of the name belonging to param block
      */
     public static String getBlockName(Block block) {
-        return (String) Block.blockRegistry.getNameForObject(block);
+        return (String)Block.blockRegistry.getNameForObject(block);
     }
 
 }
