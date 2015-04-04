@@ -78,19 +78,13 @@ public class UpdateType implements Cloneable {
     	return equals(other) || (value & other.value) != 0;
     }
     
-    /**
-     * Checks is this UpdateType is identical to the given one.
-     * 
-     * @param other The UpdateType to compare this one to.
-     */
-    public boolean equals(UpdateType other) {
-    	return value == other.value;
-    }
-    
     public boolean equals(Object other) {
-    	return (other instanceof Integer && value == (int)other) || (other instanceof UpdateType) && equals((UpdateType)other);
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof UpdateType)) return false;
+        return this.value == ((UpdateType) other).value;
     }
-    
+
     private static class ConstUpdateType extends UpdateType {
     	private ConstUpdateType(int flag) {
     		super(flag);
