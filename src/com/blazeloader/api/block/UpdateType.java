@@ -4,6 +4,13 @@ package com.blazeloader.api.block;
  * Notification flags for block set events. Can be added together.
  */
 public class UpdateType implements Cloneable {
+	/**
+	 * Do not send any updates or notifications.
+	 * <p>
+	 * This is useful for technical blocks where you don't want any changes to propagate.
+	 */
+	public static final UpdateType NONE = new ConstUpdateType(0x000);//0
+	
     /**
      * Send an update event to neighboring blocks.
      */
@@ -54,6 +61,10 @@ public class UpdateType implements Cloneable {
     public UpdateType not() {
     	value = ~value;
     	return this;
+    }
+    
+    public final int getValue() {
+    	return value;
     }
     
     /**
