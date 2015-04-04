@@ -1,26 +1,10 @@
 package com.blazeloader.api.particles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 import com.blazeloader.util.shape.IShape;
 import com.blazeloader.util.shape.Sphere;
-import com.google.common.collect.Collections2;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 /**
@@ -142,9 +126,9 @@ public class ApiParticles {
 	
 	/**
 	 * Spawns a particle in a shaped dictated by the given function.
-     * 
-     * @param particleType		ParticleData for the particle to spawn
-     * @param world				World to spawn the particle in
+     *
+	 * @param particle        ParticleData for the particle to spawn
+	 * @param world				World to spawn the particle in
      * @param x					X center coordinate
      * @param y					Y center coordinate
      * @param z					Z center coordinate

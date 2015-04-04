@@ -23,8 +23,8 @@ public final class ParticleData {
 	
 	/**
 	 * Creates a ParticleData
-	 * 
-	 * @param factory		IParticle factory to be used when creating the spawned particle
+	 *
+	 * @param type        IParticle factory to be used when creating the spawned particle
 	 * @param fulcrum		Whether or not this particle obeys the distance rule.
 	 * @param arguments		Additional arguments given to the particle when creating.
 	 * 
@@ -83,7 +83,7 @@ public final class ParticleData {
 	/**
 	 * Sets the maximum distance that the particle can be spawned.
 	 * default 256 blocks.
-	 * @param dist
+	 * @param dist The maximum render distance
 	 */
 	public ParticleData setMaxRenderDistance(double dist) {
 		maxRenderDistance = dist;

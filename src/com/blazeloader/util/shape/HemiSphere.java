@@ -1,9 +1,8 @@
 package com.blazeloader.util.shape;
 
-import java.util.Random;
-
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+
+import java.util.Random;
 
 /**
  * Half of a sphere.
@@ -62,17 +61,17 @@ public class HemiSphere extends Sphere {
 	public Vec3 computePoint(Random rand) {
 		Vec3 result = super.computePoint(rand);
 		if (quadrants.length > 0 && quadrants[0] != null) {
-			if ((quadrants[0] == true && result.xCoord < 0) || (quadrants[0] == false && result.xCoord > 0)) {
+			if ((quadrants[0] && result.xCoord < 0) || (!quadrants[0] && result.xCoord > 0)) {
 				result = new Vec3(-result.xCoord, result.yCoord, result.zCoord);
 			}
 		}
 		if (quadrants.length > 1 && quadrants[1] != null) {
-			if ((quadrants[1] == true && result.yCoord < 0) || (quadrants[1] == false && result.yCoord > 0)) {
+			if ((quadrants[1] && result.yCoord < 0) || (!quadrants[1] && result.yCoord > 0)) {
 				result = new Vec3(result.xCoord, -result.yCoord, result.zCoord);
 			}
 		}
 		if (quadrants.length > 2 && quadrants[2] != null) {
-			if ((quadrants[2] == true && result.zCoord < 0) || (quadrants[2] == false && result.zCoord > 0)) {
+			if ((quadrants[2] && result.zCoord < 0) || (!quadrants[2] && result.zCoord > 0)) {
 				result = new Vec3(result.xCoord, result.yCoord, -result.zCoord);
 			}
 		}

@@ -51,7 +51,7 @@ public class ShapedRecipe extends ShapedRecipes {
             	
                 ItemStack stack = inventory.getStackInRowAndColumn(X, Y);
                 if (stack != null || var9 != null) {
-                    if (stack == null && var9 != null || stack != null && var9 == null) return false;
+                    if (stack == null || var9 == null) return false;
                     if (var9.getItem() != stack.getItem()) return false;
                     if (var9.getMetadata() != 32767 && var9.getMetadata() != stack.getMetadata()) return false;
                 }

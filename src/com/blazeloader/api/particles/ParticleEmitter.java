@@ -2,7 +2,6 @@ package com.blazeloader.api.particles;
 
 import net.minecraft.client.particle.EntityParticleEmitter;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 public class ParticleEmitter extends EntityParticleEmitter {

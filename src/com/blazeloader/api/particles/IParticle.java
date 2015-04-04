@@ -1,7 +1,5 @@
 package com.blazeloader.api.particles;
 
-import net.minecraft.client.particle.IParticleFactory;
-
 public interface IParticle {
 	
 	/**
@@ -13,8 +11,8 @@ public interface IParticle {
 	
 	/**
 	 * Whether this particle will always spawn regardless of how far it is from the camera.
-	 * 
-	 * @returns val	distance
+	 *
+	 * @return val    distance
 	 */
 	public boolean getIgnoreDistance();
 	
@@ -31,8 +29,8 @@ public interface IParticle {
 	 * Maximum distance away from the camera this particle can be spawned.
 	 * 
 	 * Ignored if getIgnoreDistance() is true.
-	 * 
-	 * @returns distance in blocks
+	 *
+	 * @return distance in blocks
 	 * @default 255
 	 */
 	public int getMaxDistance();
