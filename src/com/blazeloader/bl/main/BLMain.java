@@ -4,14 +4,13 @@ import com.blazeloader.event.handlers.client.BlazeLoaderIPClient;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
-
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,7 +64,7 @@ public class BLMain {
     }
 
     public String[] getRequiredTransformers() {
-        return new String[]{"com.blazeloader.api.transformers.BLAccessTransformer", "com.blazeloader.api.transformers.BLEventInjectionTransformer"};
+        return new String[]{"com.blazeloader.util.transformers.BLAccessTransformer", "com.blazeloader.event.transformers.BLEventInjectionTransformer"};
     }
 
     public String[] getRequiredDownstreamTransformers() {
@@ -81,11 +80,11 @@ public class BLMain {
     }
 
     public List<CoreProvider> getCoreProviders() {
-        return Arrays.asList((CoreProvider) BlazeLoaderCP.instance);
+        return Collections.singletonList((CoreProvider) BlazeLoaderCP.instance);
     }
 
     public List<InterfaceProvider> getInterfaceProviders() {
-        return Arrays.asList((InterfaceProvider) BlazeLoaderIPClient.instance);
+        return Collections.singletonList((InterfaceProvider) BlazeLoaderIPClient.instance);
     }
 
     public List<Observer> getObservers() {
@@ -93,7 +92,7 @@ public class BLMain {
     }
 
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Arrays.asList((CustomisationProvider) BlazeLoaderBP.instance);
+        return Collections.singletonList((CustomisationProvider) BlazeLoaderBP.instance);
     }
 
     public List<Observer> getPreInitObservers() {

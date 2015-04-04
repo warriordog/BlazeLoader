@@ -1,24 +1,15 @@
 package com.blazeloader.api.recipe;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
+
+import java.util.*;
 
 public class ApiCrafting {
 	
@@ -260,9 +251,9 @@ public class ApiCrafting {
 
 	        HashMap<Character, ItemStack> stackmap = new HashMap<Character, ItemStack>();
 	        while (index < input.length) {
-	            char var13 = (char)input[index];
-	            ItemStack var15 = null;
-	            if (input[index + 1] instanceof Item) {
+				char var13 = (Character) input[index];
+				ItemStack var15 = null;
+				if (input[index + 1] instanceof Item) {
 	                var15 = new ItemStack((Item)input[index + 1]);
 	            } else if (input[index + 1] instanceof Block) {
 	                var15 = new ItemStack((Block)input[index + 1], 1, 32767);

@@ -2,10 +2,8 @@ package com.blazeloader.bl.main;
 
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class BLMainClient extends BLMain {
         if (superRequiredArr != null) {
             superRequired.addAll(Arrays.asList(superRequiredArr));
         }
-        superRequired.add("com.blazeloader.api.client.transformers.BLEventInjectionTransformerClient");
+        superRequired.add("com.blazeloader.event.transformers.BLEventInjectionTransformerClient");
         return superRequired.toArray(new String[superRequired.size()]);
     }
 
@@ -56,6 +54,7 @@ public class BLMainClient extends BLMain {
     }
     
     //...why?
+    //...because.
     @Override
     public BLMainClient getClient() {
         return this;

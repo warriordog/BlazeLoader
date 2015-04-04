@@ -1,11 +1,5 @@
 package com.blazeloader.api.particles;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.Callable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -17,13 +11,12 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import com.blazeloader.util.shape.IShape;
-import com.blazeloader.util.shape.Sphere;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * 
@@ -152,10 +145,10 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     }
     
     private Map<Integer, IParticleFactory> getVanillaParticleRegistry() {
-    	return Minecraft.getMinecraft().effectRenderer.field_178932_g;
-    }
-    
-    protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {
+		return Minecraft.getMinecraft().effectRenderer.particleTypes;
+	}
+
+	protected void spawnDigginFX(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState, float multScale, float multVel) {
     	addEffectToRenderer(buildDiggingEffect(w, x, y, z, vX, vY, vZ, blockState).func_174846_a(new BlockPos((int)x, (int)y, (int)z)).multiplyVelocity(multScale).multipleParticleScaleBy(multVel));
     }
     

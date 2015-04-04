@@ -5,7 +5,6 @@ import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.api.BrandingProvider;
 import com.mumfrey.liteloader.client.util.render.IconAbsolute;
 import com.mumfrey.liteloader.util.render.Icon;
-
 import net.minecraft.util.ResourceLocation;
 
 import java.net.URI;
@@ -17,7 +16,7 @@ import java.net.URL;
 public class BlazeLoaderBP implements BrandingProvider {
     public static final BlazeLoaderBP instance = new BlazeLoaderBP();
 
-    private static final ResourceLocation twitterLoc = new ResourceLocation("BlazeLoader", "tex/twitter_logo.png");
+    private static final ResourceLocation twitterLoc = new ResourceLocation("blazeloader", "tex/twitter_logo.png");
     private static final Icon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
 
     private BlazeLoaderBP() {
@@ -93,7 +92,7 @@ public class BlazeLoaderBP implements BrandingProvider {
      */
     @Override
     public String getCopyrightText() {
-        return "Copyright (c) acomputerdog 2013-2014";
+        return "Copyright (c) acomputerdog 2013-2015";
     }
 
     /**
