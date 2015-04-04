@@ -55,7 +55,7 @@ public class ApiCrafting {
 	 * 
 	 * @return Manager or null if not found.
 	 */
-	public static final BLCraftingManager getManagerFromId(int id) {
+	public static BLCraftingManager getManagerFromId(int id) {
 		return instances.containsKey(id) ? instances.get(id) : null;
 	}
 	
@@ -66,7 +66,7 @@ public class ApiCrafting {
 		return createCraftingManager(new ArrayList<IRecipe>());
 	}
 
-	private final static BLCraftingManager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
+	private static BLCraftingManager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
 		int id = nextId++;
 		instances.put(id, new BLCraftingManager(id, startingRecipes));
 		return instances.get(id);
@@ -279,18 +279,18 @@ public class ApiCrafting {
 	    
 	    private ShapelessRecipe createShapeless(ItemStack output, boolean reverse, Object ... input) {
 	        ArrayList itemStacks = Lists.newArrayList();
-	        for (int i = 0; i < input.length; i++) {
-	            Object obj = input[i];
-	            if (obj instanceof ItemStack) {
-	            	itemStacks.add(((ItemStack)obj).copy());
-	            } else if (obj instanceof Item) {
-	            	itemStacks.add(new ItemStack((Item)obj));
-	            } else {
-	                if (!(obj instanceof Block)) throw new IllegalArgumentException("Invalid shapeless recipe: unknown type " + obj.getClass().getName() + "!");
-	                itemStacks.add(new ItemStack((Block)obj));
-	            }
-	        }
-	        if (reverse) return new ReversibleShapelessRecipe(output, itemStacks);
+			for (Object obj : input) {
+				if (obj instanceof ItemStack) {
+					itemStacks.add(((ItemStack) obj).copy());
+				} else if (obj instanceof Item) {
+					itemStacks.add(new ItemStack((Item) obj));
+				} else {
+					if (!(obj instanceof Block))
+						throw new IllegalArgumentException("Invalid shapeless recipe: unknown type " + obj.getClass().getName() + "!");
+					itemStacks.add(new ItemStack((Block) obj));
+				}
+			}
+			if (reverse) return new ReversibleShapelessRecipe(output, itemStacks);
 	        return new ShapelessRecipe(output, itemStacks);
 	    }
 	    

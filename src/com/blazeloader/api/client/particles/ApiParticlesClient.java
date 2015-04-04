@@ -1,13 +1,11 @@
 package com.blazeloader.api.client.particles;
 
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.entity.Entity;
-
 import com.blazeloader.api.particles.IParticle;
 import com.blazeloader.api.particles.ParticleData;
 import com.blazeloader.api.particles.ParticlesRegister;
-import com.blazeloader.api.particles.ParticlesRegisterClient;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.entity.Entity;
 
 /**
  * Provides an API and registry for custom particles.

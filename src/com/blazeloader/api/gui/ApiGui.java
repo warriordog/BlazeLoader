@@ -25,7 +25,7 @@ public class ApiGui {
         if (inventory instanceof IModLockableInventory) {
             IModLockableInventory lockable = (IModLockableInventory)inventory;
             if (lockable.isLocked() && !player.canOpen(lockable.getLockCode()) && !player.isSpectator()) {
-                player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentTranslation(lockable.getLockMessageString(), new Object[] {inventory.getDisplayName()}), (byte)2));
+                player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentTranslation(lockable.getLockMessageString(), inventory.getDisplayName()), (byte) 2));
                 player.playerNetServerHandler.sendPacket(new S29PacketSoundEffect(lockable.getLockSoundString(), player.posX, player.posY, player.posZ, 1.0F, 1.0F));
                 return;
             }

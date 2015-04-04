@@ -83,7 +83,7 @@ public final class ParticleData {
 	/**
 	 * Sets the maximum distance that the particle can be spawned.
 	 * default 256 blocks.
-	 * @param dist
+	 * @param dist The maximum render distance
 	 */
 	public ParticleData setMaxRenderDistance(double dist) {
 		maxRenderDistance = dist;

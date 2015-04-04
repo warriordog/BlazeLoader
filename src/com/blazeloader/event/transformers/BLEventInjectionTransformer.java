@@ -52,9 +52,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
             BLMain.instance().shutdown("A fatal exception occurred while injecting BlazeLoader server events!  BlazeLoader will not be able to run!", -1);
         }
     }
-    
-    protected static enum EventSide {
-    	//TODO: Reminder to update these when changing package structure.
+
+    protected enum EventSide {
+        //TODO: Reminder to update these when changing package structure.
     	CLIENT("com.blazeloader.event.handlers.client.EventHandlerClient"),
     	SERVER("com.blazeloader.event.handlers.EventHandler"),
     	INTERNAL("com.blazeloader.bl.main.InternalEventHandler");
