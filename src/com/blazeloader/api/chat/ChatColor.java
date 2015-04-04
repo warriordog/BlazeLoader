@@ -104,7 +104,6 @@ public class ChatColor {
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
     public ChatColor combine(ChatColor otherColor) {
-        //return new ChatColor(code.concat(SECTION_SIGN_STR).concat(otherColor.code));
         return getChatColor(code.concat(otherColor.code));
     }
 

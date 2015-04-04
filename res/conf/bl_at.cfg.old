@@ -1,0 +1,86 @@
+
+#RenderManager
+public bnf.q #entityRenderMap
+
+#RenderBlocks
+public ble.e #flipTexture
+public ble.f #renderAllFaces
+public ble.g #renderFromInside
+public ble.h #renderMinX
+public ble.i #renderMaxX
+public ble.j #renderMinY
+public ble.k #renderMaxY
+public ble.l #renderMinZ
+public ble.m #renderMaxZ
+public ble.n #lockBlockBounds
+public ble.o #partialRenderBounds
+public ble.q #uvRotateEast
+public ble.r #uvRotateWest
+public ble.s #uvRotateSouth
+public ble.t #uvRotateNorth
+public ble.u #uvRotateTop
+public ble.v #uvRotateBottom
+public ble.w #enableAO
+public ble.x #aoLightValueScratchXYZNNN
+public ble.y #aoLightValueScratchXYNN
+public ble.z #aoLightValueScratchXYZNNP
+public ble.A #aoLightValueScratchYZNN
+public ble.B #aoLightValueScratchYZNP
+public ble.C #aoLightValueScratchXYZPNN
+public ble.D #aoLightValueScratchXYPN
+public ble.E #aoLightValueScratchXYZPNP
+public ble.F #aoLightValueScratchXYZNPN
+public ble.G #aoLightValueScratchXYNP
+public ble.H #aoLightValueScratchXYZNPP
+public ble.I #aoLightValueScratchYZPN
+public ble.J #aoLightValueScratchXYZPPN
+public ble.K #aoLightValueScratchXYPP
+public ble.L #aoLightValueScratchYZPP
+public ble.M #aoLightValueScratchXYZPPP
+public ble.N #aoLightValueScratchXZNN
+public ble.O #aoLightValueScratchXZPN
+public ble.P #aoLightValueScratchXZNP
+public ble.Q #aoLightValueScratchXZPP
+public ble.R #aoBrightnessXYZNNN
+public ble.S #aoBrightnessXYNN
+public ble.T #aoBrightnessXYZNNP
+public ble.U #aoBrightnessYZNN
+public ble.V #aoBrightnessYZNP
+public ble.W #aoBrightnessXYZPNN
+public ble.X #aoBrightnessXYPN
+public ble.Y #aoBrightnessXYZPNP
+public ble.Z #aoBrightnessXYZNPN
+public ble.aa #aoBrightnessXYNP
+public ble.ab #aoBrightnessXYZNPP
+public ble.ac #aoBrightnessYZPN
+public ble.ad #aoBrightnessXYZPPN
+public ble.ae #aoBrightnessXYPP
+public ble.af #aoBrightnessYZPP
+public ble.ag #aoBrightnessXYZPPP
+public ble.ah #aoBrightnessXZNN
+public ble.ai #aoBrightnessXZPN
+public ble.aj #aoBrightnessXZNP
+public ble.ak #aoBrightnessXZPP
+public ble.al #brightnessTopLeft
+public ble.am #brightnessBottomLeft
+public ble.an #brightnessBottomRight
+public ble.ao #brightnessTopRight
+public ble.ap #colorRedTopLeft
+public ble.aq #colorRedBottomLeft
+public ble.ar #colorRedBottomRight
+public ble.as #colorRedTopRight
+public ble.at #colorGreenTopLeft
+public ble.au #colorGreenBottomLeft
+public ble.av #colorGreenBottomRight
+public ble.aw #colorGreenTopRight
+public ble.ax #colorBlueTopLeft
+public ble.ay #colorBlueBottomLeft
+public ble.az #colorBlueBottomRight
+public ble.aA #colorBlueTopRight
+
+
+public ble.a(IIII)I #getAoBrightness
+public ble.a(IIIIDDDD)I #mixAoBrightness
+
+#Item
+public abn.f(Ljava/lang/String;)Labn; #setTextureName

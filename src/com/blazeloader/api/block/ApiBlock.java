@@ -1,20 +1,11 @@
 package com.blazeloader.api.block;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.util.ModUtilities;
-
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 /**
  * Api for block-specific functions
@@ -81,7 +72,6 @@ public class ApiBlock {
      */
     public static void registerBlock(int id, ResourceLocation name, Block block) {
     	ModUtilities.addBlock(id, name, block, true);
-    	//Block.blockRegistry.register(id, name, block);
     }
 
     /**
