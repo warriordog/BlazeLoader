@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * BL main class
+ *
+ * Has odd structure like "getClient" because while this will always be running on a server instance, it may not be running on a client.
  */
 public class BLMain {
     private static BLMain instance;
@@ -31,8 +33,6 @@ public class BLMain {
      * Logger that does not log date or time
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
-    
-    public static final String PLUGINCHANNEL = "BLAZELOADE:R:";
     
     /**
      * true if a game tick is in progress
@@ -137,5 +137,9 @@ public class BLMain {
 
     protected CommandHandler createCommandHandler() {
     	return new ServerCommandManager();
+    }
+
+    public String getPluginChannelName() {
+        return "BLAZELOADER:";
     }
 }

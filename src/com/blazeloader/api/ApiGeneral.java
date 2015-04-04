@@ -11,7 +11,7 @@ public class ApiGeneral {
     /**
      * Location of Minecraft's working directory (.minecraft).
      */
-    public static File mainDir = new File("./");
+    public static final File mainDir = new File("./");
 
     /**
      * Shuts down the game with a specified error code.  Use 0 for normal shutdown.

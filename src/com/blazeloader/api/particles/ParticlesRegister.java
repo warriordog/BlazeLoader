@@ -1,19 +1,13 @@
 package com.blazeloader.api.particles;
 
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.util.shape.IShape;
+import com.blazeloader.util.version.Versions;
+import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
+import com.mumfrey.liteloader.core.ServerPluginChannels;
 import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
@@ -22,17 +16,15 @@ import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.ReportedException;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.shape.IShape;
-import com.blazeloader.util.shape.Sphere;
-import com.blazeloader.util.version.Versions;
-import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
-import com.mumfrey.liteloader.core.ServerPluginChannels;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * 
@@ -62,8 +54,8 @@ public class ParticlesRegister {
 		}
 		instance = this;
 	}
-	
-	public static final ParticlesRegister instance() {
+
+	public static ParticlesRegister instance() {
 		if (instance == null) {
 			if (Versions.isClient()) {
 				return new ParticlesRegisterClient();
@@ -219,7 +211,7 @@ public class ParticlesRegister {
     	PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
     	try {
 			p.writePacketData(buf);
-			ServerPluginChannels.sendMessage(player, BLMain.PLUGINCHANNEL + "PARTICLES", buf, ChannelPolicy.DISPATCH_ALWAYS);
+			ServerPluginChannels.sendMessage(player, BLMain.instance().getPluginChannelName() + "PARTICLES", buf, ChannelPolicy.DISPATCH_ALWAYS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

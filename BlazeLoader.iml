@@ -10,8 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="Client" />
     <orderEntry type="module" module-name="LiteLoader" />
-    <orderEntry type="library" name="CompCore" level="project" />
-    <orderEntry type="library" name="OBFUtil" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -66,6 +64,27 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/CompCore.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/CompCore/source/main" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/OBFUtil.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/OBFUtil/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
-

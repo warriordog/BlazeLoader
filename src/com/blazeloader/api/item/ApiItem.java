@@ -1,7 +1,6 @@
 package com.blazeloader.api.item;
 
 import com.mumfrey.liteloader.util.ModUtilities;
-
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
@@ -25,7 +24,6 @@ public class ApiItem {
      * Registers an item in the game registry.
      *
      * @param id    The item ID
-     * @param mod	The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
      * @param name  The name to register the item as
      * @param item  The item itself
      */

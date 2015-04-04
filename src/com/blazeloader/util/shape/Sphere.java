@@ -1,11 +1,9 @@
 package com.blazeloader.util.shape;
 
-import java.util.Random;
-
-import org.lwjgl.util.vector.Vector;
-
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+
+import java.util.Random;
 
 /**
  * A sphere, or 2d circle of you so desire.

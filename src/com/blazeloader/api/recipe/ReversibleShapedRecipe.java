@@ -2,7 +2,6 @@ package com.blazeloader.api.recipe;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.world.World;
 
 public class ReversibleShapedRecipe extends ShapedRecipe implements IReversibleRecipe {

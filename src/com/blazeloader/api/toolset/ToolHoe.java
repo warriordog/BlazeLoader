@@ -3,15 +3,16 @@ package com.blazeloader.api.toolset;
 import net.minecraft.item.ItemHoe;
 
 public class ToolHoe extends ItemHoe {
-    private final ToolSetAttributes my_material;
+    private final ToolSetAttributes attributes;
 
     public ToolHoe(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
-        my_material = material;
+        attributes = material;
         super.setMaxDamage(material.getMaxUses());
     }
 
+    @Override
     public String getMaterialName() {
-        return my_material.toString();
+        return attributes.toString();
     }
 }

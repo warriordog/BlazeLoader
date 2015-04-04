@@ -1,11 +1,10 @@
 package com.blazeloader.api.recipe;
 
-import java.util.List;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ReversibleShapelessRecipe extends ShapelessRecipe implements IReversibleRecipe {
 	private boolean anyDirection = true;

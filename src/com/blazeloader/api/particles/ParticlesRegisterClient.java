@@ -39,8 +39,8 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	/**
 	 * Initialises particle IDs and loads them into the vanilla registry for external API support.
 	 * @param mapping	Mapping of pre-registered vanilla Particles
-	 * 
-	 * @returns A new, or previously cached, mapping with all custom particles added.
+	 *
+	 * @return A new, or previously cached, mapping with all custom particles added.
 	 */
 	//TODO: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
 	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
