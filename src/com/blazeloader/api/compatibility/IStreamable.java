@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 /**
  * Allows an object to communicate with other arbitrary objects through data streams.
- * The data does not have to stay within the JVM; it is permitted to read/write to them externally (such as from a file or over a network).
+ * <br>The data does not have to stay within the JVM; it is permitted to read/write to them externally (such as from a file or over a network).
  * Because the data is sent through streams, there is no guarantee that this IStreamable will receive or send data at a specific time, or that it will be received at all.
  */
 public interface IStreamable {

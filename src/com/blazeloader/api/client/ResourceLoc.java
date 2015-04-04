@@ -42,31 +42,27 @@ public class ResourceLoc {
 
     /**
      * Gets a file from the internal assets folder
-     * .jar/assets/{pack}/{name}
+     * <p><i>.jar/assets/{pack}/{name}</i>
      *
      * @param pack Name of resource pack
      * @param name Name/Path to file
      * @return File object representing the file found in the .jar or null if not found
      */
     public static File getResource(String pack, String name) {
-        URI uri = getURI("assets/" + (pack == null || pack.equals("") ? "minecraft" : pack) + "/" + name);
+        URI uri = getResourceURI(pack, name);
         return uri == null ? null : new File(uri);
     }
 
     /**
      * Gets a URI path to a file in the internal assets folder
-     * .jar/assets/{pack}/{name}
+     * <p><i>.jar/assets/{pack}/{name}</i>
      *
      * @param pack Name of resource pack
      * @param name Name/Path to file
      * @return URI object pointing to the file found in the .jar or null if not found
      */
     public static URI getResourceURI(String pack, String name) {
-        if (pack == null || pack.equals("")) {
-            pack = "minecraft";
-        }
-        return getURI("assets/" + pack + "/" + name);
-
+        return getURI("assets/" + (pack == null || pack.isEmpty() ? "minecraft" : pack) + "/" + name);
     }
 
     private static URI getURI(String path) {
@@ -79,9 +75,5 @@ public class ResourceLoc {
         } catch (Exception e) {
             throw new RuntimeException("Exception getting URI!", e);
         }
-    }
-
-    private static String validateName(String name) {
-        return name.replace("/", "").replace("\\", "").trim();
     }
 }
