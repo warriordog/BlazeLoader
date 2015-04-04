@@ -18,14 +18,15 @@ public class ApiGuiClient {
     }
 
     /**
-     * Closes the currently open GUI, returning to the bottom layer.  (Usually either the main menu or the main game interface.)
+     * Closes the currently open GUI, returning to the bottom layer.
+     * <p>Usually either the main menu or the main game interface.
      */
     public static void closeCurrentGUI() {
         Minecraft.getMinecraft().displayGuiScreen(null);
     }
 
     /**
-     * Returns the currently open GUI.  May be null.
+     * Returns the currently open GUI. May be null.
      *
      * @return Returns the currently open GUI.
      */

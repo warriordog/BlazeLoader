@@ -2,7 +2,10 @@ package com.blazeloader.api.block;
 
 /**
  * Notification flags for block set events.  Can be added together.
+ * 
+ * @Deprecated Use UpdateType instead
  */
+@Deprecated
 public enum NotificationType {
     /**
      * Do send the change to clients.  Almost always wanted.
