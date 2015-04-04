@@ -7,6 +7,7 @@ import com.mumfrey.liteloader.launch.LoaderProperties;
 
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
+import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
@@ -31,14 +32,22 @@ public class BLMain {
      * Logger that does not log date or time
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
-
-    public static boolean isInTick = false; //true if a game tick is in progress
-    public static int numTicks = 0; //number of ticks that the game has been running
+    
+    public static final String PLUGINCHANNEL = "BLAZELOADE:R:";
+    
+    /**
+     * true if a game tick is in progress
+     */
+    public static boolean isInTick = false;
+    /**
+     * number of ticks that the game has been running
+     */
+    public static int numTicks = 0;
 
     public final LoaderEnvironment environment;
     public final LoaderProperties properties;
 
-    private ServerCommandManager commandHandler;
+    private CommandHandler commandHandler;
 
     BLMain(LoaderEnvironment environment, LoaderProperties properties) {
         if (instance != null) {
@@ -109,9 +118,7 @@ public class BLMain {
         }
     }
 
-    public void init() {
-
-    }
+    public void init() {}
 
     public boolean supportsClient() {
         return false;
@@ -125,10 +132,11 @@ public class BLMain {
         return instance;
     }
 
-
-    public ServerCommandManager getCommandHandler() {
-        //TODO: return an IntegratedServerCommandManager if running on client.  Not a high priority as integrated is currently empty...
-        return commandHandler == null ? commandHandler = new ServerCommandManager() : commandHandler;
+    public CommandHandler getCommandHandler() {
+        return commandHandler == null ? commandHandler = createCommandHandler() : commandHandler;
     }
 
+    protected CommandHandler createCommandHandler() {
+    	return new ServerCommandManager();
+    }
 }
