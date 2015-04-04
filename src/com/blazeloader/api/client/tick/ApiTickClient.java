@@ -4,6 +4,9 @@ import net.minecraft.client.Minecraft;
 
 /**
  * Client side tick functions
+ *
+ * WARNING:  These functions may not actually do what they seem
+ *
  */
 public class ApiTickClient {
     /**

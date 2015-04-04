@@ -9,6 +9,9 @@ import java.util.Random;
 
 /**
  * Api functions related to worlds
+ *
+ * NOT CURRENTLY IMPLEMENTED
+ *
  */
 public class ApiWorld {
 

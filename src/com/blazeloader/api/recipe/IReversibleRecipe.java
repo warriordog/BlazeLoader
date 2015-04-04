@@ -1,6 +1,5 @@
 package com.blazeloader.api.recipe;
 
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 

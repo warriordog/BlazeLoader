@@ -5,31 +5,35 @@ import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 
 public class ToolSpade extends ItemSpade {
-    private final ToolSetAttributes my_material;
+    private final ToolSetAttributes attributes;
 
     private float damageValue = 4;
 
     public ToolSpade(ToolSetAttributes material) {
         super(ToolMaterial.WOOD);
-        my_material = material;
+        attributes = material;
         super.setMaxDamage(material.getMaxUses());
         efficiencyOnProperMaterial = material.getEfficiencyOnProperMaterial();
         damageValue = material.getDamageVsEntity(1);
     }
 
+    @Override
     public int getItemEnchantability() {
-        return my_material.getEnchantability();
+        return attributes.getEnchantability();
     }
 
+    @Override
     public String getToolMaterialName() {
-        return my_material.toString();
+        return attributes.toString();
     }
 
+    @Override
     public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return my_material.getIsRepairable(par2ItemStack);
+        return attributes.getIsRepairable(par2ItemStack);
     }
 
+    @Override
     public Multimap getItemAttributeModifiers() {
-        return my_material.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
+        return attributes.getAttributeModifiers(super.getItemAttributeModifiers(), null, damageValue, "Tool modifier");
     }
 }

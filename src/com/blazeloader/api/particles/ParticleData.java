@@ -23,8 +23,8 @@ public final class ParticleData {
 	
 	/**
 	 * Creates a ParticleData
-	 * 
-	 * @param factory		IParticle factory to be used when creating the spawned particle
+	 *
+	 * @param type        IParticle factory to be used when creating the spawned particle
 	 * @param fulcrum		Whether or not this particle obeys the distance rule.
 	 * @param arguments		Additional arguments given to the particle when creating.
 	 * 

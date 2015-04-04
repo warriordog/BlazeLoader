@@ -12,19 +12,19 @@ import net.minecraft.world.World;
 import java.util.*;
 
 public class ApiCrafting {
-	
-	private static final Map<Integer, Manager> instances = new HashMap<Integer, Manager>();
+
+	private static final Map<Integer, BLCraftingManager> instances = new HashMap<Integer, BLCraftingManager>();
 	private static int nextId = 1;
 	
 	static {
-		instances.put(0, new Manager(0, CraftingManager.getInstance().getRecipeList()));
+		instances.put(0, new BLCraftingManager(0, CraftingManager.getInstance().getRecipeList()));
 	}
 	
 	/**
 	 * Gets a wrapped instance of the normal CraftingManager.
 	 * @return Manager instance of CraftingManager
 	 */
-	public static Manager getVanillaCraftingManager() {
+	public static BLCraftingManager getVanillaCraftingManager() {
 		return instances.get(0);
 	}
 	
@@ -41,8 +41,8 @@ public class ApiCrafting {
 	 * 
 	 * @return Manager corresponding to the given CraftingManager
 	 */
-	public static Manager toManager(CraftingManager manager) {
-		for (Manager i : instances.values()) {
+	public static BLCraftingManager toManager(CraftingManager manager) {
+		for (BLCraftingManager i : instances.values()) {
 			if (i.equals(manager)) return i;
 		}
 		return createCraftingManager((ArrayList<IRecipe>)manager.getRecipeList());
@@ -55,20 +55,20 @@ public class ApiCrafting {
 	 * 
 	 * @return Manager or null if not found.
 	 */
-	public static final Manager getManagerFromId(int id) {
+	public static final BLCraftingManager getManagerFromId(int id) {
 		return instances.containsKey(id) ? instances.get(id) : null;
 	}
 	
 	/**
 	 * Creates a brand spanking **new** Crafting Manager.
 	 */
-	public static Manager createCraftingManager() {
+	public static BLCraftingManager createCraftingManager() {
 		return createCraftingManager(new ArrayList<IRecipe>());
 	}
-	
-	private final static Manager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
+
+	private final static BLCraftingManager createCraftingManager(ArrayList<IRecipe> startingRecipes) {
 		int id = nextId++;
-		instances.put(id, new Manager(id, startingRecipes));
+		instances.put(id, new BLCraftingManager(id, startingRecipes));
 		return instances.get(id);
 	}
 	
@@ -78,11 +78,11 @@ public class ApiCrafting {
 	 * crafting areas greater than 3x3 and methods for removing recipes.
 	 *
 	 */
-	public static final class Manager implements Comparable<Manager> {
+	public static final class BLCraftingManager implements Comparable<BLCraftingManager> {
 		private final int id;
 		private final List<IRecipe> recipes;
-		
-		private Manager(int n, List<IRecipe> recipes) {
+
+		private BLCraftingManager(int n, List<IRecipe> recipes) {
 			id = n;
 			this.recipes = recipes;
 		}
@@ -348,9 +348,9 @@ public class ApiCrafting {
 	    }
 	    
 	    public boolean equals(Object obj) {
-	    	if (obj instanceof Manager) {
-	    		return ((Manager) obj).id == id;
-	    	}
+			if (obj instanceof BLCraftingManager) {
+				return ((BLCraftingManager) obj).id == id;
+			}
 	    	if (obj instanceof CraftingManager) {
 	    		return recipes.equals(((CraftingManager)obj).getRecipeList());
 	    	}
@@ -359,8 +359,8 @@ public class ApiCrafting {
 	    	}
 	    	return super.equals(obj);
 	    }
-	    
-		public int compareTo(Manager o) {
+
+		public int compareTo(BLCraftingManager o) {
 			return o.id - id;
 		}
 	}

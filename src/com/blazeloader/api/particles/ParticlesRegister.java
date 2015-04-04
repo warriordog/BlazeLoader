@@ -54,8 +54,8 @@ public class ParticlesRegister {
 		}
 		instance = this;
 	}
-	
-	public static final ParticlesRegister instance() {
+
+	public static ParticlesRegister instance() {
 		if (instance == null) {
 			if (Versions.isClient()) {
 				return new ParticlesRegisterClient();
