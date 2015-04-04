@@ -6,7 +6,6 @@ import com.mumfrey.liteloader.common.GameEngine;
 import com.mumfrey.liteloader.common.Resources;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 import com.mumfrey.liteloader.resources.InternalResourcePack;
-
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.world.World;
@@ -38,8 +37,8 @@ public class BlazeLoaderCP implements CoreProvider {
     @Override
     public void onPostInit(GameEngine<?, ?> engine) {
     	if (engine.isClient()) {
-    		((Resources<?, InternalResourcePack>)engine.getResources()).registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "BlazeLoader"));
-    	}
+            ((Resources<?, InternalResourcePack>) engine.getResources()).registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "blazeloader"));
+        }
     }
 
     /**
