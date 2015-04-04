@@ -32,8 +32,6 @@ public class BLMain {
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
     
-    public static final String PLUGINCHANNEL = "BLAZELOADE:R:";
-    
     /**
      * true if a game tick is in progress
      */
@@ -137,5 +135,9 @@ public class BLMain {
 
     protected CommandHandler createCommandHandler() {
     	return new ServerCommandManager();
+    }
+
+    public String getPluginChannelName() {
+        return "BLAZELOADER:";
     }
 }
