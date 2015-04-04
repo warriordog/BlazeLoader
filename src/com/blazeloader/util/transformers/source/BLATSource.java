@@ -4,7 +4,6 @@ import com.blazeloader.bl.obf.BLOBF;
 import com.blazeloader.util.transformers.AccessLevel;
 import com.blazeloader.util.transformers.BLAccessTransformer;
 import com.blazeloader.util.transformers.transformations.*;
-
 import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;
 
@@ -65,7 +64,7 @@ public class BLATSource extends TransformationSource {
     }
 
     private void addMethodTransformation(String changes, String name) {
-        System.out.println("Adding transformation to: " + name);
+        //System.out.println("Adding transformation to: " + name);
         int lastDot = name.lastIndexOf('.');
         String clName = name.substring(0, lastDot);
         String mName = name.substring(lastDot + 1, name.length()).replace('/', '.');
@@ -91,7 +90,7 @@ public class BLATSource extends TransformationSource {
     }
 
     private void addFieldTransformation(String changes, String name) {
-        System.out.println("Adding transformation to: " + name);
+        //System.out.println("Adding transformation to: " + name);
         int lastDot = name.lastIndexOf('.');
         String clName = name.substring(0, lastDot);
         String fName = name.substring(lastDot + 1, name.length());
