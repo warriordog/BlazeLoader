@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * BL main class
+ *
+ * Has odd structure like "getClient" because while this will always be running on a server instance, it may not be running on a client.
  */
 public class BLMain {
     private static BLMain instance;
