@@ -69,12 +69,16 @@ public class ChatColor {
     public static final ChatColor FORMAT_UNDERLINE = new ChatColor("n");
     public static final ChatColor UNDERLINE = FORMAT_UNDERLINE;
 
-    private final String code;
+    private final String plainCode;
     private final String formattedCode;
 
     private ChatColor(String code) {
-        this.code = code;
-        this.formattedCode = SECTION_SIGN_STR.concat(code);
+        this(code, SECTION_SIGN_STR.concat(code));
+    }
+    
+    private ChatColor(String code, String formatted) {
+        plainCode = code;
+        formattedCode = formatted;
         colorMap.put(code, this);
     }
 
@@ -104,7 +108,7 @@ public class ChatColor {
      * @return Return the color code of this EChatColor combined with the color of otherColor.
      */
     public ChatColor combine(ChatColor otherColor) {
-        return getChatColor(code.concat(otherColor.code));
+        return getChatColor(plainCode.concat(otherColor.plainCode));
     }
 
     /**
@@ -136,22 +140,25 @@ public class ChatColor {
         if (colorCode == null) {
             return null;
         }
-        ChatColor color = colorMap.get(colorCode);
-        if (color == null) {
-            StringBuilder fixedCode = new StringBuilder();
-            char lastChar = SECTION_SIGN_CHAR;
-            for (char chr : colorCode.toCharArray()) {
-                if (chr != SECTION_SIGN_CHAR) {
-                    if (lastChar != SECTION_SIGN_CHAR) {
-                        fixedCode.append(SECTION_SIGN_STR);
-                    }
-                    fixedCode.append(chr);
-                    lastChar = chr;
-                }
-            }
-            color = new ChatColor(fixedCode.toString());
-            colorMap.put(colorCode, color);
+        if (colorMap.containsKey(colorCode)) {
+        	return colorMap.get(colorCode);
         }
+        
+        StringBuilder fixedCode = new StringBuilder();
+        StringBuilder unfixedCode = new StringBuilder();
+        char lastChar = SECTION_SIGN_CHAR;
+        for (char chr : colorCode.toCharArray()) {
+            if (chr != SECTION_SIGN_CHAR) {
+                if (lastChar != SECTION_SIGN_CHAR) {
+                    fixedCode.append(SECTION_SIGN_STR);
+                }
+                unfixedCode.append(chr);
+                fixedCode.append(chr);
+                lastChar = chr;
+            }
+        }
+        ChatColor color = new ChatColor(unfixedCode.toString(), fixedCode.toString());
+        colorMap.put(colorCode, color);
         return color;
     }
 }
