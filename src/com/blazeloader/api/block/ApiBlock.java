@@ -1,11 +1,19 @@
 package com.blazeloader.api.block;
 
-import com.mumfrey.liteloader.util.ModUtilities;
+import java.util.Iterator;
+
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+
+import com.blazeloader.api.item.ApiItem;
+import com.blazeloader.util.version.Versions;
+import com.google.common.collect.ImmutableList;
+import com.mumfrey.liteloader.util.ModUtilities;
 
 /**
  * Api for block-specific functions
@@ -50,9 +58,32 @@ public class ApiBlock {
     public static Block getBlockByItem(Item item) {
         return Block.getBlockFromItem(item);
     }
-
+    
     /**
-     * Registers a block in the block registry.
+     * Gets the id associated with the given block.
+     * 
+     * @param block The block
+     * 
+     * @return the block's id
+     */
+    public static int getBlockId(Block block) {
+    	return Block.getIdFromBlock(block);
+    }
+    
+    /**
+     * 
+     * Registers the given block as 'flammable' by fire.
+     * 
+     * @param block				The block to register
+     * @param encouragement		How likely it is that this block will spread fire
+     * @param flamability		How flamable this block is
+     */
+    public static void registerFireInfo(Block block, int encouragement, int flamability) {
+    	Blocks.fire.setFireInfo(block, encouragement, flamability);
+    }
+    
+    /**
+     * Registers and initialises a block in the block registry.
      *
      * @param id    The ID of the block.
      * @param mod	The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
@@ -64,16 +95,87 @@ public class ApiBlock {
     }
     
     /**
-     * Registers a block in the block registry.
+     * Registers and initialises a block in the block registry.
      *
      * @param id    The ID of the block.
      * @param name  The name to register the block as
      * @param block The block to add
      */
     public static void registerBlock(int id, ResourceLocation name, Block block) {
-    	ModUtilities.addBlock(id, name, block, true);
+    	injectBlock(id, name, block);
+        for (IBlockState state : (ImmutableList<IBlockState>)block.getBlockState().getValidStates()) {
+            int metadata = Block.blockRegistry.getIDForObject(block) << 4 | block.getMetaFromState(state);
+            Block.BLOCK_STATE_IDS.put(state, metadata);
+        }
     }
-
+    
+    /**
+     * Registers names for all the variants the given block has.
+     * 
+     * @param block		The block
+     * @param variants	Names for all the item's variants
+     */
+    public static void registerBlockVarientNames(Block block, String... variants) {
+    	ApiItem.registerItemVariantNames(ApiItem.getItemByBlock(block), variants);
+    }
+    
+    /**
+     * Replaces an existing block with the given block.
+     * <p>
+     * Works best if the replacement block supports all the states of the one it is replacing.
+     * 
+     * @param original	Original block to replace
+     * @param block		New block to insert
+     */
+    public static void replaceBlock(Block original, Block block) {
+    	Iterator original_states = original.getBlockState().getValidStates().iterator();
+    	Iterator new_states = block.getBlockState().getValidStates().iterator();
+    	while (original_states.hasNext() && new_states.hasNext()) {
+    		IBlockState original_state = (IBlockState)original_states.next();
+    		IBlockState state = (IBlockState)new_states.next();
+    		int original_metadata = getBlockId(original) << 4 | original.getMetaFromState(original_state);
+            int metadata = getBlockId(original) << 4 | block.getMetaFromState(state);
+            Block.BLOCK_STATE_IDS.put(state, metadata);
+        }
+    	while (new_states.hasNext()) {
+    		IBlockState state = (IBlockState)new_states.next();
+    		int metadata = getBlockId(original) << 4 | block.getMetaFromState(state);
+            Block.BLOCK_STATE_IDS.put(state, metadata);
+    	}
+    	injectBlock(getBlockId(original), getBlockName(original), block);
+    	if (Versions.isClient()) {
+    		com.blazeloader.api.client.render.ApiRenderBlock.swapoutBlockModels(original, block);
+    	}
+    }
+    
+    /**
+     * Registers a block in the block registry.
+     * <p>
+     * Is like registerBlock but does not perform any blockstate initialisation.
+     *
+     * @param id    The ID of the block.
+     * @param mod	The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
+     * @param name  The name to register the block as
+     * @param block The block to add
+     */
+    public static void injectBlock(int id, String mod, String name, Block block) {
+    	injectBlock(id, new ResourceLocation(mod, name), block);
+    }
+    
+    /**
+     * Registers a block in the block registry.
+     * <p>
+     * Is like registerBlock but does not perform any blockstate initialisation.
+     *
+     * @param id    The ID of the block.
+     * @param name  The name to register the block as
+     * @param block The block to add
+     */
+    public static void injectBlock(int id, ResourceLocation name, Block block) {
+    	ModUtilities.addBlock(id, name, block, true);
+    	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
+    }
+    
     /**
      * Registers or replaces a TileEntity
      *
@@ -91,8 +193,17 @@ public class ApiBlock {
      * @param block The block to get the name for
      * @return Return a string of the name belonging to param block
      */
-    public static String getBlockName(Block block) {
-        return (String)Block.blockRegistry.getNameForObject(block);
+    public static ResourceLocation getBlockName(Block block) {
+        return (ResourceLocation)Block.blockRegistry.getNameForObject(block);
     }
-
+    
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+    public static String getStringBlockName(Block block) {
+        return getBlockName(block).toString();
+    }
 }

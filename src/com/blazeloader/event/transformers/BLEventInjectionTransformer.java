@@ -57,7 +57,8 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         //TODO: Reminder to update these when changing package structure.
     	CLIENT("com.blazeloader.event.handlers.client.EventHandlerClient"),
     	SERVER("com.blazeloader.event.handlers.EventHandler"),
-    	INTERNAL("com.blazeloader.bl.main.InternalEventHandler");
+    	INTERNAL("com.blazeloader.bl.main.InternalEventHandler"),
+    	INTERNAL_CLIENT("com.blazeloader.bl.main.InternalEventHandlerClient");
     	
     	private final String handler;
     	
