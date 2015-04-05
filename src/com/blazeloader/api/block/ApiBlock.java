@@ -5,10 +5,12 @@ import java.util.Iterator;
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
+import com.blazeloader.api.item.ApiItem;
 import com.blazeloader.util.version.Versions;
 import com.google.common.collect.ImmutableList;
 import com.mumfrey.liteloader.util.ModUtilities;
@@ -69,6 +71,18 @@ public class ApiBlock {
     }
     
     /**
+     * 
+     * Registers the given block as 'flammable' by fire.
+     * 
+     * @param block				The block to register
+     * @param encouragement		How likely it is that this block will spread fire
+     * @param flamability		How flamable this block is
+     */
+    public static void registerFireInfo(Block block, int encouragement, int flamability) {
+    	Blocks.fire.setFireInfo(block, encouragement, flamability);
+    }
+    
+    /**
      * Registers and initialises a block in the block registry.
      *
      * @param id    The ID of the block.
@@ -96,6 +110,16 @@ public class ApiBlock {
     }
     
     /**
+     * Registers names for all the variants the given block has.
+     * 
+     * @param block		The block
+     * @param variants	Names for all the item's variants
+     */
+    public static void registerBlockVarientNames(Block block, String... variants) {
+    	ApiItem.registerItemVariantNames(ApiItem.getItemByBlock(block), variants);
+    }
+    
+    /**
      * Replaces an existing block with the given block.
      * <p>
      * Works best if the replacement block supports all the states of the one it is replacing.
@@ -120,7 +144,7 @@ public class ApiBlock {
     	}
     	injectBlock(getBlockId(original), getBlockName(original), block);
     	if (Versions.isClient()) {
-    		com.blazeloader.api.client.render.ApiRenderClient.swapoutBlockModels(original, block);
+    		com.blazeloader.api.client.render.ApiRenderBlock.swapoutBlockModels(original, block);
     	}
     }
     

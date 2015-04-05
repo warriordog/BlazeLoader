@@ -1,5 +1,6 @@
 package com.blazeloader.api.item;
 
+import com.google.common.collect.Lists;
 import com.mumfrey.liteloader.util.ModUtilities;
 
 import net.minecraft.block.Block;
@@ -11,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
  * Api functions for items.
  */
 public class ApiItem {
-
+	
     /**
      * Registers an item in the game registry.
      *
@@ -63,6 +64,16 @@ public class ApiItem {
     public static void registerItemBlock(int id, ResourceLocation name, Block block, Item item) {
     	registerItem(id, name, item);
     	Item.BLOCK_TO_ITEM.put(block, item);
+    }
+    
+    /**
+     * Registers names for all the variants the given item has.
+     * 
+     * @param item		The item
+     * @param variants	Names for all the item's variants
+     */
+    public static void registerItemVariantNames(Item item, String[] variants) {
+    	ItemRegistry.instance().registerVariantNames(item, Lists.newArrayList(variants));
     }
     
     /**
