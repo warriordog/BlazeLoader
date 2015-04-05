@@ -79,10 +79,10 @@ public class UpdateType implements Cloneable {
     }
     
     public boolean equals(Object other) {
-        if (other == null) return false;
-        if (other == this) return true;
-        if (!(other instanceof UpdateType)) return false;
-        return this.value == ((UpdateType) other).value;
+    	if (other != null) {
+	        return (other == this) || ((other instanceof UpdateType) && (((UpdateType)other).value == value));
+    	}
+        return false;
     }
 
     private static class ConstUpdateType extends UpdateType {
