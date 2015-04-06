@@ -1,5 +1,6 @@
 package com.blazeloader.event.transformers;
 
+import com.blazeloader.bl.exception.InvalidEventException;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.obf.BLMethodInfo;
 import com.blazeloader.bl.obf.BLOBF;
@@ -30,6 +31,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     }
 
     protected void addBLEvent(EventSide side, BLMethodInfo method, InjectionPoint injectionPoint) {
+    	if (method == null || injectionPoint == null) {
+    		throw new InvalidEventException(side.toString(), method, injectionPoint);
+    	}
         String name = method.getSimpleName();
         addEvent(Event.getOrCreate("BL." + name, true), method, injectionPoint).addListener(new MethodInfo(side.getHandler(), "event" + capitaliseFirst(name)));
     }
@@ -47,6 +51,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
             addBLEvent(EventSide.SERVER, "net.minecraft.server.management.ServerConfigurationManager.recreatePlayerEntity (Lnet/minecraft/entity/player/EntityPlayerMP;IZ)Lnet/minecraft/entity/player/EntityPlayerMP;");
             addBLEvent(EventSide.INTERNAL, "net.minecraft.server.MinecraftServer.createNewCommandManager ()Lnet/minecraft/command/ServerCommandManager;", beforeReturn);
             addBLEvent(EventSide.INTERNAL, "net.minecraft.server.integrated.IntegratedServer.createNewCommandManager ()Lnet/minecraft/command/ServerCommandManager;", beforeReturn);
+            addBLEvent(EventSide.INTERNAL, "net.minecraft.server.MinecraftServer.getServerModName ()Ljava/lang/String;", beforeReturn);
         } catch (Exception e) {
             e.printStackTrace();
             BLMain.instance().shutdown("A fatal exception occurred while injecting BlazeLoader server events!  BlazeLoader will not be able to run!", -1);

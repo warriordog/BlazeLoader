@@ -19,9 +19,11 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The item name
      * @param item  The item itself
+     * 
+     * @return the item for simplicity
      */
-    public static void registerItem(int id, String mod, String name, Item item) {
-    	registerItem(id, new ResourceLocation(mod, name), item);
+    public static <T extends ItemBlock> T registerItem(int id, String mod, String name, T item) {
+    	return registerItem(id, new ResourceLocation(mod, name), item);
     }
 
     /**
@@ -30,28 +32,35 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The name to register the item as
      * @param item  The item itself
+     * 
+     * @return the item for simplicity
      */
-    public static void registerItem(int id, ResourceLocation name, Item item) {
+    public static <T extends ItemBlock> T registerItem(int id, ResourceLocation name, T item) {
     	ModUtilities.addItem(id, name, item, true);
+    	return item;
     }
     
     /**
      * Registers an ItemBlock in the game registry for the given block.
      *
      * @param block  The block itself
+     * 
+     * @return the item for simplicity
      */
-    public static void registerItemBlock(Block block) {
-    	registerItemBlock(block, new ItemBlock(block));
+    public static ItemBlock registerItemBlock(Block block) {
+    	return registerItemBlock(block, (new ItemBlock(block)).setUnlocalizedName(block.getUnlocalizedName()));
     }
     
     /**
      * Registers an ItemBlock in the game registry for the given block.
      *
      * @param block  The item itself
-     * @param item 	 An ItemBlock to register with the given block,
+     * @param item 	 An ItemBlock to register with the given block
+     * 
+     * @return the item for simplicity
      */
-    public static void registerItemBlock(Block block, ItemBlock item) {
-    	registerItemBlock(Block.getIdFromBlock(block), (ResourceLocation)Block.blockRegistry.getNameForObject(block), block, item);
+    public static <T extends ItemBlock> T registerItemBlock(Block block, T item) {
+    	return registerItemBlock(Block.getIdFromBlock(block), (ResourceLocation)Block.blockRegistry.getNameForObject(block), block, item);
     }
     
     /**
@@ -60,10 +69,13 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The name to register the item as
      * @param item  The item itself
+     * 
+     * @return the item for simplicity
      */
-    public static void registerItemBlock(int id, ResourceLocation name, Block block, Item item) {
+    public static <T extends ItemBlock> T registerItemBlock(int id, ResourceLocation name, Block block, T item) {
     	registerItem(id, name, item);
     	Item.BLOCK_TO_ITEM.put(block, item);
+    	return item;
     }
     
     /**

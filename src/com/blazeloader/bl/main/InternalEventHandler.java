@@ -1,6 +1,6 @@
 package com.blazeloader.bl.main;
 
-import com.blazeloader.api.client.ApiWindowClient;
+import com.blazeloader.api.ApiGeneral;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
 import net.minecraft.client.ClientBrandRetriever;
@@ -16,6 +16,18 @@ public class InternalEventHandler {
     }
 
     public static void eventGetClientModName(ReturnEventInfo<ClientBrandRetriever, String> event) {
-        event.setReturnValue(ApiWindowClient.getClientBrand());
+    	event.setReturnValue(retrieveBrand(event.getReturnValue()));
+    }
+    
+    public static void eventGetServerModName(ReturnEventInfo<MinecraftServer, String> event) {
+    	event.setReturnValue(retrieveBrand(event.getReturnValue()));
+    }
+    
+    private static String retrieveBrand(String inheritedBrand) {
+    	String brand = ApiGeneral.getBrand();
+        if (inheritedBrand != null && !(inheritedBrand.isEmpty()  || "vanilla".contentEquals(inheritedBrand) || "LiteLoader".contentEquals(inheritedBrand))) {
+        	return inheritedBrand + " / " + brand;
+        }
+        return brand;
     }
 }

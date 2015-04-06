@@ -15,7 +15,13 @@ import net.minecraft.world.World;
  */
 public class BlazeLoaderCP implements CoreProvider {
     public static final BlazeLoaderCP instance = new BlazeLoaderCP();
-
+    
+    private GameEngine gameEngine;
+    
+    public GameEngine getGameEngine() {
+    	return gameEngine;
+    }
+    
     private BlazeLoaderCP() {
     }
 
@@ -36,6 +42,7 @@ public class BlazeLoaderCP implements CoreProvider {
      */
     @Override
     public void onPostInit(GameEngine<?, ?> engine) {
+    	gameEngine = engine;
     	if (engine.isClient()) {
             ((Resources<?, InternalResourcePack>) engine.getResources()).registerResourcePack(new InternalResourcePack("BlazeLoader Resources", BlazeLoaderAPI.class, "blazeloader"));
         }
