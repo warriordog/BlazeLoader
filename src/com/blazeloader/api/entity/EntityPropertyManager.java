@@ -1,8 +1,8 @@
-package com.blazeloader.api.api.entity;
+package com.blazeloader.api.entity;
 
 import java.util.HashMap;
 
-import com.blazeloader.api.main.BLMain;
+import com.blazeloader.bl.main.BLMain;
 import com.mumfrey.liteloader.core.event.HandlerList;
 
 import net.minecraft.entity.Entity;

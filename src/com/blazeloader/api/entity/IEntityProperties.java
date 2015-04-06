@@ -1,4 +1,4 @@
-package com.blazeloader.api.api.entity;
+package com.blazeloader.api.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;

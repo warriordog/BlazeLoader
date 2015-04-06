@@ -1,21 +1,24 @@
 package com.blazeloader.bl.main;
 
-import com.blazeloader.api.ApiGeneral;
-import com.blazeloader.api.world.ApiWorld;
-import com.blazeloader.api.world.IChunkGenerator;
-import com.blazeloader.api.world.UnpopulatedChunksQ;
-import com.mumfrey.liteloader.transformers.event.EventInfo;
-import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 
-import java.util.List;
-import java.util.Random;
+import com.blazeloader.api.ApiGeneral;
+import com.blazeloader.api.entity.EntityPropertyManager;
+import com.blazeloader.api.world.ApiWorld;
+import com.blazeloader.api.world.IChunkGenerator;
+import com.blazeloader.api.world.UnpopulatedChunksQ;
+import com.mumfrey.liteloader.transformers.event.EventInfo;
+import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
 /**
  * Event handler for events that are not passed to mods, but rather to BL itself
@@ -60,4 +63,12 @@ public class InternalEventHandler {
 			}
 		}
 	}
+    
+    public static void eventEntityInit(EventInfo<Entity> event) {
+    	EntityPropertyManager.entityinit(event.getSource());
+    }
+    
+    public static void eventEntityReadFromNBT(EventInfo<Entity> event) {
+    	EntityPropertyManager.readFromNBT(event.getSource(), event.getLocals()[0]);
+    }
 }
