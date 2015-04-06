@@ -1,14 +1,13 @@
 package com.blazeloader.api.client;
 
-import org.lwjgl.opengl.Display;
-
-import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.opengl.Display;
 
 /**
  * API functions for changing the client window.  Title branding, etc.

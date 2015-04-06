@@ -1,12 +1,12 @@
 package com.blazeloader.api.item;
 
-import com.google.common.collect.Lists;
-import com.mumfrey.liteloader.util.ModUtilities;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+
+import com.google.common.collect.Lists;
+import com.mumfrey.liteloader.util.ModUtilities;
 
 /**
  * Api functions for items.

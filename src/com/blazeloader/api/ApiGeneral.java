@@ -1,10 +1,10 @@
 package com.blazeloader.api;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.bl.main.BlazeLoaderCP;
-
 import java.io.File;
 import java.util.ArrayList;
+
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.bl.main.BlazeLoaderCP;
 
 /**
  * General API functions

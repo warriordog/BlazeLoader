@@ -3,25 +3,14 @@ package com.blazeloader.api.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.management.UserListEntry;
-import net.minecraft.server.management.UserListOpsEntry;
-import net.minecraft.stats.Achievement;
-import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.StatisticsFile;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 
 import com.blazeloader.api.client.ApiClient;
-import com.blazeloader.api.command.ApiCommand;
-import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.util.version.Versions;
-import com.mojang.authlib.GameProfile;
 
 public class ApiPlayer {
 	

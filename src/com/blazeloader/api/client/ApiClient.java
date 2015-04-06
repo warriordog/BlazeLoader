@@ -1,11 +1,10 @@
 package com.blazeloader.api.client;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.bl.main.BlazeLoaderCP;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.server.MinecraftServer;
+
+import com.blazeloader.bl.main.BlazeLoaderCP;
 
 public class ApiClient {
 	/**

@@ -1,17 +1,12 @@
 package com.blazeloader.api.compatibility;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.TypeConstraintException;
-
-import com.mumfrey.liteloader.util.log.LiteLoaderLogger;
 
 /**
  * A wall for mods to communicate between each other by setting and getting values by a string identifier.
