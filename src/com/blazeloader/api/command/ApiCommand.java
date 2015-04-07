@@ -1,7 +1,6 @@
 package com.blazeloader.api.command;
 
 import com.blazeloader.bl.main.BLMain;
-
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;

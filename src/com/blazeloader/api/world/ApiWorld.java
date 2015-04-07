@@ -1,5 +1,8 @@
 package com.blazeloader.api.world;
 
+import com.blazeloader.api.block.UpdateType;
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.util.version.Versions;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -11,12 +14,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
-import com.blazeloader.api.block.UpdateType;
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.Versions;
 
 /**
  * Api functions related to worlds
@@ -25,9 +24,14 @@ import com.blazeloader.util.version.Versions;
  *
  */
 public class ApiWorld {
-
     private static List<IChunkGenerator> generators = new ArrayList<IChunkGenerator>();
+    // The unmodifiable list just holds a reference to the original. I'd rather keep it instead of creating a new one for each chunk loaded.
+    private static List<IChunkGenerator> unmodifiable_generators = Collections.unmodifiableList(generators);
 
+    public static List<IChunkGenerator> getGenerators() {
+        return unmodifiable_generators;
+    }
+    
     /**
      * Registers a chunk generator
      *
@@ -35,26 +39,6 @@ public class ApiWorld {
      */
     public static void registerChunkGenerator(IChunkGenerator generator) {
         generators.add(generator);
-    }
-
-    /**
-     * Generates a chunk at a specified location.
-     *
-     * @param world  The world to generate in
-     * @param chunkX The x-location of the chunk to generate
-     * @param chunkZ The z-location of the chunk to generate
-     */
-    public static void generateChunk(World world, int chunkX, int chunkZ) {
-        Random random = new Random(world.getSeed());
-        long seedX = random.nextLong() >> 2 + 1l;
-        long seedZ = random.nextLong() >> 2 + 1l;
-        long chunkSeed = (seedX * chunkX + seedZ * chunkZ) ^ world.getSeed();
-
-        for (IChunkGenerator generator : generators) {
-            random.setSeed(chunkSeed);
-            generator.generateChunk(world, random, chunkX, chunkZ);
-        }
-
     }
 
     /**

@@ -2,7 +2,6 @@ package com.blazeloader.api.command;
 
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 

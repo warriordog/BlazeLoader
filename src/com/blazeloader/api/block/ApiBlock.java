@@ -1,19 +1,19 @@
 package com.blazeloader.api.block;
 
-import java.util.Iterator;
-
+import com.blazeloader.api.item.ApiItem;
+import com.blazeloader.util.version.Versions;
+import com.google.common.collect.ImmutableList;
+import com.mumfrey.liteloader.util.ModUtilities;
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import com.blazeloader.api.item.ApiItem;
-import com.blazeloader.util.version.Versions;
-import com.google.common.collect.ImmutableList;
-import com.mumfrey.liteloader.util.ModUtilities;
+import java.util.Iterator;
 
 /**
  * Api for block-specific functions
@@ -83,15 +83,61 @@ public class ApiBlock {
     }
     
     /**
+     * Utility method to register a block.
+     * Will register the block together with an item and setup unlocalized names for both.
+     *
+     * @param id        The ID of the block.
+     * @param mod        The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
+     * @param name    The name to register the block as. Will be set as the name for both the block and the item
+     * @param block    The block to add
+     *
+     * @return the block for simplicity
+     */
+    public static <T extends Block> T quickRegisterBlock(int id, String mod, String name, T block) {
+        return registerBlock(id, new ResourceLocation(mod, name), (T) block.setUnlocalizedName(name), (new ItemBlock(block)).setUnlocalizedName(name));
+    }
+
+    /**
+     * Registers and initialises a block in the block registry together with an item for it.
+     *
+     * @param id        The ID of the block.
+     * @param mod       The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
+     * @param name      The name to register the block as
+     * @param block     The block to add
+     * @param itemBlock The item to be used for this block
+     * @return the block for simplicity
+     */
+    public static <T extends Block> T registerBlock(int id, String mod, String name, T block, ItemBlock itemBlock) {
+        return registerBlock(id, new ResourceLocation(mod, name), block, itemBlock);
+    }
+
+    /**
+     * Registers and initialises a block in the block registry together with an item for it.
+     *
+     * @param id        The ID of the block.
+     * @param name      The name to register the block as
+     * @param block     The block to add
+     * @param itemBlock The item to be used for this block
+     * @return the block for simplicity
+     */
+    public static <T extends Block> T registerBlock(int id, ResourceLocation name, T block, ItemBlock itemBlock) {
+        registerBlock(id, name, block);
+        ApiItem.registerItemBlock(block, itemBlock);
+        return block;
+    }
+
+    /**
      * Registers and initialises a block in the block registry.
      *
      * @param id    The ID of the block.
      * @param mod	The domain used for this mod. eg. "minecraft:stone" has the domain "minecraft"
      * @param name  The name to register the block as
      * @param block The block to add
+     *
+     * @return the block for simplicity
      */
-    public static void registerBlock(int id, String mod, String name, Block block) {
-    	registerBlock(id, new ResourceLocation(mod, name), block);
+    public static <T extends Block> T registerBlock(int id, String mod, String name, T block) {
+        return registerBlock(id, new ResourceLocation(mod, name), block);
     }
     
     /**
@@ -100,13 +146,16 @@ public class ApiBlock {
      * @param id    The ID of the block.
      * @param name  The name to register the block as
      * @param block The block to add
+     *
+     * @return the block for simplicity
      */
-    public static void registerBlock(int id, ResourceLocation name, Block block) {
-    	injectBlock(id, name, block);
+    public static <T extends Block> T registerBlock(int id, ResourceLocation name, T block) {
+        injectBlock(id, name, block);
         for (IBlockState state : (ImmutableList<IBlockState>)block.getBlockState().getValidStates()) {
             int metadata = Block.blockRegistry.getIDForObject(block) << 4 | block.getMetaFromState(state);
             Block.BLOCK_STATE_IDS.put(state, metadata);
         }
+        return block;
     }
     
     /**
@@ -114,9 +163,12 @@ public class ApiBlock {
      * 
      * @param block		The block
      * @param variants	Names for all the item's variants
+     *
+     * @return the block for simplicity
      */
-    public static void registerBlockVarientNames(Block block, String... variants) {
-    	ApiItem.registerItemVariantNames(ApiItem.getItemByBlock(block), variants);
+    public static <T extends Block> T registerBlockVarientNames(T block, String... variants) {
+        ApiItem.registerItemVariantNames(ApiItem.getItemByBlock(block), variants);
+        return block;
     }
     
     /**
