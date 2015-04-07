@@ -59,9 +59,15 @@ public class EntityPropertyManager {
 	
 	public static void readFromNBT(Entity e, NBTTagCompound t) {
 		if (mapping.containsKey(e)) {
+			NBTTagCompound modsTag;
+			if (t.hasKey("BlazeLoader")) {
+				modsTag = t.getCompoundTag("BlazeLoader");
+			} else {
+				modsTag = new NBTTagCompound();
+			}
 			Properties p = mapping.get(e);
 			try {
-				p.readFromNBT(t);
+				p.readFromNBT(modsTag);
 			} catch (Throwable er) {
 				BLMain.LOGGER_MAIN.logFatal("Failed in reading entity NBT into (" + p.getClass().getCanonicalName() + ").", er);
 			}
@@ -70,9 +76,11 @@ public class EntityPropertyManager {
 	
 	public static void writeToNBT(Entity e, NBTTagCompound t) {
 		if (mapping.containsKey(e)) {
+			NBTTagCompound modsTag = new NBTTagCompound();
+			t.setTag("BlazeLoader", modsTag);
 			Properties p = mapping.get(e);
 			try {
-				p.writeToNBT(t);
+				p.writeToNBT(modsTag);
 			} catch (Throwable er) {
 				BLMain.LOGGER_MAIN.logFatal("Failed in writing entity NBT from (" + p.getClass().getCanonicalName() + ").", er);
 			}

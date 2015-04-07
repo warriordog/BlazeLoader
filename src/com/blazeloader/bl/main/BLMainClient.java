@@ -1,13 +1,18 @@
 package com.blazeloader.bl.main;
 
+import com.blazeloader.event.handlers.BlazeLoaderIP;
+import com.blazeloader.event.handlers.BlazeLoaderIPClient;
+import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,6 +51,12 @@ public class BLMainClient extends BLMain {
             t.printStackTrace();
             System.exit(code);
         }
+    }
+    
+    public List<InterfaceProvider> getInterfaceProviders() {
+    	List<InterfaceProvider> result = super.getInterfaceProviders();
+    	result.add(BlazeLoaderIPClient.instance);
+        return result;
     }
     
     @Override

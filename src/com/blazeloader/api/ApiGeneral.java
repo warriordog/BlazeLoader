@@ -14,9 +14,9 @@ import java.util.ArrayList;
 public class ApiGeneral {
     private static final ArrayList<String> brands = new ArrayList<String>();
 
-
-    private static final boolean isClient = LiteLoader.getEnvironmentType() == LoaderEnvironment.EnvironmentType.CLIENT;
-
+    //You can't do that. LiteLoader is not initialised at this point
+    //private static final boolean isClient = LiteLoader.getEnvironmentType() == LoaderEnvironment.EnvironmentType.CLIENT;
+    
     /**
      * Location of Minecraft's working directory.
      * <br><br>%APPDATA%/.minecraft/ for windows.
@@ -32,15 +32,7 @@ public class ApiGeneral {
     public static void shutdown(String message, int code) {
         BLMain.instance().shutdown(message, code);
     }
-
-    /**
-     * Returns true if a game is currently running. Will always be true on the server.
-     */
-    public static boolean isInGame() {
-        return BlazeLoaderCP.instance.getGameEngine().isInGame();
-    }
-
-
+    
     /**
      * Adds a mod to the client/seerver branding
      *
@@ -74,18 +66,34 @@ public class ApiGeneral {
     /**
      * Checks if the game is a client instance
      *
-     * @return return true if the game is a client
+     * @return true if the game is a client
      */
     public static boolean isClient() {
-        return isClient;
+        return BlazeLoaderCP.instance.getGameEngine().isClient();
     }
 
     /**
-     * Checks if the game is a dedicated server instance (an actualy server with no client, not an integrated server).  Will return false on client.
+     * Checks if the game is a dedicated server instance (an actual server with no client, not an integrated server).  Will return false on client.
      *
-     * @return return true if the game is a dedicated server
+     * @return true if the game is a dedicated server
      */
     public static boolean isServer() {
-        return !isClient;
+        return !isClient();
+    }
+    
+    /**
+     * Checks if the current world is a singleplayer one. Always returns false on the server and will return false in lan games.
+     * 
+     * @return true if the game is in singleplayer
+     */
+    public static boolean isSinglePlayer() {
+    	return BlazeLoaderCP.instance.getGameEngine().isSinglePlayer();
+    }
+
+    /**
+     * Returns true if a game is currently running. Will always be true on the server.
+     */
+    public static boolean isInGame() {
+        return BlazeLoaderCP.instance.getGameEngine().isInGame();
     }
 }

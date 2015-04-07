@@ -8,7 +8,6 @@ import net.minecraft.world.World;
  * Interface for entity extension classes (NYI)
  */
 public interface IEntityProperties {
-	
 	/**
 	 * Occurs whilst the entity is being constructed.
 	 */
