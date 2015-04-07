@@ -1,14 +1,13 @@
 package com.blazeloader.api.gui;
 
+import com.blazeloader.api.client.gui.IModInventory;
+import com.blazeloader.api.client.gui.IModLockableInventory;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.util.ChatComponentTranslation;
-
-import com.blazeloader.api.client.gui.IModInventory;
-import com.blazeloader.api.client.gui.IModLockableInventory;
 
 /**
  * GUI functions

@@ -1,12 +1,11 @@
 package com.blazeloader.api.particles;
 
+import com.blazeloader.util.shape.IShape;
+import com.blazeloader.util.shape.Sphere;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
-
-import com.blazeloader.util.shape.IShape;
-import com.blazeloader.util.shape.Sphere;
 
 /**
  * Provides an API and registry for custom particles.

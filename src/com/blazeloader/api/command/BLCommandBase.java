@@ -1,10 +1,9 @@
 package com.blazeloader.api.command;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
 
 /**
  * A superclass for commands that wish to include BL utilities.

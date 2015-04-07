@@ -1,12 +1,11 @@
 package com.blazeloader.api.item;
 
+import com.google.common.collect.Lists;
+import com.mumfrey.liteloader.util.ModUtilities;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-
-import com.google.common.collect.Lists;
-import com.mumfrey.liteloader.util.ModUtilities;
 
 /**
  * Api functions for items.
@@ -19,11 +18,11 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The item name
      * @param item  The item itself
-     * 
+     *
      * @return the item for simplicity
      */
     public static <T extends ItemBlock> T registerItem(int id, String mod, String name, T item) {
-    	return registerItem(id, new ResourceLocation(mod, name), item);
+        return registerItem(id, new ResourceLocation(mod, name), item);
     }
 
     /**
@@ -32,35 +31,35 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The name to register the item as
      * @param item  The item itself
-     * 
+     *
      * @return the item for simplicity
      */
     public static <T extends ItemBlock> T registerItem(int id, ResourceLocation name, T item) {
-    	ModUtilities.addItem(id, name, item, true);
-    	return item;
+        ModUtilities.addItem(id, name, item, true);
+        return item;
     }
     
     /**
      * Registers an ItemBlock in the game registry for the given block.
      *
      * @param block  The block itself
-     * 
+     *
      * @return the item for simplicity
      */
     public static ItemBlock registerItemBlock(Block block) {
-    	return registerItemBlock(block, (new ItemBlock(block)).setUnlocalizedName(block.getUnlocalizedName()));
+        return registerItemBlock(block, (new ItemBlock(block)).setUnlocalizedName(block.getUnlocalizedName()));
     }
     
     /**
      * Registers an ItemBlock in the game registry for the given block.
      *
      * @param block  The item itself
-     * @param item 	 An ItemBlock to register with the given block
-     * 
+     * @param item     An ItemBlock to register with the given block
+     *
      * @return the item for simplicity
      */
     public static <T extends ItemBlock> T registerItemBlock(Block block, T item) {
-    	return registerItemBlock(Block.getIdFromBlock(block), (ResourceLocation)Block.blockRegistry.getNameForObject(block), block, item);
+        return registerItemBlock(Block.getIdFromBlock(block), (ResourceLocation) Block.blockRegistry.getNameForObject(block), block, item);
     }
     
     /**
@@ -69,13 +68,13 @@ public class ApiItem {
      * @param id    The item ID
      * @param name  The name to register the item as
      * @param item  The item itself
-     * 
+     *
      * @return the item for simplicity
      */
     public static <T extends ItemBlock> T registerItemBlock(int id, ResourceLocation name, Block block, T item) {
-    	registerItem(id, name, item);
-    	Item.BLOCK_TO_ITEM.put(block, item);
-    	return item;
+        registerItem(id, name, item);
+        Item.BLOCK_TO_ITEM.put(block, item);
+        return item;
     }
     
     /**

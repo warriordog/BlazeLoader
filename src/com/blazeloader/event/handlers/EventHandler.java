@@ -1,13 +1,12 @@
 package com.blazeloader.event.handlers;
 
+import com.blazeloader.api.world.UnpopulatedChunksQ;
+import com.mumfrey.liteloader.core.event.HandlerList;
+import com.mumfrey.liteloader.transformers.event.EventInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-
-import com.blazeloader.api.world.UnpopulatedChunksQ;
-import com.mumfrey.liteloader.core.event.HandlerList;
-import com.mumfrey.liteloader.transformers.event.EventInfo;
 
 /**
  * Side-independent event handler
@@ -58,18 +57,18 @@ public class EventHandler {
         }
         return allow;
     }
-    
+
     public static void eventOnChunkLoad(EventInfo<Chunk> event) {
-    	Chunk chunk = event.getSource();
-    	if (!chunk.isTerrainPopulated()) {
-    		UnpopulatedChunksQ.instance().push(chunk);
-    	}
-    	chunkEventHandlers.all().onChunkLoad(chunk);
+        Chunk chunk = event.getSource();
+        if (!chunk.isTerrainPopulated()) {
+            UnpopulatedChunksQ.instance().push(chunk);
+        }
+        chunkEventHandlers.all().onChunkLoad(chunk);
     }
-    
+
     public static void eventOnChunkUnload(EventInfo<Chunk> event) {
-    	Chunk chunk = event.getSource();
-    	UnpopulatedChunksQ.instance().pop(chunk);
-    	chunkEventHandlers.all().onChunkUnload(chunk);
+        Chunk chunk = event.getSource();
+        UnpopulatedChunksQ.instance().pop(chunk);
+        chunkEventHandlers.all().onChunkUnload(chunk);
     }
 }

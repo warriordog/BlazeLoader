@@ -1,17 +1,22 @@
 package com.blazeloader.api;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.main.BlazeLoaderCP;
+import com.mumfrey.liteloader.core.LiteLoader;
+import com.mumfrey.liteloader.launch.LoaderEnvironment;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * General API functions
  */
 public class ApiGeneral {
-	private static final ArrayList<String> brands = new ArrayList<String>();
-	
+    private static final ArrayList<String> brands = new ArrayList<String>();
+
+
+    private static final boolean isClient = LiteLoader.getEnvironmentType() == LoaderEnvironment.EnvironmentType.CLIENT;
+
     /**
      * Location of Minecraft's working directory.
      * <br><br>%APPDATA%/.minecraft/ for windows.
@@ -27,21 +32,15 @@ public class ApiGeneral {
     public static void shutdown(String message, int code) {
         BLMain.instance().shutdown(message, code);
     }
-    
-	/**
-	 * Returns true if a game is currently running. Will always be true on the server.
-	 */
-	public static boolean isInGame() {
-		return BlazeLoaderCP.instance.getGameEngine().isInGame();
-	}
-	
-	/**
-	 * Returns true if the current game is a singleplayer one. Is always false on the server.
-	 */
-	public static boolean isSinglePlayer() {
-		return BlazeLoaderCP.instance.getGameEngine().isSinglePlayer();
-	}
-	
+
+    /**
+     * Returns true if a game is currently running. Will always be true on the server.
+     */
+    public static boolean isInGame() {
+        return BlazeLoaderCP.instance.getGameEngine().isInGame();
+    }
+
+
     /**
      * Adds a mod to the client/seerver branding
      *
@@ -57,18 +56,36 @@ public class ApiGeneral {
      * Gets the formatted client/server brand name
      */
     public static String getBrand() {
-    	StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("BlazeLoader");
         if (brands.size() > 0) {
-        	builder.append(" (");
-	        for (String str : brands) {
-	        	if (builder.length() > "BlazeLoader (".length()) { 
-	        		builder.append(", ");
-	        	}
-	            builder.append(str);
-	        }
-	        builder.append(")");
+            builder.append(" (");
+            for (String str : brands) {
+                if (builder.length() > "BlazeLoader (".length()) {
+                    builder.append(", ");
+                }
+                builder.append(str);
+            }
+            builder.append(")");
         }
         return builder.toString();
+    }
+
+    /**
+     * Checks if the game is a client instance
+     *
+     * @return return true if the game is a client
+     */
+    public static boolean isClient() {
+        return isClient;
+    }
+
+    /**
+     * Checks if the game is a dedicated server instance (an actualy server with no client, not an integrated server).  Will return false on client.
+     *
+     * @return return true if the game is a dedicated server
+     */
+    public static boolean isServer() {
+        return !isClient;
     }
 }

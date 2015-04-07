@@ -1,10 +1,10 @@
 package com.blazeloader.api.item;
 
+import net.minecraft.item.Item;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.minecraft.item.Item;
 
 public class ItemRegistry {
 	private static ItemRegistry instance = new ItemRegistry();

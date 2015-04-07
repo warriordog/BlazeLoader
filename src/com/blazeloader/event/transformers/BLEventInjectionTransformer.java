@@ -31,9 +31,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     }
 
     protected void addBLEvent(EventSide side, BLMethodInfo method, InjectionPoint injectionPoint) {
-    	if (method == null || injectionPoint == null) {
-    		throw new InvalidEventException(side.toString(), method, injectionPoint);
-    	}
+        if (method == null || injectionPoint == null) {
+            throw new InvalidEventException(side.toString(), method, injectionPoint);
+        }
         String name = method.getSimpleName();
         addEvent(Event.getOrCreate("BL." + name, true), method, injectionPoint).addListener(new MethodInfo(side.getHandler(), "event" + capitaliseFirst(name)));
     }
