@@ -20,7 +20,7 @@ public interface IEntityProperties {
 	
 	/**
 	 * 
-	 * @param tagCompund
+	 * @param tagCompound
 	 */
 	public void readFromNBT(NBTTagCompound tagCompund);
 }

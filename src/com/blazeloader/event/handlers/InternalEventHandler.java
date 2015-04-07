@@ -75,4 +75,8 @@ public class InternalEventHandler {
     public static void eventReadFromNBT(EventInfo<Entity> event, NBTTagCompound tag) {
     	EntityPropertyManager.readFromNBT(event.getSource(), tag);
     }
+    
+    public static void eventCopyDataFromOld(EventInfo<Entity> event, Entity old) {
+    	EntityPropertyManager.copyToEntity(old, event.getSource());
+    }
 }

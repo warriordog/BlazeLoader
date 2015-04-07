@@ -85,9 +85,7 @@ public class EventHandler {
     }
     
     public static void initEntity(EventInfo<Entity> event, World w) {
-    	if (event.getSource() instanceof EntityLivingBase) {
-    		EntityPropertyManager.entityinit((EntityLivingBase)event.getSource());
-    	}
     	entityEventHandlers.all().eventEntityConstructed(event.getSource());
+    	EntityPropertyManager.entityinit(event.getSource());
     }
 }
