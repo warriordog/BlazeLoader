@@ -1,26 +1,27 @@
 package com.blazeloader.util.logging;
 
-import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.main.Settings;
 import net.acomputerdog.core.java.Sleep;
+import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LogManager {
     private static final Map<String, BLogger> loggerCache = new HashMap<String, BLogger>();
     private static final Map<String, Writer> writerMap = new HashMap<String, Writer>();
     private static final Queue<LogItem> logQueue = new ConcurrentLinkedQueue<LogItem>();
+    private static final List<Writer> activeWriters = new LinkedList<Writer>();
     private static final File logDir = new File("./logs/");
+    private static CLogger loggerLogger = new CLogger("LogManager", false, true);
 
-    private static boolean logsEnabled = false;
+    private static boolean logsInitialized = false;
+    private static boolean loggerActive = true;
 
     public static BLogger createLogger(String name) {
         return createLogger(name, false, true);
@@ -39,17 +40,67 @@ public class LogManager {
         return logger;
     }
 
-    static void addLogEntry(String name, String message) {
-        if (logsEnabled) {
-            logQueue.add(new LogItem(name, message));
+    static void addLogEntry(BLogger logger, String message) {
+        if (logsInitialized) {
+            System.err.print("addLogEntry message: " + message);
+            logQueue.add(new LogItem(logger, message));
         }
     }
 
     static {
         if (!(logDir.isDirectory() || logDir.mkdirs())) {
-            BLMain.LOGGER_MAIN.logError("Unable to create logging directory!  Logs will not be recorded!");
+            loggerLogger.logError("Unable to create logging directory!  Logs will not be recorded!");
+        } else {
+            logsInitialized = true;
         }
-        logsEnabled = true;
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                loggerActive = false;
+                logInfo("Writing queued logs.");
+                if (logQueue != null && !logQueue.isEmpty()) {
+                    for (LogItem item : logQueue) {
+                        try {
+                            writeLogItem(item);
+                        } catch (Exception ignored) {}
+                    }
+                    logQueue.clear();
+                }
+                if (activeWriters != null && !activeWriters.isEmpty()) {
+                    for (Writer writer : activeWriters) {
+                        try {
+                            writer.flush();
+                            writer.close();
+                        } catch (Exception ignored) {}
+                    }
+                    activeWriters.clear();
+                }
+                logInfo("Done.");
+            }
+
+            private void logInfo(String message) {
+                if (loggerLogger != null) {
+                    loggerLogger.logInfo(message);
+                } else {
+                    fallbackLog("INFO", message);
+                }
+            }
+
+            private void logWarning(String message) {
+                if (loggerLogger != null) {
+                    loggerLogger.logWarning(message);
+                } else {
+                    fallbackLog("WARNING", message);
+                }
+            }
+
+            private void fallbackLog(String level, String message) {
+                System.out.println("[LogManager/Fallback][" + level + "] " + message);
+            }
+
+        });
+
         new Thread() {
             @Override
             public synchronized void start() {
@@ -60,26 +111,37 @@ public class LogManager {
 
             @Override
             public void run() {
-                while (true) {
+                loggerLogger.logInfo("Log writer thread started.");
+                while (loggerActive) {
                     while (logQueue.size() > 0) {
                         LogItem log = logQueue.poll();
-                        try {
-                            getWriter(log.name).write("[" + log.name + "] " + log.message);
-                        } catch (IOException ignored) {}
+                        if (logsInitialized && Settings.logToFile) {
+                            try {
+                                System.err.print("LogWriter message: " + log.message);
+                                writeLogItem(log);
+                            } catch (IOException ignored) {}
+                        }
                     }
                     Sleep.sleep(100);
                 }
+                loggerLogger.logInfo("Log writer terminated.");
             }
         }.start();
+        loggerLogger.logInfo("BLogger system initialized.");
+    }
+
+    private static void writeLogItem(LogItem log) throws IOException {
+        System.err.print("writeLogItem message: " + log.message);
+        getWriter(log.logger.getName()).write(log.message);
     }
 
     private static Writer getWriter(String name) {
         Writer writer = writerMap.get(name);
         if (writer == null) {
             try {
-                writer = new FileWriter(new File(logDir, "name.log"));
+                writer = new FileWriter(new File(logDir, name + ".bl_log.txt"));
             } catch (IOException e) {
-                BLMain.LOGGER_MAIN.logWarning("Exception creating logger for \"" + name + "\"!", e);
+                loggerLogger.logWarning("Exception creating logger for \"" + name + "\"!", e);
                 writer = new NullWriter();
             }
             writerMap.put(name, writer);
@@ -88,12 +150,13 @@ public class LogManager {
     }
 
     private static class LogItem {
-        private final String name;
+        private final BLogger logger;
         private final String message;
 
-        private LogItem(String name, String message) {
-            this.name = name;
+        private LogItem(BLogger logger, String message) {
+            this.logger = logger;
             this.message = message;
+            System.err.print("LogItem message: " + message);
         }
     }
 

@@ -33,6 +33,8 @@ public class BLMain {
      * Logger that does not log date or time
      */
     public static final CLogger LOGGER_FAST = new CLogger("BlazeLoader", false, false, LogLevel.DEBUG);
+
+    public static boolean isClient;
     
     /**
      * true if a game tick is in progress
@@ -117,7 +119,9 @@ public class BLMain {
         }
     }
 
-    public void init() {}
+    public void init() {
+        isClient = supportsClient();
+    }
 
     public boolean supportsClient() {
         return false;

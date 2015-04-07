@@ -18,4 +18,9 @@ public class Settings {
      * The minimum log level required for a message to be displayed.
      */
     public static String minimumLogLevel = "DEBUG";
+
+    /**
+     * If BLogger-supporting mods should log information to a file.
+     */
+    public static boolean logToFile = true;
 }
