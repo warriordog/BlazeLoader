@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class ApiGeneral {
     private static final ArrayList<String> brands = new ArrayList<String>();
 
-
     /**
      * Location of Minecraft's working directory.
      * <br><br>%APPDATA%/.minecraft/ for windows.
@@ -28,10 +27,6 @@ public class ApiGeneral {
     public static void shutdown(String message, int code) {
         BLMain.instance().shutdown(message, code);
     }
-  
-
-
-    /**
 
 
     /**
@@ -69,7 +64,7 @@ public class ApiGeneral {
      *
      * @return true if the game is a client
      */
-    public static boolean isClient() ;
+    public static boolean isClient() {
         return BLMain.isClient;
     }
 
@@ -78,8 +73,8 @@ public class ApiGeneral {
      *
      * @return true if the game is a dedicated server
      */
-    public static boolean isServer() ;
-        return BLMain.isClient);
+    public static boolean isServer() {
+        return !BLMain.isClient;
     }
     
     /**
