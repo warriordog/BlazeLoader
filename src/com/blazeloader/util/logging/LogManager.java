@@ -9,14 +9,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LogManager {
     private static final Map<String, BLogger> loggerCache = new HashMap<String, BLogger>();
     private static final Map<String, Writer> writerMap = new HashMap<String, Writer>();
     private static final Queue<LogItem> logQueue = new ConcurrentLinkedQueue<LogItem>();
-    private static final List<Writer> activeWriters = new LinkedList<Writer>();
     private static final File logDir = new File("./logs/");
     private static CLogger loggerLogger = new CLogger("LogManager", false, true);
 
@@ -42,7 +43,6 @@ public class LogManager {
 
     static void addLogEntry(BLogger logger, String message) {
         if (logsInitialized) {
-            System.err.print("addLogEntry message: " + message);
             logQueue.add(new LogItem(logger, message));
         }
     }
@@ -67,14 +67,14 @@ public class LogManager {
                     }
                     logQueue.clear();
                 }
-                if (activeWriters != null && !activeWriters.isEmpty()) {
-                    for (Writer writer : activeWriters) {
+                if (writerMap != null && !writerMap.isEmpty()) {
+                    for (Writer writer : writerMap.values()) {
                         try {
                             writer.flush();
                             writer.close();
                         } catch (Exception ignored) {}
                     }
-                    activeWriters.clear();
+                    writerMap.clear();
                 }
                 logInfo("Done.");
             }
@@ -117,7 +117,6 @@ public class LogManager {
                         LogItem log = logQueue.poll();
                         if (logsInitialized && Settings.logToFile) {
                             try {
-                                System.err.print("LogWriter message: " + log.message);
                                 writeLogItem(log);
                             } catch (IOException ignored) {}
                         }
@@ -131,7 +130,6 @@ public class LogManager {
     }
 
     private static void writeLogItem(LogItem log) throws IOException {
-        System.err.print("writeLogItem message: " + log.message);
         getWriter(log.logger.getName()).write(log.message);
     }
 
@@ -156,7 +154,6 @@ public class LogManager {
         private LogItem(BLogger logger, String message) {
             this.logger = logger;
             this.message = message;
-            System.err.print("LogItem message: " + message);
         }
     }
 
