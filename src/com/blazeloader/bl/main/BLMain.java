@@ -1,15 +1,18 @@
 package com.blazeloader.bl.main;
 
-import com.blazeloader.event.handlers.client.BlazeLoaderIPClient;
+import com.blazeloader.event.handlers.BlazeLoaderIP;
+import com.blazeloader.event.handlers.BlazeLoaderIPClient;
 import com.mumfrey.liteloader.api.*;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 import com.mumfrey.liteloader.launch.LoaderProperties;
+
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,19 +85,21 @@ public class BLMain {
     }
 
     public List<CoreProvider> getCoreProviders() {
-        return Collections.singletonList((CoreProvider) BlazeLoaderCP.instance);
+        return Collections.singletonList((CoreProvider)BlazeLoaderCP.instance);
     }
-
+    
     public List<InterfaceProvider> getInterfaceProviders() {
-        return Collections.singletonList((InterfaceProvider) BlazeLoaderIPClient.instance);
+    	List result = new ArrayList();
+    	result.add(BlazeLoaderIP.instance);
+        return result;
     }
 
     public List<Observer> getObservers() {
         return null;
     }
-
+    
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Collections.singletonList((CustomisationProvider) BlazeLoaderBP.instance);
+        return Collections.singletonList((CustomisationProvider)BlazeLoaderBP.instance);
     }
 
     public List<Observer> getPreInitObservers() {
