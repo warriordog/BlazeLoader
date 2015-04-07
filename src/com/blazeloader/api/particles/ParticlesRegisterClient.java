@@ -1,5 +1,9 @@
 package com.blazeloader.api.particles;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -13,10 +17,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * 

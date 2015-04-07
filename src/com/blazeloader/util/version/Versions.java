@@ -28,12 +28,21 @@ public class Versions {
     /**
      * Returns true if running on the client, false for server.  Only works AFTER BlazeLoader is initialized.
      *
-     * @return Return true is running on client, false for server.
+     * @return Return true if running on client, false for server.
      */
     public static boolean isClient() {
         return BLMain.instance().supportsClient();
     }
-
+    
+    /**
+     * Returns true if running on the server, false for client.  Only works AFTER BlazeLoader is initialized.
+     *
+     * @return Return true if running on server, false for client.
+     */
+    public static boolean isServer() {
+    	return !isClient();
+    }
+    
     /**
      * Detects if forge is installed.
      *
