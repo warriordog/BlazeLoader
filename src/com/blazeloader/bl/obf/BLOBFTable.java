@@ -32,6 +32,8 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
+            } else {
+            	invalidateResult(obfName, type);
             }
         }
         return obf;
@@ -45,6 +47,8 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
+            } else {
+            	invalidateResult(srgName, type);
             }
         }
         return obf;
@@ -58,8 +62,14 @@ public class BLOBFTable extends DirectOBFTableSRG {
                 obfNameMap.get(type).put(obf.obf, obf);
                 srgNameMap.get(type).put(obf.srg, obf);
                 mcpNameMap.get(type).put(obf.name, obf);
+            } else {
+            	invalidateResult(mcpName, type);
             }
         }
         return obf;
+    }
+    
+    private void invalidateResult(String name, TargetType type) {
+    	throw new RuntimeException("Unrecognised Obfuscation String: " + name + " for TargetType: " + type.toString());
     }
 }

@@ -1,10 +1,21 @@
 package com.blazeloader.event.handlers;
 
+import com.blazeloader.api.entity.EntityPropertyManager;
 import com.blazeloader.api.world.UnpopulatedChunksQ;
+import com.blazeloader.event.listeners.ChunkListener;
+import com.blazeloader.event.listeners.EntityConstructingListener;
+import com.blazeloader.event.listeners.ModEventListener;
+import com.blazeloader.event.listeners.PlayerListener;
+import com.blazeloader.event.listeners.TickListener;
+import com.blazeloader.event.listeners.WorldListener;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
@@ -12,11 +23,12 @@ import net.minecraft.world.chunk.Chunk;
  * Side-independent event handler
  */
 public class EventHandler {
-    public static final HandlerList<ModEventHandler> modEventHandlers = new HandlerList<ModEventHandler>(ModEventHandler.class);
-    public static final HandlerList<TickEventHandler> tickEventHandlers = new HandlerList<TickEventHandler>(TickEventHandler.class);
-    public static final HandlerList<WorldEventHandler> worldEventHandlers = new HandlerList<WorldEventHandler>(WorldEventHandler.class);
-    public static final HandlerList<PlayerEventHandler> playerEventHandlers = new HandlerList<PlayerEventHandler>(PlayerEventHandler.class);
-    public static final HandlerList<ChunkEventHandler> chunkEventHandlers = new HandlerList<ChunkEventHandler>(ChunkEventHandler.class);
+    public static final HandlerList<ModEventListener> modEventHandlers = new HandlerList<ModEventListener>(ModEventListener.class);
+    public static final HandlerList<TickListener> tickEventHandlers = new HandlerList<TickListener>(TickListener.class);
+    public static final HandlerList<WorldListener> worldEventHandlers = new HandlerList<WorldListener>(WorldListener.class);
+    public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class);
+    public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
+    public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
 
     public static void eventTick() {
         tickEventHandlers.all().eventTick();
@@ -52,7 +64,7 @@ public class EventHandler {
 
     public static boolean eventPlayerLoginAttempt(String username, boolean isAllowed) {
         boolean allow = isAllowed;
-        for (PlayerEventHandler mod : playerEventHandlers) {
+        for (PlayerListener mod : playerEventHandlers) {
             allow = mod.eventMPPlayerLoginAttempt(username, isAllowed);
         }
         return allow;
@@ -70,5 +82,10 @@ public class EventHandler {
         Chunk chunk = event.getSource();
         UnpopulatedChunksQ.instance().pop(chunk);
         chunkEventHandlers.all().onChunkUnload(chunk);
+    }
+    
+    public static void initEntity(EventInfo<Entity> event, World w) {
+    	entityEventHandlers.all().eventEntityConstructed(event.getSource());
+    	EntityPropertyManager.entityinit(event.getSource());
     }
 }
