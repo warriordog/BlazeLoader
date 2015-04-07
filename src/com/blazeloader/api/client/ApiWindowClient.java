@@ -1,21 +1,18 @@
 package com.blazeloader.api.client;
 
-import org.lwjgl.opengl.Display;
-
-import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.opengl.Display;
 
 /**
  * API functions for changing the client window.  Title branding, etc.
  */
 public class ApiWindowClient {
-    private static final ArrayList<String> brands = new ArrayList<String>();
-
     /**
      * Sets the window icon from a mod resource pack
      * <p/>
@@ -58,30 +55,6 @@ public class ApiWindowClient {
      */
     public static String getTitle() {
     	return Display.getTitle();
-    }
-    
-    /**
-     * Adds a mod to the client brand
-     *
-     * @param brand Brand Name
-     */
-    public static void setClientBrand(String brand) {
-        if (brand != null && !brand.isEmpty() && !brands.contains(brand)) {
-            brands.add(brand);
-        }
-    }
-
-    /**
-     * Gets the formatted Client brand name
-     */
-    public static String getClientBrand() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("BlazeLoader");
-        for (String str : brands) {
-            builder.append(", ");
-            builder.append(str);
-        }
-        return builder.toString();
     }
 
     private static ByteBuffer getIcon(File par1File) throws IOException {
