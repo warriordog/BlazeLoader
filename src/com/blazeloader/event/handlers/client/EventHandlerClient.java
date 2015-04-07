@@ -11,7 +11,6 @@ import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.core.event.HandlerList.ReturnLogicOp;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiScreen;

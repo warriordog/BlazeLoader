@@ -2,8 +2,6 @@ package com.blazeloader.api;
 
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.main.BlazeLoaderCP;
-import com.mumfrey.liteloader.core.LiteLoader;
-import com.mumfrey.liteloader.launch.LoaderEnvironment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,9 +12,6 @@ import java.util.ArrayList;
 public class ApiGeneral {
     private static final ArrayList<String> brands = new ArrayList<String>();
 
-    //You can't do that. LiteLoader is not initialised at this point
-    //private static final boolean isClient = LiteLoader.getEnvironmentType() == LoaderEnvironment.EnvironmentType.CLIENT;
-    
     /**
      * Location of Minecraft's working directory.
      * <br><br>%APPDATA%/.minecraft/ for windows.
@@ -32,7 +27,8 @@ public class ApiGeneral {
     public static void shutdown(String message, int code) {
         BLMain.instance().shutdown(message, code);
     }
-    
+
+
     /**
      * Adds a mod to the client/seerver branding
      *
@@ -69,7 +65,7 @@ public class ApiGeneral {
      * @return true if the game is a client
      */
     public static boolean isClient() {
-        return BlazeLoaderCP.instance.getGameEngine().isClient();
+        return BLMain.isClient;
     }
 
     /**
@@ -78,7 +74,7 @@ public class ApiGeneral {
      * @return true if the game is a dedicated server
      */
     public static boolean isServer() {
-        return !isClient();
+        return !BLMain.isClient;
     }
     
     /**
