@@ -1,12 +1,7 @@
 package com.blazeloader.api.compatibility;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import javax.xml.bind.TypeConstraintException;
+import java.util.*;
 
 /**
  * A wall for mods to communicate between each other by setting and getting values by a string identifier.
@@ -159,7 +154,7 @@ public class Wall implements Iterable<Wall.Entry> {
 	 * Checks if the given key has a mapping on this wall. 
 	 * @param key		key whose presence in this wall is to be tested 
 	 * @return true if this wall contains an entry for the specified key
-	 * @see java.util.map.containsKey
+	 * @see java.util.Map.containsKey()
 	 */
 	public boolean containsKey(String key) {
 		return isDefined(key);
@@ -184,7 +179,7 @@ public class Wall implements Iterable<Wall.Entry> {
 	
 	/**
 	 * Returns an iterator over the keys on this wall.
-	 * @see  java.util.set.iterator
+	 * @see  java.util.Set.iterator()
 	 * @return an iterator over the keys on this wall.
 	 */
 	public Iterator<String> keyIterator() {

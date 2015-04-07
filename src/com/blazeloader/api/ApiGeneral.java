@@ -1,19 +1,19 @@
 package com.blazeloader.api;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.main.BlazeLoaderCP;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.launch.LoaderEnvironment;
 
+import java.io.File;
+import java.util.ArrayList;
+
 /**
  * General API functions
  */
 public class ApiGeneral {
-	private static final ArrayList<String> brands = new ArrayList<String>();
-	
+    private static final ArrayList<String> brands = new ArrayList<String>();
+
 
     private static final boolean isClient = LiteLoader.getEnvironmentType() == LoaderEnvironment.EnvironmentType.CLIENT;
 
@@ -32,15 +32,15 @@ public class ApiGeneral {
     public static void shutdown(String message, int code) {
         BLMain.instance().shutdown(message, code);
     }
-    
-	/**
-	 * Returns true if a game is currently running. Will always be true on the server.
-	 */
-	public static boolean isInGame() {
-		return BlazeLoaderCP.instance.getGameEngine().isInGame();
-	}
-	
-	
+
+    /**
+     * Returns true if a game is currently running. Will always be true on the server.
+     */
+    public static boolean isInGame() {
+        return BlazeLoaderCP.instance.getGameEngine().isInGame();
+    }
+
+
     /**
      * Adds a mod to the client/seerver branding
      *
@@ -56,17 +56,17 @@ public class ApiGeneral {
      * Gets the formatted client/server brand name
      */
     public static String getBrand() {
-    	StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("BlazeLoader");
         if (brands.size() > 0) {
-        	builder.append(" (");
-	        for (String str : brands) {
-	        	if (builder.length() > "BlazeLoader (".length()) { 
-	        		builder.append(", ");
-	        	}
-	            builder.append(str);
-	        }
-	        builder.append(")");
+            builder.append(" (");
+            for (String str : brands) {
+                if (builder.length() > "BlazeLoader (".length()) {
+                    builder.append(", ");
+                }
+                builder.append(str);
+            }
+            builder.append(")");
         }
         return builder.toString();
     }

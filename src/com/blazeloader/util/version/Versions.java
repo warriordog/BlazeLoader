@@ -33,14 +33,14 @@ public class Versions {
     public static boolean isClient() {
         return BLMain.instance().supportsClient();
     }
-    
+
     /**
      * Returns true if running on the server, false for client.  Only works AFTER BlazeLoader is initialized.
      *
      * @return Return true if running on server, false for client.
      */
     public static boolean isServer() {
-    	return !isClient();
+        return !isClient();
     }
     
     /**
