@@ -6,6 +6,7 @@ import java.util.Random;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -78,5 +79,9 @@ public class InternalEventHandler {
     
     public static void eventCopyDataFromOld(EventInfo<Entity> event, Entity old) {
     	EntityPropertyManager.copyToEntity(old, event.getSource());
+    }
+    
+    public static void eventAddEntityCrashInfo(EventInfo<Entity> event, CrashReportCategory section) {
+    	EntityPropertyManager.addEntityCrashInfo(event.getSource(), section);
     }
 }

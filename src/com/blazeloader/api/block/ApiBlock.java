@@ -28,7 +28,27 @@ public class ApiBlock {
     public static Block getBlockByNameOrId(String identifier) {
         return MathUtils.isInteger(identifier) ? getBlockById(Integer.parseInt(identifier)) : getBlockByName(identifier);
     }
-
+    
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+    public static ResourceLocation getBlockName(Block block) {
+        return (ResourceLocation)Block.blockRegistry.getNameForObject(block);
+    }
+    
+    /**
+     * Gets the name of a block.
+     *
+     * @param block The block to get the name for
+     * @return Return a string of the name belonging to param block
+     */
+    public static String getStringBlockName(Block block) {
+        return getBlockName(block).toString();
+    }
+    
     /**
      * Gets a block by it's name
      *
@@ -77,9 +97,12 @@ public class ApiBlock {
      * @param block				The block to register
      * @param encouragement		How likely it is that this block will spread fire
      * @param flamability		How flamable this block is
+     * 
+     * @return the block for simplicity
      */
-    public static void registerFireInfo(Block block, int encouragement, int flamability) {
+    public static <T extends Block> T registerFireInfo(T block, int encouragement, int flamability) {
     	Blocks.fire.setFireInfo(block, encouragement, flamability);
+    	return block;
     }
     
     /**
@@ -237,25 +260,5 @@ public class ApiBlock {
     public static void registerTileEntity(Class<? extends TileEntity> clazz, String name) {
         TileEntity.classToNameMap.put(clazz, name);
         TileEntity.nameToClassMap.put(name, clazz);
-    }
-
-    /**
-     * Gets the name of a block.
-     *
-     * @param block The block to get the name for
-     * @return Return a string of the name belonging to param block
-     */
-    public static ResourceLocation getBlockName(Block block) {
-        return (ResourceLocation)Block.blockRegistry.getNameForObject(block);
-    }
-    
-    /**
-     * Gets the name of a block.
-     *
-     * @param block The block to get the name for
-     * @return Return a string of the name belonging to param block
-     */
-    public static String getStringBlockName(Block block) {
-        return getBlockName(block).toString();
     }
 }
