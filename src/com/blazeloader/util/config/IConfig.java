@@ -1,6 +1,7 @@
 package com.blazeloader.util.config;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Wrapper object for a config file. Allows loading and saving of properties.
@@ -56,4 +57,10 @@ public interface IConfig {
 	 * @return The noew safe to use description
 	 */
 	public String applyDescriptionRegexString(String description);
+	
+	/**
+	 * Gets the next valid line to read from the properties file.
+	 * @param lines List of lines available
+	 */
+	public String popNextLine(List<String> lines);
 }

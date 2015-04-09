@@ -15,27 +15,36 @@ public class Section implements IPropertyGroup {
 	
 	public Section(IConfig config, List<String> lines) {
 		cfg = config;
-		String first = lines.get(0);
-		lines.remove(0);
-		if (first.startsWith("#")) {
-			description = first.substring(1, first.length());
-			first = lines.get(0);
-		}
+		checkForComment(lines);
+		String first = cfg.popNextLine(lines);
 		sectionName = first.substring(0, first.length() - 2);
 		do {
-			Prop next = new Prop(cfg, lines);
-			if (next.loaded) {
-				properties.put(next.propertyName, next);
+			try {
+				Prop next = new Prop(cfg, lines);
+				if (next.loaded) {
+					properties.put(next.propertyName, next);
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
-		} while (lines.get(0).indexOf("}") != 0);
+		} while (cfg.popNextLine(lines).indexOf("}") != 0);
 		loaded = true;
 	}
 	
-	public Section(IConfig config, String sectionName) {
+	public Section(IConfig config, String name) {
 		cfg = config;
-		sectionName = cfg.applyNameRegexString(sectionName);
+		sectionName = cfg.applyNameRegexString(name);
 	}
 	
+	private void checkForComment(List<String> lines) {
+		while (lines.get(0).trim().startsWith("#")) {
+			String first = cfg.popNextLine(lines);
+			if (!description.isEmpty()) {
+				description += "\r\n";
+			}
+			description += first.substring(1, first.length());
+		}
+	}
 	
 	public String getName() {
 		return sectionName;
@@ -64,11 +73,19 @@ public class Section implements IPropertyGroup {
 	}
 	
 	protected void writeTo(StringBuilder builder) {
+		if (!description.isEmpty()) {
+			String[] descriptions = description.split("\n");
+			for (int i = 0; i < descriptions.length; i++) {
+				builder.append("#");
+				builder.append(descriptions[i].trim());
+				builder.append("\r\n");
+			}
+		}
 		builder.append(sectionName);
-		builder.append(" {\n");
+		builder.append(" {\r\n");
 		for (Prop i : properties.values()) {
 			i.writeTo(builder);
-			builder.append("\n");
+			builder.append("\r\n");
 		}
 		builder.append("}");
 	}

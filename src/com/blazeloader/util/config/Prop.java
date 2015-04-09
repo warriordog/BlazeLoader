@@ -22,26 +22,36 @@ public class Prop<T> implements IProperty<T> {
 	
 	protected Prop(IConfig config, List<String> lines) {
 		cfg = config;
-		String first = lines.get(0);
-		if (first.startsWith("\t#")) {
-			description = first.substring(2, first.length());
-			first = lines.get(0);
-			lines.remove(0);
+		checkForComment(lines);
+		String first = cfg.popNextLine(lines);
+		String def = null;
+		if (first.startsWith("@default: ")) {
+			def = first.substring("@default:".length(), first.length()).trim();
 		}
-		if (first.startsWith("\t@default: ")) {
-			defaultValue = currentValue = (T)first.substring("\t@default: ".length(), first.length());
-			first = lines.get(0);
-			lines.remove(0);
-		}
-		propertyName = first.substring(1, first.length()).split("<")[0];
-		String[] remain = first.substring(propertyName.length() + 1).split(">: ");
-		String type = remain[0].substring(1, remain[0].length());
+		checkForComment(lines);
+		first = cfg.popNextLine(lines);
+		propertyName = first.substring(0, first.length()).split("<")[0];
+		String[] remain = first.substring(propertyName.length() + 1).split(">:");
+		String type = remain[0].substring(0, remain[0].length());
 		String value = "";
 		for (int i = 1; i < remain.length; i++) {
 			value += remain[i];
 		}
-		currentValue = (T)parseValue(type, value);
+		if (def != null) {
+			defaultValue = currentValue = (T)parseValue(type, def.trim());
+		}
+		currentValue = (T)parseValue(type, value.trim());
 		loaded = true;
+	}
+	
+	private void checkForComment(List<String> lines) {
+		while (lines.get(0).trim().startsWith("#")) {
+			String first = cfg.popNextLine(lines);
+			if (!description.isEmpty()) {
+				description += "\r\n";
+			}
+			description += first.substring(1, first.length());
+		}
 	}
 	
 	protected Prop(IConfig config, String name, T def) {
@@ -90,21 +100,33 @@ public class Prop<T> implements IProperty<T> {
 	
 	protected void writeTo(StringBuilder builder) {
 		if (!description.isEmpty()) {
-			builder.append("\t# ");
-			builder.append(description);
+			String[] descriptions = description.split("\n");
+			for (int i = 0; i < descriptions.length; i++) {
+				builder.append("\t#");
+				builder.append(descriptions[i].trim());
+				builder.append("\r\n");
+			}
 		}
-		builder.append("\n\t@default: ");
-		builder.append(defaultValue.toString());
-		builder.append("\n\t");
+		builder.append("\t@default: ");
 		String type = getType();
+		if (type.contentEquals("S")) {
+			builder.append("\"" + defaultValue.toString() + "\"");
+		} else {
+			builder.append(defaultValue.toString());
+		}
+		builder.append("\r\n\t");
+		builder.append(propertyName);
 		if (!"~null~".contentEquals(type)) {
 			builder.append("<");
 			builder.append(type);
 			builder.append(">");
 		}
-		builder.append(propertyName);
 		builder.append(": ");
-		builder.append(currentValue.toString());
+		if (type.contentEquals("S")) {
+			builder.append("\"" + currentValue.toString() + "\"");
+		} else {
+			builder.append(currentValue.toString());
+		}
 	}
 	
 	private static Object parseValue(String type, String value) {
@@ -117,7 +139,11 @@ public class Prop<T> implements IProperty<T> {
 			}
 			return arr;
 		}
-		if ("S".contentEquals(type)) return value;
+		if ("S".contentEquals(type)) {
+			if (value.startsWith("\"")) value = value.substring(1, value.length());
+			if (value.endsWith("\"")) value = value.substring(0, value.length() - 1);
+			return value;
+		}
 		if ("I".contentEquals(type)) return Integer.valueOf(value);
 		if ("F".contentEquals(type)) return Float.valueOf(value);
 		if ("C".contentEquals(type)) return Character.valueOf(value.toCharArray()[0]);

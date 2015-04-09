@@ -72,7 +72,7 @@ public class Properties implements IConfig {
 		StringBuilder builder = new StringBuilder();
 		for (Section i : sections.values()) {
 			i.writeTo(builder);
-			builder.append("\n");
+			builder.append("\r\n");
 		}
 		writer.append(builder.toString());
 	}
@@ -80,9 +80,13 @@ public class Properties implements IConfig {
 	
 	protected void readFrom(List<String> lines) {
 		while (lines.size() > 0) {
-			Section section = new Section(this, lines);
-			if (section.loaded) {
-				sections.put(section.getName(), section);
+			try {
+				Section section = new Section(this, lines);
+				if (section.loaded) {
+					sections.put(section.getName(), section);
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -92,6 +96,14 @@ public class Properties implements IConfig {
 	}
 	
 	public String applyDescriptionRegexString(String description) {
-		return description.replaceAll("\n\r|\n|\r", "<br>").replaceAll("\t(\t)*", " ");
+		return description.replaceAll("\t(\t)*", " ");
+	}
+	
+	public String popNextLine(List<String> lines) {
+		String next = "";
+		do {
+			next = lines.remove(0).trim();
+		} while (next.isEmpty());
+		return next;
 	}
 }
