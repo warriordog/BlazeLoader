@@ -64,8 +64,6 @@ public class BLMainClient extends BLMain {
         return true;
     }
     
-    //...why?
-    //...because.
     @Override
     public BLMainClient getClient() {
         return this;

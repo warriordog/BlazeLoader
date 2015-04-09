@@ -79,6 +79,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.writeToNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.readFromNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.copyDataFromOld (Lnet/minecraft/entity/Entity;)V", beforeReturn);
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.addEntityCrashInfo (Lnet/minecraft/crash/CrashReportCategory;)V", beforeReturn);
     }
     
     public String getSide() {
