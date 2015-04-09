@@ -1,5 +1,6 @@
 package com.blazeloader.api.entity;
 
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -23,4 +24,11 @@ public interface IEntityProperties {
 	 * @param tagCompound
 	 */
 	public void readFromNBT(NBTTagCompound tagCompund);
+	
+	/**
+	 * Used if the game crashes. Put stuff you want to know in the crash report from here.
+	 * 
+	 * @param catagory	CrashReportCategory for this IEntityProperty.
+	 */
+	public void addEntityCrashInfo(CrashReportCategory catagory);
 }

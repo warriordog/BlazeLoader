@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.blazeloader.bl.main.BLMain;
 import com.mumfrey.liteloader.core.event.HandlerList;
 
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -87,6 +88,17 @@ public class EntityPropertyManager {
 		}
 	}
 	
+	public static void addEntityCrashInfo(Entity e, CrashReportCategory section) {
+		if (mapping.containsKey(e)) {
+			Properties p = mapping.get(e);
+			try {
+				section.addCrashSection("BlazeLoader Extended Entity Properties", p.getCrashInfo());
+			} catch (Throwable er) {
+				section.addCrashSectionThrowable("BLMod error", er);
+			}
+		}
+	}
+	
 	private static class Properties {
 		private final HandlerList<IEntityProperties> handlers = new HandlerList<IEntityProperties>(IEntityProperties.class);
 		
@@ -116,6 +128,17 @@ public class EntityPropertyManager {
 		
 		public void writeToNBT(NBTTagCompound t) {
 			handlers.all().writeToNBT(t);
+		}
+		
+		public String getCrashInfo() {
+			StringBuilder result = new StringBuilder();
+			result.append("Extended Properties Registered: " + handlers.size());
+			for (IEntityProperties i : handlers) {
+				CrashReportCategory category = new CrashReportCategory(null, "Mod:" + i.getClass().toString());
+				i.addEntityCrashInfo(category);
+				category.appendToStringBuilder(result);
+			}
+			return result.toString();
 		}
 	}
 }
