@@ -27,7 +27,8 @@ public class Section implements IPropertyGroup {
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-		} while (cfg.popNextLine(lines).indexOf("}") != 0);
+		} while (lines.size() > 0 && lines.get(0).trim().indexOf("}") != 0);
+		lines.remove(0);
 		loaded = true;
 	}
 	
@@ -64,7 +65,11 @@ public class Section implements IPropertyGroup {
 	
 	public <T> Prop<T> get(String key, T def) {
 		if (has(key)) {
-			return properties.get(key);
+			Prop<T> result = properties.get(key);
+			if (!def.getClass().isAssignableFrom(result.getDefault().getClass())) {
+				result.updateType(def);
+			}
+			return result;
 		}
 		
 		Prop<T> result = new Prop<T>(cfg, key, def);

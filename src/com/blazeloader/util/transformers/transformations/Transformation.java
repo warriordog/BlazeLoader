@@ -21,15 +21,15 @@ public abstract class Transformation {
         return setAccess(currAccess, publicity, false);
     }
 
-    protected final int setAccess(int currAccess, AccessLevel publicity, boolean isFinal) {
-        return setAccess(currAccess, publicity, true, isFinal);
+    protected final int setAccess(int currAccess, AccessLevel publicity, boolean Final) {
+        return setAccess(currAccess, publicity, true, Final);
     }
 
 
-    protected final int setAccess(int currAccess, AccessLevel publicity, boolean setFinal, boolean isFinal) {
+    protected final int setAccess(int currAccess, AccessLevel publicity, boolean changeFinal, boolean Final) {
         int pubValue = publicity.getValue();
         int ret = (currAccess & ~7);
-
+        
         switch (currAccess & 7) {
             case ACC_PRIVATE:
                 ret |= pubValue;
@@ -47,9 +47,9 @@ public abstract class Transformation {
                 throw new IllegalArgumentException("Non-existent access mode!");
         }
 
-        if (setFinal) {
-            if (isFinal) {
-                ret |= ACC_FINAL;
+        if (changeFinal) {
+            if (Final) {
+        		ret |= ACC_FINAL;
             } else {
                 ret &= ~ACC_FINAL;
             }
