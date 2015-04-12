@@ -73,7 +73,7 @@ public class BLATSource extends TransformationSource {
             if ("f".equalsIgnoreCase(change)) {
                 transformations.add(new MethodFinalTransformation(clName, mName, true));
             } else if ("-f".equalsIgnoreCase(change)) {
-                transformations.add(new MethodFinalTransformation(clName, mName, true));
+                transformations.add(new MethodFinalTransformation(clName, mName, false));
             } else if ("public".equalsIgnoreCase(change)) {
                 transformations.add(new MethodPublicTransformation(clName, mName, AccessLevel.PUBLIC));
             } else if ("private".equalsIgnoreCase(change)) {
@@ -99,7 +99,7 @@ public class BLATSource extends TransformationSource {
             if ("f".equalsIgnoreCase(change)) {
                 transformations.add(new FieldFinalTransformation(clName, fName, true));
             } else if ("-f".equalsIgnoreCase(change)) {
-                transformations.add(new FieldFinalTransformation(clName, fName, true));
+                transformations.add(new FieldFinalTransformation(clName, fName, false));
             } else if ("public".equalsIgnoreCase(change)) {
                 transformations.add(new FieldPublicTransformation(clName, fName, AccessLevel.PUBLIC));
             } else if ("private".equalsIgnoreCase(change)) {

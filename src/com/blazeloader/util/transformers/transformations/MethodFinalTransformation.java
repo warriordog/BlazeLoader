@@ -4,11 +4,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class MethodFinalTransformation extends MethodTransformation {
-    public final boolean isFinal;
+    public final boolean setFinalTo;
 
-    public MethodFinalTransformation(String targetClass, String methodName, boolean isFinal) {
+    public MethodFinalTransformation(String targetClass, String methodName, boolean Final) {
         super(targetClass, methodName);
-        this.isFinal = isFinal;
+        setFinalTo = Final;
     }
 
     @Override
