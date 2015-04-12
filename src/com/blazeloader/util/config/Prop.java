@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Enums;
+
 public class Prop<T> implements IProperty<T> {
 	private final IConfig cfg;
 	
 	private static final Map<Class, String> classToType = new HashMap<Class, String>();
 	private static final Map<String, Class> typeToClass = new HashMap<String, Class>();
 	
+	private final Class typeClass;
 	private T currentValue;
 	private T defaultValue;
 	
@@ -26,11 +29,11 @@ public class Prop<T> implements IProperty<T> {
 		String first = cfg.popNextLine(lines);
 		String def = null;
 		if (first.startsWith("@default: ")) {
-			def = first.substring("@default:".length(), first.length()).trim();
+			def = first.substring("@default:".length(), first.length()).split("(")[0].trim();
 		}
 		checkForComment(lines);
 		first = cfg.popNextLine(lines);
-		propertyName = first.substring(0, first.length()).split("<")[0];
+		propertyName = first.split("<")[0];
 		String[] remain = first.substring(propertyName.length() + 1).split(">:");
 		String type = remain[0].substring(0, remain[0].length());
 		String value = "";
@@ -41,6 +44,7 @@ public class Prop<T> implements IProperty<T> {
 			defaultValue = currentValue = (T)parseValue(type, def.trim());
 		}
 		currentValue = (T)parseValue(type, value.trim());
+		typeClass = defaultValue.getClass();
 		loaded = true;
 	}
 	
@@ -56,6 +60,7 @@ public class Prop<T> implements IProperty<T> {
 	
 	protected Prop(IConfig config, String name, T def) {
 		cfg = config;
+		typeClass = def.getClass();
 		propertyName = cfg.applyNameRegexString(name);
 		defaultValue = def;
 		currentValue = def;
@@ -77,15 +82,29 @@ public class Prop<T> implements IProperty<T> {
 		return currentValue;
 	}
 	
+	public T[] getPossibleValues() {
+		if (defaultValue instanceof Boolean) {
+			return (T[])new Boolean[] {true,false};
+		} else if (typeClass.isEnum()) {
+			return (T[])typeClass.getEnumConstants();
+		}
+		return null;
+	}
+	
 	public void set(T val) {
 		currentValue = val;
 	}
 	
-	public void setDescription(String desc) {
-		if (desc == null) {
+	public void setDescription(String... desc) {
+		StringBuilder full = new StringBuilder();
+		for (String i : desc) {
+			full.append(i);
+			full.append("\r\n");
+		}
+		if (desc == null || desc.length == 0 || full.toString().isEmpty()) {
 			description = "";
 		} else {
-			description = cfg.applyDescriptionRegexString(desc);
+			description = cfg.applyDescriptionRegexString(full.toString().trim());
 		}
 	}
 	
@@ -113,6 +132,15 @@ public class Prop<T> implements IProperty<T> {
 			builder.append("\"" + defaultValue.toString() + "\"");
 		} else {
 			builder.append(defaultValue.toString());
+		}
+		T[] possibles = getPossibleValues();
+		if (possibles != null) {
+			builder.append(" (");
+			for (int i = 0; i < possibles.length; i++) {
+				if (i > 0) builder.append(", ");
+				builder.append(possibles[i].toString());
+			}
+			builder.append(")");
 		}
 		builder.append("\r\n\t");
 		builder.append(propertyName);

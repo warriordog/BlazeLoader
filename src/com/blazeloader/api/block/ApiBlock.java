@@ -2,18 +2,24 @@ package com.blazeloader.api.block;
 
 import com.blazeloader.api.item.ApiItem;
 import com.blazeloader.util.version.Versions;
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.mumfrey.liteloader.util.ModUtilities;
+
 import net.acomputerdog.core.util.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Api for block-specific functions
@@ -195,27 +201,73 @@ public class ApiBlock {
     }
     
     /**
+     * Replaces an existing block with the given block and gives it an
+     *  ItemMultiTexture with the given function for determining what name to display.
+     * <p>
+     * Works best if the replacement block supports all the states of the one it is replacing.
+     * @param original	Original block to replace
+     * @param block		New block to insert
+     * @param nameFunc	Function used by the itemblock to get the display name
+     * @param <K> The type of the block you are replacing
+     * @param <V> The type of the new block you are replacing it with. Must extend the original.
+     */
+    public static <K extends Block,V extends K> void replaceBlock(K original, V block, Function nameFunc) {
+    	replaceBlock(original, block, new ItemMultiTexture(block, block, nameFunc));
+    }
+    
+    /**
+     * Replaces an existing block with the given block and gives it the provided itemblock.
+     * <p>
+     * Works best if the replacement block supports all the states of the one it is replacing.
+     * @param original	Original block to replace
+     * @param block		New block to insert
+     * @param item		An item to be used for the replacement block
+     * @param <K> The type of the block you are replacing
+     * @param <V> The type of the new block you are replacing it with. Must extend the original.
+     */
+    public static <K extends Block,V extends K> void replaceBlock(K original, V block, ItemBlock item) {
+    	replaceBlock(original, block);
+    	if (item.getUnlocalizedName() == null) {
+    		String oldLocalized = ApiItem.getItemByBlock(original).getUnlocalizedName();
+    		if (oldLocalized.startsWith("tile.")) {
+    			oldLocalized = oldLocalized.substring("tile.".length(), oldLocalized.length());
+    		}
+    		item.setUnlocalizedName(oldLocalized);
+    	}
+    	ApiItem.registerItemBlock(block, item);
+    }
+    
+    /**
      * Replaces an existing block with the given block.
      * <p>
      * Works best if the replacement block supports all the states of the one it is replacing.
-     * 
      * @param original	Original block to replace
      * @param block		New block to insert
+     * @param <K> The type of the block you are replacing
+     * @param <V> The type of the new block you are replacing it with. Must extend the original.
      */
-    public static void replaceBlock(Block original, Block block) {
-    	Iterator original_states = original.getBlockState().getValidStates().iterator();
-    	Iterator new_states = block.getBlockState().getValidStates().iterator();
-    	while (original_states.hasNext() && new_states.hasNext()) {
-    		IBlockState original_state = (IBlockState)original_states.next();
-    		IBlockState state = (IBlockState)new_states.next();
+    public static <K extends Block,V extends K> void replaceBlock(K original, V block) {
+    	if (block.getUnlocalizedName() == null) {
+    		String oldLocalized = original.getUnlocalizedName();
+    		if (oldLocalized.startsWith("tile.")) {
+    			oldLocalized = oldLocalized.substring("tile.".length(), oldLocalized.length());
+    		}
+    		block.setUnlocalizedName(oldLocalized);
+    	}
+    	Map<Integer, IBlockState> builtStates = new HashMap<Integer, IBlockState>();
+    	for (IBlockState original_state : (List<IBlockState>)original.getBlockState().getValidStates()) {
     		int original_metadata = getBlockId(original) << 4 | original.getMetaFromState(original_state);
-            int metadata = getBlockId(original) << 4 | block.getMetaFromState(state);
-            Block.BLOCK_STATE_IDS.put(state, metadata);
-        }
-    	while (new_states.hasNext()) {
-    		IBlockState state = (IBlockState)new_states.next();
+    		builtStates.put(Integer.valueOf(original_metadata), original_state);
+    	}
+    	for (IBlockState state : (List<IBlockState>)block.getBlockState().getValidStates()) {
     		int metadata = getBlockId(original) << 4 | block.getMetaFromState(state);
-            Block.BLOCK_STATE_IDS.put(state, metadata);
+    		builtStates.put(Integer.valueOf(metadata), state);
+    	}
+    	for (Map.Entry<Integer, IBlockState> i : builtStates.entrySet()) {
+    		if (i.getValue().getBlock() == original) {
+    			Block.BLOCK_STATE_IDS.put(block.getStateFromMeta(i.getKey()), i.getKey());
+    		}
+    		Block.BLOCK_STATE_IDS.put(i.getValue(), i.getKey());
     	}
     	injectBlock(getBlockId(original), getBlockName(original), block);
     	if (Versions.isClient()) {
