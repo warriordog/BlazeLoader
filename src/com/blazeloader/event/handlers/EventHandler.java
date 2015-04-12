@@ -2,18 +2,13 @@ package com.blazeloader.event.handlers;
 
 import com.blazeloader.api.entity.EntityPropertyManager;
 import com.blazeloader.api.world.UnpopulatedChunksQ;
-import com.blazeloader.event.listeners.ChunkListener;
-import com.blazeloader.event.listeners.EntityConstructingListener;
-import com.blazeloader.event.listeners.ModEventListener;
-import com.blazeloader.event.listeners.PlayerListener;
-import com.blazeloader.event.listeners.TickListener;
-import com.blazeloader.event.listeners.WorldListener;
+import com.blazeloader.event.listeners.*;
 import com.mumfrey.liteloader.core.event.HandlerList;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
-
+import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -58,7 +53,7 @@ public class EventHandler {
         playerEventHandlers.all().eventMPPlayerLogout(event.getSource(), player);
     }
 
-    public static void eventRespawnPlayer(EventInfo<ServerConfigurationManager> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
+    public static <ReturnType> void eventRecreatePlayerEntity(ReturnEventInfo<IntegratedPlayerList, ReturnType> event, EntityPlayerMP oldPlayer, int dimension, boolean didWin) {
         playerEventHandlers.all().eventMPPlayerRespawn(event.getSource(), oldPlayer, dimension, !didWin);
     }
 
