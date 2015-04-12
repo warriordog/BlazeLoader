@@ -30,7 +30,7 @@ public interface IProperty<T> {
 	/**
 	 * Sets a description/comment to be stored with this property.
 	 */
-	public void setDescription(String desc);
+	public void setDescription(String... desc);
 	
 	/**
 	 * Gets a string representation of the type this property takes.
@@ -41,4 +41,11 @@ public interface IProperty<T> {
 	 * The name of this property. Is also the key this property is registered under in config files and categories.
 	 */
 	public String getName();
+	
+	/**
+	 * Returns an array of possible values if bounded, otherwise returns null.
+	 * 
+	 * This may be useful if you're working with enums.
+	 */
+	public T[] getPossibleValues();
 }
