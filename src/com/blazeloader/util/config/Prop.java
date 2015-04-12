@@ -13,7 +13,7 @@ public class Prop<T> implements IProperty<T> {
 	private static final Map<Class, String> classToType = new HashMap<Class, String>();
 	private static final Map<String, Class> typeToClass = new HashMap<String, Class>();
 	
-	private final Class typeClass;
+	private Class typeClass;
 	private T currentValue;
 	private T defaultValue;
 	
@@ -29,13 +29,21 @@ public class Prop<T> implements IProperty<T> {
 		String first = cfg.popNextLine(lines);
 		String def = null;
 		if (first.startsWith("@default: ")) {
-			def = first.substring("@default:".length(), first.length()).split("(")[0].trim();
+			def = first.substring("@default:".length(), first.length()).split("\\(")[0].trim();
 		}
 		checkForComment(lines);
 		first = cfg.popNextLine(lines);
-		propertyName = first.split("<")[0];
-		String[] remain = first.substring(propertyName.length() + 1).split(">:");
-		String type = remain[0].substring(0, remain[0].length());
+		String name = first.split("<")[0];
+		String[] remain;
+		String type = "~null~";
+		if (first.startsWith(name + "<")) {
+			remain = first.substring(name.length() + 1).split(">:");
+			type = remain[0].substring(0, remain[0].length());
+		} else {
+			remain = first.split(":");
+			name = remain[0].trim();
+		}
+		propertyName = name;
 		String value = "";
 		for (int i = 1; i < remain.length; i++) {
 			value += remain[i];
@@ -72,6 +80,20 @@ public class Prop<T> implements IProperty<T> {
 	
 	public void setDefault(T newDef) {
 		defaultValue = newDef;
+	}
+	
+	public T getDefault() {
+		return defaultValue;
+	}
+	
+	protected void updateType(T defaultValue) {
+		typeClass = defaultValue.getClass();
+		setDefault(defaultValue);
+		if (currentValue instanceof String) {
+			if (typeClass.isEnum()) {
+				currentValue = (T)Enum.valueOf(typeClass, (String)currentValue);
+			}
+		}
 	}
 	
 	public void reset() {
@@ -192,7 +214,7 @@ public class Prop<T> implements IProperty<T> {
 				e.printStackTrace();
 			}
 		}
-		return null;
+		return value;
 	}
 	
 	public static boolean hasType(Class type) {

@@ -12,6 +12,11 @@ public interface IProperty<T> {
 	public void setDefault(T newDef);
 	
 	/**
+	 * Gets the default value
+	 */
+	public T getDefault();
+	
+	/**
 	 * Sets the curent value back to the default.
 	 */
 	public void reset();
