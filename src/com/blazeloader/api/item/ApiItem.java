@@ -21,7 +21,7 @@ public class ApiItem {
      *
      * @return the item for simplicity
      */
-    public static <T extends ItemBlock> T registerItem(int id, String mod, String name, T item) {
+    public static <T extends Item> T registerItem(int id, String mod, String name, T item) {
         return registerItem(id, new ResourceLocation(mod, name), item);
     }
 
@@ -34,7 +34,7 @@ public class ApiItem {
      *
      * @return the item for simplicity
      */
-    public static <T extends ItemBlock> T registerItem(int id, ResourceLocation name, T item) {
+    public static <T extends Item> T registerItem(int id, ResourceLocation name, T item) {
         ModUtilities.addItem(id, name, item, true);
         return item;
     }
