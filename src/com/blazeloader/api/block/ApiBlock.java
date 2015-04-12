@@ -227,13 +227,6 @@ public class ApiBlock {
      */
     public static <K extends Block,V extends K> void replaceBlock(K original, V block, ItemBlock item) {
     	replaceBlock(original, block);
-    	if (item.getUnlocalizedName() == null) {
-    		String oldLocalized = ApiItem.getItemByBlock(original).getUnlocalizedName();
-    		if (oldLocalized.startsWith("tile.")) {
-    			oldLocalized = oldLocalized.substring("tile.".length(), oldLocalized.length());
-    		}
-    		item.setUnlocalizedName(oldLocalized);
-    	}
     	ApiItem.registerItemBlock(block, item);
     }
     
@@ -247,13 +240,6 @@ public class ApiBlock {
      * @param <V> The type of the new block you are replacing it with. Must extend the original.
      */
     public static <K extends Block,V extends K> void replaceBlock(K original, V block) {
-    	if (block.getUnlocalizedName() == null) {
-    		String oldLocalized = original.getUnlocalizedName();
-    		if (oldLocalized.startsWith("tile.")) {
-    			oldLocalized = oldLocalized.substring("tile.".length(), oldLocalized.length());
-    		}
-    		block.setUnlocalizedName(oldLocalized);
-    	}
     	Map<Integer, IBlockState> builtStates = new HashMap<Integer, IBlockState>();
     	for (IBlockState original_state : (List<IBlockState>)original.getBlockState().getValidStates()) {
     		int original_metadata = getBlockId(original) << 4 | original.getMetaFromState(original_state);
