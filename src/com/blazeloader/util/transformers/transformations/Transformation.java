@@ -21,12 +21,12 @@ public abstract class Transformation {
         return setAccess(currAccess, publicity, false);
     }
 
-    protected final int setAccess(int currAccess, AccessLevel publicity, boolean Final) {
-        return setAccess(currAccess, publicity, true, Final);
+    protected final int setAccess(int currAccess, AccessLevel publicity, boolean finalValue) {
+        return setAccess(currAccess, publicity, true, finalValue);
     }
 
 
-    protected final int setAccess(int currAccess, AccessLevel publicity, boolean changeFinal, boolean Final) {
+    protected final int setAccess(int currAccess, AccessLevel publicity, boolean changeFinal, boolean finalValue) {
         int pubValue = publicity.getValue();
         int ret = (currAccess & ~7);
         
@@ -48,7 +48,7 @@ public abstract class Transformation {
         }
 
         if (changeFinal) {
-            if (Final) {
+            if (finalValue) {
         		ret |= ACC_FINAL;
             } else {
                 ret &= ~ACC_FINAL;
