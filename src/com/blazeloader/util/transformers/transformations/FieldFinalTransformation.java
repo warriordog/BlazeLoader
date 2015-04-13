@@ -6,11 +6,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
 public class FieldFinalTransformation extends FieldTransformation {
-    public final boolean setFinalTo;
+    public final boolean finalValue;
 
-    public FieldFinalTransformation(String targetClass, String fieldName, boolean Final) {
+    public FieldFinalTransformation(String targetClass, String fieldName, boolean setFinalTo) {
         super(targetClass, fieldName);
-        setFinalTo = Final;
+        finalValue = setFinalTo;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class FieldFinalTransformation extends FieldTransformation {
         if (dotName.equals(targetClass)) {
             for (FieldNode field : cls.fields) {
                 if (isGlobal || field.name.equals(fieldName)) {
-                    field.access = setAccess(field.access, AccessLevel.PUBLIC, true, setFinalTo);
+                    field.access = setAccess(field.access, AccessLevel.PUBLIC, true, finalValue);
                     didApply = true;
                 }
             }
