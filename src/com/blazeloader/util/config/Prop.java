@@ -1,23 +1,15 @@
 package com.blazeloader.util.config;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import com.google.common.base.Enums;
 
 public class Prop<T> implements IProperty<T> {
 	private final IConfig cfg;
 	
-	private static final Map<Class, String> classToType = new HashMap<Class, String>();
-	private static final Map<String, Class> typeToClass = new HashMap<String, Class>();
-	
 	private Class typeClass;
-	private T currentValue;
-	private T defaultValue;
+	private IWrapObject<T> currentValue;
+	private IWrapObject<T> defaultValue;
 	
-	protected final String propertyName;
+	private final String propertyName;
 	
 	private String description = "";
 	
@@ -25,6 +17,8 @@ public class Prop<T> implements IProperty<T> {
 	
 	protected Prop(IConfig config, List<String> lines) {
 		cfg = config;
+		defaultValue = new StringableObject(null);
+		currentValue = new StringableObject(null);
 		checkForComment(lines);
 		String first = cfg.popNextLine(lines);
 		String def = null;
@@ -33,45 +27,35 @@ public class Prop<T> implements IProperty<T> {
 		}
 		checkForComment(lines);
 		first = cfg.popNextLine(lines);
-		String name = first.split("<")[0];
-		String[] remain;
-		String type = "~null~";
-		if (first.startsWith(name + "<")) {
-			remain = first.substring(name.length() + 1).split(">:");
-			type = remain[0].substring(0, remain[0].length());
-		} else {
-			remain = first.split(":");
-			name = remain[0].trim();
-		}
-		propertyName = name;
+		String[] remain = first.split(":");
+		propertyName = remain[0].trim();
 		String value = "";
 		for (int i = 1; i < remain.length; i++) {
 			value += remain[i];
 		}
 		if (def != null) {
-			defaultValue = currentValue = (T)parseValue(type, def.trim());
+			defaultValue.set(unescapeValue(def));
+			currentValue.set(defaultValue.get());
 		}
-		currentValue = (T)parseValue(type, value.trim());
-		typeClass = defaultValue.getClass();
+		if (!value.trim().isEmpty()) {
+			currentValue.set(unescapeValue(value));
+		}
+		typeClass = defaultValue.get().getClass();
 		loaded = true;
 	}
-	
-	private void checkForComment(List<String> lines) {
-		while (lines.get(0).trim().startsWith("#")) {
-			String first = cfg.popNextLine(lines);
-			if (!description.isEmpty()) {
-				description += "\r\n";
-			}
-			description += first.substring(1, first.length());
-		}
-	}
-	
+		
 	protected Prop(IConfig config, String name, T def) {
 		cfg = config;
 		typeClass = def.getClass();
 		propertyName = cfg.applyNameRegexString(name);
-		defaultValue = def;
-		currentValue = def;
+		
+		if (typeClass.isArray()) {
+			defaultValue = new StringableArray((T[])def); 
+			currentValue = new StringableArray((T[])defaultValue.get());
+		} else {
+			defaultValue = new StringableObject(def);
+			currentValue = new StringableObject(def);
+		}
 	}
 	
 	public String getName() {
@@ -79,42 +63,36 @@ public class Prop<T> implements IProperty<T> {
 	}
 	
 	public void setDefault(T newDef) {
-		defaultValue = newDef;
+		defaultValue.set(newDef);
 	}
 	
 	public T getDefault() {
-		return defaultValue;
-	}
-	
-	protected void updateType(T defaultValue) {
-		typeClass = defaultValue.getClass();
-		setDefault(defaultValue);
-		if (currentValue instanceof String) {
-			if (typeClass.isEnum()) {
-				currentValue = (T)Enum.valueOf(typeClass, (String)currentValue);
-			}
-		}
+		return defaultValue.get();
 	}
 	
 	public void reset() {
-		set(defaultValue);
+		currentValue.set(defaultValue.get());
 	}
 	
 	public T get() {
-		return currentValue;
+		return currentValue.get();
+	}
+	
+	public void set(T val) {
+		currentValue.set(val);
+	}
+	
+	public Class getType() {
+		return typeClass;
 	}
 	
 	public T[] getPossibleValues() {
-		if (defaultValue instanceof Boolean) {
+		if (defaultValue.get() instanceof Boolean) {
 			return (T[])new Boolean[] {true,false};
 		} else if (typeClass.isEnum()) {
 			return (T[])typeClass.getEnumConstants();
 		}
 		return null;
-	}
-	
-	public void set(T val) {
-		currentValue = val;
 	}
 	
 	public void setDescription(String... desc) {
@@ -130,27 +108,33 @@ public class Prop<T> implements IProperty<T> {
 		}
 	}
 	
-	public String getType() {
-		if (defaultValue instanceof String) return "S";
-		if (defaultValue instanceof Integer) return "I";
-		if (defaultValue instanceof Float) return "F";
-		if (defaultValue instanceof Character) return "C";
-		if (defaultValue instanceof Boolean) return "B";
-		return getType(defaultValue.getClass());
+	protected void updateType(T def) {
+		if (typeClass != def.getClass()) {
+			typeClass = def.getClass();
+			if (currentValue.get() instanceof String) {
+				if (typeClass.isArray()) {
+					currentValue = new StringableArray((T[])def, (String)currentValue.get());
+					defaultValue = new StringableArray((T[])def);
+				} else {
+					currentValue.fromString(def, ((String)currentValue.get()));
+					defaultValue.set(def);
+				}
+			}
+		}
 	}
 	
 	protected void writeTo(StringBuilder builder) {
 		if (!description.isEmpty()) {
 			String[] descriptions = description.split("\n");
 			for (int i = 0; i < descriptions.length; i++) {
-				builder.append("\t#");
+				builder.append("   #");
 				builder.append(descriptions[i].trim());
 				builder.append("\r\n");
 			}
 		}
-		builder.append("\t@default: ");
-		String type = getType();
-		if (type.contentEquals("S")) {
+		builder.append("   @default: ");
+		
+		if (typeClass == String.class) {
 			builder.append("\"" + defaultValue.toString() + "\"");
 		} else {
 			builder.append(defaultValue.toString());
@@ -164,87 +148,30 @@ public class Prop<T> implements IProperty<T> {
 			}
 			builder.append(")");
 		}
-		builder.append("\r\n\t");
+		builder.append("\r\n   ");
 		builder.append(propertyName);
-		if (!"~null~".contentEquals(type)) {
-			builder.append("<");
-			builder.append(type);
-			builder.append(">");
-		}
 		builder.append(": ");
-		if (type.contentEquals("S")) {
+		if (typeClass == String.class) {
 			builder.append("\"" + currentValue.toString() + "\"");
 		} else {
 			builder.append(currentValue.toString());
 		}
 	}
 	
-	private static Object parseValue(String type, String value) {
-		if (type.endsWith("[]")) {
-			type = type.substring(0, type.length() - 2);
-			String[] values = value.substring(1, value.length() -1).split(", ");
-			Object[] arr = new Object[values.length];
-			for (int i = 0; i < arr.length; i++) {
-				arr[i] = parseValue(type, values[i]);
+	private T unescapeValue(String value) {
+		value = value.trim();
+		if (value.startsWith("\"")) value = value.substring(1, value.length());
+		if (value.endsWith("\"")) value = value.substring(0, value.length() - 1);
+		return (T)value;
+	}
+	
+	private void checkForComment(List<String> lines) {
+		while (lines.get(0).trim().startsWith("#")) {
+			String first = cfg.popNextLine(lines);
+			if (!description.isEmpty()) {
+				description += "\r\n";
 			}
-			return arr;
+			description += first.substring(1, first.length());
 		}
-		if ("S".contentEquals(type)) {
-			if (value.startsWith("\"")) value = value.substring(1, value.length());
-			if (value.endsWith("\"")) value = value.substring(0, value.length() - 1);
-			return value;
-		}
-		if ("I".contentEquals(type)) return Integer.valueOf(value);
-		if ("F".contentEquals(type)) return Float.valueOf(value);
-		if ("C".contentEquals(type)) return Character.valueOf(value.toCharArray()[0]);
-		if ("B".contentEquals(type)) return Character.valueOf(value.toCharArray()[0]);
-		Class typeClass = getTypeClass(type);
-		if (typeClass != null) {
-			try {
-				if (IStringable.class.isAssignableFrom(typeClass)) {
-					return ((IStringable)typeClass.newInstance()).valueOf(value);
-				} else {
-					Method m = typeClass.getMethod("valueOf", String.class);
-					if (!m.isAccessible()) {
-						m.setAccessible(true);
-					}
-					return m.invoke(typeClass.newInstance(), value);
-				}
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-		return value;
-	}
-	
-	public static boolean hasType(Class type) {
-		return classToType.containsKey(type);
-	}
-	
-	public static boolean hasType(String typeString) {
-		return typeToClass.containsKey(typeString);
-	}
-	
-	public static String getType(Class type) {
-		if (hasType(type)) {
-			return classToType.get(type);
-		} else {
-			if (type.isArray()) {
-				return getType(type.getComponentType()) + "[]";
-			}
-		}
-		return "~null~";
-	}
-	
-	public static Class getTypeClass(String typeString) {
-		if (hasType(typeString)) {
-			return typeToClass.get(typeString);
-		}
-		return null;
-	}
-	
-	public static void registerType(Class<? extends IStringable> type, String typeString) {
-		classToType.put(type, typeString);
-		typeToClass.put(typeString, type);
 	}
 }

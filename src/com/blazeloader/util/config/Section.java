@@ -22,7 +22,7 @@ public class Section implements IPropertyGroup {
 			try {
 				Prop next = new Prop(cfg, lines);
 				if (next.loaded) {
-					properties.put(next.propertyName, next);
+					properties.put(next.getName(), next);
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();

@@ -40,7 +40,7 @@ public interface IProperty<T> {
 	/**
 	 * Gets a string representation of the type this property takes.
 	 */
-	public String getType();
+	public Class getType();
 	
 	/**
 	 * The name of this property. Is also the key this property is registered under in config files and categories.
