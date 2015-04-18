@@ -3,13 +3,18 @@ package com.blazeloader.api.world;
 import com.blazeloader.api.block.UpdateType;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.util.version.Versions;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -167,15 +172,7 @@ public class ApiWorld {
      * @param dropItems		true if the block must drop as an item, or it's contained items
      */
     public static void destroyBlock(World world, BlockPos pos, boolean dropItems) {
-        if (!world.isRemote) {
-            world.destroyBlock(pos, dropItems);
-        } else {
-            IBlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-            if (block.getMaterial() == Material.air) return;
-            if (dropItems) block.dropBlockAsItem(world, pos, state, 0);
-            setBlockAt(world, pos, Blocks.air.getDefaultState());
-        }
+        world.destroyBlock(pos, dropItems);
     }
 
     /**
@@ -200,11 +197,46 @@ public class ApiWorld {
      */
     public static void playBlockDestructionEffect(World w, BlockPos pos) {
         if (!w.isRemote) {
-            IBlockState b = w.getBlockState(pos);
-            w.playAuxSFX(2001, pos, Block.getStateId(b));
+            playAuxSFX(w, AuxilaryEffects.BLOCK_BREAK, pos, Block.getStateId(w.getBlockState(pos)));
         }
     }
-
+    
+    /**
+     * Spawns dispenser particles in front of the block at the given location in the indicated direction
+     *
+     * @param w  		World
+     * @param pos 		The position of the block.
+     * @param direction	The direction the block is facing
+     */
+    public static void spawnDispenserParticles(World w, BlockPos pos, EnumFacing direction) {
+        playAuxSFX(w, AuxilaryEffects.DISPENSE_PARTICLES, pos, direction.getFrontOffsetX() + 1 + (direction.getFrontOffsetZ() + 1) * 3);
+    }
+    
+	/**
+	 * Plays a standard sound effect at the given location.
+	 * 
+	 * @param w  		World
+	 * @param soundType	The effect to spawn 
+	 * @param pos		The location
+	 * @param volume	Volume
+	 */
+	public static void playAuxSFX(World w, AuxilaryEffects soundType, BlockPos pos, int volume) {
+		w.playAuxSFX(soundType.getId(), pos, volume);
+	}
+	
+	/**
+	 * Plays a standard sound effect at the given location to the given player.
+	 * 
+	 * @param w  		World
+	 * @param player	The player to recieve the sound
+	 * @param soundType	The effect to spawn
+	 * @param pos		The location
+	 * @param volume	Volume
+	 */
+	public static void playAuxSFX(World w, EntityPlayer player, AuxilaryEffects soundType, BlockPos pos, int volume) {
+		w.playAuxSFXAtEntity(player, soundType.getId(), pos, volume);
+	}
+    
     /**
      * Gets the IntegratedServer.worldServers[] index of the specified world. 
      *
