@@ -5,7 +5,7 @@ package com.blazeloader.util.config;
  *
  * @param <T> the type of object
  */
-public interface IWrapObject<T> {
+public interface IWrapObject<T> extends IStringable<IWrapObject<T>> {
 	
 	/**
 	 * Gets the underlying object

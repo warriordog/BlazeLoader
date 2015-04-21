@@ -2,7 +2,9 @@ package com.blazeloader.api.command;
 
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
+
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandHelp;
 import net.minecraft.command.ICommandSender;
 
 /**
@@ -28,7 +30,15 @@ public abstract class BLCommandBase extends CommandBase {
             ApiCommand.registerCommand(this);
         }
     }
-
+    
+    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    	if (getIgnorePermissionLevel()) {
+    		//EntityPlayerMP is hard wired to return false for anyone that is not an OP for any command except for /help
+    		//It's a terrible design
+    		return sender.canCommandSenderUseCommand(getRequiredPermissionLevel(), "help");
+    	}
+    	return super.canCommandSenderUseCommand(sender);
+    }
 
     /**
      * Sends chat to a command user.
@@ -57,7 +67,7 @@ public abstract class BLCommandBase extends CommandBase {
      */
     @Override
     public String toString() {
-        return this.getCommandName();
+        return getCommandName();
     }
 
     /**
@@ -65,4 +75,9 @@ public abstract class BLCommandBase extends CommandBase {
      */
     @Override
     public abstract int getRequiredPermissionLevel();
+    
+    /**
+     * Return whether this command is usable by non-opped users on a server, like /help
+     */
+    public abstract boolean getIgnorePermissionLevel();
 }

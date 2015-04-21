@@ -2,16 +2,20 @@ package com.blazeloader.api;
 
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.main.BlazeLoaderCP;
+import com.blazeloader.bl.mod.BLMod;
+import com.blazeloader.util.version.Versions;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * General API functions
  */
 public class ApiGeneral {
-    private static final ArrayList<String> brands = new ArrayList<String>();
-
+    private static final Map<String, Brand> brands = new HashMap<String, Brand>();
+    
     /**
      * Location of Minecraft's working directory.
      * <br><br>%APPDATA%/.minecraft/ for windows.
@@ -30,16 +34,50 @@ public class ApiGeneral {
 
 
     /**
-     * Adds a mod to the client/seerver branding
+     * Adds a mod to the client/server branding
      *
      * @param brand Brand Name
      */
-    public static void setBrand(String brand) {
-        if (brand != null && !brand.isEmpty() && !brands.contains(brand)) {
-            brands.add(brand);
-        }
+    public static Brand setBrand(String brand) {
+    	return setBrand(brand, false);
     }
-
+    
+    /**
+     * Adds a mod to the client/server branding
+     *
+     * @param brand			Brand Name
+     * @param technical		True if this brand must no be shown in the client/server's brand
+     */
+    public static Brand setBrand(String brand, boolean technical) {
+    	Brand item = null;
+    	if (brands.containsKey(brand)) {
+    		if (!technical) {
+    			item = brands.get(brand);
+    			if (item.isTechnical()) {
+    				item.tech = false;
+    			}
+    		}
+        } else {
+        	item = new Brand(brand, technical);
+        	brands.put(brand, item);
+        }
+    	return item;
+    }
+    
+    /**
+     * Checks if a brand exists for the given mod.
+     * 
+     * @param brand		The name of the brand
+     * 
+     * @return A brand object representing the given brand name if it exists
+     */
+    public static Brand hasBrand(String brand) {
+    	if (brands.containsKey(brand)) {
+    		return brands.get(brand);
+    	}
+    	return null;
+    }
+    
     /**
      * Gets the formatted client/server brand name
      */
@@ -48,11 +86,13 @@ public class ApiGeneral {
         builder.append("BlazeLoader");
         if (brands.size() > 0) {
             builder.append(" (");
-            for (String str : brands) {
-                if (builder.length() > "BlazeLoader (".length()) {
-                    builder.append(", ");
-                }
-                builder.append(str);
+            for (Brand brand : brands.values()) {
+            	if (!brand.isTechnical()) {
+	                if (builder.length() > "BlazeLoader (".length()) {
+	                    builder.append(", ");
+	                }
+	                builder.append(brand.getString());
+            	}
             }
             builder.append(")");
         }

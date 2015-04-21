@@ -9,24 +9,25 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.BiomeGenBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * Api functions related to worlds
- *
- * NOT CURRENTLY IMPLEMENTED
- *
+ * A collection of useful functions relating to worlds.
  */
 public class ApiWorld {
     private static List<IChunkGenerator> generators = new ArrayList<IChunkGenerator>();
@@ -56,10 +57,29 @@ public class ApiWorld {
      * @param rad Maximum Radius
      * @return List of matching Entities
      */
-    public static List<Entity> getEntitiesNear(World w, int x, int y, int z, int rad) {
+    public static List<Entity> getEntitiesNear(World w, int x, int y, int z, double rad) {
         return getEntitiesOfTypeNear(w, null, x, y, z, rad);
     }
-
+    
+    /**
+	 * Gets an entity by its Unique Identifier
+	 * 
+	 * @param w		The world
+	 * @param uuid	A uuid for the entity
+	 * @return The matching entity or null if none were found
+	 */
+	public static Entity getEntityByUUId(World w, UUID uuid) {
+		if (w instanceof WorldServer) {
+			return ((WorldServer)w).getEntityFromUuid(uuid);
+		}
+		for (Entity i : (List<Entity>)w.loadedEntityList) {
+			if (i.getUniqueID().equals(uuid)) {
+				return i;
+			}
+		}
+		return null;
+	}
+    
     /**
      * Gets entities of type in the world within a certain radius from a given point
      * Acts like getEntitiesNear() when Entity Type is null
@@ -72,7 +92,7 @@ public class ApiWorld {
      * @param rad Maximum Radius
      * @return List of matching Entities
      */
-    public static List<Entity> getEntitiesOfTypeNear(World w, Class<? extends Entity> c, int x, int y, int z, int rad) {
+    public static List<Entity> getEntitiesOfTypeNear(World w, Class<? extends Entity> c, int x, int y, int z, double rad) {
         List<Entity> result = new ArrayList<Entity>();
         for (Entity i : ((List<Entity>) w.loadedEntityList)) {
             if (c == null || i.getClass() == c) {
@@ -99,6 +119,31 @@ public class ApiWorld {
     	return w.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), distance);
     }
     
+	/**
+	 * Selects a random spawn list entry for the given creature type and location
+	 * 
+	 * @param w   World
+	 * @param creatureType	The type of creature to spawn
+	 * @param pos			The location
+	 */
+	public static BiomeGenBase.SpawnListEntry getSpawnListEntryForTypeAt(World w, EnumCreatureType creatureType, BlockPos pos) {
+		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
+        return possibleTypes != null && !possibleTypes.isEmpty() ? (BiomeGenBase.SpawnListEntry)WeightedRandom.getRandomItem(w.rand, possibleTypes) : null;
+	}
+	
+	/**
+	 * Checks if the given spawn list entry is allowed as a possible spawn for the given creature type and location
+	 * 
+	 * @param w   World
+	 * @param creatureType		The type of creature to spawn
+	 * @param spawnListEntry	The entry we would like to spawn
+	 * @param pos				The location we would like to spawn at
+	 * @return	True if we can spawn here
+	 */
+	public static boolean canSpawnHere(World w, EnumCreatureType creatureType, BiomeGenBase.SpawnListEntry spawnListEntry, BlockPos pos) {
+		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
+        return possibleTypes != null && !possibleTypes.isEmpty() ? possibleTypes.contains(spawnListEntry) : false;
+	}
 
     /**
      * Sets the block at a specified location. And triggers a block update
@@ -255,7 +300,7 @@ public class ApiWorld {
      * @param dimension The dimension to get.
      * @return The WorldServer for the specified index.
      */
-    public static WorldServer getServerForDimension(int dimension) {
+    public static WorldServer getServerWorldForDimension(int dimension) {
     	WorldServer[] worldServers = null;
     	if (Versions.isClient()) {
 	    	try {
