@@ -5,10 +5,12 @@ import com.blazeloader.util.shape.IShape;
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
 import com.mumfrey.liteloader.core.ServerPluginChannels;
+
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
@@ -201,10 +203,15 @@ public class ParticlesRegister {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
 	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
+	            	//sendPacket(player, packet);
 	                player.playerNetServerHandler.sendPacket(packet);
 	            }
 	        }
     	}
+    }
+    
+    public void handleParticleSpawn(World w, Packet p) {
+    	//Do nothing. Since we're on the server.
     }
     
     private void sendPacket(EntityPlayerMP player, Packet p) {

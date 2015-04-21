@@ -132,6 +132,16 @@ public class ApiWorld {
 	}
 	
 	/**
+	 * Gets the current moonphase for a given world.
+	 * 
+	 * @param w		The world
+	 * @return A MoonPhase value
+	 */
+	public static MoonPhase getMoonPhase(World w) {
+		return MoonPhase.fromInt(w.getMoonPhase());
+	}
+	
+	/**
 	 * Checks if the given spawn list entry is allowed as a possible spawn for the given creature type and location
 	 * 
 	 * @param w   World
