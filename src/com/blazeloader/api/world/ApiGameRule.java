@@ -35,4 +35,14 @@ public class ApiGameRule {
 		}
 		return result;
 	}
+	
+	/**
+	 * Gets a gamerule for the given world. If one does not exist it will be created and given a default value.
+	 * 
+	 * @param w		World
+	 * @param key	The string key to identify the desired gamerule 
+	 */
+	public static GameRule getGameRule(World w, String key) {
+		return new GameRule(w.getGameRules(), key);
+	}
 }
