@@ -1,8 +1,8 @@
 package com.blazeloader.util.transformers.source;
 
+import com.blazeloader.bl.obf.AccessLevel;
 import com.blazeloader.bl.obf.BLOBF;
 import com.blazeloader.bl.obf.OBFLevel;
-import com.blazeloader.util.transformers.AccessLevel;
 import com.blazeloader.util.transformers.BLAccessTransformer;
 import com.blazeloader.util.transformers.transformations.*;
 

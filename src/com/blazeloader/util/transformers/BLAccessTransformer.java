@@ -38,7 +38,7 @@ public class BLAccessTransformer implements IClassTransformer {
 
         transformations = new DefaultTransformationMap();
         globalTransformations = new GlobalTransformationMap();
-
+        
         try {
             new BLATSource(getClass().getResourceAsStream("/conf/bl_at.cfg")).provideTransformations(this);
         } catch (IOException e) {

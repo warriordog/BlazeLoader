@@ -1,5 +1,8 @@
 package com.blazeloader.bl.obf;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 
@@ -51,18 +54,37 @@ public class BLOBF extends Obf {
      * BL's central obfuscation table, contains all raw package, class, method, and field obfuscation mappings.
      */
     public static final BLOBFTable OBF = loadOBF();
-
+    
     private static BLOBFTable loadOBF() {
-        try {
-            BLOBFTable obf = new BLOBFTable();
-            //TODO: Add support for loading server obfuscation tables
-            new BLOBFParser(false).loadEntries(BLOBF.class.getResourceAsStream("/conf/minecraft_client.obf"), obf, true);
-            return obf;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
+        BLOBFTable obf = new BLOBFTable();
+        BLOBFParser parser = new BLOBFParser(false);
+        if (Versions.isClient()) {
+        	loadEntries(parser, "client", obf, true);
+        } else {
+            //TODO: Add server obfuscation mappings
+        	if (!loadEntries(parser, "server", obf, false)) { //Try load the server obfuscation table. If it does not exist or is empty fall back to the client table
+        		loadEntries(parser, "client", obf, true);
+        	}
         }
+        return obf;
     }
-
+    
+    private static boolean loadEntries(BLOBFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
+    	try {
+    		int oldSize = obf.size();
+    		InputStream stream = BLOBF.class.getResourceAsStream("/conf/minecraft_" + filename + ".obf");
+    		parser.loadEntries(stream, obf, true);
+    		return obf.size() > oldSize;
+    	} catch (FileNotFoundException e) {
+    		return false;
+    	} catch (Exception e) {
+    		if (mustThrow) {
+    			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
+    		}
+    		return false;
+    	}
+    }
+    
     /**
      * Gets a BLOBF from an obfuscated name.
      *

@@ -11,6 +11,8 @@ import java.util.Map;
  * Provided methods automatically cache calls, so repeated calls with the same parameters will return the same BLOBF object.
  */
 public class BLOBFTable extends DirectOBFTableSRG {
+	private int size = 0;
+	
     private final Map<TargetType, Map<String, BLOBF>> obfNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
     private final Map<TargetType, Map<String, BLOBF>> srgNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
     private final Map<TargetType, Map<String, BLOBF>> mcpNameMap = new HashMap<TargetType, Map<String, BLOBF>>();
@@ -109,5 +111,14 @@ public class BLOBFTable extends DirectOBFTableSRG {
 			case OBF: return getObfFromSRGType(getSRGFromDeObfType(name, type), type);
 			default: return name;
 		}
+    }
+    
+    public void addType(String obfName, String deObfName, TargetType type) {
+    	size++;
+    	super.addType(obfName, deObfName, type);
+    }
+    
+    public int size() {
+    	return size;
     }
 }
