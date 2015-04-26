@@ -1,9 +1,7 @@
 package com.blazeloader.api;
 
-import com.blazeloader.bl.mod.BLMod;
 import com.blazeloader.util.config.IStringable;
 import com.blazeloader.util.config.JsonUtils;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**

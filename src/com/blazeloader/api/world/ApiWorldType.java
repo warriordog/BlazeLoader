@@ -1,9 +1,5 @@
 package com.blazeloader.api.world;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-
 import net.minecraft.world.WorldType;
 
 public class ApiWorldType {

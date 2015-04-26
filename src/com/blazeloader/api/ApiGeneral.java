@@ -1,14 +1,12 @@
 package com.blazeloader.api;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.bl.main.BlazeLoaderCP;
-import com.blazeloader.bl.mod.BLMod;
-import com.blazeloader.util.version.Versions;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.bl.main.BlazeLoaderCoreProvider;
+import com.blazeloader.util.version.Versions;
 
 /**
  * General API functions
@@ -100,21 +98,25 @@ public class ApiGeneral {
     }
 
     /**
-     * Checks if the game is a client instance
+     * Checks if the game is a client instance.
+     * <p>
+     * Equivalent to Versions.isClient()
      *
      * @return true if the game is a client
      */
     public static boolean isClient() {
-        return BLMain.isClient;
+        return Versions.isClient();
     }
 
     /**
      * Checks if the game is a dedicated server instance (an actual server with no client, not an integrated server).  Will return false on client.
+     * <p>
+     * Equivalent to Versions.isServer()
      *
      * @return true if the game is a dedicated server
      */
     public static boolean isServer() {
-        return !BLMain.isClient;
+        return !isClient();
     }
     
     /**
@@ -123,13 +125,13 @@ public class ApiGeneral {
      * @return true if the game is in singleplayer
      */
     public static boolean isSinglePlayer() {
-    	return BlazeLoaderCP.instance.getGameEngine().isSinglePlayer();
+    	return BlazeLoaderCoreProvider.instance.getGameEngine().isSinglePlayer();
     }
 
     /**
      * Returns true if a game is currently running. Will always be true on the server.
      */
     public static boolean isInGame() {
-        return BlazeLoaderCP.instance.getGameEngine().isInGame();
+        return BlazeLoaderCoreProvider.instance.getGameEngine().isInGame();
     }
 }

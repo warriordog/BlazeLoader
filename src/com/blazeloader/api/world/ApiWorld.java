@@ -1,19 +1,18 @@
 package com.blazeloader.api.world;
 
-import com.blazeloader.api.block.UpdateType;
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.Versions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.BlockHopper;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.WeightedRandom;
@@ -21,10 +20,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import com.blazeloader.api.block.UpdateType;
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.util.version.Versions;
 
 /**
  * A collection of useful functions relating to worlds.
@@ -362,4 +360,54 @@ public class ApiWorld {
         return world.getBlockState(pos);
     }
     
+    /**
+     * Determine if the given block is considered solid on the
+     * specified side.  Used by placement logic.
+     * <p>
+	 * Warning: This method depends on the Forge API for full functionality. Without that it may only return correctly for the top or bottom faces.
+     * 
+     * @forge This is part of the Forge API specification
+     * @param w		The world
+     * @param pos	The location
+     * @param side	The Side in question
+     * @param  def	A default value to return
+     * @return True if the side is solid or the default
+     */
+    public static boolean isSideSolid(World w, BlockPos pos, EnumFacing side, boolean def) {
+    	if (Versions.isForgeInstalled()) {
+    		return ForgeWorld.getForgeWorld(w).isSideSolid(pos, side, def);
+		}
+    	
+    	if (w.isValid(pos)) {
+			IBlockState state = w.getBlockState(pos);
+	        Block block = state.getBlock();
+	    	
+	        if (block.getMaterial().isOpaque() && block.isFullCube()) {
+	        	return true;
+	        }
+	        
+			if (side == EnumFacing.UP) {
+				return w.doesBlockHaveSolidTopSurface(w, pos);
+			}
+			if (side == EnumFacing.DOWN) {
+				return doesBlockHaveSolidBottomSurface(w, pos);
+			}
+    	}
+    	return def;
+    }
+    
+    /**
+     * Checks if a block has a solid bottom surface.
+     * 
+     * @param pos	The location
+     * @return true if the bottom side of the block is solid.
+     */
+    protected static boolean doesBlockHaveSolidBottomSurface(World w, BlockPos pos) {
+    	IBlockState state = w.getBlockState(pos);
+        Block block = state.getBlock();
+        if (block.getMaterial().isOpaque() && block.isFullCube()) {
+        	return true;
+        }
+        return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
+    }
 }

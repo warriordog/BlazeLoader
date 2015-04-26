@@ -1,5 +1,9 @@
 package com.blazeloader.api.particles;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -9,17 +13,10 @@ import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.network.BLPacketParticles;
@@ -48,7 +45,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	 *
 	 * @return A new, or previously cached, mapping with all custom particles added.
 	 */
-	//TODO: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
+	//FIXME: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
 	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;

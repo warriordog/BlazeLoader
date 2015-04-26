@@ -13,8 +13,8 @@ import net.minecraft.world.World;
 /**
  * BlazeLoader CoreProvider
  */
-public class BlazeLoaderCP implements CoreProvider {
-    public static final BlazeLoaderCP instance = new BlazeLoaderCP();
+public class BlazeLoaderCoreProvider implements CoreProvider {
+    public static final BlazeLoaderCoreProvider instance = new BlazeLoaderCoreProvider();
 
     private GameEngine gameEngine;
 
@@ -22,7 +22,7 @@ public class BlazeLoaderCP implements CoreProvider {
         return gameEngine;
     }
     
-    private BlazeLoaderCP() {
+    private BlazeLoaderCoreProvider() {
     }
 
 

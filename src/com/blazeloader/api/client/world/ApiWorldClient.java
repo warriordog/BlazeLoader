@@ -1,11 +1,9 @@
 package com.blazeloader.api.client.world;
 
-import com.blazeloader.api.ApiGeneral;
-import com.blazeloader.api.world.World;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.server.MinecraftServer;
+
+import com.blazeloader.api.ApiGeneral;
 
 public class ApiWorldClient {
     /**

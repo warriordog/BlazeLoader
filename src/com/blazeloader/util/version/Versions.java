@@ -31,7 +31,7 @@ public class Versions {
      * @return Return true if running on client, false for server.
      */
     public static boolean isClient() {
-        return BLMain.instance().supportsClient();
+        return BLMain.isClient;
     }
 
     /**

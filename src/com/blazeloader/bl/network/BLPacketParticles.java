@@ -2,17 +2,14 @@ package com.blazeloader.bl.network;
 
 import java.io.IOException;
 
-import com.blazeloader.api.particles.IParticle;
-import com.blazeloader.api.particles.ParticleData;
-import com.blazeloader.api.particles.ParticleType;
-import com.blazeloader.api.particles.ParticlesRegister;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.util.EnumParticleTypes;
+
+import com.blazeloader.api.particles.IParticle;
+import com.blazeloader.api.particles.ParticleType;
+import com.blazeloader.api.particles.ParticlesRegister;
 
 public class BLPacketParticles implements Packet {
 	    private IParticle particleType;

@@ -1,15 +1,13 @@
 package com.blazeloader.api.command;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-
-import com.blazeloader.bl.main.BLMain;
-import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+
+import com.blazeloader.bl.main.BLMain;
 
 /**
  * Api functions related to commands
