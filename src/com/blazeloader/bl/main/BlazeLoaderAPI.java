@@ -22,9 +22,9 @@ public class BlazeLoaderAPI implements LiteAPI {
     @Override
     public void init(LoaderEnvironment environment, LoaderProperties properties) {
         if (environment.getType() == LoaderEnvironment.EnvironmentType.CLIENT) {
-            new BLMainClient(environment, properties).init();
+            new BLMainClient(environment, properties);
         } else {
-            new BLMain(environment, properties).init();
+            new BLMain(environment, properties);
         }
     }
 

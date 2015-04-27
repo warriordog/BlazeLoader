@@ -1,5 +1,9 @@
 package com.blazeloader.api.particles;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -14,9 +18,8 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.bl.network.BLPacketParticles;
 
 /**
  * 
@@ -42,7 +45,7 @@ public class ParticlesRegisterClient extends ParticlesRegister {
 	 *
 	 * @return A new, or previously cached, mapping with all custom particles added.
 	 */
-	//TODO: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
+	//FIXME: This has to be linked up at the bottom of EffectRenderer.func_178930_c(). There might be a better place for this method though.
 	public static Map<Integer, IParticleFactory> syncroniseParticlesRegistry(Map<Integer, IParticleFactory> mapping) {
 		if (vanillaRegistry == null || !vanillaRegistry.equals(mapping)) {
 			vanillaRegistry = mapping;
@@ -154,5 +157,39 @@ public class ParticlesRegisterClient extends ParticlesRegister {
     
     protected EntityDiggingFX buildDiggingEffect(World w, double x, double y, double z, double vX, double vY, double vZ, IBlockState blockState) {
     	return (EntityDiggingFX)(new EntityDiggingFX.Factory()).getEntityFX(EnumParticleTypes.BLOCK_CRACK.getParticleID(), w, x, y, z, vX, vY, vZ, Block.getStateId(blockState));
+    }
+    
+    public void handleParticleSpawn(World w, BLPacketParticles p) {
+    	ParticleData particle = ParticleData.get(p.getType(), p.isLongDistance(), p.getArguments());
+    	
+    	if (p.getCount() == 0) {
+    		particle.setPos(p.getX(), p.getY(), p.getZ());
+    		particle.setVel(p.getSpeed() * p.getXOffset(), p.getSpeed() * p.getYOffset(), p.getSpeed() * p.getZOffset());
+    		try {
+    			spawnParticle(particle, w);
+    		} catch (Throwable e) {
+    			BLMain.LOGGER_MAIN.logWarning("Could not spawn particle effect " + p.getType().getName());
+    		}
+    	} else {
+    		for (int i = 0; i < p.getCount(); i++) {
+                double xOffset = p.getX() + (w.rand.nextGaussian() * p.getXOffset());
+                double yOffset = p.getY() + (w.rand.nextGaussian() * p.getYOffset());
+                double zOffset = p.getZ() + (w.rand.nextGaussian() * p.getZOffset());
+                double velX = w.rand.nextGaussian() * p.getSpeed();
+                double velY = w.rand.nextGaussian() * p.getSpeed();
+                double velZ = w.rand.nextGaussian() * p.getSpeed();
+                
+                particle.setPos(xOffset, yOffset, zOffset);
+                particle.setVel(velX, velY, velZ);
+                
+                try {
+                	spawnParticle(particle, w);
+                } catch (Throwable e) {
+                	BLMain.LOGGER_MAIN.logWarning("Could not spawn particle effect " + p.getType().getName());
+                    return;
+                }
+            }
+    	}
+    	
     }
 }

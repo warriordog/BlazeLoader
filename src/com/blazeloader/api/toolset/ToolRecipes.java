@@ -1,16 +1,12 @@
 package com.blazeloader.api.toolset;
 
-import java.util.List;
-
-import com.blazeloader.api.recipe.ApiCrafting;
-import com.blazeloader.api.recipe.ApiCrafting.BLCraftingManager;
-import com.blazeloader.bl.obf.BLOBF;
-import com.google.common.collect.Lists;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipesTools;
+
+import com.blazeloader.api.recipe.ApiCrafting;
+import com.blazeloader.api.recipe.ApiCrafting.BLCraftingManager;
 
 public class ToolRecipes {
     private static final String[][] patterns = new RecipesTools().recipePatterns;

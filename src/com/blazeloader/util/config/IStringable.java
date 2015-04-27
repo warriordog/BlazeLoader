@@ -3,13 +3,13 @@ package com.blazeloader.util.config;
 /**
  * Utility interface for adding types you want supported by config files
  * 
- * Must have an empty contrsuctor in addition to the below methods.
+ * Must have an empty constructor in addition to the below methods.
  *
  */
-public interface IStringable {
+public interface IStringable<T extends IStringable<T>> {
 	
 	/**
-	 * Just like object. But you really, really need to overrid it.
+	 * Just like object. But you really, really need to override it.
 	 * @return
 	 */
 	public String toString();
@@ -19,5 +19,5 @@ public interface IStringable {
 	 * 
 	 * @param string String representation of an instance of this class
 	 */
-	public IStringable valueOf(String string);
+	public T fromString(String string);
 }

@@ -1,19 +1,17 @@
 package com.blazeloader.bl.main;
 
-import com.blazeloader.event.handlers.BlazeLoaderIP;
-import com.blazeloader.event.handlers.BlazeLoaderIPClient;
-import com.mumfrey.liteloader.api.InterfaceProvider;
-import com.mumfrey.liteloader.launch.LoaderEnvironment;
-import com.mumfrey.liteloader.launch.LoaderProperties;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.server.integrated.IntegratedServerCommandManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.blazeloader.event.handlers.BlazeLoaderIPClient;
+import com.mumfrey.liteloader.api.InterfaceProvider;
+import com.mumfrey.liteloader.launch.LoaderEnvironment;
+import com.mumfrey.liteloader.launch.LoaderProperties;
 
 /**
  * Client BLMain.

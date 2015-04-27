@@ -13,13 +13,13 @@ import java.net.URL;
 /**
  * BlazeLoader BrandingProvider
  */
-public class BlazeLoaderBP implements BrandingProvider {
-    public static final BlazeLoaderBP instance = new BlazeLoaderBP();
+public class BlazeLoaderBrandingProvider implements BrandingProvider {
+    public static final BlazeLoaderBrandingProvider instance = new BlazeLoaderBrandingProvider();
 
     private static final ResourceLocation twitterLoc = new ResourceLocation("blazeloader", "tex/twitter_logo.png");
     private static final Icon twitterIcon = new IconAbsolute(twitterLoc, "twitter", 32, 32, 0, 0, 32, 32, 32);
 
-    private BlazeLoaderBP() {
+    private BlazeLoaderBrandingProvider() {
     }
 
     /**

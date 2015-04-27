@@ -1,5 +1,8 @@
 package com.blazeloader.bl.obf;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import com.blazeloader.util.version.Versions;
 import com.mumfrey.liteloader.core.runtime.Obf;
 
@@ -51,168 +54,94 @@ public class BLOBF extends Obf {
      * BL's central obfuscation table, contains all raw package, class, method, and field obfuscation mappings.
      */
     public static final BLOBFTable OBF = loadOBF();
-
+    
     private static BLOBFTable loadOBF() {
-        try {
-            BLOBFTable obf = new BLOBFTable();
-            //TODO: Add support for loading server obfuscation tables
-            new BLOBFParser(false).loadEntries(BLOBF.class.getResourceAsStream("/conf/minecraft_client.obf"), obf, true);
-            return obf;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
+        BLOBFTable obf = new BLOBFTable();
+        BLOBFParser parser = new BLOBFParser(false);
+        if (Versions.isClient()) {
+        	loadEntries(parser, "client", obf, true);
+        } else {
+            //TODO: Add server obfuscation mappings
+        	if (!loadEntries(parser, "server", obf, false)) { //Try load the server obfuscation table. If it does not exist or is empty fall back to the client table
+        		loadEntries(parser, "client", obf, true);
+        	}
         }
+        return obf;
     }
-
+    
+    private static boolean loadEntries(BLOBFParser parser, String filename, BLOBFTable obf, boolean mustThrow) {
+    	try {
+    		int oldSize = obf.size();
+    		InputStream stream = BLOBF.class.getResourceAsStream("/conf/minecraft_" + filename + ".obf");
+    		parser.loadEntries(stream, obf, true);
+    		return obf.size() > oldSize;
+    	} catch (FileNotFoundException e) {
+    		return false;
+    	} catch (Exception e) {
+    		if (mustThrow) {
+    			throw new RuntimeException("Unable to load obfuscation table; BlazeLoader cannot start!", e);
+    		}
+    		return false;
+    	}
+    }
+    
     /**
      * Gets a BLOBF from an obfuscated name.
      *
      * @param obfName The obfuscated name.
      * @param type    The type of object to get.
+     * @param level	  The obfuscation level MCP/SRG/OBF
      * @return Return a BLOBF created from an obfuscated name.
      */
-    public static BLOBF getOBF(String obfName, TargetType type) {
-        return OBF.getOBF(obfName, type);
-    }
-
-    /**
-     * Gets a BLOBF from a searge name.
-     *
-     * @param srgName The searge name.
-     * @param type    The type of object to get.
-     * @return Return a BLOBF created from a searge name.
-     */
-    public static BLOBF getSRG(String srgName, TargetType type) {
-        return OBF.getSRG(srgName, type);
-    }
-
-    /**
-     * Gets a BLOBF from an mcp name.
-     *
-     * @param mcpName The mcp name.
-     * @param type    The type of object to get.
-     * @return Return a BLOBF created from an mcp name.
-     */
-    public static BLOBF getMCP(String mcpName, TargetType type) {
-        return OBF.getMCP(mcpName, type);
+    public static BLOBF getOBF(String obfName, TargetType type, OBFLevel level) {
+        return OBF.getBLOBF(obfName, type, level);
     }
 
     /**
      * Gets a BLOBF from an obfuscated class name
      *
      * @param obfName The obfuscated name.
+     * @param level	  The obfuscation level MCP/SRG/OBF
      * @return Return a BLOBF representing obfName
      */
-    public static BLOBF getClassOBF(String obfName) {
-        return getOBF(obfName, TargetType.CLASS);
+    public static BLOBF getClass(String obfName, OBFLevel level) {
+        return getOBF(obfName, TargetType.CLASS, level);
+    }
+    
+    public static BLOBF getConstructor(String className, OBFLevel level, String... params) {
+    	return OBF.getConstructor(className, level, params);
     }
 
     /**
      * Gets a BLOBF from an obfuscated package name
      *
      * @param obfName The obfuscated name.
+     * @param level	  The obfuscation level MCP/SRG/OBF
      * @return Return a BLOBF representing obfName
      */
-    public static BLOBF getPackageOBF(String obfName) {
-        return getOBF(obfName, TargetType.PACKAGE);
+    public static BLOBF getPackage(String obfName, OBFLevel level) {
+        return getOBF(obfName, TargetType.PACKAGE, level);
     }
 
     /**
      * Gets a BLOBF from an obfuscated method name
      *
      * @param obfName The obfuscated name.
+     * @param level	  The obfuscation level MCP/SRG/OBF
      * @return Return a BLOBF representing obfName
      */
-    public static BLOBF getMethodOBF(String obfName) {
-        return getOBF(obfName, TargetType.METHOD);
+    public static BLOBF getMethod(String obfName, OBFLevel level) {
+        return getOBF(obfName, TargetType.METHOD, level);
     }
 
     /**
      * Gets a BLOBF from an obfuscated field name
      *
      * @param obfName The obfuscated name.
+     * @param level	  The obfuscation level MCP/SRG/OBF
      * @return Return a BLOBF representing obfName
      */
-    public static BLOBF getFieldOBF(String obfName) {
-        return getOBF(obfName, TargetType.FIELD);
-    }
-
-    /**
-     * Gets a BLOBF from a searge class name
-     *
-     * @param srgName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getClassSRG(String srgName) {
-        return getSRG(srgName, TargetType.CLASS);
-    }
-
-    /**
-     * Gets a BLOBF from a searge package name
-     *
-     * @param srgName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getPackageSRG(String srgName) {
-        return getSRG(srgName, TargetType.PACKAGE);
-    }
-
-    /**
-     * Gets a BLOBF from a searge method name
-     *
-     * @param srgName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getMethodSRG(String srgName) {
-        return getSRG(srgName, TargetType.METHOD);
-    }
-
-    /**
-     * Gets a BLOBF from a searge field name
-     *
-     * @param srgName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getFieldSRG(String srgName) {
-        return getSRG(srgName, TargetType.FIELD);
-    }
-
-    /**
-     * Gets a BLOBF from an mcp class name
-     *
-     * @param mcpName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getClassMCP(String mcpName) {
-        return getMCP(mcpName, TargetType.CLASS);
-    }
-
-    /**
-     * Gets a BLOBF from an mcp package name
-     *
-     * @param mcpName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getPackageMCP(String mcpName) {
-        return getMCP(mcpName, TargetType.PACKAGE);
-    }
-
-    /**
-     * Gets a BLOBF from an mcp method name
-     *
-     * @param mcpName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getMethodMCP(String mcpName) {
-        return getMCP(mcpName, TargetType.METHOD);
-    }
-
-    /**
-     * Gets a BLOBF from an mcp field name
-     *
-     * @param mcpName The obfuscated name.
-     * @return Return a BLOBF representing srgName
-     */
-    public static BLOBF getFieldMCP(String mcpName) {
-        return getMCP(mcpName, TargetType.FIELD);
+    public static BLOBF getField(String obfName, OBFLevel level) {
+        return getOBF(obfName, TargetType.FIELD, level);
     }
 }

@@ -96,7 +96,7 @@ public class ApiEntity {
      * @param type     Type of spwning to be used by this entity
      * @param biomes   Biomes this entity mus spawn in
      */
-    public static void RegisterSpawn(Class<? extends Entity> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
+    public static void registerSpawn(Class<? extends Entity> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
         if (biomes.length == 0) {
             biomes = BiomeGenBase.getBiomeGenArray();
         }
