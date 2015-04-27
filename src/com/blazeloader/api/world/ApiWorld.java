@@ -375,7 +375,7 @@ public class ApiWorld {
      */
     public static boolean isSideSolid(World w, BlockPos pos, EnumFacing side, boolean def) {
     	if (Versions.isForgeInstalled()) {
-    		return ForgeWorld.getForgeWorld(w).isSideSolid(pos, side, def);
+    		return ForgeWorld.isSideSolid(w, pos, side, def);
 		}
     	
     	if (w.isValid(pos)) {

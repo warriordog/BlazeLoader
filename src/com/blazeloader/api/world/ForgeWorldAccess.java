@@ -2,27 +2,44 @@ package com.blazeloader.api.world;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.storage.MapStorage;
 
 import com.google.common.collect.ImmutableSetMultimap;
 
-//TODO: Check that these method signatures are correct for 1.8 Forge
 public interface ForgeWorldAccess {
+	
 	/**
 	 * Checks if the given side of a block is solid.
 	 * 
 	 * @forge This is part of the Forge API specification
 	 * @param pos	The location
-	 * @param side	The face (taken as EnumFacing and parse internally to ForgeDirection for forge)
+	 * @param side	The face
 	 */
-	public <ForgeDirection extends Enum> boolean isSideSolid(BlockPos pos, ForgeDirection side, boolean def);
+	public boolean isSideSolid(BlockPos pos, EnumFacing side);
+	
+	/**
+	 * Checks if the given side of a block is solid.
+	 * 
+	 * @forge This is part of the Forge API specification
+	 * @param pos	The location
+	 * @param side	The face
+	 */
+	public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean def);
 	
 	/**
 	 * Gets the set of chunks persisted by Forge Modloader.
 	 * 
 	 * @forge This is part of the Forge API specification
+	 * @param <Ticket> A forge chunk manager ticket.
 	 */
 	public <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks();
+	
+	/**
+	 * Gets the amount of light a block will allow through
+	 */
+	public int getBlockLightOpacity(BlockPos pos);
 	
 	/**
 	 * Counts the number of entities with the given creature type.
@@ -32,6 +49,11 @@ public interface ForgeWorldAccess {
 	 * @param forSpawnCount	True if we are checking for spawn count limits
 	 */
 	public int countEntities(EnumCreatureType type, boolean forSpawnCount);
+	
+	/**
+	 * Gets the per-world map storage introduced by forge
+	 */
+	public MapStorage getPerWorldStorage();
 	
 	/**
 	 * Gets the maximum entity size. Used when checking if an entity is within a given region.

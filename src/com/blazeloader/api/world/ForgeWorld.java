@@ -10,8 +10,10 @@ import java.lang.reflect.Method;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapStorage;
 
 import com.blazeloader.util.version.Versions;
 import com.google.common.base.Function;
@@ -23,82 +25,157 @@ import com.google.common.collect.ImmutableSetMultimap;
 public final class ForgeWorld {
 	
     /**
-     * Gets an accessor to access Forge methods on a Minecraft world
+     * Gets an accessor to Forge methods on the given Minecraft world
      */
     public static ForgeWorldAccess getForgeWorld(World w) {
     	return new ForgeWorldObj(w);
     }
     
-    private static final class ForgeWorldObj implements ForgeWorldAccess {
-    	private static final WorldVariable<Double> MAX_ENTITY_RADIUS = new WorldVariable(double.class, "MAX_ENTITY_RADIUS");
-    	
-    	private static WorldFunction<ForgeWorldAccess> _isSideSolid;
-        private static WorldFunction<ForgeWorldAccess> _getPersistentChunks;
-        private static WorldFunction<ForgeWorldAccess> _countEntities;
-    	
+	private static final WorldVariable<Double> MAX_ENTITY_RADIUS = new WorldVariable(double.class, "MAX_ENTITY_RADIUS");
+	
+	private static WorldFunction<ForgeWorldAccess> _isSideSolid;
+    private static WorldFunction<ForgeWorldAccess> _getPersistentChunks;
+    private static WorldFunction<ForgeWorldAccess> _countEntities;
+    private static WorldFunction<ForgeWorldAccess> _getPerWorldStorage;
+    private static WorldFunction<ForgeWorldAccess> _getBlockLightOpacity;
+	
+	protected static boolean isSideSolid(World worldObj, BlockPos pos, EnumFacing side, boolean def) {
+		if (Versions.isForgeInstalled()) {
+	    	if (_isSideSolid == null) {
+	    		_isSideSolid = new WorldFunction(ForgeWorldAccess.class, "isSideSolid", BlockPos.class, Enum.class, boolean.class);
+	    	}
+	    	if (_isSideSolid.valid()) {
+	    		try {
+	    			return _isSideSolid.getLambda(worldObj).isSideSolid(pos, side, def);
+	    		} catch (Throwable e) {
+	    			_isSideSolid.invalidate();
+	    		}
+	    	}
+		}
+		return false;
+	}
+	
+	protected static <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks(World worldObj) {
+		if (Versions.isForgeInstalled()) {
+	    	if (_getPersistentChunks == null) {
+	    		_getPersistentChunks = new WorldFunction(ForgeWorldAccess.class, "getPersistentChunks");
+	    	}
+	    	if (_getPersistentChunks.valid()) {
+		    	ImmutableSetMultimap<ChunkCoordIntPair, Ticket> result;
+		    	try {
+		    		result = _getPersistentChunks.getLambda(worldObj).getPersistentChunks();
+		    	} catch (Throwable e) {
+		    		_getPersistentChunks.invalidate();
+		    		result = null;
+		    	}
+		    	return result == null ? ImmutableSetMultimap.<ChunkCoordIntPair, Ticket>of() : result;
+	    	}
+		}
+		return ImmutableSetMultimap.<ChunkCoordIntPair, Ticket>of();
+	}
+	
+	protected static int getBlockLightOpacity(World worldObj, BlockPos pos) {
+		if (Versions.isForgeInstalled()) {
+			if (_getBlockLightOpacity == null) {
+				_getBlockLightOpacity = new WorldFunction(ForgeWorldAccess.class, "getBlockLightOpacity");
+			}
+			if (_getBlockLightOpacity.valid()) {
+				try {
+					return _getBlockLightOpacity.getLambda(worldObj).getBlockLightOpacity(pos);
+				} catch (Throwable e) {
+					_getBlockLightOpacity.invalidate();
+		    	}
+			}
+		}
+    	if (!worldObj.isValid(pos)) return 0;
+        return worldObj.getChunkFromBlockCoords(pos).getBlockLightOpacity(pos);
+	}
+	
+	protected static int countEntities(World worldObj, EnumCreatureType type, boolean forSpawnCount) {
+		if (Versions.isForgeInstalled()) {
+	    	if (_countEntities == null) {
+	    		_countEntities = new WorldFunction(ForgeWorldAccess.class, "countEntities", EnumCreatureType.class, boolean.class);
+	    	}
+	    	if (_countEntities.valid()) {
+		    	try {
+					return _countEntities.getLambda(worldObj).countEntities(type, forSpawnCount);
+				} catch (Throwable e) {
+					_countEntities.invalidate();
+				}
+	    	}
+		}
+		return worldObj.countEntities(type.getCreatureClass());
+	}
+	
+	protected static MapStorage getPerWorldStorage(World worldObj) {
+		if (Versions.isForgeInstalled()) {
+			if (_getPerWorldStorage == null) {
+				_getPerWorldStorage = new WorldFunction(ForgeWorldAccess.class, "getPerWorldStorage");
+			}
+			if (_getPerWorldStorage.valid()) {
+				try {
+					return _getPerWorldStorage.getLambda(worldObj).getPerWorldStorage();
+				} catch (Throwable e) {
+					_getPerWorldStorage.invalidate();
+				}
+			}
+		}
+		return worldObj.getMapStorage();
+	}
+	
+	protected static double getMaxEntitySize(World worldObj, double def) {
+		return MAX_ENTITY_RADIUS.get(worldObj, def);
+	}
+	
+	protected static void setMaxEntitySize(World worldObj, double size) {
+		MAX_ENTITY_RADIUS.set(worldObj, size);
+	}
+    
+    protected static final class ForgeWorldObj implements ForgeWorldAccess {
 		private final World worldObj;
 		
 		private ForgeWorldObj(World w) {
 			worldObj = w;
 		}
-		
-		public <ForgeDirection extends Enum> boolean isSideSolid(BlockPos pos, ForgeDirection side, boolean def) {
-			if (Versions.isForgeInstalled()) {
-		    	if (_isSideSolid == null) {
-		    		_isSideSolid = new WorldFunction(ForgeWorldAccess.class, "isSideSolid", BlockPos.class, Enum.class, boolean.class);
-		    	}
-		    	if (_isSideSolid.valid()) {
-		    		try {
-		    			return _isSideSolid.getLambda(worldObj).isSideSolid(pos, side, def);
-		    		} catch (Throwable e) {
-		    			_isSideSolid.invalidate();
-		    		}
-		    	}
-			}
-			return false;
+
+		@Override
+		public boolean isSideSolid(BlockPos pos, EnumFacing side) {
+			return isSideSolid(pos, side, false);
 		}
-		
+
+		@Override
+		public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean def) {
+			return ForgeWorld.isSideSolid(worldObj, pos, side, def);
+		}
+
+		@Override
 		public <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks() {
-			if (Versions.isForgeInstalled()) {
-		    	if (_getPersistentChunks == null) {
-		    		_getPersistentChunks = new WorldFunction(ForgeWorldAccess.class, "getPersistentChunks");
-		    	}
-		    	if (_getPersistentChunks.valid()) {
-			    	ImmutableSetMultimap<ChunkCoordIntPair, Ticket> result;
-			    	try {
-			    		result = _getPersistentChunks.getLambda(worldObj).getPersistentChunks();
-			    	} catch (Throwable e) {
-			    		_getPersistentChunks.invalidate();
-			    		result = null;
-			    	}
-			    	return result == null ? ImmutableSetMultimap.<ChunkCoordIntPair, Ticket>of() : result;
-		    	}
-			}
-			return ImmutableSetMultimap.<ChunkCoordIntPair, Ticket>of();
+			return ForgeWorld.getPersistentChunks(worldObj);
 		}
-		
+
+		@Override
+		public int getBlockLightOpacity(BlockPos pos) {
+			return ForgeWorld.getBlockLightOpacity(worldObj, pos);
+		}
+
+		@Override
 		public int countEntities(EnumCreatureType type, boolean forSpawnCount) {
-			if (Versions.isForgeInstalled()) {
-		    	if (_countEntities == null) {
-		    		_countEntities = new WorldFunction(ForgeWorldAccess.class, "countEntities", EnumCreatureType.class, boolean.class);
-		    	}
-		    	if (_countEntities.valid()) {
-			    	try {
-						return _countEntities.getLambda(worldObj).countEntities(type, forSpawnCount);
-					} catch (Throwable e) {
-						_countEntities.invalidate();
-					}
-		    	}
-			}
-			return worldObj.countEntities(type.getCreatureClass());
+			return ForgeWorld.countEntities(worldObj, type, forSpawnCount);
 		}
-		
+
+		@Override
+		public MapStorage getPerWorldStorage() {
+			return ForgeWorld.getPerWorldStorage(worldObj);
+		}
+
+		@Override
 		public double getMaxEntitySize(double def) {
-			return MAX_ENTITY_RADIUS.get(worldObj, def);
+			return ForgeWorld.getMaxEntitySize(worldObj, def);
 		}
-		
+
+		@Override
 		public void setMaxEntitySize(double size) {
-			MAX_ENTITY_RADIUS.set(worldObj, size);
+			ForgeWorld.setMaxEntitySize(worldObj, size);
 		}
     }
 
