@@ -101,7 +101,7 @@ public class Prop<T> implements IProperty<T> {
 			full.append(i);
 			full.append("\r\n");
 		}
-		if (desc == null || desc.length == 0 || full.toString().isEmpty()) {
+		if (desc.length == 0 || full.toString().isEmpty()) {
 			description = "";
 		} else {
 			description = cfg.applyDescriptionRegexString(full.toString().trim());

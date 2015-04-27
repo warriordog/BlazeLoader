@@ -1,7 +1,5 @@
 package com.blazeloader.event.transformers;
 
-import com.blazeloader.bl.main.BLMain;
-
 /**
  * Injects events into MC classes
  */

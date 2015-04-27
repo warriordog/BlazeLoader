@@ -1,9 +1,11 @@
 package com.blazeloader.util.transformers.source;
 
+import com.blazeloader.bl.obf.AccessLevel;
 import com.blazeloader.bl.obf.BLOBF;
-import com.blazeloader.util.transformers.AccessLevel;
+import com.blazeloader.bl.obf.OBFLevel;
 import com.blazeloader.util.transformers.BLAccessTransformer;
 import com.blazeloader.util.transformers.transformations.*;
+
 import net.acomputerdog.OBFUtil.util.TargetType;
 import net.acomputerdog.core.java.Patterns;
 
@@ -21,35 +23,39 @@ public class BLATSource extends TransformationSource {
     public BLATSource(InputStream in) throws IOException {
         transformations = new LinkedList<Transformation>();
         BufferedReader reader = null;
-
         try {
             reader = new BufferedReader(new InputStreamReader(in));
             String line;
-
+            
             while ((line = reader.readLine()) != null) {
                 try {
                     if (line.startsWith("#") || line.isEmpty()) {
                         continue;
                     }
-
+                    
                     String[] sections = line.split(Patterns.NUMBERSIGN);
                     String[] parts = sections[0].trim().split(Patterns.SPACE);
-
+                    
                     if (parts.length < 3) {
                         System.err.println("Malformed Line: " + line);
                         continue;
                     }
-                    String targetPart = parts[1].trim();
-                    if (targetPart.equalsIgnoreCase("METHOD")) {
-                        if (parts.length < 4) {
-                            System.err.println("Malformed Line: " + line);
-                            continue;
-                        }
-                        addMethodTransformation(parts[0].trim(), getOBF(parts[2].trim().concat(" ").concat(parts[3].trim()), TargetType.METHOD));
-                    } else if (targetPart.equalsIgnoreCase("FIELD")) {
-                        addFieldTransformation(parts[0].trim(), getOBF(parts[2].trim(), TargetType.FIELD));
-                    } else {
-                        System.err.println("Unknown transformation type: " + line);
+                    switch (TargetType.getType(parts[1].trim().toUpperCase())) {
+	                    case METHOD:
+	                    	if (parts.length < 4) {
+	                            System.err.println("Malformed Line: " + line);
+	                            continue;
+	                        }
+	                        addMethodTransformation(parts[0].trim(), getOBF(parts[2].trim().concat(" ").concat(parts[3].trim()), TargetType.METHOD));
+	                    	break;
+	                    case CONSTRUCTOR:
+	                    	addMethodTransformation(parts[0].trim(), getOBF(sections[0].trim().substring(parts[0].length() + parts[1].length() + 2, sections[0].trim().length()), TargetType.CONSTRUCTOR));
+	                    	break;
+	                    case FIELD:
+	                    	addFieldTransformation(parts[0].trim(), getOBF(parts[2].trim(), TargetType.FIELD));
+	                    	break;
+                    	default:
+                    		System.err.println("Unknown transformation type: " + line);
                     }
                 } catch (Exception e) {
                     System.err.println("Exception loading line: " + line);
@@ -124,15 +130,19 @@ public class BLATSource extends TransformationSource {
         }
         String obfType = parts[0];
         String[] obfName = splitGlobal(parts[1]);
+        OBFLevel obfuscationLevel;
+        try {
+        	obfuscationLevel = OBFLevel.valueOf(obfType.toUpperCase());
+        } catch (Throwable e) {
+        	throw new IllegalArgumentException("Unknown OBF type: " + obfType);
+        }
         BLOBF blobf;
-        if (obfType.equalsIgnoreCase("obf")) {
-            blobf = BLOBF.getOBF(obfName[0], obfName.length > 1 ? TargetType.CLASS : type);
-        } else if (obfType.equalsIgnoreCase("srg")) {
-            blobf = BLOBF.getSRG(obfName[0], obfName.length > 1 ? TargetType.CLASS : type);
-        } else if (obfType.equalsIgnoreCase("mcp")) {
-            blobf = BLOBF.getMCP(obfName[0], obfName.length > 1 ? TargetType.CLASS : type);
+        if (type == TargetType.CONSTRUCTOR) {
+        	String className = obfName[0].split(" ")[0];
+        	String[] splitten = obfName[0].replace(className, "").trim().split(" ");
+        	blobf = BLOBF.getConstructor(className, obfuscationLevel, splitten);
         } else {
-            throw new IllegalArgumentException("Unknown OBF type: " + obfType);
+        	blobf = BLOBF.getOBF(obfName[0], obfName.length > 1 ? TargetType.CLASS : type, obfuscationLevel);
         }
         if (blobf == null) {
             throw new IllegalArgumentException("Undefined " + type.name() + " mapping: \"" + obfName[0] + "\",\"" + ((obfName.length >= 2) ? obfName[1] : "NULL") + "\"");

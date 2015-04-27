@@ -55,12 +55,12 @@ public class BLMethodInfo extends MethodInfo {
 
     private static Obf getObfType(String name) {
         if (!Versions.isGameObfuscated()) {
-            return BLOBF.getClassMCP(name);
+            return BLOBF.getClass(name, OBFLevel.MCP);
         }
         if (Versions.isForgeInstalled()) {
-            return BLOBF.getClassSRG(name);
+            return BLOBF.getClass(name, OBFLevel.SRG);
         }
-        return BLOBF.getClassOBF(name);
+        return BLOBF.getClass(name, OBFLevel.OBF);
     }
 
     private static String getClassName(String[] parts) {

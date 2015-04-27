@@ -1,6 +1,6 @@
 package com.blazeloader.api.client;
 
-import com.blazeloader.bl.main.BlazeLoaderCP;
+import com.blazeloader.bl.main.BlazeLoaderCoreProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.server.MinecraftServer;
@@ -16,10 +16,10 @@ public class ApiClient {
     }
 
     public static Minecraft getClient() {
-        return (Minecraft) BlazeLoaderCP.instance.getGameEngine().getClient();
+        return (Minecraft) BlazeLoaderCoreProvider.instance.getGameEngine().getClient();
     }
 
     public static MinecraftServer getServer() {
-        return (MinecraftServer) BlazeLoaderCP.instance.getGameEngine().getServer();
+        return (MinecraftServer) BlazeLoaderCoreProvider.instance.getGameEngine().getServer();
     }
 }

@@ -4,6 +4,7 @@ import com.blazeloader.bl.exception.InvalidEventException;
 import com.blazeloader.bl.main.BLMain;
 import com.blazeloader.bl.obf.BLMethodInfo;
 import com.blazeloader.bl.obf.BLOBF;
+import com.blazeloader.bl.obf.OBFLevel;
 import com.mumfrey.liteloader.core.runtime.Obf;
 import com.mumfrey.liteloader.transformers.event.Event;
 import com.mumfrey.liteloader.transformers.event.EventInjectionTransformer;
@@ -24,17 +25,17 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     }
     
     protected void addBLConstructorEvent(EventSide side, String clazz, Object[] paramaterTypes, InjectionPoint injectionPoint) {
-    	BLOBF clas = BLOBF.getClassMCP(clazz);
+    	BLOBF clas = BLOBF.getClass(clazz, OBFLevel.MCP);
     	String name = clas.simpleName;
     	addEvent(Event.getOrCreate("BL.<init>." + name, true), new MethodInfo(clas, Obf.constructor, Void.TYPE, paramaterTypes), injectionPoint).addListener(new MethodInfo(side.getHandler(), "init" + capitaliseFirst(name)));
     }
     
     protected void addBLEvent(EventSide side, String method, InjectionPoint injectionPoint) {
-        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethodMCP(method)), injectionPoint);
+        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethod(method, OBFLevel.MCP)), injectionPoint);
     }
 
     protected void addBLEvent(EventSide side, String method) {
-        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethodMCP(method)));
+        addBLEvent(side, BLMethodInfo.create(BLOBF.getMethod(method, OBFLevel.MCP)));
     }
 
     protected void addBLEvent(EventSide side, BLMethodInfo method) {
@@ -74,8 +75,10 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkLoad ()V", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.world.chunk.Chunk.onChunkUnload ()V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.world.chunk.Chunk.populateChunk (Lnet/minecraft/world/chunk/IChunkProvider;Lnet/minecraft/world/chunk/IChunkProvider;II)V", beforeReturn);
+        addBLEvent(EventSide.INTERNAL, "net.minecraft.world.WorldServer.flush ()V");
         
-        addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClassMCP("net.minecraft.world.World") }, beforeReturn);
+        
+        addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClass("net.minecraft.world.World", OBFLevel.MCP) }, beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.writeToNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.readFromNBT (Lnet/minecraft/nbt/NBTTagCompound;)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.entity.Entity.copyDataFromOld (Lnet/minecraft/entity/Entity;)V", beforeReturn);

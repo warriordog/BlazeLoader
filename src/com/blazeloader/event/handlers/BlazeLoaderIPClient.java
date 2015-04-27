@@ -1,18 +1,14 @@
 package com.blazeloader.event.handlers;
 
-import com.blazeloader.bl.mod.BLMod;
 import com.blazeloader.event.handlers.client.EventHandlerClient;
-import com.blazeloader.event.listeners.ModEventListener;
-import com.blazeloader.event.listeners.TickListener;
 import com.blazeloader.event.listeners.client.ClientBlockListener;
+import com.blazeloader.event.listeners.client.ClientPlayerListener;
+import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.blazeloader.event.listeners.client.GuiListener;
 import com.blazeloader.event.listeners.client.InventoryListener;
 import com.blazeloader.event.listeners.client.OverrideListener;
-import com.blazeloader.event.listeners.client.ClientPlayerListener;
 import com.blazeloader.event.listeners.client.ProfilerListener;
-import com.blazeloader.event.listeners.client.ClientWorldListener;
 import com.mumfrey.liteloader.api.InterfaceProvider;
-import com.mumfrey.liteloader.api.Listener;
 import com.mumfrey.liteloader.core.InterfaceRegistrationDelegate;
 
 /**

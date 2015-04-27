@@ -1,10 +1,8 @@
 package com.blazeloader.bl.main;
 
-import com.blazeloader.event.handlers.BlazeLoaderIP;
-import com.blazeloader.event.handlers.BlazeLoaderIPClient;
-import com.mumfrey.liteloader.api.*;
-import com.mumfrey.liteloader.launch.LoaderEnvironment;
-import com.mumfrey.liteloader.launch.LoaderProperties;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
@@ -12,9 +10,14 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.blazeloader.event.handlers.BlazeLoaderIP;
+import com.mumfrey.liteloader.api.CoreProvider;
+import com.mumfrey.liteloader.api.CustomisationProvider;
+import com.mumfrey.liteloader.api.EnumeratorModule;
+import com.mumfrey.liteloader.api.InterfaceProvider;
+import com.mumfrey.liteloader.api.Observer;
+import com.mumfrey.liteloader.launch.LoaderEnvironment;
+import com.mumfrey.liteloader.launch.LoaderProperties;
 
 /**
  * BL main class
@@ -66,6 +69,7 @@ public class BLMain {
         LOGGER_FAST.setMinimumLogLevel(LogLevel.valueOf(Settings.minimumLogLevel));
 
         BLMain.LOGGER_FULL.logInfo("BlazeLoader initialized.");
+        init();
     }
 
     public String[] getRequiredTransformers() {
@@ -85,7 +89,7 @@ public class BLMain {
     }
 
     public List<CoreProvider> getCoreProviders() {
-        return Collections.singletonList((CoreProvider)BlazeLoaderCP.instance);
+        return Collections.singletonList((CoreProvider)BlazeLoaderCoreProvider.instance);
     }
     
     public List<InterfaceProvider> getInterfaceProviders() {
@@ -99,7 +103,7 @@ public class BLMain {
     }
     
     public List<CustomisationProvider> getCustomisationProviders() {
-        return Collections.singletonList((CustomisationProvider)BlazeLoaderBP.instance);
+        return Collections.singletonList((CustomisationProvider)BlazeLoaderBrandingProvider.instance);
     }
 
     public List<Observer> getPreInitObservers() {
@@ -149,6 +153,6 @@ public class BLMain {
     }
 
     public String getPluginChannelName() {
-        return "BLAZELOADER:";
+        return "BLAZELOADER";
     }
 }

@@ -1,27 +1,31 @@
 package com.blazeloader.api.world;
 
-import com.blazeloader.api.block.UpdateType;
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.version.Versions;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockHopper;
+import net.minecraft.block.BlockSlab;
+import net.minecraft.block.BlockStairs;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.WeightedRandom;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.BiomeGenBase;
+
+import com.blazeloader.api.block.UpdateType;
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.util.version.Versions;
 
 /**
- * Api functions related to worlds
- *
- * NOT CURRENTLY IMPLEMENTED
- *
+ * A collection of useful functions relating to worlds.
  */
 public class ApiWorld {
     private static List<IChunkGenerator> generators = new ArrayList<IChunkGenerator>();
@@ -51,10 +55,29 @@ public class ApiWorld {
      * @param rad Maximum Radius
      * @return List of matching Entities
      */
-    public static List<Entity> getEntitiesNear(World w, int x, int y, int z, int rad) {
+    public static List<Entity> getEntitiesNear(World w, int x, int y, int z, double rad) {
         return getEntitiesOfTypeNear(w, null, x, y, z, rad);
     }
-
+    
+    /**
+	 * Gets an entity by its Unique Identifier
+	 * 
+	 * @param w		The world
+	 * @param uuid	A uuid for the entity
+	 * @return The matching entity or null if none were found
+	 */
+	public static Entity getEntityByUUId(World w, UUID uuid) {
+		if (w instanceof WorldServer) {
+			return ((WorldServer)w).getEntityFromUuid(uuid);
+		}
+		for (Entity i : (List<Entity>)w.loadedEntityList) {
+			if (i.getUniqueID().equals(uuid)) {
+				return i;
+			}
+		}
+		return null;
+	}
+    
     /**
      * Gets entities of type in the world within a certain radius from a given point
      * Acts like getEntitiesNear() when Entity Type is null
@@ -67,7 +90,7 @@ public class ApiWorld {
      * @param rad Maximum Radius
      * @return List of matching Entities
      */
-    public static List<Entity> getEntitiesOfTypeNear(World w, Class<? extends Entity> c, int x, int y, int z, int rad) {
+    public static List<Entity> getEntitiesOfTypeNear(World w, Class<? extends Entity> c, int x, int y, int z, double rad) {
         List<Entity> result = new ArrayList<Entity>();
         for (Entity i : ((List<Entity>) w.loadedEntityList)) {
             if (c == null || i.getClass() == c) {
@@ -94,6 +117,41 @@ public class ApiWorld {
     	return w.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), distance);
     }
     
+	/**
+	 * Selects a random spawn list entry for the given creature type and location
+	 * 
+	 * @param w   World
+	 * @param creatureType	The type of creature to spawn
+	 * @param pos			The location
+	 */
+	public static BiomeGenBase.SpawnListEntry getSpawnListEntryForTypeAt(World w, EnumCreatureType creatureType, BlockPos pos) {
+		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
+        return possibleTypes != null && !possibleTypes.isEmpty() ? (BiomeGenBase.SpawnListEntry)WeightedRandom.getRandomItem(w.rand, possibleTypes) : null;
+	}
+	
+	/**
+	 * Gets the current moonphase for a given world.
+	 * 
+	 * @param w		The world
+	 * @return A MoonPhase value
+	 */
+	public static MoonPhase getMoonPhase(World w) {
+		return MoonPhase.fromInt(w.getMoonPhase());
+	}
+	
+	/**
+	 * Checks if the given spawn list entry is allowed as a possible spawn for the given creature type and location
+	 * 
+	 * @param w   World
+	 * @param creatureType		The type of creature to spawn
+	 * @param spawnListEntry	The entry we would like to spawn
+	 * @param pos				The location we would like to spawn at
+	 * @return	True if we can spawn here
+	 */
+	public static boolean canSpawnHere(World w, EnumCreatureType creatureType, BiomeGenBase.SpawnListEntry spawnListEntry, BlockPos pos) {
+		List possibleTypes = w.getChunkProvider().getPossibleCreatures(creatureType, pos);
+        return possibleTypes != null && !possibleTypes.isEmpty() ? possibleTypes.contains(spawnListEntry) : false;
+	}
 
     /**
      * Sets the block at a specified location. And triggers a block update
@@ -167,15 +225,7 @@ public class ApiWorld {
      * @param dropItems		true if the block must drop as an item, or it's contained items
      */
     public static void destroyBlock(World world, BlockPos pos, boolean dropItems) {
-        if (!world.isRemote) {
-            world.destroyBlock(pos, dropItems);
-        } else {
-            IBlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-            if (block.getMaterial() == Material.air) return;
-            if (dropItems) block.dropBlockAsItem(world, pos, state, 0);
-            setBlockAt(world, pos, Blocks.air.getDefaultState());
-        }
+        world.destroyBlock(pos, dropItems);
     }
 
     /**
@@ -200,11 +250,46 @@ public class ApiWorld {
      */
     public static void playBlockDestructionEffect(World w, BlockPos pos) {
         if (!w.isRemote) {
-            IBlockState b = w.getBlockState(pos);
-            w.playAuxSFX(2001, pos, Block.getStateId(b));
+            playAuxSFX(w, AuxilaryEffects.BLOCK_BREAK, pos, Block.getStateId(w.getBlockState(pos)));
         }
     }
-
+    
+    /**
+     * Spawns dispenser particles in front of the block at the given location in the indicated direction
+     *
+     * @param w  		World
+     * @param pos 		The position of the block.
+     * @param direction	The direction the block is facing
+     */
+    public static void spawnDispenserParticles(World w, BlockPos pos, EnumFacing direction) {
+        playAuxSFX(w, AuxilaryEffects.DISPENSE_PARTICLES, pos, direction.getFrontOffsetX() + 1 + (direction.getFrontOffsetZ() + 1) * 3);
+    }
+    
+	/**
+	 * Plays a standard sound effect at the given location.
+	 * 
+	 * @param w  		World
+	 * @param soundType	The effect to spawn 
+	 * @param pos		The location
+	 * @param volume	Volume
+	 */
+	public static void playAuxSFX(World w, AuxilaryEffects soundType, BlockPos pos, int volume) {
+		w.playAuxSFX(soundType.getId(), pos, volume);
+	}
+	
+	/**
+	 * Plays a standard sound effect at the given location to the given player.
+	 * 
+	 * @param w  		World
+	 * @param player	The player to recieve the sound
+	 * @param soundType	The effect to spawn
+	 * @param pos		The location
+	 * @param volume	Volume
+	 */
+	public static void playAuxSFX(World w, EntityPlayer player, AuxilaryEffects soundType, BlockPos pos, int volume) {
+		w.playAuxSFXAtEntity(player, soundType.getId(), pos, volume);
+	}
+    
     /**
      * Gets the IntegratedServer.worldServers[] index of the specified world. 
      *
@@ -223,7 +308,7 @@ public class ApiWorld {
      * @param dimension The dimension to get.
      * @return The WorldServer for the specified index.
      */
-    public static WorldServer getServerForDimension(int dimension) {
+    public static WorldServer getServerWorldForDimension(int dimension) {
     	WorldServer[] worldServers = null;
     	if (Versions.isClient()) {
 	    	try {
@@ -275,4 +360,54 @@ public class ApiWorld {
         return world.getBlockState(pos);
     }
     
+    /**
+     * Determine if the given block is considered solid on the
+     * specified side.  Used by placement logic.
+     * <p>
+	 * Warning: This method depends on the Forge API for full functionality. Without that it may only return correctly for the top or bottom faces.
+     * 
+     * @forge This is part of the Forge API specification
+     * @param w		The world
+     * @param pos	The location
+     * @param side	The Side in question
+     * @param  def	A default value to return
+     * @return True if the side is solid or the default
+     */
+    public static boolean isSideSolid(World w, BlockPos pos, EnumFacing side, boolean def) {
+    	if (Versions.isForgeInstalled()) {
+    		return ForgeWorld.isSideSolid(w, pos, side, def);
+		}
+    	
+    	if (w.isValid(pos)) {
+			IBlockState state = w.getBlockState(pos);
+	        Block block = state.getBlock();
+	    	
+	        if (block.getMaterial().isOpaque() && block.isFullCube()) {
+	        	return true;
+	        }
+	        
+			if (side == EnumFacing.UP) {
+				return w.doesBlockHaveSolidTopSurface(w, pos);
+			}
+			if (side == EnumFacing.DOWN) {
+				return doesBlockHaveSolidBottomSurface(w, pos);
+			}
+    	}
+    	return def;
+    }
+    
+    /**
+     * Checks if a block has a solid bottom surface.
+     * 
+     * @param pos	The location
+     * @return true if the bottom side of the block is solid.
+     */
+    protected static boolean doesBlockHaveSolidBottomSurface(World w, BlockPos pos) {
+    	IBlockState state = w.getBlockState(pos);
+        Block block = state.getBlock();
+        if (block.getMaterial().isOpaque() && block.isFullCube()) {
+        	return true;
+        }
+        return block instanceof BlockStairs ? state.getValue(BlockStairs.HALF) == BlockStairs.EnumHalf.BOTTOM : (block instanceof BlockSlab ? state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM : (block instanceof BlockHopper ? true : false));
+    }
 }

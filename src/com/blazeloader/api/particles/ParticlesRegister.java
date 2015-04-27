@@ -1,11 +1,13 @@
 package com.blazeloader.api.particles;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.util.shape.IShape;
-import com.blazeloader.util.version.Versions;
-import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
-import com.mumfrey.liteloader.core.ServerPluginChannels;
 import io.netty.buffer.Unpooled;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -20,11 +22,13 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import com.blazeloader.bl.main.BLMain;
+import com.blazeloader.bl.network.BLPacketChannels;
+import com.blazeloader.bl.network.Channel;
+import com.blazeloader.util.shape.IShape;
+import com.blazeloader.util.version.Versions;
+import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
+import com.mumfrey.liteloader.core.ServerPluginChannels;
 
 /**
  * 
@@ -194,27 +198,22 @@ public class ParticlesRegister {
     public void spawnParticle(ParticleData particle, World world) {
     	if (particle.getType() == ParticleType.NONE) return;
     	
-    	//TODO: Setup a channel for Blazeloader to send/recieve custom particles. For now this will only send particles recognized by vanilla minecraft.
+    	//TODO: Setup a channel for Blazeloader to send/receive custom particles. For now this will only send particles recognized by vanilla minecraft.
     	if (EnumParticleTypes.PARTICLES.containsKey(particle.getType().getId())) {
     		Packet packet = new S2APacketParticles(EnumParticleTypes.getParticleFromId(particle.getType().getId()), particle.getIgnoreDistance(), (float)particle.posX, (float)particle.posY, (float)particle.posZ, 0, 0, 0, (float)particle.getVel().lengthVector(), 1, particle.getArgs());
 	        for (EntityPlayerMP player : (ArrayList<EntityPlayerMP>)(((WorldServer)world).playerEntities)) {
 	            BlockPos pos = player.getPosition();
 	            double dist = pos.distanceSq(particle.posX, particle.posY, particle.posZ);
 	            if (dist <= particle.getMaxRenderDistance() || particle.getIgnoreDistance() && dist <= 65536.0D) {
+	            	//BLPacketChannels.sendPacket(player, packet, Channel.PARTICLES);
 	                player.playerNetServerHandler.sendPacket(packet);
 	            }
 	        }
     	}
     }
     
-    private void sendPacket(EntityPlayerMP player, Packet p) {
-    	PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-    	try {
-			p.writePacketData(buf);
-			ServerPluginChannels.sendMessage(player, BLMain.instance().getPluginChannelName() + "PARTICLES", buf, ChannelPolicy.DISPATCH_ALWAYS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    public void handleParticleSpawn(World w, Packet p) {
+    	//Do nothing. Since we're on the server.
     }
     
     public void addEffectToRenderer(Entity fx) {}
