@@ -17,7 +17,7 @@ public interface PlayerListener extends BLMod {
      * @param isAllowed The result of the game's user check.  True if the player is allowed to join.
      * @return Return true to allow the player to join, false to prevent it.
      */
-    public boolean eventMPPlayerLoginAttempt(String username, boolean isAllowed);
+    public boolean onPlayerTryLoginMP(String username, boolean isAllowed);
 
 
     /**
@@ -25,14 +25,14 @@ public interface PlayerListener extends BLMod {
      *
      * @param player The player logging in.
      */
-    public void eventMPPlayerLogin(ServerConfigurationManager manager, EntityPlayerMP player);
+    public void onPlayerLoginMP(ServerConfigurationManager manager, EntityPlayerMP player);
 
     /**
      * Called when a player logs out of the game.
      *
      * @param player The player logging out.
      */
-    public void eventMPPlayerLogout(ServerConfigurationManager manager, EntityPlayerMP player);
+    public void onPlayerLogoutMP(ServerConfigurationManager manager, EntityPlayerMP player);
 
 
     /**
@@ -42,5 +42,5 @@ public interface PlayerListener extends BLMod {
      * @param dimension     The dimension to spawn in.
      * @param causedByDeath If the respawn was triggered by death, vs beating the game.
      */
-    public void eventMPPlayerRespawn(ServerConfigurationManager manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
+    public void onPlayerRespawnMP(ServerConfigurationManager manager, EntityPlayerMP oldPlayer, int dimension, boolean causedByDeath);
 }

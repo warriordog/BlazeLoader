@@ -16,7 +16,7 @@ public interface ClientWorldListener extends BLMod {
      * @param world   The world being loaded.
      * @param message The message displayed to the user on the loading screen.
      */
-    public void eventLoadWorld(Minecraft minecraft, WorldClient world, String message);
+    public void onWorldLoad(Minecraft minecraft, WorldClient world, String message);
 
     /**
      * Called when a world is unloaded.
@@ -24,12 +24,11 @@ public interface ClientWorldListener extends BLMod {
      * @param world   The world being unloaded.
      * @param message The message displayed to the user on the loading screen.
      */
-    public void eventUnloadWorld(Minecraft minecraft, WorldClient world, String message);
-
+    public void onWorldUnload(Minecraft minecraft, WorldClient world, String message);
+    
     /**
-     * Called when a world if changed.  (place/remove block)
-     *
-     * @param world The world being changed.
+     * Called when the client's world changes
+     * @param world		The new value for Minecraft.worldObj, may be null
      */
-    public void eventWorldChanged(World world);
+    public void onWorldChanged(World world);
 }

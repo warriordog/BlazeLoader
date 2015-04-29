@@ -13,7 +13,7 @@ public interface ClientPlayerListener extends BLMod {
     /**
      * Called when the client player dies.
      */
-    public void eventClientPlayerDeath();
+    public void onClientPlayerDeath();
 
     /**
      * Called when the client connects to a server or singleplayer game
@@ -21,5 +21,5 @@ public interface ClientPlayerListener extends BLMod {
      * @param netHandler  The network handler processing loginPacket
      * @param loginPacket The login packet for this login
      */
-    public void eventClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket);
+    public void onClientJoinGame(INetHandler netHandler, S01PacketJoinGame loginPacket);
 }

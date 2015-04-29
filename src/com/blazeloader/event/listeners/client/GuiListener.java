@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 /**
- * Interface for mods that handle client-specific events
+ * Interface for mods that handle gui events
  */
 public interface GuiListener extends BLMod {
 
@@ -15,8 +15,8 @@ public interface GuiListener extends BLMod {
      *
      * @param minecraft The Minecraft object creating the event.
      * @param oldGui    The current GUI.
-     * @param newGui    The GUI being displayed.
+     * @param newGui    The GUI about to be displayed.
      */
-    public void eventDisplayGui(Minecraft minecraft, GuiScreen oldGui, GuiScreen newGui);
+    public void onGuiOpen(Minecraft minecraft, GuiScreen oldGui, GuiScreen newGui);
 
 }
