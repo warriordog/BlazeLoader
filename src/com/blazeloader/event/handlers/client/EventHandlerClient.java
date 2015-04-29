@@ -5,16 +5,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.S09PacketHeldItemChange;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.profiler.Profiler;
@@ -135,5 +138,16 @@ public class EventHandlerClient extends EventHandler {
     
     public static void overrideWorldChanged(World world) {
     	worldEventClients.all().onWorldChanged(world);
+    }
+    
+    public static void eventHandleHeldItemChange(EventInfo<NetHandlerPlayClient> event, S09PacketHeldItemChange packet) {
+    	if (inventoryEventHandlers.size() > 0) {
+	    	if (packet.func_149385_c() >= 0 && packet.func_149385_c() < InventoryPlayer.getHotbarSize()) {
+	    		Minecraft mc = Minecraft.getMinecraft();
+				if (!inventoryEventHandlers.all().onSlotSelectionChanged(mc.thePlayer, mc.thePlayer.inventory.getCurrentItem(), mc.thePlayer.inventory.currentItem)) {
+					event.cancel();
+				}
+	    	}
+    	}
     }
 }

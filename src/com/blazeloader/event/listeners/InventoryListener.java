@@ -61,8 +61,9 @@ public interface InventoryListener extends BLMod {
 	 * @param player			The player
 	 * @param item				The item placed in teh current slot
 	 * @param selectedSlot		The slot being selected.
+	 * @return True to allow the slot to change, otherwise false to cancel the event.
 	 */
-	public void onSlotSelectionChanged(EntityPlayer player, ItemStack item, int selectedSlot);
+	public boolean onSlotSelectionChanged(EntityPlayer player, ItemStack item, int selectedSlot);
 	
 	public static class InventoryEventArgs {
 		

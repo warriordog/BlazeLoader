@@ -16,7 +16,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -110,13 +109,14 @@ public class EventHandler {
     }
     
     public static void eventChangeCurrentItem(EventInfo<InventoryPlayer> event, int increment) {
-    	InventoryPlayer inventory = event.getSource();
-		inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getCurrentItem(), event.getSource().currentItem);
-    }
-    
-    public static void eventSetCurrentItem(EventInfo<InventoryPlayer> event, Item item, int damage, boolean itemHasSubTypes, boolean isCreativeMode) {
-    	InventoryPlayer inventory = event.getSource();
-    	inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getCurrentItem(), event.getSource().currentItem);
+    	if (inventoryEventHandlers.size() > 0) {
+	    	InventoryPlayer inventory = event.getSource();
+	    	int newIndex = event.getSource().currentItem + (increment > 0 ? 1 : increment < 0 ? -1 : 0);
+	    	while (newIndex >= InventoryPlayer.getHotbarSize()) newIndex -= InventoryPlayer.getHotbarSize();
+			if (!inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getStackInSlot(newIndex), newIndex)) {
+				event.cancel();
+			}
+    	}
     }
     
     public static void eventOnItemPickup(EventInfo<EntityLivingBase> event, Entity itemEntity, int amount) {
