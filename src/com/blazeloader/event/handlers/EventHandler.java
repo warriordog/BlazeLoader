@@ -9,10 +9,14 @@ import com.mumfrey.liteloader.transformers.event.EventInfo;
 import com.mumfrey.liteloader.transformers.event.ReturnEventInfo;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -30,11 +34,11 @@ public class EventHandler {
 	 */
 	protected static boolean isInEvent = false;
 	
-    public static final HandlerList<ModEventListener> modEventHandlers = new HandlerList<ModEventListener>(ModEventListener.class);
-    public static final HandlerList<InventoryListener> inventoryHandlers = new HandlerList<InventoryListener>(InventoryListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
+    public static final HandlerList<StartupListener> modEventHandlers = new HandlerList<StartupListener>(StartupListener.class);
+    public static final HandlerList<InventoryListener> inventoryEventHandlers = new HandlerList<InventoryListener>(InventoryListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<TickListener> tickEventHandlers = new HandlerList<TickListener>(TickListener.class);
     public static final HandlerList<WorldListener> worldEventHandlers = new HandlerList<WorldListener>(WorldListener.class);
-    public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class);
+    public static final HandlerList<PlayerListener> playerEventHandlers = new HandlerList<PlayerListener>(PlayerListener.class, ReturnLogicOp.OR_BREAK_ON_TRUE);
     public static final HandlerList<ChunkListener> chunkEventHandlers = new HandlerList<ChunkListener>(ChunkListener.class);
     public static final HandlerList<EntityConstructingListener> entityEventHandlers = new HandlerList<EntityConstructingListener>(EntityConstructingListener.class);
 
@@ -58,7 +62,8 @@ public class EventHandler {
     public static void overrideTickServerWorld(WorldServer world) {
         worldEventHandlers.all().onServerTick(world);
     }
-
+    //
+    
     public static void eventPlayerLoggedIn(EventInfo<ServerConfigurationManager> event, EntityPlayerMP player) {
         playerEventHandlers.all().onPlayerLoginMP(event.getSource(), player);
     }
@@ -98,26 +103,117 @@ public class EventHandler {
     	EntityPropertyManager.entityinit(event.getSource());
     }
     
-    public static void eventItemPickup(EventInfo<EntityLivingBase> event, Entity entityItem, int stackSize) {
-    	EntityLivingBase entity = event.getSource();
-    	if (entityItem.isDead && !entity.worldObj.isRemote && entityItem instanceof EntityItem) {
-    		ItemStack item = ((EntityItem)entityItem).getEntityItem();
-    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(item, false, false);
-	    	if (!inventoryHandlers.all().onItemPickup(event.getSource(), args)) {
+    public static void eventCollideWithPlayer(EventInfo<EntityPlayer> event, Entity entity) {
+    	if (playerEventHandlers.size() > 0 && !playerEventHandlers.all().onEntityCollideWithPlayer(entity, event.getSource())) {
+    		event.cancel();
+    	}
+    }
+    
+    public static void eventChangeCurrentItem(EventInfo<InventoryPlayer> event, int increment) {
+    	InventoryPlayer inventory = event.getSource();
+		inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getCurrentItem(), event.getSource().currentItem);
+    }
+    
+    public static void eventSetCurrentItem(EventInfo<InventoryPlayer> event, Item item, int damage, boolean itemHasSubTypes, boolean isCreativeMode) {
+    	InventoryPlayer inventory = event.getSource();
+    	inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getCurrentItem(), event.getSource().currentItem);
+    }
+    
+    public static void eventOnItemPickup(EventInfo<EntityLivingBase> event, Entity itemEntity, int amount) {
+    	inventoryEventHandlers.all().onItemPickup(event.getSource(), itemEntity, amount);
+    }
+    
+    public static void eventUpdateEquipmentIfNeeded(EventInfo<EntityLiving> event, EntityItem entityItem) {
+    	if (inventoryEventHandlers.size() > 0) {
+	    	ItemStack pickedUp = entityItem.getEntityItem();
+	    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(pickedUp);
+	    	if (!inventoryEventHandlers.all().onEntityEquipItem(event.getSource(), entityItem, 1)) {
 	    		event.cancel();
+	    	} else {
+	    		if (!pickedUp.equals(args.getItemStack())) {
+	    			entityItem.setEntityItemStack(args.getItemStack());
+	    		}
 	    	}
     	}
     }
     
+    public static void eventEntityDropItem(ReturnEventInfo<Entity, EntityItem> event, ItemStack droppedItem, float yOffset) {
+    	if (!isInEvent && droppedItem != null && droppedItem.stackSize > 0) {
+    		if (inventoryEventHandlers.size() > 0) {
+	    		Entity entity = event.getSource();
+	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+		    	if (!inventoryEventHandlers.all().onDropItem(entity, false, false, args)) {
+		    		event.setReturnValue(null);
+		    		event.cancel();
+		    	} else {
+		    		if (!droppedItem.equals(args.getItemStack())) {
+		    			isInEvent = true;
+		    			event.setReturnValue(entity.entityDropItem(args.getItemStack(), yOffset));
+		    			isInEvent = false;
+		    			event.cancel();
+		    		}
+		    	}
+	    	}
+    	}
+    }
+    
+    //Because otherwise items held in an inventory get deleted when a mod cancels the drop.
+    private static ItemStack savedHeldItemStack;
     public static void eventDropItem(ReturnEventInfo<EntityPlayer, EntityItem> event, ItemStack droppedItem, boolean dropAround, boolean traceItem) {
-    	if (droppedItem != null && droppedItem.stackSize > 0) {
-    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem, dropAround, traceItem);
-	    	if (!inventoryHandlers.all().onDropItem(event.getSource(), args)) {
-	    		droppedItem.stackSize = 0;
-	    	} else {
-	    		if (!args.getItemStack().equals(droppedItem)) {
-	    			droppedItem = args.getItemStack();
-	    		}
+    	savedHeldItemStack = null;
+    	if (!isInEvent && droppedItem != null && droppedItem.stackSize > 0) {
+    		if (inventoryEventHandlers.size() > 0) {
+	    		EntityPlayer player = event.getSource();
+	    		ItemStack held = player.inventory.getItemStack();
+	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+		    	if (!inventoryEventHandlers.all().onDropItem(player, dropAround, traceItem, args)) {
+		    		event.setReturnValue(null);
+		    		if (held != null) {
+			    		if (!held.equals(droppedItem)) {
+			    			held.stackSize += droppedItem.stackSize;
+			    		} else {
+			    			savedHeldItemStack = held;
+			    		}
+		    		}
+		    		event.cancel();
+		    	} else {
+		    		if (!droppedItem.equals(args.getItemStack())) {
+		    			isInEvent = true;
+		    			event.setReturnValue(player.dropItem(args.getItemStack(), dropAround, traceItem));
+		    			isInEvent = false;
+		    			event.cancel();
+		    		}
+		    	}
+    		}
+    	}
+    }
+    
+    //Now we then have to put the item back
+    public static void eventSlotClick(ReturnEventInfo<Container, ItemStack> event, int slotId, int clickedButton, int mode, EntityPlayer player) {
+    	if (savedHeldItemStack != null) {
+	    	if (event.getReturnValue() == null && player.inventory.getItemStack() == null) {
+	    		player.inventory.setItemStack(savedHeldItemStack);
+	    		savedHeldItemStack = null;
+	    	}
+    	}
+    }
+    
+    public static void eventDropOneItem(ReturnEventInfo<EntityPlayer, EntityItem> event, boolean dropAll) {
+    	if (inventoryEventHandlers.size() > 0) {
+	    	EntityPlayer player = event.getSource();
+	    	ItemStack droppedItem = player.inventory.getCurrentItem().copy();
+	    	if (droppedItem != null) {
+		    	if (!dropAll) droppedItem.stackSize = 1;
+		    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
+		    	if (!inventoryEventHandlers.all().onDropOneItem(player, dropAll, args)) {
+		    		event.setReturnValue(null);
+		    		event.cancel();
+		    	}
+		    	if (!droppedItem.equals(args.getItemStack())) {
+		    		event.setReturnValue(player.dropItem(args.getItemStack(), false, true));
+		    		player.inventory.decrStackSize(player.inventory.currentItem, droppedItem.stackSize);
+		    		event.cancel();
+		    	}
 	    	}
     	}
     }

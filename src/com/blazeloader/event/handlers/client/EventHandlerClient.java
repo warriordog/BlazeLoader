@@ -110,7 +110,7 @@ public class EventHandlerClient extends EventHandler {
         }
     }
     
-    public static void eventFunc_180503_b(EventInfo<WorldClient> event, BlockPos pos, IBlockState state) {
+    public static void eventFunc_180503_b(ReturnEventInfo<WorldClient, Boolean> event, BlockPos pos, IBlockState state) {
     	blockEventClients.all().onBlockChanged(Minecraft.getMinecraft().theWorld, pos, event.getSource().getBlockState(pos), state);
     }
     

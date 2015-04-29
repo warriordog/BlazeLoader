@@ -5,7 +5,7 @@ import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.listeners.ChunkListener;
 import com.blazeloader.event.listeners.EntityConstructingListener;
 import com.blazeloader.event.listeners.InventoryListener;
-import com.blazeloader.event.listeners.ModEventListener;
+import com.blazeloader.event.listeners.StartupListener;
 import com.blazeloader.event.listeners.PlayerListener;
 import com.blazeloader.event.listeners.TickListener;
 import com.blazeloader.event.listeners.WorldListener;
@@ -35,7 +35,7 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
     
 	@Override
 	public void registerInterfaces(InterfaceRegistrationDelegate delegate) {
-		delegate.registerInterface(ModEventListener.class);
+		delegate.registerInterface(StartupListener.class);
 		delegate.registerInterface(TickListener.class);
 		delegate.registerInterface(WorldListener.class);
 		delegate.registerInterface(PlayerListener.class);
@@ -52,7 +52,7 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
 
     }
     
-    public void addGenericEvent(ModEventListener e) {
+    public void addGenericEvent(StartupListener e) {
         EventHandler.modEventHandlers.add(e);
     }
     
@@ -69,7 +69,7 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
     }
     
     public void addInventoryEvent(InventoryListener e) {
-        EventHandler.inventoryHandlers.add(e);
+        EventHandler.inventoryEventHandlers.add(e);
     }
     
     public void addChunkEvent(ChunkListener e) {
