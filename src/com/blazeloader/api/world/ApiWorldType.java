@@ -11,7 +11,7 @@ public class ApiWorldType {
 	 * <p>
 	 * {@code modName.generator.name}
 	 * <p>
-	 * Simillarly they will also be identified by a combination of the modName and their name: 
+	 * Similarly they will also be identified by a combination of the modName and their name: 
 	 * 
 	 * @param modName	The mod creating the world type.
 	 * @param name		The name of the world type.
