@@ -1,8 +1,5 @@
 package com.blazeloader.api.particles;
 
-import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +10,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
@@ -22,13 +18,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import com.blazeloader.bl.main.BLMain;
-import com.blazeloader.bl.network.BLPacketChannels;
-import com.blazeloader.bl.network.Channel;
 import com.blazeloader.util.shape.IShape;
 import com.blazeloader.util.version.Versions;
-import com.mumfrey.liteloader.core.PluginChannels.ChannelPolicy;
-import com.mumfrey.liteloader.core.ServerPluginChannels;
 
 /**
  * 
