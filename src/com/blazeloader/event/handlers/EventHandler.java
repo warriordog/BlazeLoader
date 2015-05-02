@@ -112,10 +112,17 @@ public class EventHandler {
     	if (inventoryEventHandlers.size() > 0) {
 	    	InventoryPlayer inventory = event.getSource();
 	    	int newIndex = event.getSource().currentItem + (increment > 0 ? 1 : increment < 0 ? -1 : 0);
-	    	while (newIndex >= InventoryPlayer.getHotbarSize()) newIndex -= InventoryPlayer.getHotbarSize();
-			if (!inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getStackInSlot(newIndex), newIndex)) {
-				event.cancel();
-			}
+	    	if (newIndex > -1) {
+	    		for (newIndex -= increment; newIndex < 0; newIndex += InventoryPlayer.getHotbarSize()) {
+	                ;
+	            }
+	    		
+	    		newIndex = newIndex % InventoryPlayer.getHotbarSize();
+		    	
+				if (!inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getStackInSlot(newIndex), newIndex)) {
+					event.cancel();
+				}
+	    	}
     	}
     }
     

@@ -23,6 +23,7 @@ public class BLEventInjectionTransformerClient extends BLEventInjectionTransform
         addBLEvent(EventSide.CLIENT, "net.minecraft.client.entity.EntityPlayerSP.setPlayerSPHealth (F)V", beforeReturn);
         addBLEvent(EventSide.INTERNAL, "net.minecraft.client.ClientBrandRetriever.getClientModName ()Ljava/lang/String;", beforeReturn);
         addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.resources.model.ModelBakery.registerVariantNames ()V", beforeReturn);
+        addBLEvent(EventSide.INTERNAL_CLIENT, "net.minecraft.client.Minecraft.dispatchKeypresses ()V", beforeReturn);
     }
     
     @Override
