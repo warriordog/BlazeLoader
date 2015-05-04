@@ -20,7 +20,7 @@ public class ApiChat {
      * @param user    	The command user to send the chat to.
      * @param message 	The message to send.
      */
-    public static void sendChat(ICommandSender user, String message) {
+    public static void sendRawChat(ICommandSender user, String message) {
         user.addChatMessage(new ChatComponentText(message));
     }
     
@@ -45,33 +45,34 @@ public class ApiChat {
 		ChatComponentText message = new ChatComponentText("");
 		ChatStyle style = null;
 		for (Object o : args) {
-			if (o instanceof EnumChatFormatting) {
-				EnumChatFormatting code = (EnumChatFormatting)o;
-				if (style == null) {
-					style = new ChatStyle();
-				}
-				
-				switch (code) {
-					case OBFUSCATED:
-						style.setObfuscated(true);
-						break;
-					case BOLD:
-						style.setBold(true);
-						break;
-					case STRIKETHROUGH:
-						style.setStrikethrough(true);
-						break;
-					case UNDERLINE:
-						style.setUnderlined(true);
-						break;
-					case ITALIC:
-						style.setItalic(true);
-						break;
-					case RESET:
-						style = null;
-						break;
-					default:
-						style.setColor(code);
+			if (o instanceof EnumChatFormatting || o instanceof ChatColor) {
+				EnumChatFormatting[] codes = ChatColor.getEnumChatColor(o);
+				for (EnumChatFormatting code : codes) {
+					if (style == null) {
+						style = new ChatStyle();
+					}
+					switch (code) {
+						case OBFUSCATED:
+							style.setObfuscated(true);
+							break;
+						case BOLD:
+							style.setBold(true);
+							break;
+						case STRIKETHROUGH:
+							style.setStrikethrough(true);
+							break;
+						case UNDERLINE:
+							style.setUnderlined(true);
+							break;
+						case ITALIC:
+							style.setItalic(true);
+							break;
+						case RESET:
+							style = null;
+							break;
+						default:
+							style.setColor(code);
+					}
 				}
 			} else if (o instanceof ClickEvent) {
 				if (style == null) {
