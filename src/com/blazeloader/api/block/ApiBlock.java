@@ -284,7 +284,12 @@ public class ApiBlock {
      * @param block The block to add
      */
     public static void injectBlock(int id, ResourceLocation name, Block block) {
+    	boolean exists = Block.blockRegistry.containsKey(name);
+    	Block air = Blocks.air;
     	ModUtilities.addBlock(id, name, block, true);
+    	if (!exists) {
+    		Blocks.air = air;
+    	}
     	//Switched to using Mumfry's implementation as it supports setting the static field as well as forcing past Forge.
     }
     

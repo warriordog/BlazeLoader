@@ -14,7 +14,7 @@ public interface ProfilerListener extends BLMod {
      * @param profiler    The profiler who's section is starting.
      * @param sectionName Name of the profiler section started.
      */
-    public void eventProfilerStart(Profiler profiler, String sectionName);
+    public void onSectionStart(Profiler profiler, String sectionName);
 
     /**
      * Called when a profiler section is ended.  Mods are notified BEfORE profiler.
@@ -22,5 +22,5 @@ public interface ProfilerListener extends BLMod {
      * @param profiler    The profiler who's section is starting.
      * @param sectionName Name of the profiler section ended.
      */
-    public void eventProfilerEnd(Profiler profiler, String sectionName);
+    public void onSectionEnd(Profiler profiler, String sectionName);
 }

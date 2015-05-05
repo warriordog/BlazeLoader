@@ -4,16 +4,12 @@ import com.blazeloader.util.version.type.ModVersion;
 import com.mumfrey.liteloader.LiteMod;
 
 /**
- * Base class of mods.  Mods should extend this class.
- * Methods have default implementations, but can be overridden.
- * event... methods can be overridden to respond to game events.
- * Event methods that reference Minecraft classes have "No-args" versions that can be used for mods that wish to avoid being specific to particular Minecraft versions.
- * If a normal event method is overridden, it's no-args version will NOT be triggered.
+ * The base interface for a Blazeloader mods. All mods should implement this.
  */
 public interface BLMod extends LiteMod {
     /**
      * Returns ID used to identify this mod internally, even among different versions of the same mod.  Mods should override.
-     * --This should never be changed after the mod has been released!--
+     * <p><b>--This should never be changed after the mod has been released!--</b>
      *
      * @return Returns the id of the mod.
      */

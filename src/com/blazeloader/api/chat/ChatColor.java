@@ -1,11 +1,17 @@
 package com.blazeloader.api.chat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import net.minecraft.util.EnumChatFormatting;
 
 /**
  * Chat formatting markers.
  */
+//TODO: It would be better to rewrite this to use the existing Enum values rather than explicit text.
+//Also I find all these duplicates slightly annerving...
 public class ChatColor {
     private static final String SECTION_SIGN_STR = String.valueOf('\u00a7');
     private static final char SECTION_SIGN_CHAR = SECTION_SIGN_STR.charAt(0);
@@ -128,6 +134,50 @@ public class ChatColor {
     @Override
     public String toString() {
         return value();
+    }
+    
+    /**
+     * Converts this ChatColor to a vanilla minecraft equivalent EnumChatFormatting, for the purpose of inoperability.
+     * 
+     * @return An equivalent array EnumChatFormatting codes.
+     */
+    public EnumChatFormatting[] getEnumChatColor() {
+    	return getEnumChatFromCode(formattedCode);
+    }
+    
+    private static EnumChatFormatting[] getEnumChatFromCode(String code) {
+    	String[] codes = code.split(SECTION_SIGN_STR);
+    	List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>(); 
+		for (int j = 0; j < codes.length; j++) {
+			for (EnumChatFormatting i : EnumChatFormatting.values()) {
+	    		if (i.toString().equals(SECTION_SIGN_STR + codes[j])) {
+	    			result.add(i);
+	    		}
+    		}
+    	}
+    	return result.toArray(new EnumChatFormatting[result.size()]);
+    }
+    
+    /**
+     * Attempts to parse the given argument to an instance of EnumChatFormatting.
+     * <br>
+     * Returns an array of all found codes in the order found because ChatColor may contain multiple chat formatting codes.
+     */
+    public static EnumChatFormatting[] getEnumChatColor(Object o) {
+    	if (o instanceof EnumChatFormatting) {
+    		return new EnumChatFormatting[] {(EnumChatFormatting)o};
+    	}
+    	if (o instanceof ChatColor) {
+    		return ((ChatColor)o).getEnumChatColor();
+    	}
+    	return getEnumChatFromCode(o.toString());
+    }
+    
+    /**
+     * Converts the given EnumChatFormatting into the equivalent ChatColor
+     */
+    public static ChatColor getChatColor(EnumChatFormatting format) {
+    	return getChatColor(format.toString());
     }
 
     /**

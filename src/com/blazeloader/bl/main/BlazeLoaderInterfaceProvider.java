@@ -1,9 +1,11 @@
-package com.blazeloader.event.handlers;
+package com.blazeloader.bl.main;
 
 import com.blazeloader.bl.mod.BLMod;
+import com.blazeloader.event.handlers.EventHandler;
 import com.blazeloader.event.listeners.ChunkListener;
 import com.blazeloader.event.listeners.EntityConstructingListener;
-import com.blazeloader.event.listeners.ModEventListener;
+import com.blazeloader.event.listeners.InventoryListener;
+import com.blazeloader.event.listeners.StartupListener;
 import com.blazeloader.event.listeners.PlayerListener;
 import com.blazeloader.event.listeners.TickListener;
 import com.blazeloader.event.listeners.WorldListener;
@@ -11,11 +13,17 @@ import com.mumfrey.liteloader.api.InterfaceProvider;
 import com.mumfrey.liteloader.api.Listener;
 import com.mumfrey.liteloader.core.InterfaceRegistrationDelegate;
 
-public class BlazeLoaderIP implements InterfaceProvider {
+public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
 	
-	public static final InterfaceProvider instance = new BlazeLoaderIP();
+	private static BlazeLoaderInterfaceProvider instance;
 	
-	protected BlazeLoaderIP() {}
+	protected BlazeLoaderInterfaceProvider() {
+		instance = this;
+	}
+	
+	protected static final BlazeLoaderInterfaceProvider instance() {
+		return instance;
+	}
 	
     /**
      * Base type of Listeners which can consume events provided by this provider
@@ -27,12 +35,13 @@ public class BlazeLoaderIP implements InterfaceProvider {
     
 	@Override
 	public void registerInterfaces(InterfaceRegistrationDelegate delegate) {
-		delegate.registerInterface(ModEventListener.class);
+		delegate.registerInterface(StartupListener.class);
 		delegate.registerInterface(TickListener.class);
 		delegate.registerInterface(WorldListener.class);
 		delegate.registerInterface(PlayerListener.class);
 		delegate.registerInterface(ChunkListener.class);
 		delegate.registerInterface(EntityConstructingListener.class);
+		delegate.registerInterface(InventoryListener.class);
 	}
 
     /**
@@ -43,7 +52,7 @@ public class BlazeLoaderIP implements InterfaceProvider {
 
     }
     
-    public void addGenericEvent(ModEventListener e) {
+    public void addGenericEvent(StartupListener e) {
         EventHandler.modEventHandlers.add(e);
     }
     
@@ -57,6 +66,10 @@ public class BlazeLoaderIP implements InterfaceProvider {
     
     public void addPlayerEvent(PlayerListener e) {
     	EventHandler.playerEventHandlers.add(e);
+    }
+    
+    public void addInventoryEvent(InventoryListener e) {
+        EventHandler.inventoryEventHandlers.add(e);
     }
     
     public void addChunkEvent(ChunkListener e) {
