@@ -4,117 +4,119 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import com.blazeloader.util.config.IStringable;
 
 import net.minecraft.util.EnumChatFormatting;
 
 /**
  * Chat formatting markers.
  */
-//TODO: It would be better to rewrite this to use the existing Enum values rather than explicit text.
-//Also I find all these duplicates slightly annerving...
-public class ChatColor {
-    private static final String SECTION_SIGN_STR = String.valueOf('\u00a7');
-    private static final char SECTION_SIGN_CHAR = SECTION_SIGN_STR.charAt(0);
-
+public final class ChatColor implements Comparable<ChatColor>, IStringable<ChatColor> {
+	private static final char SECTION_SIGN_CHAR = '\u00a7';
+    private static final String SECTION_SIGN_STR = String.valueOf(SECTION_SIGN_CHAR);
+    
+    private static final Pattern formattingCodesPattern = Pattern.compile("(?i)" + String.valueOf('\u00a7') + "[0-9A-FK-OR]");
+    
     private static final Map<String, ChatColor> colorMap = new HashMap<String, ChatColor>();
-
-    public static final ChatColor COLOR_AQUA = new ChatColor("b");
-    public static final ChatColor AQUA = COLOR_AQUA;
-    public static final ChatColor COLOR_BLACK = new ChatColor("0");
-    public static final ChatColor BLACK = COLOR_BLACK;
-    public static final ChatColor COLOR_BLUE = new ChatColor("9");
-    public static final ChatColor BLUE = COLOR_BLUE;
-    public static final ChatColor COLOR_ORANGE = new ChatColor("6");
-    public static final ChatColor ORANGE = COLOR_ORANGE;
-    public static final ChatColor COLOR_GRAY = new ChatColor("7");
-    public static final ChatColor GRAY = COLOR_GRAY;
-    public static final ChatColor COLOR_GREY = COLOR_GRAY;
-    public static final ChatColor GREY = COLOR_GRAY;
-    public static final ChatColor COLOR_GREEN = new ChatColor("a");
-    public static final ChatColor GREEN = COLOR_GREEN;
-    public static final ChatColor COLOR_PURPLE = new ChatColor("d");
-    public static final ChatColor PURPLE = COLOR_PURPLE;
-    public static final ChatColor COLOR_RED = new ChatColor("c");
-    public static final ChatColor RED = COLOR_RED;
-    public static final ChatColor COLOR_WHITE = new ChatColor("f");
-    public static final ChatColor WHITE = COLOR_WHITE;
-    public static final ChatColor COLOR_YELLOW = new ChatColor("e");
-    public static final ChatColor YELLOW = COLOR_YELLOW;
-    public static final ChatColor COLOR_DARK_AQUA = new ChatColor("3");
-    public static final ChatColor DARK_AQUA = COLOR_DARK_AQUA;
-    public static final ChatColor COLOR_DARK_BLUE = new ChatColor("1");
-    public static final ChatColor DARK_BLUE = COLOR_DARK_BLUE;
-    public static final ChatColor COLOR_DARK_GRAY = new ChatColor("8");
-    public static final ChatColor DARK_GRAY = COLOR_DARK_GRAY;
-    public static final ChatColor COLOR_DARK_GREY = COLOR_DARK_GRAY;
-    public static final ChatColor DARK_GREY = COLOR_DARK_GRAY;
-    public static final ChatColor COLOR_DARK_GREEN = new ChatColor("2");
-    public static final ChatColor DARK_GREEN = COLOR_DARK_GREEN;
-    public static final ChatColor COLOR_DARK_RED = new ChatColor("4");
-    public static final ChatColor DARK_RED = COLOR_DARK_RED;
-    public static final ChatColor COLOR_DARK_PURPLE = new ChatColor("5");
-    public static final ChatColor DARK_PURPLE = COLOR_DARK_PURPLE;
-    public static final ChatColor FORMAT_BOLD = new ChatColor("l");
-    public static final ChatColor BOLD = FORMAT_BOLD;
-    public static final ChatColor FORMAT_ITALIC = new ChatColor("o");
-    public static final ChatColor ITALIC = FORMAT_ITALIC;
-    public static final ChatColor FORMAT_ITALICS = FORMAT_ITALIC;
-    public static final ChatColor ITALICS = FORMAT_ITALIC;
-    public static final ChatColor FORMAT_RANDOM = new ChatColor("k");
-    public static final ChatColor RANDOM = FORMAT_RANDOM;
-    public static final ChatColor FORMAT_MAGIC = FORMAT_RANDOM;
-    public static final ChatColor MAGIC = FORMAT_RANDOM;
-    public static final ChatColor FORMAT_RESET = new ChatColor("p");
-    public static final ChatColor RESET = FORMAT_RESET;
-    public static final ChatColor FORMAT_CLEAR = FORMAT_RESET;
-    public static final ChatColor CLEAR = FORMAT_RESET;
-    public static final ChatColor FORMAT_STRIKE = new ChatColor("m");
-    public static final ChatColor STRIKE = FORMAT_STRIKE;
-    public static final ChatColor FORMAT_STRIKETHROUGH = FORMAT_STRIKE;
-    public static final ChatColor STRIKETHROUGH = FORMAT_STRIKE;
-    public static final ChatColor FORMAT_UNDERLINE = new ChatColor("n");
-    public static final ChatColor UNDERLINE = FORMAT_UNDERLINE;
-
-    private final String plainCode;
+    private static final Map<String, ChatColor> externalColorMap = new HashMap<String, ChatColor>();
+    
+    public static final ChatColor BLACK = new ChatColor(EnumChatFormatting.BLACK);
+    public static final ChatColor DARK_BLUE = new ChatColor(EnumChatFormatting.DARK_BLUE);
+    public static final ChatColor DARK_GREEN = new ChatColor(EnumChatFormatting.DARK_GREEN);
+    public static final ChatColor DARK_AQUA = new ChatColor(EnumChatFormatting.DARK_AQUA);
+    public static final ChatColor DARK_RED = new ChatColor(EnumChatFormatting.DARK_RED);
+    public static final ChatColor DARK_PURPLE = new ChatColor(EnumChatFormatting.DARK_PURPLE);
+    public static final ChatColor ORANGE = new ChatColor(EnumChatFormatting.GOLD);
+    public static final ChatColor GRAY = new ChatColor(EnumChatFormatting.GRAY);
+    public static final ChatColor GREY = GRAY;
+    public static final ChatColor DARK_GRAY = new ChatColor(EnumChatFormatting.DARK_GRAY);
+    public static final ChatColor DARK_GREY = DARK_GRAY;
+    public static final ChatColor BLUE = new ChatColor(EnumChatFormatting.BLUE);
+    public static final ChatColor GREEN = new ChatColor(EnumChatFormatting.GREEN);
+    public static final ChatColor AQUA = new ChatColor(EnumChatFormatting.AQUA);
+    public static final ChatColor RED = new ChatColor(EnumChatFormatting.RED);
+    public static final ChatColor PURPLE = new ChatColor(EnumChatFormatting.LIGHT_PURPLE);
+    public static final ChatColor YELLOW = new ChatColor(EnumChatFormatting.YELLOW);
+    public static final ChatColor WHITE = new ChatColor(EnumChatFormatting.WHITE);
+    
+    public static final ChatColor RANDOM = new ChatColor(EnumChatFormatting.OBFUSCATED);
+    public static final ChatColor BOLD = new ChatColor(EnumChatFormatting.BOLD);
+    public static final ChatColor STRIKETHROUGH = new ChatColor(EnumChatFormatting.STRIKETHROUGH);
+    public static final ChatColor UNDERLINE = new ChatColor(EnumChatFormatting.UNDERLINE);
+    public static final ChatColor ITALIC = new ChatColor(EnumChatFormatting.ITALIC);
+    public static final ChatColor RESET = new ChatColor(EnumChatFormatting.RESET);
+    
+    //The extra ones. For ease of use or something...
+    //Deprecated, expect them to stop working soon.
+    public static final @Deprecated ChatColor COLOR_BLACK = BLACK;
+    public static final @Deprecated ChatColor COLOR_DARK_BLUE = DARK_BLUE;
+    public static final @Deprecated ChatColor COLOR_DARK_GREEN = DARK_GREEN;
+    public static final @Deprecated ChatColor COLOR_DARK_AQUA = DARK_AQUA;
+    public static final @Deprecated ChatColor COLOR_DARK_RED = DARK_RED;
+    public static final @Deprecated ChatColor COLOR_DARK_PURPLE = DARK_PURPLE;
+    public static final @Deprecated ChatColor COLOR_ORANGE = ORANGE;
+    public static final @Deprecated ChatColor COLOR_GRAY = GRAY;
+    public static final @Deprecated ChatColor COLOR_GREY = GRAY;
+    public static final @Deprecated ChatColor COLOR_DARK_GRAY = DARK_GRAY;
+    public static final @Deprecated ChatColor COLOR_DARK_GREY = DARK_GRAY;
+    public static final @Deprecated ChatColor COLOR_BLUE = BLUE;
+    public static final @Deprecated ChatColor COLOR_GREEN = GREEN;
+    public static final @Deprecated ChatColor COLOR_AQUA = AQUA;
+    public static final @Deprecated ChatColor COLOR_RED = RED;
+    public static final @Deprecated ChatColor COLOR_PURPLE = PURPLE;
+    public static final @Deprecated ChatColor COLOR_YELLOW = YELLOW;
+    public static final @Deprecated ChatColor COLOR_WHITE = WHITE;
+    
+    public static final @Deprecated ChatColor FORMAT_RANDOM = RANDOM;
+    public static final @Deprecated ChatColor FORMAT_BOLD = BOLD;
+    public static final @Deprecated ChatColor FORMAT_STRIKETHROUGH = STRIKETHROUGH;
+    public static final @Deprecated ChatColor FORMAT_UNDERLINE = UNDERLINE;
+    public static final @Deprecated ChatColor FORMAT_ITALIC = ITALIC;
+    public static final @Deprecated ChatColor FORMAT_RESET = RESET;
+    
     private final String formattedCode;
-
-    private ChatColor(String code) {
-        this(code, SECTION_SIGN_STR.concat(code));
+    private final EnumChatFormatting[] value;
+    
+    private ChatColor(String colorCode, String fixedCode) {
+    	value = getEnumChatFromCode(fixedCode);
+        formattedCode = fixedCode;
+        colorMap.put(formattedCode, this);
+        externalColorMap.put(colorCode, this);
     }
     
-    private ChatColor(String code, String formatted) {
-        plainCode = code;
-        formattedCode = formatted;
-        colorMap.put(code, this);
+    private ChatColor(String formatted, EnumChatFormatting... enumChat) {
+    	value = enumChat;
+    	formattedCode = formatted;
+    	colorMap.put(formattedCode, this);
     }
-
-    /**
-     * Gets the color code of this EChatColor.
-     * @Deprecated use value() instead.
-     *
-     * @return Return the color code associated with this EChatColor.
-     */
-    public String get() {
-        return value();
+    
+    private ChatColor(EnumChatFormatting... enumChat) {
+    	value = enumChat;
+    	String codeBuilt = "";
+    	for (EnumChatFormatting i : enumChat) {
+    		codeBuilt += i.toString();
+    	}
+        formattedCode = codeBuilt;
+        colorMap.put(formattedCode, this);
     }
-
+    
     /**
-     * Gets the color code of this EChatColor.
+     * Return the colour code of this EChatColor combined with the colour of otherColor.
      *
-     * @return Return the color code associated with this EChatColor.
-     */
-    public String value() {
-        return formattedCode;
-    }
-
-    /**
-     * Return the color code of this EChatColor combined with the color of otherColor.
-     *
-     * @param otherColor An EChatColor representing another color to combine with.
-     * @return Return the color code of this EChatColor combined with the color of otherColor.
+     * @param otherColor A ChatColor representing another colour to combine with.
+     * @return Return the colour code of this EChatColor combined with the colour of otherColor.
      */
     public ChatColor combine(ChatColor otherColor) {
-        return getChatColor(plainCode.concat(otherColor.plainCode));
+    	String formatted = formattedCode.concat(otherColor.formattedCode);
+    	if (colorMap.containsKey(formatted)) {
+    		return colorMap.get(formatted);
+    	}
+    	EnumChatFormatting[] combined = new EnumChatFormatting[value.length + otherColor.value.length];
+    	System.arraycopy(value, 0, combined, 0, value.length);
+    	System.arraycopy(otherColor.value, 0, combined, value.length + 1, otherColor.value.length);
+        return new ChatColor(formatted, combined);
     }
 
     /**
@@ -125,7 +127,34 @@ public class ChatColor {
     public String format(String str) {
         return formattedCode.concat(str);
     }
-
+    
+    /**
+     * Removes all instances of this ChatColor's formatting from the specified string
+     * @param str The string to format
+     * @return Return the string with this ChatColor removed from its format.
+     */
+    public String unformat(String str) {
+    	return str.replaceAll(formattedCode, "");
+    }
+    
+    /**
+     * Gets the color code of this EChatColor.
+     *
+     * @return Return the color code associated with this EChatColor.
+     */
+    public String value() {
+        return formattedCode;
+    }
+    
+    /**
+     * Converts this ChatColor to a vanilla minecraft equivalent EnumChatFormatting, for the purpose of inoperability.
+     * 
+     * @return An equivalent array EnumChatFormatting codes.
+     */
+    public EnumChatFormatting[] getEnumChatColor() {
+    	return value;
+    }
+    
     /**
      * Gets the color code of this EChatColor.
      *
@@ -136,41 +165,41 @@ public class ChatColor {
         return value();
     }
     
-    /**
-     * Converts this ChatColor to a vanilla minecraft equivalent EnumChatFormatting, for the purpose of inoperability.
-     * 
-     * @return An equivalent array EnumChatFormatting codes.
-     */
-    public EnumChatFormatting[] getEnumChatColor() {
-    	return getEnumChatFromCode(formattedCode);
+    @Override
+    public boolean equals(Object o) {
+    	return o != null && o.toString().equals(toString());
     }
     
-    private static EnumChatFormatting[] getEnumChatFromCode(String code) {
-    	String[] codes = code.split(SECTION_SIGN_STR);
-    	List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>(); 
-		for (int j = 0; j < codes.length; j++) {
-			for (EnumChatFormatting i : EnumChatFormatting.values()) {
-	    		if (i.toString().equals(SECTION_SIGN_STR + codes[j])) {
-	    			result.add(i);
-	    		}
-    		}
-    	}
-    	return result.toArray(new EnumChatFormatting[result.size()]);
+	@Override
+	public int compareTo(ChatColor o) {
+		return formattedCode.compareTo(o.formattedCode);
+	}
+	
+	@Override
+	public ChatColor fromString(String string) {
+		return getChatColor(string);
+	}
+    
+    public static ChatColor[] values() {
+    	return colorMap.values().toArray(new ChatColor[colorMap.values().size()]);
+    }
+    
+    public static ChatColor valueOf(String colorCode) {
+    	return getChatColor(colorCode);
     }
     
     /**
-     * Attempts to parse the given argument to an instance of EnumChatFormatting.
-     * <br>
-     * Returns an array of all found codes in the order found because ChatColor may contain multiple chat formatting codes.
+     * Removes all formatting codes from the given string.
      */
-    public static EnumChatFormatting[] getEnumChatColor(Object o) {
-    	if (o instanceof EnumChatFormatting) {
-    		return new EnumChatFormatting[] {(EnumChatFormatting)o};
-    	}
-    	if (o instanceof ChatColor) {
-    		return ((ChatColor)o).getEnumChatColor();
-    	}
-    	return getEnumChatFromCode(o.toString());
+    public static String stripFormattingCodes(String str) {
+    	return str == null ? null : formattingCodesPattern.matcher(str).replaceAll("");
+    }
+    
+    /**
+     * Returns a string only containing valid formatting codes.
+     */
+    public static String extractFormattingCodes(String str) {
+    	return str == null ? null : splat(str);
     }
     
     /**
@@ -179,36 +208,92 @@ public class ChatColor {
     public static ChatColor getChatColor(EnumChatFormatting format) {
     	return getChatColor(format.toString());
     }
-
+    
     /**
-     * Gets a ColorCode based off of the specified color string
-     *
-     * @param colorCode The color string to make a colorCode from.  If can contain multiple codes at once.  They do not need to be separated by section signs.
+     * Attempts to parse the given argument to an instance of EnumChatFormatting.
+     * 
+     * @return An array of all codes found in order of appearance because ChatColor may contain multiple chat formatting codes.
+     */
+    public static EnumChatFormatting[] getEnumChatColor(Object o) {
+    	if (o  instanceof EnumChatFormatting[]) {
+    		return (EnumChatFormatting[])o;
+    	}
+    	if (o instanceof ChatColor) {
+    		return ((ChatColor)o).getEnumChatColor();
+    	}
+    	if (o instanceof EnumChatFormatting) {
+    		return new EnumChatFormatting[] {(EnumChatFormatting)o};
+    	}
+    	EnumChatFormatting result = null;
+    	if (o instanceof Integer) {
+    		if ((int)o >= -1) {
+    			result = EnumChatFormatting.func_175744_a((int)o);
+    		}
+    	}
+    	String s = o.toString();
+    	if (result == null) {
+	    	try {
+	    		result = EnumChatFormatting.getValueByName(s);
+	    	} catch (Throwable e) {
+	    		try {
+	    			result = EnumChatFormatting.valueOf(s);
+	    		} catch (Throwable f) {
+	    			result = null;
+	    		}
+	    	}
+	    	if (result != null) {
+	    		return new EnumChatFormatting[] {result};
+	    	}
+    	}
+    	return getEnumChatFromCode(s);
+    }
+    
+    /**
+     * Gets a ColorCode based off of the specified colour string
+     * Can contain read multiple codes at once. They do not need to be separated by section signs.
+     * 
+     * @param colorCode The colour string to make a colorCode from.
      * @return Return a ColorCode containing the specified string.
      */
     public static ChatColor getChatColor(String colorCode) {
         if (colorCode == null) {
             return null;
         }
-        if (colorMap.containsKey(colorCode)) {
-        	return colorMap.get(colorCode);
+        if (externalColorMap.containsKey(colorCode)) {
+        	return externalColorMap.get(colorCode);
         }
-        
-        StringBuilder fixedCode = new StringBuilder();
-        StringBuilder unfixedCode = new StringBuilder();
-        char lastChar = SECTION_SIGN_CHAR;
-        for (char chr : colorCode.toCharArray()) {
-            if (chr != SECTION_SIGN_CHAR) {
-                if (lastChar != SECTION_SIGN_CHAR) {
-                    fixedCode.append(SECTION_SIGN_STR);
-                }
-                unfixedCode.append(chr);
-                fixedCode.append(chr);
-                lastChar = chr;
+        String fixedCode = splat(colorCode);
+        if (colorMap.containsKey(fixedCode)) {
+        	return colorMap.get(fixedCode);
+        }
+        ChatColor result = new ChatColor(colorCode, fixedCode);
+        return result;
+    }
+    
+    private static EnumChatFormatting[] getEnumChatFromCode(String code) {
+    	String[] codes = code.split(SECTION_SIGN_STR);
+    	List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>(); 
+		for (int j = 0; j < codes.length; j++) {
+			for (EnumChatFormatting i : EnumChatFormatting.values()) {
+	    		if (codes[j].length() > 0 && i.toString().equals(SECTION_SIGN_STR + codes[j].charAt(0))) {
+	    			result.add(i);
+	    		}
+    		}
+    	}
+    	return result.toArray(new EnumChatFormatting[result.size()]);
+    }
+    
+    private static String splat(String unformatted) {
+    	String accept = "0123456789abcdefklmnor";
+    	StringBuilder fixedCode = new StringBuilder();
+        for (char chr : unformatted.toLowerCase().toCharArray()) {
+        	if (chr != SECTION_SIGN_CHAR && accept.indexOf(chr) != -1) {
+                fixedCode.append(SECTION_SIGN_STR);
+	            fixedCode.append(chr);
             }
         }
-        ChatColor color = new ChatColor(unfixedCode.toString(), fixedCode.toString());
-        colorMap.put(colorCode, color);
-        return color;
+        return fixedCode.toString();
+        //The naive method is still much faster
+    	//return unformatted.replaceAll("[^0-9a-fk-or]", "").replaceAll(".", SECTION_SIGN_STR + "$0");
     }
 }
