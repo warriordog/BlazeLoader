@@ -1,5 +1,6 @@
 package com.blazeloader.bl.main;
 
+import com.blazeloader.bl.runtime.BLSecurityManager;
 import com.blazeloader.event.handlers.client.EventHandlerClient;
 import com.blazeloader.event.handlers.client.ResourcesEventHandler;
 import com.mumfrey.liteloader.api.CoreProvider;
@@ -27,10 +28,9 @@ public class BlazeLoaderCoreProvider implements CoreProvider {
     private BlazeLoaderCoreProvider() {
     }
 
-
     @Override
     public void onInit() {
-
+    	BLSecurityManager.addVMExitException("com.blazeloader.bl");
     }
 
     /**
