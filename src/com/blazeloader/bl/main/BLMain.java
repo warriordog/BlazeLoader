@@ -9,6 +9,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
+import com.blazeloader.bl.interop.ForgeModloader;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.api.CustomisationProvider;
 import com.mumfrey.liteloader.api.EnumeratorModule;
@@ -116,11 +117,11 @@ public class BLMain {
                 server.initiateShutdown();
             } else {
                 LOGGER_FULL.logFatal("Server is not running, closing immediately with code " + code + "!");
-                Runtime.getRuntime().exit(code);
+                ForgeModloader.exitJVM(code);
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            System.exit(code);
+            ForgeModloader.exitJVM(code);
         }
     }
 

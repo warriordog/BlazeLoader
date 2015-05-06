@@ -1,13 +1,5 @@
 package com.blazeloader.api.world;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -15,8 +7,9 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 
+import com.blazeloader.bl.interop.Func;
+import com.blazeloader.bl.interop.Var;
 import com.blazeloader.util.version.Versions;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSetMultimap;
 
 /**
@@ -31,18 +24,19 @@ public final class ForgeWorld {
     	return new ForgeWorldObj(w);
     }
     
-	private static final WorldVariable<Double> MAX_ENTITY_RADIUS = new WorldVariable(double.class, "MAX_ENTITY_RADIUS");
+	private static final Var<World, Double> MAX_ENTITY_RADIUS = new Var(World.class, double.class, "MAX_ENTITY_RADIUS");
 	
-	private static WorldFunction<ForgeWorldAccess> _isSideSolid;
-    private static WorldFunction<ForgeWorldAccess> _getPersistentChunks;
-    private static WorldFunction<ForgeWorldAccess> _countEntities;
-    private static WorldFunction<ForgeWorldAccess> _getPerWorldStorage;
-    private static WorldFunction<ForgeWorldAccess> _getBlockLightOpacity;
+	private static Func<ForgeWorldAccess, Boolean> _isSideSolid;
+    private static Func<ForgeWorldAccess, ImmutableSetMultimap> _getPersistentChunks;
+    private static Func<ForgeWorldAccess, Integer> _countEntities;
+    private static Func<ForgeWorldAccess, MapStorage> _getPerWorldStorage;
+    private static Func<ForgeWorldAccess, Integer> _getBlockLightOpacity;
 	
 	protected static boolean isSideSolid(World worldObj, BlockPos pos, EnumFacing side, boolean def) {
 		if (Versions.isForgeInstalled()) {
+			//return worldObj.isSideSolid(pos, side, def);
 	    	if (_isSideSolid == null) {
-	    		_isSideSolid = new WorldFunction(ForgeWorldAccess.class, "isSideSolid", BlockPos.class, Enum.class, boolean.class);
+	    		_isSideSolid = new Func(ForgeWorldAccess.class, World.class, boolean.class, "isSideSolid", BlockPos.class, EnumFacing.class, boolean.class);
 	    	}
 	    	if (_isSideSolid.valid()) {
 	    		try {
@@ -57,8 +51,9 @@ public final class ForgeWorld {
 	
 	protected static <Ticket> ImmutableSetMultimap<ChunkCoordIntPair, Ticket> getPersistentChunks(World worldObj) {
 		if (Versions.isForgeInstalled()) {
+			//return worldObj.getPersistentChunks();
 	    	if (_getPersistentChunks == null) {
-	    		_getPersistentChunks = new WorldFunction(ForgeWorldAccess.class, "getPersistentChunks");
+	    		_getPersistentChunks = new Func(ForgeWorldAccess.class, World.class, ImmutableSetMultimap.class, "getPersistentChunks");
 	    	}
 	    	if (_getPersistentChunks.valid()) {
 		    	ImmutableSetMultimap<ChunkCoordIntPair, Ticket> result;
@@ -76,8 +71,9 @@ public final class ForgeWorld {
 	
 	protected static int getBlockLightOpacity(World worldObj, BlockPos pos) {
 		if (Versions.isForgeInstalled()) {
+			//return worldObj.getBlockLightOpacity(pos);
 			if (_getBlockLightOpacity == null) {
-				_getBlockLightOpacity = new WorldFunction(ForgeWorldAccess.class, "getBlockLightOpacity");
+				_getBlockLightOpacity = new Func(ForgeWorldAccess.class, World.class, int.class, "getBlockLightOpacity", BlockPos.class);
 			}
 			if (_getBlockLightOpacity.valid()) {
 				try {
@@ -93,8 +89,9 @@ public final class ForgeWorld {
 	
 	protected static int countEntities(World worldObj, EnumCreatureType type, boolean forSpawnCount) {
 		if (Versions.isForgeInstalled()) {
+			//return worldObj.countEntities(type, forSpawnCount);
 	    	if (_countEntities == null) {
-	    		_countEntities = new WorldFunction(ForgeWorldAccess.class, "countEntities", EnumCreatureType.class, boolean.class);
+	    		_countEntities = new Func(ForgeWorldAccess.class, World.class, int.class, "countEntities", EnumCreatureType.class, boolean.class);
 	    	}
 	    	if (_countEntities.valid()) {
 		    	try {
@@ -109,8 +106,9 @@ public final class ForgeWorld {
 	
 	protected static MapStorage getPerWorldStorage(World worldObj) {
 		if (Versions.isForgeInstalled()) {
+			//return worldObj.getPerWorldStorage();
 			if (_getPerWorldStorage == null) {
-				_getPerWorldStorage = new WorldFunction(ForgeWorldAccess.class, "getPerWorldStorage");
+				_getPerWorldStorage = new Func(ForgeWorldAccess.class, World.class, MapStorage.class, "getPerWorldStorage");
 			}
 			if (_getPerWorldStorage.valid()) {
 				try {
@@ -124,10 +122,12 @@ public final class ForgeWorld {
 	}
 	
 	protected static double getMaxEntitySize(World worldObj, double def) {
+		//return worldObj.MAX_ENTITY_RADIUS;
 		return MAX_ENTITY_RADIUS.get(worldObj, def);
 	}
 	
 	protected static void setMaxEntitySize(World worldObj, double size) {
+		//worldObj.MAX_ENTITY_RADIUS = size;
 		MAX_ENTITY_RADIUS.set(worldObj, size);
 	}
     
@@ -177,93 +177,5 @@ public final class ForgeWorld {
 		public void setMaxEntitySize(double size) {
 			ForgeWorld.setMaxEntitySize(worldObj, size);
 		}
-    }
-
-    private static class WorldFunction<T> {
-    	private Function function;
-    	
-    	public WorldFunction(Class<T> clazz, String name, Class... pars) {
-    		Method method;
-    		try {
-				method = World.class.getDeclaredMethod(name, pars);
-			} catch (Throwable e) {
-				method = null;
-			}
-    		if (method != null) {
-    			try {
-    				MethodHandles.Lookup lookup = MethodHandles.lookup();
-	    			MethodHandle methodhandle = lookup.unreflect(method);
-	    			CallSite site = (CallSite)LambdaMetafactory.metafactory(lookup, name, MethodType.methodType(clazz), methodhandle.type(), methodhandle, methodhandle.type()).getTarget().invokeExact();
-	    			function = (Function)site.getTarget().invoke();
-    			} catch (Throwable e) {
-    				function = null;
-    			}
-    		}
-    		
-    	}
-    	
-    	public T getLambda(World instance) throws Throwable {
-    		return (T)function.apply(instance);
-    	}
-    	
-    	public void invalidate() {
-    		function = null;
-    	}
-    	
-    	public boolean valid() {
-    		return function != null;
-    	}
-    }
-    
-    public static class WorldVariable<T> {
-    	
-    	private boolean valueSet = false;
-    	private T catchedValue;
-    	
-    	private MethodHandle get;
-    	private MethodHandle set;
-    	
-    	public WorldVariable(Class<T> type, String name) {
-    		if (Versions.isForgeInstalled()) {
-    			Field field;
-	    		try {
-					field = World.class.getDeclaredField(name);
-				} catch (Throwable e) {
-					field = null;
-				}
-	    		if (field != null) {
-	    			MethodHandles.Lookup lookup = MethodHandles.lookup();
-	    			try {
-						get = lookup.findGetter(World.class, name, type);
-						set = lookup.findSetter(World.class, name, type);
-					} catch (Throwable e) {
-						get = set = null;
-					}
-	    		}
-    		}
-    	}
-    	
-    	public T get(World instance, T def) {
-    		if (get != null) {
-				try {
-					return (T)get.invoke(instance);
-				} catch (Throwable e) {
-					get = null;
-				}
-    		}
-    		return valueSet ? catchedValue : def;
-    	}
-    	
-    	public void set(World instance, T val) {
-    		valueSet = true;
-    		catchedValue = val;
-    		if (set != null) {
-				try {
-					set.invoke(instance, val);
-				} catch (Throwable e) {
-					set = null;
-				}
-    		}
-    	}
     }
 }
