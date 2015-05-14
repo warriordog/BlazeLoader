@@ -1,4 +1,4 @@
-package com.blazeloader.bl.interop;
+package com.blazeloader.util.reflect;
 
 public class Interop {
 	

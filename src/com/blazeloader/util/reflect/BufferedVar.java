@@ -1,4 +1,4 @@
-package com.blazeloader.bl.interop;
+package com.blazeloader.util.reflect;
 
 /**
  * A buffered version of Var that keeps a cached copy of
@@ -7,25 +7,22 @@ package com.blazeloader.bl.interop;
  * @param <T>	The declaring class for this field.
  * @param <V>	The value type accepted and returned by this field.
  */
-public class BufferedVar<T, V> extends Var<T, V> {
+public class BufferedVar<T, V> extends Variable<T, V> {
 	
 	private final T instance;
 	
+	private boolean error;
 	private boolean valueSet;
 	private V cached;
 	
-	protected BufferedVar(T newInstance, Var<T,V> original) {
+	protected BufferedVar(T newInstance, Variable<T,V> original) {
 		super(original);
 		instance = newInstance;
 	}
 	
-	public BufferedVar(T newInstance, Class<V> type, String name) {
-		super((Class<T>)newInstance.getClass(), type, name);
+	protected BufferedVar(T newInstance, Class<V> type, String name) {
+		super((Class<T>)newInstance.getClass(), type, false, name);
 		instance = newInstance;
-	}
-	
-	protected V handleGetFail(T instance, V def) {
-		return valueSet ? cached : def;
 	}
 	
 	/**
@@ -36,7 +33,7 @@ public class BufferedVar<T, V> extends Var<T, V> {
 	 */
 	public V get(V def) {
 		valueSet = true;
-		return cached = super.get(instance, def);
+		return cached = _get(instance, def);
 	}
 	
 	/**
@@ -47,7 +44,20 @@ public class BufferedVar<T, V> extends Var<T, V> {
 	public void set(V val) {
 		valueSet = true;
 		cached = val;
-		super.set(instance, val);
+		_set(instance, val);
+	}
+	
+	public void invalidate() {
+		handle.invalidate();
+		error = true;
+	}
+	
+	public boolean valid() {
+		return !error;
+	}
+	
+	protected V handleGetFail(T instance, V def) {
+		return valueSet ? cached : def;
 	}
 	
 	/**

@@ -7,8 +7,9 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 
-import com.blazeloader.bl.interop.Func;
-import com.blazeloader.bl.interop.Var;
+import com.blazeloader.util.reflect.Func;
+import com.blazeloader.util.reflect.Reflect;
+import com.blazeloader.util.reflect.Var;
 import com.blazeloader.util.version.Versions;
 import com.google.common.collect.ImmutableSetMultimap;
 
@@ -24,19 +25,19 @@ public final class ForgeWorld {
     	return new ForgeWorldObj(w);
     }
     
-	private static final Var<World, Double> MAX_ENTITY_RADIUS = new Var(World.class, double.class, "MAX_ENTITY_RADIUS");
+	private static final Var<World, Double> MAX_ENTITY_RADIUS = Reflect.lookupField(World.class, double.class, "MAX_ENTITY_RADIUS");
 	
-	private static Func<ForgeWorldAccess, Boolean> _isSideSolid;
-    private static Func<ForgeWorldAccess, ImmutableSetMultimap> _getPersistentChunks;
-    private static Func<ForgeWorldAccess, Integer> _countEntities;
-    private static Func<ForgeWorldAccess, MapStorage> _getPerWorldStorage;
-    private static Func<ForgeWorldAccess, Integer> _getBlockLightOpacity;
+	private static Func<World, ForgeWorldAccess, Boolean> _isSideSolid;
+    private static Func<World, ForgeWorldAccess, ImmutableSetMultimap> _getPersistentChunks;
+    private static Func<World, ForgeWorldAccess, Integer> _countEntities;
+    private static Func<World, ForgeWorldAccess, MapStorage> _getPerWorldStorage;
+    private static Func<World, ForgeWorldAccess, Integer> _getBlockLightOpacity;
 	
 	protected static boolean isSideSolid(World worldObj, BlockPos pos, EnumFacing side, boolean def) {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.isSideSolid(pos, side, def);
 	    	if (_isSideSolid == null) {
-	    		_isSideSolid = new Func(ForgeWorldAccess.class, World.class, boolean.class, "isSideSolid", BlockPos.class, EnumFacing.class, boolean.class);
+	    		_isSideSolid = Reflect.lookupMethod(ForgeWorldAccess.class, World.class, boolean.class, "isSideSolid", BlockPos.class, EnumFacing.class, boolean.class);
 	    	}
 	    	if (_isSideSolid.valid()) {
 	    		try {
@@ -53,7 +54,7 @@ public final class ForgeWorld {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.getPersistentChunks();
 	    	if (_getPersistentChunks == null) {
-	    		_getPersistentChunks = new Func(ForgeWorldAccess.class, World.class, ImmutableSetMultimap.class, "getPersistentChunks");
+	    		_getPersistentChunks = Reflect.lookupMethod(ForgeWorldAccess.class, World.class, ImmutableSetMultimap.class, "getPersistentChunks");
 	    	}
 	    	if (_getPersistentChunks.valid()) {
 		    	ImmutableSetMultimap<ChunkCoordIntPair, Ticket> result;
@@ -73,7 +74,7 @@ public final class ForgeWorld {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.getBlockLightOpacity(pos);
 			if (_getBlockLightOpacity == null) {
-				_getBlockLightOpacity = new Func(ForgeWorldAccess.class, World.class, int.class, "getBlockLightOpacity", BlockPos.class);
+				_getBlockLightOpacity = Reflect.lookupMethod(ForgeWorldAccess.class, World.class, int.class, "getBlockLightOpacity", BlockPos.class);
 			}
 			if (_getBlockLightOpacity.valid()) {
 				try {
@@ -91,7 +92,7 @@ public final class ForgeWorld {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.countEntities(type, forSpawnCount);
 	    	if (_countEntities == null) {
-	    		_countEntities = new Func(ForgeWorldAccess.class, World.class, int.class, "countEntities", EnumCreatureType.class, boolean.class);
+	    		_countEntities = Reflect.lookupMethod(ForgeWorldAccess.class, World.class, int.class, "countEntities", EnumCreatureType.class, boolean.class);
 	    	}
 	    	if (_countEntities.valid()) {
 		    	try {
@@ -108,7 +109,7 @@ public final class ForgeWorld {
 		if (Versions.isForgeInstalled()) {
 			//return worldObj.getPerWorldStorage();
 			if (_getPerWorldStorage == null) {
-				_getPerWorldStorage = new Func(ForgeWorldAccess.class, World.class, MapStorage.class, "getPerWorldStorage");
+				_getPerWorldStorage = Reflect.lookupMethod(ForgeWorldAccess.class, World.class, MapStorage.class, "getPerWorldStorage");
 			}
 			if (_getPerWorldStorage.valid()) {
 				try {
