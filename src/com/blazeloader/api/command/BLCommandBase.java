@@ -2,6 +2,7 @@ package com.blazeloader.api.command;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentTranslation;
 
 import com.blazeloader.api.chat.ApiChat;
 import com.blazeloader.api.chat.ChatColor;
@@ -56,9 +57,20 @@ public abstract class BLCommandBase extends CommandBase {
      * @param message The message to send.
      */
     protected void sendChatLine(ICommandSender target, String message) {
-        sendChat(target, ChatColor.FORMAT_RESET.format(message));
+    	ApiChat.sendChat(target, ChatColor.RESET, message);
     }
-
+    
+    /**
+     * Sends a chat message constructed form the given unlocalised identifier.
+     * 
+     * @param target  		The user to send the chat to.
+     * @param translate		The unlocalised string identifier
+     * @param params		Optional objects to be inserted in place of variables in the string during localisation
+     */
+    protected void sendChatTranslation(ICommandSender target, String translate, Object params) {
+    	ApiChat.sendChat(target, new ChatComponentTranslation(translate, params));
+    }
+    
     /**
      * Returns the name of this command.
      *
