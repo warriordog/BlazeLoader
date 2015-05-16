@@ -1,10 +1,13 @@
 package com.blazeloader.util.reflect;
 
 import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaConversionException;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import com.blazeloader.bl.obf.BLOBF;
 
@@ -57,27 +60,57 @@ public class FuncHandle {
 	
 	private void lookupMethod(Class interfaceType, Class context, String name, MethodType getter) {
 		funcName = name;
-		MethodHandles.Lookup caller = MethodHandles.lookup();
+		MethodHandles.Lookup caller = MethodHandles.lookup().in(context);
+		
 		try {
-			if (staticMethod) {
-				target = caller.findStatic(context, name, getter);
+			target = findMethod(caller, context, name, getter);
+			if (!isConstr(name)) {
 				if (interfaceType != null) {
-					CallSite site = LambdaMetafactory.metafactory(caller, name, MethodType.methodType(interfaceType), getter, target, getter);
-					factory = site.getTarget();
-				}
-			} else if (isConstr(name)) {
-				target = caller.findConstructor(context, getter);
-			} else {
-				target = caller.findVirtual(context, name, getter);
-				if (interfaceType != null) {
-					CallSite site = LambdaMetafactory.metafactory(caller, name, MethodType.methodType(interfaceType, context), getter, target, getter);
-					factory = site.getTarget();
+					MethodType fact;
+					if (staticMethod) {
+						fact = MethodType.methodType(interfaceType);
+					} else {
+						fact = MethodType.methodType(interfaceType, context);
+					}
+					try {
+						buildFactory(name, caller, fact, getter);
+					} catch (Throwable e) {
+						e.printStackTrace();
+						System.out.println("Unable to create factory, lambda disabled for " + target);
+					}
 				}
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 			target = null;
 		}
+	}
+	
+	private MethodHandle findMethod(MethodHandles.Lookup caller, Class context, String name, MethodType getter) throws Throwable {
+		try {
+			if (isConstr(name)) {
+				return caller.findConstructor(context, getter);
+			} else if (staticMethod) {
+				return caller.findStatic(context, name, getter);
+			} else {
+				return caller.findVirtual(context, name, getter);
+			}
+		} catch (Throwable e) {
+			if (isConstr(name)) {
+				Constructor c = context.getConstructor(getter.parameterArray());
+				c.setAccessible(true);
+				return caller.unreflectConstructor(c);
+			} else {
+				Method m = context.getDeclaredMethod(name, getter.parameterArray());
+				m.setAccessible(true);
+				return caller.unreflect(m);
+			}
+		}
+	}
+	
+	private void buildFactory(String name, MethodHandles.Lookup caller, MethodType fact, MethodType getter) throws LambdaConversionException, IllegalAccessException {
+		CallSite site = LambdaMetafactory.metafactory(caller, name, fact, getter, target, getter);
+		factory = site.getTarget();
 	}
 	
 	public void invalidate() {

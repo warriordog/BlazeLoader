@@ -2,17 +2,18 @@ package com.blazeloader.bl.interop;
 
 import com.blazeloader.util.reflect.Func;
 import com.blazeloader.util.reflect.Reflect;
+import com.blazeloader.util.reflect.SimpleFunc;
 import com.blazeloader.util.version.Versions;
 
 public final class ForgeModloader {
-	private static Func<?, ForgeMLAccess, ?> _getInstance;
+	private static SimpleFunc _getInstance;
 	private static Func<?, ForgeMLAccess, Void> _exitJava;
 	
 	private static Object getFMLCommonHandler() {
 		if (Versions.isForgeInstalled()) {
 			//return net.minecraftforge.fml.common.FMLCommonHandler.instance();
 			if (_getInstance == null) {
-				_getInstance = Reflect.lookupStaticMethod(ForgeMLAccess.class, "net.minecraftforge.fml.common.FMLCommonHandler.instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;");
+				_getInstance = Reflect.lookupStaticMethod("net.minecraftforge.fml.common.FMLCommonHandler.instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;");
 			}
 			if (_getInstance.valid()) {
 				try {

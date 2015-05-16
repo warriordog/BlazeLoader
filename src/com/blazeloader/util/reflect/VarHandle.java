@@ -57,26 +57,15 @@ public class VarHandle {
 		Field field;
 		try {
 			field = declarer.getDeclaredField(name);
-		} catch (Throwable e) {
-			field = null;
-		}
-		if (field != null) {
+			field.setAccessible(true);
+			
 			MethodHandles.Lookup lookup = MethodHandles.lookup();
-			try {
-				if (type == null) {
-					Field theField = declarer.getDeclaredField(name);
-					get = lookup.unreflectGetter(theField);
-					set = lookup.unreflectSetter(theField);
-				} else if (staticField) {
-					get = lookup.findStaticGetter(declarer, name, type);
-					set = lookup.findStaticSetter(declarer, name, type);
-				} else {
-					get = lookup.findGetter(declarer, name, type);
-					set = lookup.findSetter(declarer, name, type);
-				}
-			} catch (Throwable e) {
-				get = set = null;
+			if (type == null) {
+				get = lookup.unreflectGetter(field);
+				set = lookup.unreflectSetter(field);
 			}
+		} catch (Throwable e) {
+			get = set = null;
 		}
 	}
 	
