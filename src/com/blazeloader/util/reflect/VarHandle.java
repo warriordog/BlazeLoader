@@ -11,6 +11,8 @@ public class VarHandle {
 	protected MethodHandle get;
 	protected MethodHandle set;
 	
+	protected String varName;
+	
 	protected final boolean staticField;
 	
 	public VarHandle(Class declarer, Class type, boolean isStatic, String name) {
@@ -51,6 +53,7 @@ public class VarHandle {
 	}
 	
 	private void lookupVariable(Class declarer, Class type, String name) {
+		varName = name;
 		Field field;
 		try {
 			field = declarer.getDeclaredField(name);
@@ -84,5 +87,9 @@ public class VarHandle {
 	
 	public boolean valid() {
 		return get != null && set != null;
+	}
+	
+	public String toString() {
+		return get.toString();
 	}
 }

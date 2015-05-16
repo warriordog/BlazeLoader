@@ -44,4 +44,8 @@ public abstract class Function<I, T, R> {
 	public boolean supportsLambda() {
 		return handle.supportsLambda();
 	}
+	
+	public String toString() {
+		return handle.toString();
+	}
 }

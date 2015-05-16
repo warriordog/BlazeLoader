@@ -1,14 +1,10 @@
 package com.blazeloader.bl.interop;
 
 import com.blazeloader.util.reflect.Func;
-import com.blazeloader.util.reflect.Interop;
 import com.blazeloader.util.reflect.Reflect;
 import com.blazeloader.util.version.Versions;
 
 public final class ForgeModloader {
-	
-	private static final Class common = Interop.getDeclaredClass("net.minecraftforge.fml.common.FMLCommonHandler");
-	
 	private static Func<?, ForgeMLAccess, ?> _getInstance;
 	private static Func<?, ForgeMLAccess, Void> _exitJava;
 	
@@ -16,7 +12,7 @@ public final class ForgeModloader {
 		if (Versions.isForgeInstalled()) {
 			//return net.minecraftforge.fml.common.FMLCommonHandler.instance();
 			if (_getInstance == null) {
-				_getInstance = Reflect.lookupStaticMethod(ForgeMLAccess.class, common, common, "instance");
+				_getInstance = Reflect.lookupStaticMethod(ForgeMLAccess.class, "net.minecraftforge.fml.common.FMLCommonHandler.instance ()Lnet/minecraftforge/fml/common/FMLCommonHandler;");
 			}
 			if (_getInstance.valid()) {
 				try {
@@ -32,10 +28,10 @@ public final class ForgeModloader {
 	public static void exitJVM(int exitCode) {
 		if (Versions.isForgeInstalled()) {
 			Object instance = getFMLCommonHandler();
-			//instance.exitJava(exitCode, false);
 			if (instance != null) {
+				//instance.exitJava(exitCode, false);
 				if (_exitJava == null) {
-					_exitJava = Reflect.lookupMethod(ForgeMLAccess.class, common, void.class, "exitJava", int.class, boolean.class);
+					_exitJava = Reflect.lookupMethod(ForgeMLAccess.class, "net.minecraftforge.fml.common.FMLCommonHandler.exitJava (IZ)V");
 				}
 				if (_exitJava.valid()) {
 					try {
@@ -48,10 +44,5 @@ public final class ForgeModloader {
 			}
 		}
 		System.exit(exitCode);
-	}
-	
-	private interface ForgeMLAccess {
-		
-		public void exitJava(int exitCode, boolean hardExit);
 	}
 }

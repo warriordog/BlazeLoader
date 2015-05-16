@@ -8,9 +8,11 @@ public class Interop {
 	 * @param className	Name of class to look for.
 	 */
 	public static Class getDeclaredClass(String className) {
-		try {
-			return Interop.class.getClassLoader().loadClass(className);
-		} catch (ClassNotFoundException e) {}
+		if (className != null) {
+			try {
+				return Class.forName(className, false, loader());
+			} catch (ClassNotFoundException e) {}
+		}
 		return null;
 	}
 	

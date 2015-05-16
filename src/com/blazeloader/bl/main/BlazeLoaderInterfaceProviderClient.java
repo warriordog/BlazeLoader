@@ -20,12 +20,6 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
     	super();
     }
     
-    /**
-     * The provider should call back against the supplied delegate in order to advertise the interfaces
-     * it provides.
-     *
-     * @param delegate Interface registration delegate
-     */
     @Override
     public void registerInterfaces(InterfaceRegistrationDelegate delegate) {
     	super.registerInterfaces(delegate);
@@ -37,19 +31,16 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
         delegate.registerInterface(ClientWorldListener.class);
         delegate.registerInterface(ResourcesListener.class);
     }
-
-    /**
-     * Initialise this provider, called AFTER enumeration but before binding
-     */
+    
     @Override
     public void initProvider() {
 
     }
-
+    
     public void addBlockEvent(ClientBlockListener e) {
         EventHandlerClient.blockEventClients.add(e);
     }
-
+    
     public void addClientEvent(GuiListener e) {
         EventHandlerClient.guiEventClients.add(e);
     }
@@ -57,15 +48,15 @@ public class BlazeLoaderInterfaceProviderClient extends BlazeLoaderInterfaceProv
     public void addOverrideEvent(OverrideListener e) {
         EventHandlerClient.overrideEventClients.add(e);
     }
-
+    
     public void addPlayerEvent(ClientPlayerListener e) {
         EventHandlerClient.playerEventClients.add(e);
     }
-
+    
     public void addProfilerEvent(ProfilerListener e) {
         EventHandlerClient.profilerEventClients.add(e);
     }
-
+    
     public void addWorldEventHandler(ClientWorldListener e) {
         EventHandlerClient.worldEventClients.add(e);
     }

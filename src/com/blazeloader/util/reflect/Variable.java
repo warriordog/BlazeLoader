@@ -67,4 +67,8 @@ public abstract class Variable<T, V> {
 	protected void handleSetFail(T instance, V val) {
 		
 	}
+	
+	public String toString() {
+		return handle.toString();
+	}
 }

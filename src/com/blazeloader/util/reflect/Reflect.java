@@ -181,4 +181,16 @@ public final class Reflect {
 	public static <I, R> SimpleFunc<I, R> lookupStaticMethod(String descriptor) {
 		return new SimpleFunc(true, descriptor);
 	}
+	
+	public static <I> Constr<I> lookupConstructor(Class<I> declarer, Class... pars) {
+		return new Constr(declarer, pars);
+	}
+	
+	public static <I> Constr<I> lookupConstructor(BLOBF obf) {
+		return new Constr(obf);
+	}
+	
+	public static <I> Constr<I> lookupConstructor(String descriptor) {
+		return new Constr(descriptor);
+	}
 }

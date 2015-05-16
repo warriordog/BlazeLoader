@@ -12,14 +12,16 @@ public class FuncHandle {
 	protected MethodHandle target;
 	protected MethodHandle factory;
 	
+	protected String funcName;
+	
 	protected final boolean hasLambda;
 	protected final boolean staticMethod;
 	
 	protected FuncHandle(Class interfaceType, Class context, Class returnType, String name, boolean isStatic, Class... pars) {
 		staticMethod = isStatic;
 		hasLambda = interfaceType != null;
-		MethodType getter = MethodType.methodType(returnType, pars);
-		lookupMethod(interfaceType, context, returnType, name, getter);
+		MethodType getter = MethodType.methodType(isConstr(name) ? void.class : returnType, pars);
+		lookupMethod(interfaceType, context, name, getter);
 	}
 	
 	protected FuncHandle(Class interfaceType, boolean isStatic, BLOBF obf) {
@@ -27,16 +29,16 @@ public class FuncHandle {
 	}
 	
 	protected FuncHandle(Class interfaceType, boolean isStatic, String descriptor) {
-		String ref = descriptor.split("(")[0].trim();
+		String ref = descriptor.split("\\(")[0].trim();
 		
-		String[] methodRef = ref.split(".");
+		String[] methodRef = ref.split("\\.");
 		String className = "";
 		String methodName = "";
 		for (int i = 0; i < methodRef.length; i++) {
-			if (className.length() > 0) {
-				className += ".";
-			}
 			if (i < methodRef.length - 1) {
+				if (className.length() > 0) {
+					className += ".";
+				}
 				className += methodRef[i];
 			} else {
 				methodName = methodRef[i];
@@ -45,21 +47,16 @@ public class FuncHandle {
 		}
 		descriptor = descriptor.replace(className + "." + methodName, "").trim();
 		
-		String returnType = descriptor.replace(descriptor.split(")")[0] + ")", "");
-		if (returnType.indexOf('.') != -1 && returnType.startsWith("L")) {
-			returnType = returnType.substring(1, returnType.length() - 1).replace("/", ".");
-		}
-		
 		Class contextC = Interop.getDeclaredClass(className);
-		Class returnTypeC = Interop.getDeclaredClass(returnType);
 		
 		staticMethod = isStatic;
 		hasLambda = interfaceType != null;
 		MethodType getter = MethodType.fromMethodDescriptorString(descriptor, Interop.loader());
-		lookupMethod(interfaceType, contextC, returnTypeC, methodName, getter);
+		lookupMethod(interfaceType, contextC, methodName, getter);
 	}
 	
-	private void lookupMethod(Class interfaceType, Class context, Class returnType, String name, MethodType getter) {
+	private void lookupMethod(Class interfaceType, Class context, String name, MethodType getter) {
+		funcName = name;
 		MethodHandles.Lookup caller = MethodHandles.lookup();
 		try {
 			if (staticMethod) {
@@ -68,6 +65,8 @@ public class FuncHandle {
 					CallSite site = LambdaMetafactory.metafactory(caller, name, MethodType.methodType(interfaceType), getter, target, getter);
 					factory = site.getTarget();
 				}
+			} else if (isConstr(name)) {
+				target = caller.findConstructor(context, getter);
 			} else {
 				target = caller.findVirtual(context, name, getter);
 				if (interfaceType != null) {
@@ -92,5 +91,17 @@ public class FuncHandle {
 	
 	public boolean supportsLambda() {
 		return hasLambda;
+	}
+	
+	public boolean isConstr() {
+		return isConstr(funcName);
+	}
+	
+	public String toString() {
+		return funcName + " " + target.toString();
+	}
+	
+	public static boolean isConstr(String name) {
+		return "<init>".contentEquals(name);
 	}
 }

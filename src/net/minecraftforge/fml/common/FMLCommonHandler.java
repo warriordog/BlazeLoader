@@ -8,12 +8,12 @@ import com.blazeloader.bl.main.BLMain;
 public class FMLCommonHandler {
 	
 	public static FMLCommonHandler instance() {
-		BLMain.LOGGER_FULL.logInfo("A wild INSTANCE has appeared!");
+		BLMain.LOGGER_FULL.logInfo("[FMLCommonHandler] A wild INSTANCE has appeared!");
 		return new FMLCommonHandler();
 	}
 	
 	public void exitJava(int exitCode, boolean hardExit) {
-		BLMain.LOGGER_FULL.logInfo("Exit Java?");
-		System.exit(exitCode);
+		BLMain.LOGGER_FULL.logInfo("[FMLCommonHandler] Exit Java?");
+		BLMain.LOGGER_FULL.logInfo("[FMLCommonHandler] Nah, this is just a test.");
 	}
 }

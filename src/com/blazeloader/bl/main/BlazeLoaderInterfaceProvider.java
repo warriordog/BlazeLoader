@@ -25,9 +25,6 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
 		return instance;
 	}
 	
-    /**
-     * Base type of Listeners which can consume events provided by this provider
-     */
     @Override
     public Class<? extends Listener> getListenerBaseType() {
         return BLMod.class;
@@ -43,10 +40,7 @@ public class BlazeLoaderInterfaceProvider implements InterfaceProvider {
 		delegate.registerInterface(EntityConstructingListener.class);
 		delegate.registerInterface(InventoryListener.class);
 	}
-
-    /**
-     * Initialise this provider, called AFTER enumeration but before binding
-     */
+	
     @Override
     public void initProvider() {
 
