@@ -60,6 +60,20 @@ public abstract class Variable<T, V> {
 		return handle.valid();
 	}
 	
+	/**
+	 * Gets the bytecode descriptor for the underlying field
+	 */
+	public String descriptor() {
+		return handle.descriptor();
+	}
+	
+	/**
+	 * Gets the name of the field represented by this Variable
+	 */
+	public String name() {
+		return handle.varName;
+	}
+	
 	protected V handleGetFail(T instance, V def) {
 		return def;
 	}

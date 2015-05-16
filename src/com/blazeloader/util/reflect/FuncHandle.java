@@ -5,8 +5,10 @@ import java.lang.invoke.LambdaConversionException;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import com.blazeloader.bl.obf.BLOBF;
@@ -15,14 +17,18 @@ public class FuncHandle {
 	protected MethodHandle target;
 	protected MethodHandle factory;
 	
-	protected String funcName;
-	
 	protected final boolean hasLambda;
 	protected final boolean staticMethod;
+	
+	protected String funcName;
+	protected String parameterString;
+	
+	protected final String declaringContext;
 	
 	protected FuncHandle(Class interfaceType, Class context, Class returnType, String name, boolean isStatic, Class... pars) {
 		staticMethod = isStatic;
 		hasLambda = interfaceType != null;
+		declaringContext = context.getCanonicalName();
 		MethodType getter = MethodType.methodType(isConstr(name) ? void.class : returnType, pars);
 		lookupMethod(interfaceType, context, name, getter);
 	}
@@ -54,13 +60,24 @@ public class FuncHandle {
 		
 		staticMethod = isStatic;
 		hasLambda = interfaceType != null;
+		declaringContext = className;
 		MethodType getter = MethodType.fromMethodDescriptorString(descriptor, Interop.loader());
 		lookupMethod(interfaceType, contextC, methodName, getter);
 	}
 	
+	private final Lookup trustedLookup(Lookup caller) {
+		try {
+			Field privilaged = Lookup.class.getDeclaredField("IMPL_LOOKUP");
+			privilaged.setAccessible(true);
+			Lookup trusted = (Lookup)privilaged.get(caller);
+			return trusted.in(caller.lookupClass());
+		} catch (Throwable e) {}
+		return caller;
+	}
+	
 	private void lookupMethod(Class interfaceType, Class context, String name, MethodType getter) {
 		funcName = name;
-		MethodHandles.Lookup caller = MethodHandles.lookup().in(context);
+		Lookup caller = trustedLookup(MethodHandles.lookup().in(context));
 		
 		try {
 			target = findMethod(caller, context, name, getter);
@@ -113,6 +130,20 @@ public class FuncHandle {
 		factory = site.getTarget();
 	}
 	
+	private String buildParameterString() {
+		String parameterTypes = "";
+		if (target != null) {
+			Class[] pars = target.type().parameterArray();
+			for (int i = 0; i < pars.length; i++) {
+				if (!parameterTypes.isEmpty()) {
+					parameterTypes += ",";
+				}
+				parameterTypes += " " + pars[i].getName() + "par" + i;
+			}
+		}
+		return parameterTypes;
+	}
+	
 	public void invalidate() {
 		target = null;
 		factory = null;
@@ -123,15 +154,23 @@ public class FuncHandle {
 	}
 	
 	public boolean supportsLambda() {
-		return hasLambda;
+		return hasLambda && factory != null;
 	}
 	
 	public boolean isConstr() {
 		return isConstr(funcName);
 	}
 	
+	public String descriptor() {
+		return declaringContext + "." + funcName + " " + (target == null ? "[unbound]" : target.type().toMethodDescriptorString());
+	}
+	
 	public String toString() {
-		return funcName + " " + target.toString();
+		String returnType = target == null ? "Object" : target.type().returnType().getSimpleName();
+		if (parameterString == null) {
+			parameterString = buildParameterString();
+		}
+		return (staticMethod ? "static " : "") + returnType + " " + funcName + " (" + parameterString + ");";
 	}
 	
 	public static boolean isConstr(String name) {

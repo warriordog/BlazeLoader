@@ -38,6 +38,20 @@ public abstract class Function<I, T, R> {
 	}
 	
 	/**
+	 * Gets the java bytecode descriptor for the underlying method
+	 */
+	public String descriptor() {
+		return handle.descriptor();
+	}
+	
+	/**
+	 * Gets the name of the method represented by this Function
+	 */
+	public String name() {
+		return handle.funcName;
+	}
+	
+	/**
 	 * Checks if this function was created with an interface for constructing a lambda.
 	 * @return
 	 */

@@ -15,8 +15,11 @@ public class VarHandle {
 	
 	protected final boolean staticField;
 	
+	protected final String declaringContext;
+	
 	public VarHandle(Class declarer, Class type, boolean isStatic, String name) {
 		staticField = isStatic;
+		declaringContext = declarer.getCanonicalName();
 		lookupVariable(declarer, type, name);
 	}
 	
@@ -49,20 +52,36 @@ public class VarHandle {
 		Class declarer = Interop.getDeclaredClass(className);
 		Class type = returnType.isEmpty() ? null : Interop.getDeclaredClass(returnType);
 		
+		declaringContext = className;
 		lookupVariable(declarer, type, fieldName);
 	}
 	
 	private void lookupVariable(Class declarer, Class type, String name) {
 		varName = name;
-		Field field;
 		try {
-			field = declarer.getDeclaredField(name);
-			field.setAccessible(true);
-			
 			MethodHandles.Lookup lookup = MethodHandles.lookup();
+			
+			if (type != null) {
+				try {
+					if (staticField) {
+						get = lookup.findStaticGetter(declarer, name, type);
+						set = lookup.findStaticSetter(declarer, name, type);
+					} else {
+						get = lookup.findGetter(declarer, name, type);
+						set = lookup.findSetter(declarer, name, type);
+					}
+				} catch (Throwable e) {
+					type = null;
+				}
+			}
+			
 			if (type == null) {
-				get = lookup.unreflectGetter(field);
-				set = lookup.unreflectSetter(field);
+				Field field = declarer.getDeclaredField(name);
+				if (field != null) {
+					field.setAccessible(true);
+					get = lookup.unreflectGetter(field);
+					set = lookup.unreflectSetter(field);
+				}
 			}
 		} catch (Throwable e) {
 			get = set = null;
@@ -78,7 +97,11 @@ public class VarHandle {
 		return get != null && set != null;
 	}
 	
+	public String descriptor() {
+		return declaringContext + "." + varName;
+	}
+	
 	public String toString() {
-		return get.toString();
+		return (get == null ? "Object" : get.type().returnType().getSimpleName()) + " " + varName + ";";
 	}
 }
