@@ -100,7 +100,7 @@ public class UpdateType implements Cloneable {
     	/**
     	 * No modifications allowed.<p>Instead creates a new one with the inverted value.
     	 */
-        public UpdateType not(UpdateType other) {
+        public UpdateType not() {
         	return new UpdateType(~value);
         }
     }
