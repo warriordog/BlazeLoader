@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.integrated.IntegratedPlayerList;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -108,17 +109,25 @@ public class EventHandler {
     	}
     }
     
+    private static boolean inEvent = false;
+    public static void eventSetCurrentItem(EventInfo<InventoryPlayer> event, Item itemIn, int targetEntityId, boolean hasSubTypes, boolean isCreativeMode) {
+    	if (inventoryEventHandlers.size() > 0) {
+    		if (!inEvent) {
+    			inEvent = true;
+				InventoryPlayer inventory = event.getSource();
+				inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getCurrentItem(), inventory.currentItem);
+				inEvent = false;
+    		}
+    	}
+    }
+    
     public static void eventChangeCurrentItem(EventInfo<InventoryPlayer> event, int increment) {
     	if (inventoryEventHandlers.size() > 0) {
 	    	InventoryPlayer inventory = event.getSource();
 	    	int newIndex = event.getSource().currentItem + (increment > 0 ? 1 : increment < 0 ? -1 : 0);
 	    	if (newIndex > -1) {
-	    		for (newIndex -= increment; newIndex < 0; newIndex += InventoryPlayer.getHotbarSize()) {
-	                ;
-	            }
-	    		
+	    		for (newIndex -= increment; newIndex < 0; newIndex += InventoryPlayer.getHotbarSize());
 	    		newIndex = newIndex % InventoryPlayer.getHotbarSize();
-		    	
 				if (!inventoryEventHandlers.all().onSlotSelectionChanged(inventory.player, inventory.getStackInSlot(newIndex), newIndex)) {
 					event.cancel();
 				}
@@ -127,17 +136,20 @@ public class EventHandler {
     }
     
     public static void eventOnItemPickup(EventInfo<EntityLivingBase> event, Entity itemEntity, int amount) {
-    	inventoryEventHandlers.all().onItemPickup(event.getSource(), itemEntity, amount);
+    	if (inventoryEventHandlers.size() > 0 && !itemEntity.isDead && !event.getSource().worldObj.isRemote) {
+    		inventoryEventHandlers.all().onItemPickup(event.getSource(), itemEntity, amount);
+    	}
     }
     
     public static void eventUpdateEquipmentIfNeeded(EventInfo<EntityLiving> event, EntityItem entityItem) {
     	if (inventoryEventHandlers.size() > 0) {
 	    	ItemStack pickedUp = entityItem.getEntityItem();
 	    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(pickedUp);
-	    	if (!inventoryEventHandlers.all().onEntityEquipItem(event.getSource(), entityItem, 1)) {
+	    	inventoryEventHandlers.all().onEntityEquipItem(event.getSource(), entityItem, args);
+	    	if (args.isCancelled()) {
 	    		event.cancel();
 	    	} else {
-	    		if (!pickedUp.equals(args.getItemStack())) {
+	    		if (args.isDirty()) {
 	    			entityItem.setEntityItemStack(args.getItemStack());
 	    		}
 	    	}
@@ -149,11 +161,12 @@ public class EventHandler {
     		if (inventoryEventHandlers.size() > 0) {
 	    		Entity entity = event.getSource();
 	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
-		    	if (!inventoryEventHandlers.all().onDropItem(entity, false, false, args)) {
+	    		inventoryEventHandlers.all().onDropItem(entity, false, false, args);
+		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
 		    		event.cancel();
 		    	} else {
-		    		if (!droppedItem.equals(args.getItemStack())) {
+		    		if (args.isDirty()) {
 		    			isInEvent = true;
 		    			event.setReturnValue(entity.entityDropItem(args.getItemStack(), yOffset));
 		    			isInEvent = false;
@@ -173,7 +186,8 @@ public class EventHandler {
 	    		EntityPlayer player = event.getSource();
 	    		ItemStack held = player.inventory.getItemStack();
 	    		InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
-		    	if (!inventoryEventHandlers.all().onDropItem(player, dropAround, traceItem, args)) {
+	    		inventoryEventHandlers.all().onDropItem(player, dropAround, traceItem, args);
+		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
 		    		if (held != null) {
 			    		if (!held.equals(droppedItem)) {
@@ -184,7 +198,7 @@ public class EventHandler {
 		    		}
 		    		event.cancel();
 		    	} else {
-		    		if (!droppedItem.equals(args.getItemStack())) {
+		    		if (args.isDirty()) {
 		    			isInEvent = true;
 		    			event.setReturnValue(player.dropItem(args.getItemStack(), dropAround, traceItem));
 		    			isInEvent = false;
@@ -212,11 +226,12 @@ public class EventHandler {
 	    	if (droppedItem != null) {
 		    	if (!dropAll) droppedItem.stackSize = 1;
 		    	InventoryListener.InventoryEventArgs args = new InventoryListener.InventoryEventArgs(droppedItem);
-		    	if (!inventoryEventHandlers.all().onDropOneItem(player, dropAll, args)) {
+		    	inventoryEventHandlers.all().onDropOneItem(player, dropAll, args);
+		    	if (args.isCancelled()) {
 		    		event.setReturnValue(null);
 		    		event.cancel();
 		    	}
-		    	if (!droppedItem.equals(args.getItemStack())) {
+		    	if (args.isDirty()) {
 		    		event.setReturnValue(player.dropItem(args.getItemStack(), false, true));
 		    		player.inventory.decrStackSize(player.inventory.currentItem, droppedItem.stackSize);
 		    		event.cancel();

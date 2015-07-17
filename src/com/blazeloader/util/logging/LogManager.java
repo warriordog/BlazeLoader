@@ -1,6 +1,7 @@
 package com.blazeloader.util.logging;
 
 import com.blazeloader.bl.main.Settings;
+
 import net.acomputerdog.core.java.Sleep;
 import net.acomputerdog.core.logger.CLogger;
 import net.acomputerdog.core.logger.LogLevel;
@@ -87,7 +88,8 @@ public class LogManager {
                 }
             }
 
-            private void logWarning(String message) {
+            @SuppressWarnings("unused")
+			private void logWarning(String message) {
                 if (loggerLogger != null) {
                     loggerLogger.logWarning(message);
                 } else {
