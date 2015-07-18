@@ -1,6 +1,5 @@
 package com.blazeloader.bl.main;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.server.MinecraftServer;
 
-import com.blazeloader.event.handlers.BlazeLoaderIP;
+import com.blazeloader.bl.interop.ForgeModloader;
 import com.mumfrey.liteloader.api.CoreProvider;
 import com.mumfrey.liteloader.api.CustomisationProvider;
 import com.mumfrey.liteloader.api.EnumeratorModule;
@@ -93,9 +92,7 @@ public class BLMain {
     }
     
     public List<InterfaceProvider> getInterfaceProviders() {
-    	List result = new ArrayList();
-    	result.add(BlazeLoaderIP.instance);
-        return result;
+    	return Collections.singletonList(new BlazeLoaderInterfaceProvider());
     }
 
     public List<Observer> getObservers() {
@@ -112,19 +109,19 @@ public class BLMain {
 
     public void shutdown(String message, int code) {
         try {
-            LOGGER_FULL.logFatal("Unexpected shutdown requested!");
+            LOGGER_FULL.logFatal("Unexpected shutdown detected!");
             LOGGER_FULL.logFatal("Message: " + message);
             MinecraftServer server = MinecraftServer.getServer();
             if (server != null) {
-                LOGGER_FULL.logFatal("Calling server shutdown.");
+                LOGGER_FULL.logFatal("Shutting down server...");
                 server.initiateShutdown();
             } else {
                 LOGGER_FULL.logFatal("Server is not running, closing immediately with code " + code + "!");
-                System.exit(code);
+                ForgeModloader.exitJVM(code);
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            System.exit(code);
+            ForgeModloader.exitJVM(code);
         }
     }
 

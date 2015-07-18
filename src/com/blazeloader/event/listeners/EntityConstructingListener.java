@@ -14,5 +14,5 @@ public interface EntityConstructingListener extends BLMod {
 	/**
 	 * A wild Entity has appeared. Do something!
 	 */
-	public void eventEntityConstructed(Entity entity);
+	public void onEntityConstructed(Entity entity);
 }
