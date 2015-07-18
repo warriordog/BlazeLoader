@@ -54,14 +54,14 @@ public class FuncHandle {
 				break;
 			}
 		}
-		descriptor = descriptor.replace(className + "." + methodName, "").trim();
+		ref = descriptor.replace(className + "." + methodName, "").trim();
 		
 		Class contextC = Interop.getDeclaredClass(className);
 		
 		staticMethod = isStatic;
 		hasLambda = interfaceType != null;
 		declaringContext = className;
-		MethodType getter = MethodType.fromMethodDescriptorString(descriptor, Interop.loader());
+		MethodType getter = MethodType.fromMethodDescriptorString(ref, Interop.loader());
 		lookupMethod(interfaceType, contextC, methodName, getter);
 	}
 	

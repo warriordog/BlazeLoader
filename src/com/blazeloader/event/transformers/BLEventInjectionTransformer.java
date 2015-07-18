@@ -86,9 +86,9 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
         addBLEvent(EventSide.SERVER, "net.minecraft.inventory.Container.slotClick (IIILnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;", beforeReturn);
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.EntityPlayer.collideWithPlayer (Lnet/minecraft/entity/Entity;)V");
         addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.InventoryPlayer.changeCurrentItem (I)V");
+        addBLEvent(EventSide.SERVER, "net.minecraft.entity.player.InventoryPlayer.setCurrentItem (Lnet/minecraft/item/Item;IZZ)V", beforeReturn);
         
-        //Disabled because for some reason we can't transform EntityLivingBase.
-        //It results in a java.lang.ClassCircularityException on EntityPlayer
+        //FIXME: Disabled because for some reason we can't transform EntityLivingBase. It results in a java.lang.ClassCircularityException on EntityPlayer
         //addBLEvent(EventSide.SERVER, "net.minecraft.entity.EntityLivingBase.onItemPickup (Lnet/minecraft/entity/Entity;I)V");
         
         addBLConstructorEvent(EventSide.SERVER, "net.minecraft.entity.Entity", new Object[] {BLOBF.getClass("net.minecraft.world.World", OBFLevel.MCP) }, beforeReturn);
@@ -99,7 +99,7 @@ public class BLEventInjectionTransformer extends EventInjectionTransformer {
     }
     
     protected enum EventSide {
-        //TODO: Reminder to update these when changing package structure.
+        //XXX: Reminder to update these when changing package structure.
     	CLIENT("com.blazeloader.event.handlers.client.EventHandlerClient"),
     	SERVER("com.blazeloader.event.handlers.EventHandler"),
     	INTERNAL("com.blazeloader.event.handlers.InternalEventHandler"),

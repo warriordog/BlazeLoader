@@ -94,7 +94,7 @@ public class ApiEntity {
      * @param minGroup Minimum group size
      * @param maxGroup Maximum group size
      * @param type     Type of spwning to be used by this entity
-     * @param biomes   Biomes this entity mus spawn in
+     * @param biomes   List of biomes this entity should spawn in
      */
     public static void registerSpawn(Class<? extends Entity> c, int weight, int minGroup, int maxGroup, EnumCreatureType type, BiomeGenBase... biomes) {
         if (biomes.length == 0) {
